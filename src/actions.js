@@ -18,7 +18,7 @@ export const invalidateServices = () => ({
 export const fetchServices = () => {
     return dispatch => {
         dispatch(requestServices());
-        return fetch("/service_registry")
+        return fetch("/api/service_registry/services")
             .then(response => response.json(), error => console.log(error))
             .then(data => dispatch(receiveServices(data)));
     };

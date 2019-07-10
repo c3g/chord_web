@@ -12,11 +12,13 @@ import rootReducer from "./reducers";
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
-render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById("root")
-);
+document.addEventListener("DOMContentLoaded", () => {
+    render(
+        <Provider store={store}>
+            <App />
+        </Provider>,
+        document.getElementById("root")
+    );
 
-store.dispatch(fetchServices());
+    store.dispatch(fetchServices());
+});
