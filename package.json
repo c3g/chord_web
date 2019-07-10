@@ -1,0 +1,31 @@
+{
+  "name": "chord_web",
+  "version": "0.1.0",
+  "description": "CHORD web application front-end",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx webpack --watch --mode development",
+    "build": "npx webpack --mode production",
+    "build-dev": "npx webpack --mode development"
+  },
+  "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "antd": "^3.20.1",
+    "cross-fetch": "^3.0.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.3",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
+  }
+}
