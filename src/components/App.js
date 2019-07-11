@@ -1,12 +1,16 @@
 import React, {Component} from "react";
 
-import {Layout, Menu, Typography, Icon} from "antd";
-import ServiceList from "./ServiceList";
+import {Link, Redirect, Route, Switch} from "react-router-dom";
 
+import {Layout, Menu, Typography, Icon} from "antd";
 import "antd/es/typography/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
+
+import ServicesContent from "./ServicesContent";
+import DataDiscoveryContent from "./DataDiscoveryContent";
+import DataManagerContent from "./DataManagerContent";
 
 class App extends Component {
     render() {
@@ -24,22 +28,29 @@ class App extends Component {
                             <Menu.Item key="1">
                                 <Icon type="cloud-server" />
                                 <span className="nav-text">Services</span>
+                                <Link to="/services" />
                             </Menu.Item>
                             <Menu.Item key="2">
                                 <Icon type="file-search" />
-                                <span className="nav-text">Discover Data</span>
+                                <span className="nav-text">Data Discovery</span>
+                                <Link to="/data/discovery" />
                             </Menu.Item>
                             <Menu.Item key="3">
                                 <Icon type="folder-open" />
                                 <span className="nav-text">Data Manager</span>
+                                <Link to="/data/manager" />
                             </Menu.Item>
                         </Menu>
                     </Layout.Sider>
                     <Layout>
                         <Layout.Content style={{margin: "30px"}}>
                             <section style={{padding: "30px 30px 12px", background: "white"}}>
-                                <Typography.Title level={2}>Services</Typography.Title>
-                                <ServiceList />
+                                <Switch>
+                                    <Route path="/services" component={ServicesContent} />
+                                    <Route path="/data/discovery" component={DataDiscoveryContent} />
+                                    <Route path="/data/manager" component={DataManagerContent} />
+                                    <Redirect from="/" to="/services" />
+                                </Switch>
                             </section>
                         </Layout.Content>
                         <Layout.Footer style={{textAlign: "center"}}>

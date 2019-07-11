@@ -4,7 +4,9 @@ import {render} from "react-dom";
 import {applyMiddleware, createStore} from "redux";
 import thunkMiddleware from "redux-thunk";
 
-import {Provider} from 'react-redux';
+import {Provider} from "react-redux";
+
+import {BrowserRouter} from "react-router-dom";
 
 import App from "./components/App";
 import {fetchServices} from "./actions";
@@ -15,7 +17,9 @@ const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 document.addEventListener("DOMContentLoaded", () => {
     render(
         <Provider store={store}>
-            <App />
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
         </Provider>,
         document.getElementById("root")
     );
