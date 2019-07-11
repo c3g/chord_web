@@ -6,7 +6,7 @@ import thunkMiddleware from "redux-thunk";
 
 import {Provider} from 'react-redux';
 
-import App from "./App";
+import App from "./components/App";
 import {fetchServices} from "./actions";
 import rootReducer from "./reducers";
 
