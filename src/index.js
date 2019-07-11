@@ -9,7 +9,6 @@ import {Provider} from "react-redux";
 import {BrowserRouter} from "react-router-dom";
 
 import App from "./components/App";
-import {fetchServices} from "./actions";
 import rootReducer from "./reducers";
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
@@ -23,6 +22,4 @@ document.addEventListener("DOMContentLoaded", () => {
         </Provider>,
         document.getElementById("root")
     );
-
-    store.dispatch(fetchServices());
 });

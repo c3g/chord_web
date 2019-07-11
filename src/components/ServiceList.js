@@ -1,9 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
 
-import {Table, Typography, Icon} from "antd";
+import {Table, Typography, Icon, Tag} from "antd";
 
 import "antd/es/icon/style/css";
+import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
 
 const columns = [
@@ -31,12 +32,33 @@ const columns = [
         render: dataService => (
             <Icon type={dataService ? "check" : "close"} />
         )
+    },
+    {
+        title: "Status",
+        dataIndex: "status",
+        render: status => {
+            let statusText = "UNKNOWN";
+            let color = "";
+            if (status !== null) {
+                statusText = status ? "HEALTHY" : "UNREACHABLE";
+                color = status ? "green" : "red";
+            }
+
+            return (
+                <Tag color={color}>{statusText}</Tag>
+            );
+        }
     }
 ];
 
 const ServiceList = connect(
     state => ({
-        dataSource: state.services.items,
+        dataSource: state.services.items.map(service => ({
+            ...service,
+            status: Object.keys(state.serviceStatus.status).includes(service.id)
+                ? state.serviceStatus.status[service.id]
+                : null
+        })),
         columns,
         rowKey: "id",
         bordered: true,

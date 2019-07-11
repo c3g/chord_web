@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 
@@ -11,6 +12,8 @@ import "antd/es/menu/style/css";
 import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
+
+import {fetchServicesWithStatus} from "../actions";
 
 class App extends Component {
     render() {
@@ -62,6 +65,10 @@ class App extends Component {
             </main>
         );
     }
+
+    componentDidMount() {
+        this.props.dispatch(fetchServicesWithStatus());
+    }
 }
 
-export default App;
+export default connect(null)(App);

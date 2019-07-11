@@ -1,5 +1,12 @@
 import {combineReducers} from "redux";
-import {REQUEST_SERVICES, RECEIVE_SERVICES, INVALIDATE_SERVICES} from "./actions";
+import {
+    REQUEST_SERVICES,
+    RECEIVE_SERVICES,
+    INVALIDATE_SERVICES,
+    REQUEST_SERVICE_STATUS,
+    RECEIVE_SERVICE_STATUS,
+    INVALIDATE_SERVICE_STATUS
+} from "./actions";
 
 const services = (
     state={
@@ -31,8 +38,39 @@ const services = (
     }
 };
 
+const serviceStatus = (
+    state={
+        isFetching: false,
+        didInvalidate: false,
+        status: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_SERVICE_STATUS:
+            return Object.assign({}, state, {
+                isFetching: true,
+                didInvalidate: false
+            });
+        case RECEIVE_SERVICE_STATUS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                didInvalidate: false,
+                status: {...action.status},
+                lastUpdated: action.receivedAt
+            });
+        case INVALIDATE_SERVICE_STATUS:
+            return Object.assign({}, state, {
+                didInvalidate: true
+            });
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
-    services
+    services,
+    serviceStatus
 });
 
 export default rootReducer;
