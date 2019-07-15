@@ -37,11 +37,21 @@ const columns = [
         title: "Status",
         dataIndex: "status",
         render: status => {
-            let statusText = "UNKNOWN";
+            let statusText = "";
             let color = "";
-            if (status !== null) {
-                statusText = status ? "HEALTHY" : "UNREACHABLE";
-                color = status ? "green" : "red";
+            switch (status) {
+                case false: // error returned
+                    statusText = "UNREACHABLE";
+                    color = "red";
+                    break;
+                case null:  // unknown, not in record
+                    statusText = "UNKNOWN";
+                    color = "";
+                    break;
+                default: // reachable
+                    statusText = "HEALTHY";
+                    color = "green";
+                    break;
             }
 
             return (
