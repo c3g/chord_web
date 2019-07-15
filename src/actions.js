@@ -44,8 +44,28 @@ export const fetchServicesWithMetadata = () => {
        await dispatch(fetchServices());
        await dispatch(requestServiceMetadata());
        const serviceInfoURLs = getState().services.items.map(service => `/api${service.url}/service-info`);
-       const responses = await Promise.all(serviceInfoURLs.map(u => fetch(u)));
-       const responseData = await Promise.all(responses.map(r => r.json()));
+
+       let responses = []; // await Promise.all(serviceInfoURLs.map(u => fetch(u)));
+       // await Promise.all(responses.map(r => r.json()));
+
+       for (let u of serviceInfoURLs) {
+           try {
+               responses.push(await fetch(u));
+           } catch (e) {
+               console.error(e);
+               responses.push(null); // Invalid or no response from service
+           }
+       }
+
+       let responseData = [];
+       for (let r of responses) {
+           try {
+               responseData.push(await r.json());
+           } catch (e) {
+               console.error(e);
+               responseData.push(null); // Invalid or no response from service
+           }
+       }
 
        let serviceMetadata = {};
        getState().services.items.forEach((s, i) => {

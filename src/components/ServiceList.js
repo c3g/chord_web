@@ -46,14 +46,15 @@ const columns = [
         render: status => {
             let statusText = "";
             let color = "";
+            // TODO: ACCOUNT FOR LOADING?
             switch (status) {
                 case false: // error returned
-                    statusText = "UNREACHABLE";
+                    statusText = "ERROR";
                     color = "red";
                     break;
                 case null:  // unknown, not in record
-                    statusText = "UNKNOWN";
-                    color = "";
+                    statusText = "UNREACHABLE";
+                    color = "orange";
                     break;
                 default: // reachable
                     statusText = "HEALTHY";
