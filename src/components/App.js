@@ -13,7 +13,7 @@ import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 
-import {fetchServicesWithStatus} from "../actions";
+import {fetchServicesWithMetadata} from "../actions";
 
 class App extends Component {
     render() {
@@ -67,7 +67,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(fetchServicesWithStatus());
+        this.props.dispatch(fetchServicesWithMetadata());
     }
 }
 

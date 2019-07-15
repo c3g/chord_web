@@ -20,6 +20,13 @@ const columns = [
         dataIndex: "name",
     },
     {
+        title: "Version",
+        dataIndex: "version",
+        render: version => (
+            <Typography.Text>{version ? version : "-"}</Typography.Text>
+        )
+    },
+    {
         title: "URL",
         dataIndex: "url",
         render: url => (
@@ -65,9 +72,12 @@ const ServiceList = connect(
     state => ({
         dataSource: state.services.items.map(service => ({
             ...service,
-            status: Object.keys(state.serviceStatus.status).includes(service.id)
-                ? state.serviceStatus.status[service.id]
-                : null
+            status: Object.keys(state.serviceMetadata.metadata).includes(service.id)
+                ? state.serviceMetadata.metadata[service.id]
+                : null,
+            version: Object.keys(state.serviceMetadata.metadata).includes(service.id)
+                ? state.serviceMetadata.metadata[service.id].version
+                : "-",
         })),
         columns,
         rowKey: "id",

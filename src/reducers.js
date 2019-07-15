@@ -3,9 +3,9 @@ import {
     REQUEST_SERVICES,
     RECEIVE_SERVICES,
     INVALIDATE_SERVICES,
-    REQUEST_SERVICE_STATUS,
-    RECEIVE_SERVICE_STATUS,
-    INVALIDATE_SERVICE_STATUS
+    REQUEST_SERVICE_METADATA,
+    RECEIVE_SERVICE_METADATA,
+    INVALIDATE_SERVICE_METADATA
 } from "./actions";
 
 const services = (
@@ -38,28 +38,28 @@ const services = (
     }
 };
 
-const serviceStatus = (
+const serviceMetadata = (
     state={
         isFetching: false,
         didInvalidate: false,
-        status: {}
+        metadata: {}
     },
     action
 ) => {
     switch (action.type) {
-        case REQUEST_SERVICE_STATUS:
+        case REQUEST_SERVICE_METADATA:
             return Object.assign({}, state, {
                 isFetching: true,
                 didInvalidate: false
             });
-        case RECEIVE_SERVICE_STATUS:
+        case RECEIVE_SERVICE_METADATA:
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                status: {...action.status},
+                metadata: {...action.metadata},
                 lastUpdated: action.receivedAt
             });
-        case INVALIDATE_SERVICE_STATUS:
+        case INVALIDATE_SERVICE_METADATA:
             return Object.assign({}, state, {
                 didInvalidate: true
             });
@@ -70,7 +70,7 @@ const serviceStatus = (
 
 const rootReducer = combineReducers({
     services,
-    serviceStatus
+    serviceMetadata
 });
 
 export default rootReducer;

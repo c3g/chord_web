@@ -24,33 +24,34 @@ export const fetchServices = () => {
     };
 };
 
-export const REQUEST_SERVICE_STATUS = "REQUEST_SERVICE_STATUS";
-const requestServiceStatus = () => ({type: REQUEST_SERVICE_STATUS});
+export const REQUEST_SERVICE_METADATA = "REQUEST_SERVICE_METADATA";
+const requestServiceMetadata = () => ({type: REQUEST_SERVICE_METADATA});
 
-export const RECEIVE_SERVICE_STATUS = "RECEIVE_SERVICE_STATUS";
-const receiveServiceStatus = data => ({
-    type: RECEIVE_SERVICE_STATUS,
-    status: data,
+export const RECEIVE_SERVICE_METADATA = "RECEIVE_SERVICE_METADATA";
+const receiveServiceMetadata = data => ({
+    type: RECEIVE_SERVICE_METADATA,
+    metadata: data,
     receivedAt: Date.now()
 });
 
-export const INVALIDATE_SERVICE_STATUS = "INVALIDATE_SERVICE_STATUS";
-export const invalidateServiceStatus = () => ({
-    type: INVALIDATE_SERVICE_STATUS
+export const INVALIDATE_SERVICE_METADATA = "INVALIDATE_SERVICE_METADATA";
+export const invalidateServiceMetadata = () => ({
+    type: INVALIDATE_SERVICE_METADATA
 });
 
-export const fetchServicesWithStatus = () => {
+export const fetchServicesWithMetadata = () => {
    return async (dispatch, getState) => {
        await dispatch(fetchServices());
-       await dispatch(requestServiceStatus());
+       await dispatch(requestServiceMetadata());
        const serviceInfoURLs = getState().services.items.map(service => `/api${service.url}/service-info`);
        const responses = await Promise.all(serviceInfoURLs.map(u => fetch(u)));
+       const responseData = await Promise.all(responses.map(r => r.json()));
 
-       let statusData = {};
+       let serviceMetadata = {};
        getState().services.items.forEach((s, i) => {
-           statusData[s.id] = responses[i].ok;
+           serviceMetadata[s.id] = responses[i].ok ? responseData[i] : false;
        });
 
-       return dispatch(receiveServiceStatus(statusData));
+       return dispatch(receiveServiceMetadata(serviceMetadata));
    }
 };
