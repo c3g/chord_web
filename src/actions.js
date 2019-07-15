@@ -21,8 +21,6 @@ export const fetchServices = () => {
         const response = await fetch("/api/service_registry/services");
         const data = await response.json();
         return dispatch(receiveServices(data));
-            // .then(response => response.json(), error => console.log(error))
-            // .then(data => dispatch(receiveServices(data)));
     };
 };
 
