@@ -39,14 +39,35 @@ export const invalidateServiceMetadata = () => ({
     type: INVALIDATE_SERVICE_METADATA
 });
 
-export const fetchServicesWithMetadata = () => {
+export const REQUEST_SERVICE_DATASETS = "REQUEST_SERVICE_DATASETS";
+const requestServiceDatasets = id => ({type: REQUEST_SERVICE_DATASETS, service: id});
+
+export const RECEIVE_SERVICE_DATASETS = "RECEIVE_SERVICE_DATASETS";
+const receiveServiceDatasets = (id, data) => ({
+    type: RECEIVE_SERVICE_DATASETS,
+    service: id,
+    datasets: data,
+    receivedAt: Date.now()
+});
+
+export const INVALIDATE_SERVICE_DATASETS = "INVALIDATE_SERVICE_DATASETS";
+export const invalidateServiceDatasets = () => ({
+    type: INVALIDATE_SERVICE_DATASETS
+});
+
+export const fetchServicesWithMetadataAndDatasets = () => {
    return async (dispatch, getState) => {
+       // Fetch Services
+
        await dispatch(fetchServices());
        await dispatch(requestServiceMetadata());
+
+
+       // Fetch Service Metadata
+
        const serviceInfoURLs = getState().services.items.map(service => `/api${service.url}/service-info`);
 
-       let responses = []; // await Promise.all(serviceInfoURLs.map(u => fetch(u)));
-       // await Promise.all(responses.map(r => r.json()));
+       let responses = [];
 
        for (let u of serviceInfoURLs) {
            try {
@@ -72,6 +93,25 @@ export const fetchServicesWithMetadata = () => {
            serviceMetadata[s.id] = responses[i].ok ? responseData[i] : false;
        });
 
-       return dispatch(receiveServiceMetadata(serviceMetadata));
+       await dispatch(receiveServiceMetadata(serviceMetadata));
+
+
+       // Fetch Data Service Datasets (for searching)
+
+       for (let s of getState().services.items) {
+           if (!s.metadata["chordDataService"]) continue;
+           await dispatch(requestServiceDatasets(s.id));
+           try {
+               const response = await fetch(`/api${s.url}/datasets`);
+               if (response.ok) {
+                   const data = await response.json();
+                   await dispatch(receiveServiceDatasets(s.id, data));
+               } else {
+                   console.error(response)
+               }
+           } catch (e) {
+               console.error(e);
+           }
+       }
    }
 };
