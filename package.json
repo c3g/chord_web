@@ -12,13 +12,13 @@
   "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
   "license": "MIT",
   "dependencies": {
-    "antd": "^3.20.1",
+    "antd": "^3.20.3",
     "cross-fetch": "^3.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
-    "redux": "^4.0.3",
+    "redux": "^4.0.4",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
