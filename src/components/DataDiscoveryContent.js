@@ -1,12 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Link, withRouter} from "react-router-dom";
+import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 
-import {Icon, Layout, Menu, Typography} from "antd";
+import {Icon, Layout, Menu} from "antd";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
-import "antd/es/typography/style/css";
+
+import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
 
 class DataDiscoveryContent extends Component {
     componentDidMount() {
@@ -18,14 +19,14 @@ class DataDiscoveryContent extends Component {
             const menuItems = Object.keys(this.props.datasets).includes(s.id)
                 ? this.props.datasets[s.id].map(d => (
                     <Menu.SubMenu key={`${s.id}_dataset_${d.id}`} title={<span>{d.id}</span>}>
-                        <Menu.Item key={`${s.id}_dataset_${d.id}_search`}>
+                        <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/search`}>
                             <span>
                                 <Icon type="search" />
                                 <span>Search</span>
                                 <Link to={`/data/discovery/${s.id}/datasets/${d.id}/search`} />
                             </span>
                         </Menu.Item>
-                        <Menu.Item key={`${s.id}_dataset_${d.id}_schema}`}>
+                        <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/schema}`}>
                             <span>
                                 <Icon type="build" />
                                 <span>Data Schema</span>
@@ -50,7 +51,7 @@ class DataDiscoveryContent extends Component {
             );
         });
 
-        const selectedKey = "/data/discovery/home";
+        const selectedKey = this.props.location.pathname;
 
         return (
             <div>
@@ -65,18 +66,14 @@ class DataDiscoveryContent extends Component {
                         </Menu>
                     </Layout.Sider>
                     <Layout.Content style={{background: "white", padding: "24px 32px"}}>
-                        <Typography.Title level={2}>Data Discovery</Typography.Title>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto consectetur dolores
-                            earum in laboriosam provident quo voluptate. Accusamus accusantium ad aliquid at blanditiis
-                            consequatur consequuntur cum cumque deserunt distinctio dolorum eaque eius eum eveniet
-                            fugiat, id illum iste iusto laborum magnam maiores minima molestiae neque nihil omnis optio
-                            placeat quibusdam quo quod recusandae reiciendis sunt tempore ullam vel veritatis vero
-                            voluptate. Accusamus debitis deserunt eius nesciunt quisquam? Alias amet aut distinctio
-                            earum esse expedita magni natus nisi quo voluptatem? Dolorum eius fuga iste iusto
-                            laboriosam, nobis quisquam suscipit unde vel. Aliquam culpa deserunt eaque eligendi et
-                            nesciunt, obcaecati quaerat voluptatibus?
-                        </p>
+                        <Switch>
+                            <Route path="/data/discovery/home" component={DiscoveryHomeContent} />
+                            <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
+                                   component={DiscoveryHomeContent} /> {/* TODO */}
+                            <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
+                                   component={DiscoveryHomeContent} /> {/* TODO */}
+                            <Redirect from="/data/discovery" to="/data/discovery/home" />
+                        </Switch>
                     </Layout.Content>
                 </Layout>
             </div>
