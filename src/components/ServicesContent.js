@@ -7,6 +7,10 @@ import ServiceList from "./ServiceList";
 
 
 class ServicesContent extends Component {
+    componentDidMount() {
+        document.title = "CHORD - Services";
+    }
+
     render() {
         return (
             <div>

@@ -4,6 +4,10 @@ import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
 class DataManagerContent extends Component {
+    componentDidMount() {
+        document.title = "CHORD - Manage Your Data";
+    }
+
     render() {
         return (
             <div>

@@ -4,6 +4,10 @@ import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
 class DataDiscoveryContent extends Component {
+    componentDidMount() {
+        document.title = "CHORD - Discover Data";
+    }
+
     render() {
         return (
             <div>
