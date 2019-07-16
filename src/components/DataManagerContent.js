@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 
-import {Typography} from "antd";
+import {Layout, Typography} from "antd";
+import "antd/es/layout/style/css";
 import "antd/es/typography/style/css";
 
 class DataManagerContent extends Component {
@@ -10,9 +11,11 @@ class DataManagerContent extends Component {
 
     render() {
         return (
-            <div>
-                <Typography.Title level={2}>Manage Your Data</Typography.Title>
-            </div>
+            <Layout>
+                <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+                    <Typography.Title level={2}>Manage Your Data</Typography.Title>
+                </Layout.Content>
+            </Layout>
         );
     }
 }
