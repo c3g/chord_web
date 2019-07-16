@@ -14,7 +14,12 @@ import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 const renderContent = (Content, dataMenus) => route => (
     <Layout>
         <Layout.Sider width="256" theme="light">
-            <Menu mode="inline" selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
+            <Menu mode="inline"
+                  defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
+                      ? [`${route.match.params["service_id"]}_menu`,
+                         `${route.match.params["service_id"]}_dataset_${route.match.params["dataset_id"]}_menu`]
+                      : []}
+                  selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
                 <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
                     <Link to="/data/discovery/home">
                         <Icon type="home" />
@@ -39,7 +44,7 @@ class DataDiscoveryContent extends Component {
         const dataMenus = this.props.services.filter(s => s.metadata["chordDataService"]).map(s => {
             const menuItems = Object.keys(this.props.datasets).includes(s.id)
                 ? this.props.datasets[s.id].map(d => (
-                    <Menu.SubMenu key={`${s.id}_dataset_${d.id}`} title={<span>{d.id}</span>}>
+                    <Menu.SubMenu key={`${s.id}_dataset_${d.id}_menu`} title={<span>{d.id}</span>}>
                         <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/search`}>
                             <Link to={`/data/discovery/${s.id}/datasets/${d.id}/search`}>
                                 <Icon type="search" />
