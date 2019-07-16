@@ -7,14 +7,14 @@ import {generateSchemaTreeData} from "../schema";
 
 const generateSchemaTreeSelect = (schema, style) => (
     <TreeSelect treeDefaultExpandAll style={style}
-                treeData={[generateSchemaTreeData(schema, "root", "chord_schema")]} />
+                treeData={[generateSchemaTreeData(schema, "dataset item", "chord_schema")]} />
 );
 
 class SchemaTreeSelect extends Component {
     render() {
         return this.props.schema
-            ? (<div>{generateSchemaTreeSelect(this.props.schema, this.props.style)}</div>)
-            : (<div />);
+            ? generateSchemaTreeSelect(this.props.schema, this.props.style)
+            : (<div style={this.props.style} />);
     }
 }
 

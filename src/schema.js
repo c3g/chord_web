@@ -13,12 +13,19 @@ export const generateSchemaTreeData = (node, name, prefix) => {
                 key,
                 value,
                 title,
+                selectable: false,
                 children: Object.keys(node.properties)
                     .sort()
                     .map(k => generateSchemaTreeData(node.properties[k], k, key))
             };
         case "array":
-            return {key, value, title, children: [generateSchemaTreeData(node.items, "[array item]", key)]};
+            return {
+                key,
+                value,
+                title,
+                selectable: false,
+                children: [generateSchemaTreeData(node.items, "[array item]", key)]
+            };
         default:
             return {key, value, title, children: []};
     }
