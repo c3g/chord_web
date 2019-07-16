@@ -30,10 +30,14 @@ class DiscoverySchemaContent extends Component {
                                 borderTopRightRadius: "0",
                                 borderBottomRightRadius: "0"
                             }} schema={this.props.dataset.schema} />
-                            <Select style={{width: "128px", float: "left"}}>
-                                <Select.Option key="equals">equals</Select.Option>
+                            <Select style={{width: "128px", float: "left"}} defaultValue="pos">
+                                <Select.Option key="pos">does</Select.Option>
+                                <Select.Option key="neg">does not</Select.Option>
                             </Select>
-                            <Input style={{width: "calc(100% - 416px)"}} placeholder="value" />
+                            <Select style={{width: "128px", float: "left"}} defaultValue="equal">
+                                <Select.Option key="equal">equal</Select.Option>
+                            </Select>
+                            <Input style={{width: "calc(100% - 544px)"}} placeholder="value" />
                         </Input.Group>
                     </Form.Item>
                     <Form.Item wrapperCol={{
