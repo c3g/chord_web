@@ -15,7 +15,8 @@ const services = (
     state={
         isFetching: false,
         didInvalidate: false,
-        items: []
+        items: [],
+        itemsByID: {}
     },
     action
 ) => {
@@ -30,6 +31,7 @@ const services = (
                 isFetching: false,
                 didInvalidate: false,
                 items: action.services,
+                itemsByID: Object.assign({}, state.itemsByID, ...action.services.map(s => ({[s.id]: s}))),
                 lastUpdated: action.receivedAt
             });
         case INVALIDATE_SERVICES:
@@ -75,7 +77,8 @@ const serviceDatasets = (
     state = {
         isFetching: false,
         didInvalidate: false,
-        datasets: {}
+        datasets: {},
+        datasetsByServiceAndDatasetID: {}
     },
     action
 ) => {
@@ -89,7 +92,14 @@ const serviceDatasets = (
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                datasets: {...state.datasets, [action.service]: action.datasets},
+                datasets: {
+                    ...state.datasets,
+                    [action.service]: action.datasets
+                },
+                datasetsByServiceAndDatasetID: {
+                    ...state.datasetsByServiceAndDatasetID,
+                    [action.service]: Object.assign({}, ...action.datasets.map(d => ({[d.id]: d})))
+                },
                 lastUpdated: action.receivedAt
             });
         case INVALIDATE_SERVICE_DATASETS:

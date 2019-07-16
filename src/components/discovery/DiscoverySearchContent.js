@@ -1,13 +1,14 @@
 import React, {Component} from "react";
 
-import {Typography} from "antd";
+import {Spin, Typography} from "antd";
+import "antd/es/spin/style/css";
 import "antd/es/typography/style/css";
 
 class DiscoverySearchContent extends Component {
     render() {
-        return (
+        return this.props.dataset ? (
             <div>
-                <Typography.Title level={2}>Search</Typography.Title>
+                <Typography.Title level={2}>Search Dataset {this.props.dataset.id}</Typography.Title>
                 <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto consectetur dolores
                     earum in laboriosam provident quo voluptate. Accusamus accusantium ad aliquid at blanditiis
@@ -20,7 +21,7 @@ class DiscoverySearchContent extends Component {
                     nesciunt, obcaecati quaerat voluptatibus?
                 </p>
             </div>
-        );
+        ) : (<div>Loading...</div>);
     }
 }
 

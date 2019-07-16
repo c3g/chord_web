@@ -11,29 +11,33 @@ import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 
-const renderContent = (Content, dataMenus) => route => (
-    <Layout>
-        <Layout.Sider width="256" theme="light">
-            <Menu mode="inline"
-                  defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
-                      ? [`${route.match.params["service_id"]}_menu`,
-                         `${route.match.params["service_id"]}_dataset_${route.match.params["dataset_id"]}_menu`]
-                      : []}
-                  selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
-                <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
-                    <Link to="/data/discovery/home">
-                        <Icon type="home" />
-                        <span>Home</span>
-                    </Link>
-                </Menu.Item>
-                {dataMenus}
-            </Menu>
-        </Layout.Sider>
-        <Layout.Content style={{background: "white", padding: "24px 32px"}}>
-            <Content />
-        </Layout.Content>
-    </Layout>
-);
+const renderContent = (Content, dataMenus, props) => route => {
+    let routedProps = Object.assign({}, ...Object.keys(props).map(p => ({[p]: props[p](route)})));
+    // Props might be undefined --> loading state for children...
+    return (
+        <Layout>
+            <Layout.Sider width="384" theme="light">
+                <Menu mode="inline"
+                      defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
+                          ? [`${route.match.params["service_id"]}_menu`,
+                              `${route.match.params["service_id"]}_dataset_${route.match.params["dataset_id"]}_menu`]
+                          : []}
+                      selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
+                    <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
+                        <Link to="/data/discovery/home">
+                            <Icon type="home" />
+                            <span>Home</span>
+                        </Link>
+                    </Menu.Item>
+                    {dataMenus}
+                </Menu>
+            </Layout.Sider>
+            <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+                <Content {...routedProps} />
+            </Layout.Content>
+        </Layout>
+    );
+};
 
 class DataDiscoveryContent extends Component {
     componentDidMount() {
@@ -75,14 +79,25 @@ class DataDiscoveryContent extends Component {
             );
         });
 
+        const datasetProps = {
+            service: route => this.props.servicesByID[route.match.params["service_id"]],
+            dataset: route => {
+                const service = this.props.datasetsByServiceAndDatasetID
+                    [route.match.params["service_id"]];
+
+                return service ? service[route.match.params["dataset_id"]] : undefined;
+            }
+        };
+
         return (
             <div>
                 <Switch>
-                    <Route exact path="/data/discovery/home" component={renderContent(DiscoveryHomeContent, dataMenus)} />
+                    <Route exact path="/data/discovery/home"
+                           component={renderContent(DiscoveryHomeContent, dataMenus, {})} />
                     <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
-                           component={renderContent(DiscoverySearchContent, dataMenus)} /> {/* TODO */}
+                           component={renderContent(DiscoverySearchContent, dataMenus, datasetProps)} />
                     <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
-                           component={renderContent(DiscoverySchemaContent, dataMenus)} /> {/* TODO */}
+                           component={renderContent(DiscoverySchemaContent, dataMenus, datasetProps)} /> {/* TODO */}
                     <Redirect from="/data/discovery" to="/data/discovery/home" />
                 </Switch>
             </div>
@@ -92,7 +107,9 @@ class DataDiscoveryContent extends Component {
 
 const mapStateToProps = state => ({
     services: state.services.items,
-    datasets: state.serviceDatasets.datasets
+    servicesByID: state.services.itemsByID,
+    datasets: state.serviceDatasets.datasets,
+    datasetsByServiceAndDatasetID: state.serviceDatasets.datasetsByServiceAndDatasetID
 });
 
 export default connect(mapStateToProps)(withRouter(DataDiscoveryContent));
