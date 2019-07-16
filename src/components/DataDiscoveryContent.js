@@ -8,26 +8,27 @@ import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 
 import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
+import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
+import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 
-const renderContent = (Content, dataMenus) => route => {
-    return (
-        <Layout>
-            <Layout.Sider width="256" theme="light">
-                <Menu mode="inline" selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
-                    <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
+const renderContent = (Content, dataMenus) => route => (
+    <Layout>
+        <Layout.Sider width="256" theme="light">
+            <Menu mode="inline" selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
+                <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
+                    <Link to="/data/discovery/home">
                         <Icon type="home" />
                         <span>Home</span>
-                        <Link to="/data/discovery/home" />
-                    </Menu.Item>
-                    {dataMenus}
-                </Menu>
-            </Layout.Sider>
-            <Layout.Content style={{background: "white", padding: "24px 32px"}}>
-                <Content />
-            </Layout.Content>
-        </Layout>
-    );
-};
+                    </Link>
+                </Menu.Item>
+                {dataMenus}
+            </Menu>
+        </Layout.Sider>
+        <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+            <Content />
+        </Layout.Content>
+    </Layout>
+);
 
 class DataDiscoveryContent extends Component {
     componentDidMount() {
@@ -40,18 +41,16 @@ class DataDiscoveryContent extends Component {
                 ? this.props.datasets[s.id].map(d => (
                     <Menu.SubMenu key={`${s.id}_dataset_${d.id}`} title={<span>{d.id}</span>}>
                         <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/search`}>
-                            <span>
+                            <Link to={`/data/discovery/${s.id}/datasets/${d.id}/search`}>
                                 <Icon type="search" />
                                 <span>Search</span>
-                                <Link to={`/data/discovery/${s.id}/datasets/${d.id}/search`} />
-                            </span>
+                            </Link>
                         </Menu.Item>
-                        <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/schema}`}>
-                            <span>
+                        <Menu.Item key={`/data/discovery/${s.id}/datasets/${d.id}/schema`}>
+                            <Link to={`/data/discovery/${s.id}/datasets/${d.id}/schema`}>
                                 <Icon type="build" />
                                 <span>Data Schema</span>
-                                <Link to={`/data/discovery/${s.id}/datasets/${d.id}/schema`} />
-                            </span>
+                            </Link>
                         </Menu.Item>
                     </Menu.SubMenu>
                 ))
@@ -74,11 +73,11 @@ class DataDiscoveryContent extends Component {
         return (
             <div>
                 <Switch>
-                    <Route path="/data/discovery/home" component={renderContent(DiscoveryHomeContent, dataMenus)} />
+                    <Route exact path="/data/discovery/home" component={renderContent(DiscoveryHomeContent, dataMenus)} />
                     <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
-                           component={renderContent(DiscoveryHomeContent, dataMenus)} /> {/* TODO */}
+                           component={renderContent(DiscoverySearchContent, dataMenus)} /> {/* TODO */}
                     <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
-                           component={renderContent(DiscoveryHomeContent, dataMenus)} /> {/* TODO */}
+                           component={renderContent(DiscoverySchemaContent, dataMenus)} /> {/* TODO */}
                     <Redirect from="/data/discovery" to="/data/discovery/home" />
                 </Switch>
             </div>
