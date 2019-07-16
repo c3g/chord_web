@@ -45,9 +45,7 @@ const renderContent = Content => route => (
         </Layout.Header>
         <Layout>
             <Layout.Content style={{margin: "50px"}}>
-                <section style={{background: "white"}}>
-                    <Content />
-                </section>
+                <Content />
             </Layout.Content>
             <Layout.Footer style={{textAlign: "center"}}>
                 CHORD <br />

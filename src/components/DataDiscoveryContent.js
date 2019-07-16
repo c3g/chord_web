@@ -90,17 +90,15 @@ class DataDiscoveryContent extends Component {
         };
 
         return (
-            <div>
-                <Switch>
-                    <Route exact path="/data/discovery/home"
-                           component={renderContent(DiscoveryHomeContent, dataMenus, {})} />
-                    <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
-                           component={renderContent(DiscoverySearchContent, dataMenus, datasetProps)} />
-                    <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
-                           component={renderContent(DiscoverySchemaContent, dataMenus, datasetProps)} /> {/* TODO */}
-                    <Redirect from="/data/discovery" to="/data/discovery/home" />
-                </Switch>
-            </div>
+            <Switch>
+                <Route exact path="/data/discovery/home"
+                       component={renderContent(DiscoveryHomeContent, dataMenus, {})} />
+                <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
+                       component={renderContent(DiscoverySearchContent, dataMenus, datasetProps)} />
+                <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
+                       component={renderContent(DiscoverySchemaContent, dataMenus, datasetProps)} /> {/* TODO */}
+                <Redirect from="/data/discovery" to="/data/discovery/home" />
+            </Switch>
         );
     }
 }

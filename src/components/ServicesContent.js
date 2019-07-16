@@ -14,14 +14,12 @@ class ServicesContent extends Component {
 
     render() {
         return (
-            <div>
-                <Layout>
-                    <Layout.Content style={{background: "white", padding: "24px 32px 4px"}}>
-                        <Typography.Title level={2}>Services</Typography.Title>
-                        <ServiceList />
-                    </Layout.Content>
-                </Layout>
-            </div>
+            <Layout>
+                <Layout.Content style={{background: "white", padding: "24px 32px 4px"}}>
+                    <Typography.Title level={2}>Services</Typography.Title>
+                    <ServiceList />
+                </Layout.Content>
+            </Layout>
         );
     }
 }
