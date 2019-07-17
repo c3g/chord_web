@@ -18,7 +18,7 @@ const renderContent = (Content, dataMenus, props) => route => {
     // Props might be undefined --> loading state for children...
     return (
         <Layout>
-            <Layout.Sider width="384" theme="light">
+            <Layout.Sider width="256" theme="light">
                 <Menu mode="inline"
                       defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
                           ? [`${route.match.params["service_id"]}_menu`,
@@ -95,6 +95,18 @@ class DataDiscoveryContent extends Component {
             onSubmit: route => cs => {
                 if (!("service_id" in route.match.params) || !("dataset_id" in route.match.params)) return;
                 this.props.requestSearch(route.match.params["service_id"], route.match.params["dataset_id"], cs);
+            },
+            searches: route => {
+                const serviceSearches = this.props.searchesByServiceAndDatasetID
+                    [route.match.params["service_id"]];
+
+                return serviceSearches ? serviceSearches[route.match.params["dataset_id"]] : [];
+            },
+            selectedSearch: route => {
+                const serviceSelected = this.props.selectedSearchByServiceAndDatasetID
+                    [route.match.params["service_id"]];
+
+                return serviceSelected ? serviceSelected[route.match.params["dataset_id"]] : -1;
             }
         });
 
@@ -116,7 +128,9 @@ const mapStateToProps = state => ({
     services: state.services.items,
     servicesByID: state.services.itemsByID,
     datasets: state.serviceDatasets.datasets,
-    datasetsByServiceAndDatasetID: state.serviceDatasets.datasetsByServiceAndDatasetID
+    datasetsByServiceAndDatasetID: state.serviceDatasets.datasetsByServiceAndDatasetID,
+    searchesByServiceAndDatasetID: state.searches.itemsByServiceAndDatasetID,
+    selectedSearchByServiceAndDatasetID: state.searches.selectedSearchByServiceAndDatasetID
 });
 
 const mapDispatchToProps = dispatch => ({

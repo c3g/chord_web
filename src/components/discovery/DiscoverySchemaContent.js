@@ -9,7 +9,7 @@ class DiscoverySchemaContent extends Component {
     render() {
         return this.props.dataset ? (
             <div>
-                <Typography.Title level={2}>Schema for Dataset {this.props.dataset.id}</Typography.Title>
+                <Typography.Title level={2}>Schema for Dataset '{this.props.dataset.id}'</Typography.Title>
                 <SchemaTree schema={this.props.dataset.schema} />
             </div>
         ) : (<div>Loading...</div>);

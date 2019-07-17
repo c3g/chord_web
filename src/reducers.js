@@ -94,7 +94,8 @@ const searches = (
     state = {
         isFetching: false,
         items: [],
-        itemsByDatasetID: {}
+        itemsByServiceAndDatasetID: {},
+        selectedSearchByServiceAndDatasetID: {}
     },
     action
 ) => {
@@ -107,9 +108,23 @@ const searches = (
             return Object.assign({}, state, {
                 isFetching: false,
                 items: [...state.items, action.results], // Add search to search history
-                itemsByDatasetID: {
-                    ...state.itemsByDatasetID,
-                    [action.datasetID]: [...(state.itemsByDatasetID[action.datasetID] || []), action.results]
+                itemsByServiceAndDatasetID: {
+                    ...state.itemsByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...(state.itemsByServiceAndDatasetID[action.serviceID] || {}),
+                        [action.datasetID]: [
+                            ...((state.itemsByServiceAndDatasetID[action.serviceID] || {})[action.datasetID] || []),
+                            action.results
+                        ]
+                    }
+                },
+                selectedSearchByServiceAndDatasetID: {
+                    ...state.selectedSearchByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
+                        [action.datasetID]: ((state.selectedSearchByServiceAndDatasetID[action.serviceID]
+                            || {})[action.datasetID] || []).length
+                    }
                 },
                 lastUpdated: action.receivedAt
             });
