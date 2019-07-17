@@ -42,33 +42,40 @@ class DiscoverySearchForm extends Component {
         const formItems = keys.map((k, i) => (
             <Form.Item key={k} labelCol={{
                 lg: {span: 24},
-                xl: {span: 4}
+                xl: {span: 4},
+                xxl: {span: 3}
             }} wrapperCol={{
                 lg: {span: 24},
-                xl: {span: 20}
-            }} label={`Search Condition ${i+1}`}>
+                xl: {span: 20},
+                xxl: {span: 21}
+            }} label={`Condition ${i+1}`}>
                 <Input.Group compact>
                     {this.props.form.getFieldDecorator(`searchField[${k}]`, {validateTrigger: ["onChange"]})(
                         <SchemaTreeSelect style={{
-                            width: "288px",
+                            width: "256px",
                             float: "left",
                             borderTopRightRadius: "0",
                             borderBottomRightRadius: "0"
                         }} schema={this.props.dataset.schema} />
                     )}
                     {this.props.form.getFieldDecorator(`negation[${k}]`, {initialValue: "pos"})(
-                        <Select style={{width: "128px", float: "left"}}>
-                            <Select.Option key="pos">does</Select.Option>
-                            <Select.Option key="neg">does not</Select.Option>
+                        <Select style={{width: "88px", float: "left"}}>
+                            <Select.Option key="pos">is</Select.Option>
+                            <Select.Option key="neg">is not</Select.Option>
                         </Select>
                     )}
-                    {this.props.form.getFieldDecorator(`operator[${k}]`, {initialValue: "equal"})(
-                        <Select style={{width: "128px", float: "left"}}>
-                            <Select.Option key="equal">equal</Select.Option>
+                    {this.props.form.getFieldDecorator(`operator[${k}]`, {initialValue: "eq"})(
+                        <Select style={{width: "116px", float: "left"}}>
+                            <Select.Option key="eq">=</Select.Option>
+                            <Select.Option key="lt">&lt;</Select.Option>
+                            <Select.Option key="le">&le;</Select.Option>
+                            <Select.Option key="gt">&gt;</Select.Option>
+                            <Select.Option key="ge">&ge;</Select.Option>
+                            <Select.Option key="co">containing</Select.Option>
                         </Select>
                     )}
                     {this.props.form.getFieldDecorator(`value[${k}]`, {initialValue: ""})(
-                        <Input style={{width: `calc(100% - 594px)`}} placeholder="value" />
+                        <Input style={{width: `calc(100% - 510px)`}} placeholder="value" />
                     )}
                     <Button type="danger" style={{width: "50px"}} disabled={keys.length <= 1}
                             onClick={() => this.removeCondition.bind(this)(k)}>
@@ -82,8 +89,8 @@ class DiscoverySearchForm extends Component {
             <Form onSubmit={this.onSubmit.bind(this)}>
                 {formItems}
                 <Form.Item wrapperCol={{
-                    lg: {span: 24},
-                    xl: {offset: 4, span: 16}
+                    xl: {span: 24},
+                    xxl: {offset: 3, span: 18}
                 }}>
                     <Button type="dashed" onClick={this.addCondition.bind(this)} style={{ width: '100%' }}>
                         <Icon type="plus" /> Add condition
@@ -91,7 +98,8 @@ class DiscoverySearchForm extends Component {
                 </Form.Item>
                 <Form.Item wrapperCol={{
                     lg: {span: 24},
-                    xl: {offset: 4, span: 20}
+                    xl: {offset: 5, span: 14},
+                    xxl: {offset: 3, span: 18}
                 }}>
                     <Button type="primary" htmlType="submit">
                         Search
