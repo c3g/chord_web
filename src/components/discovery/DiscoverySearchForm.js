@@ -7,7 +7,7 @@ import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
-import SchemaTreeSelect from "../SchemaTreeSelect";
+import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
 let conditionID = 0;
 
@@ -49,39 +49,16 @@ class DiscoverySearchForm extends Component {
                 xl: {span: 20},
                 xxl: {span: 21}
             }} label={`Condition ${i+1}`}>
-                <Input.Group compact>
-                    {this.props.form.getFieldDecorator(`searchField[${k}]`, {validateTrigger: ["onChange"]})(
-                        <SchemaTreeSelect style={{
-                            width: "256px",
-                            float: "left",
-                            borderTopRightRadius: "0",
-                            borderBottomRightRadius: "0"
-                        }} schema={this.props.dataset.schema} />
-                    )}
-                    {this.props.form.getFieldDecorator(`negation[${k}]`, {initialValue: "pos"})(
-                        <Select style={{width: "88px", float: "left"}}>
-                            <Select.Option key="pos">is</Select.Option>
-                            <Select.Option key="neg">is not</Select.Option>
-                        </Select>
-                    )}
-                    {this.props.form.getFieldDecorator(`operator[${k}]`, {initialValue: "eq"})(
-                        <Select style={{width: "116px", float: "left"}}>
-                            <Select.Option key="eq">=</Select.Option>
-                            <Select.Option key="lt">&lt;</Select.Option>
-                            <Select.Option key="le">&le;</Select.Option>
-                            <Select.Option key="gt">&gt;</Select.Option>
-                            <Select.Option key="ge">&ge;</Select.Option>
-                            <Select.Option key="co">containing</Select.Option>
-                        </Select>
-                    )}
-                    {this.props.form.getFieldDecorator(`value[${k}]`, {initialValue: ""})(
-                        <Input style={{width: `calc(100% - 510px)`}} placeholder="value" />
-                    )}
-                    <Button type="danger" style={{width: "50px"}} disabled={keys.length <= 1}
-                            onClick={() => this.removeCondition.bind(this)(k)}>
-                        <Icon type="close" />
-                    </Button>
-                </Input.Group>
+                {this.props.form.getFieldDecorator(`conditions[${k}]`, {
+                    initialValue: {
+                        searchField: undefined,
+                        negation: "pos",
+                        condition: "eq",
+                        searchValue: ""
+                    }
+                })(<DiscoverySearchCondition dataset={this.props.dataset}
+                                             onRemoveClick={() => this.removeCondition.bind(this)(k)}
+                                             removeDisabled={keys.length <= 1}/>)}
             </Form.Item>
         ));
 
