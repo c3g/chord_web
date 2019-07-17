@@ -4,7 +4,7 @@ import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
 export const generateSchemaTreeData = (node, name, prefix) => {
-    const key = `${prefix}.${name}`;
+    const key = `${prefix}${name}`;
     const value = key;
     const title = (<span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>);
     switch (node.type) {
@@ -16,7 +16,7 @@ export const generateSchemaTreeData = (node, name, prefix) => {
                 selectable: false,
                 children: Object.keys(node.properties)
                     .sort()
-                    .map(k => generateSchemaTreeData(node.properties[k], k, key))
+                    .map(k => generateSchemaTreeData(node.properties[k], k, `${key}.`))
             };
         case "array":
             return {
@@ -24,7 +24,7 @@ export const generateSchemaTreeData = (node, name, prefix) => {
                 value,
                 title,
                 selectable: false,
-                children: [generateSchemaTreeData(node.items, "[array item]", key)]
+                children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`)]
             };
         default:
             return {key, value, title, children: []};
