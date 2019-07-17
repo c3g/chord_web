@@ -55,7 +55,17 @@ class DiscoverySearchForm extends Component {
                         negation: "pos",
                         condition: "eq",
                         searchValue: ""
-                    }
+                    },
+                    rules: [
+                        {
+                            validator: (rule, value, cb) => {
+                                cb(value.searchField === undefined
+                                    ? [new Error("A field must be specified for this search condition.")]
+                                    : []);
+                            }
+                        }
+
+                    ]
                 })(<DiscoverySearchCondition dataset={this.props.dataset}
                                              onRemoveClick={() => this.removeCondition.bind(this)(k)}
                                              removeDisabled={keys.length <= 1}/>)}
