@@ -106,12 +106,13 @@ const requestSearch = (serviceID, datasetID) => ({
     datasetID
 });
 
-export const RECEIVE_SEARCH = "REQUEST_SEARCH";
+export const RECEIVE_SEARCH = "RECEIVE_SEARCH";
 const receiveSearch = (serviceID, datasetID, results) => ({
     type: RECEIVE_SEARCH,
     serviceID,
     datasetID,
-    results
+    results,
+    receivedAt: Date.now()
 });
 
 export const performSearch = (serviceID, datasetID, conditions) => {
@@ -133,7 +134,6 @@ export const performSearch = (serviceID, datasetID, conditions) => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             return dispatch(receiveSearch(serviceID, datasetID, data));
         } else {
             console.error(response);

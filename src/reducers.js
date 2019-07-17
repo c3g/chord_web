@@ -6,12 +6,13 @@ import {
     RECEIVE_SERVICE_METADATA,
     REQUEST_SERVICE_DATASETS,
     RECEIVE_SERVICE_DATASETS,
+    REQUEST_SEARCH,
+    RECEIVE_SEARCH
 } from "./actions";
 
 const services = (
     state={
         isFetching: false,
-        didInvalidate: false,
         items: [],
         itemsByID: {}
     },
@@ -61,7 +62,6 @@ const serviceMetadata = (
 const serviceDatasets = (
     state = {
         isFetching: false,
-        didInvalidate: false,
         datasets: {},
         datasetsByServiceAndDatasetID: {}
     },
@@ -90,10 +90,39 @@ const serviceDatasets = (
     }
 };
 
+const searches = (
+    state = {
+        isFetching: false,
+        items: [],
+        itemsByDatasetID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_SEARCH:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+        case RECEIVE_SEARCH:
+            return Object.assign({}, state, {
+                isFetching: false,
+                items: [...state.items, action.results], // Add search to search history
+                itemsByDatasetID: {
+                    ...state.itemsByDatasetID,
+                    [action.datasetID]: [...(state.itemsByDatasetID[action.datasetID] || []), action.results]
+                },
+                lastUpdated: action.receivedAt
+            });
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
     services,
     serviceMetadata,
-    serviceDatasets
+    serviceDatasets,
+    searches
 });
 
 export default rootReducer;
