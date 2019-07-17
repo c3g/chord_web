@@ -21,6 +21,7 @@ class SchemaTreeSelect extends Component {
 
     onChange(selected) {
         // Set the state directly unless value is bound
+
         if (!("value" in this.props)) {
             this.setState({selected});
         }
@@ -34,7 +35,7 @@ class SchemaTreeSelect extends Component {
     render() {
         return this.props.schema
             ? (<TreeSelect treeDefaultExpandAll style={this.props.style}
-                           treeData={[generateSchemaTreeData(this.props.schema, "dataset item", "chord_schema")]}
+                           treeData={[generateSchemaTreeData(this.props.schema, "[dataset item]", "")]}
                            value={this.state.selected} onChange={this.onChange.bind(this)} />)
             : (<div style={this.props.style} />);
     }

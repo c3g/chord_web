@@ -10,18 +10,11 @@ const receiveServices = data => ({
     receivedAt: Date.now()
 });
 
-export const INVALIDATE_SERVICES = "INVALIDATE_SERVICES";
-export const invalidateServices = () => ({
-    type: INVALIDATE_SERVICES
-});
-
-export const fetchServices = () => {
-    return async dispatch => {
-        await dispatch(requestServices());
-        const response = await fetch("/api/service_registry/services");
-        const data = await response.json();
-        return dispatch(receiveServices(data));
-    };
+export const fetchServices = () => async dispatch => {
+    await dispatch(requestServices());
+    const response = await fetch("/api/service_registry/services");
+    const data = await response.json();
+    return dispatch(receiveServices(data));
 };
 
 export const REQUEST_SERVICE_METADATA = "REQUEST_SERVICE_METADATA";
@@ -34,11 +27,6 @@ const receiveServiceMetadata = data => ({
     receivedAt: Date.now()
 });
 
-export const INVALIDATE_SERVICE_METADATA = "INVALIDATE_SERVICE_METADATA";
-export const invalidateServiceMetadata = () => ({
-    type: INVALIDATE_SERVICE_METADATA
-});
-
 export const REQUEST_SERVICE_DATASETS = "REQUEST_SERVICE_DATASETS";
 const requestServiceDatasets = id => ({type: REQUEST_SERVICE_DATASETS, service: id});
 
@@ -48,11 +36,6 @@ const receiveServiceDatasets = (id, data) => ({
     service: id,
     datasets: data,
     receivedAt: Date.now()
-});
-
-export const INVALIDATE_SERVICE_DATASETS = "INVALIDATE_SERVICE_DATASETS";
-export const invalidateServiceDatasets = () => ({
-    type: INVALIDATE_SERVICE_DATASETS
 });
 
 export const fetchServicesWithMetadataAndDatasets = () => {
@@ -113,5 +96,47 @@ export const fetchServicesWithMetadataAndDatasets = () => {
                console.error(e);
            }
        }
-   }
+   };
+};
+
+export const REQUEST_SEARCH = "REQUEST_SEARCH";
+const requestSearch = (serviceID, datasetID) => ({
+    type: REQUEST_SEARCH,
+    serviceID,
+    datasetID
+});
+
+export const RECEIVE_SEARCH = "REQUEST_SEARCH";
+const receiveSearch = (serviceID, datasetID, results) => ({
+    type: RECEIVE_SEARCH,
+    serviceID,
+    datasetID,
+    results
+});
+
+export const performSearch = (serviceID, datasetID, conditions) => {
+    return async (dispatch, getState) => {
+        // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
+        await dispatch(fetchServicesWithMetadataAndDatasets());
+
+        // Perform search
+        // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
+
+        await dispatch(requestSearch(serviceID, datasetID));
+        const serviceSearchURL = `/api${getState().services.itemsByID[serviceID].url}/search`;
+
+        const response = await fetch(serviceSearchURL, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"}, // TODO: Real GA4GH headers
+            body: JSON.stringify(conditions)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            return dispatch(receiveSearch(serviceID, datasetID, data));
+        } else {
+            console.error(response);
+        }
+    };
 };

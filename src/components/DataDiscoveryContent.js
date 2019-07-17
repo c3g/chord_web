@@ -11,6 +11,8 @@ import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 
+import {performSearch} from "../actions";
+
 const renderContent = (Content, dataMenus, props) => route => {
     let routedProps = Object.assign({}, ...Object.keys(props).map(p => ({[p]: props[p](route)})));
     // Props might be undefined --> loading state for children...
@@ -89,14 +91,21 @@ class DataDiscoveryContent extends Component {
             }
         };
 
+        const searchProps = Object.assign({}, datasetProps, {
+            onSubmit: route => cs => {
+                if (!("service_id" in route.match.params) || !("dataset_id" in route.match.params)) return;
+                this.props.requestSearch(route.match.params["service_id"], route.match.params["dataset_id"], cs);
+            }
+        });
+
         return (
             <Switch>
                 <Route exact path="/data/discovery/home"
                        component={renderContent(DiscoveryHomeContent, dataMenus, {})} />
                 <Route path="/data/discovery/:service_id/datasets/:dataset_id/search"
-                       component={renderContent(DiscoverySearchContent, dataMenus, datasetProps)} />
+                       component={renderContent(DiscoverySearchContent, dataMenus, searchProps)} />
                 <Route path="/data/discovery/:service_id/datasets/:dataset_id/schema"
-                       component={renderContent(DiscoverySchemaContent, dataMenus, datasetProps)} /> {/* TODO */}
+                       component={renderContent(DiscoverySchemaContent, dataMenus, datasetProps)} />
                 <Redirect from="/data/discovery" to="/data/discovery/home" />
             </Switch>
         );
@@ -110,4 +119,8 @@ const mapStateToProps = state => ({
     datasetsByServiceAndDatasetID: state.serviceDatasets.datasetsByServiceAndDatasetID
 });
 
-export default connect(mapStateToProps)(withRouter(DataDiscoveryContent));
+const mapDispatchToProps = dispatch => ({
+    requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DataDiscoveryContent));
