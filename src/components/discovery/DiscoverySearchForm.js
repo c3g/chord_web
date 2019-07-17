@@ -30,7 +30,7 @@ class DiscoverySearchForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
-            this.props.onSubmit(values["conditions"]);
+            this.props.onSubmit(values["keys"].map(k => values["conditions"][k]));
         });
     }
 
