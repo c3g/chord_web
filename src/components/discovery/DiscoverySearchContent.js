@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Collapse, Divider, Empty, Table, Typography} from "antd";
 import "antd/es/collapse/style/css";
@@ -14,11 +15,16 @@ class DiscoverySchemaContent extends Component {
         super(props);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSearchSelect = this.handleSearchSelect.bind(this);
         this.renderSearches = this.renderSearches.bind(this);
     }
 
     handleSubmit(cs) {
         this.props.onSubmit(cs);
+    }
+
+    handleSearchSelect(searchIndex) {
+        this.props.onSearchSelect(parseInt(searchIndex, 10));
     }
 
     renderSearches() {
@@ -28,9 +34,11 @@ class DiscoverySchemaContent extends Component {
         if (this.props.searches.length === 0) return noResults;
 
         return (
-            <Collapse bordered={false} activeKey={this.props.selectedSearch.toString()}>
-                {this.props.searches.map((s, i) => (
-                    <Collapse.Panel header={`Search ${i+1}`} key={i.toString()}>
+            <Collapse bordered={false} accordion={true} activeKey={this.props.selectedSearch.toString()}
+                      onChange={this.handleSearchSelect}>
+                {[...this.props.searches].reverse().map((s, i) => (
+                    <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
+                                    key={this.props.searches.length - i - 1}>
                         <Table bordered={true} dataSource={s.results} rowKey="id"
                                columns={Object.keys(this.props.dataset.schema.properties)
                                    .map(e => ({title: e, dataIndex: e}))} />
@@ -53,5 +61,13 @@ class DiscoverySchemaContent extends Component {
         ) : (<div>Loading...</div>);
     }
 }
+
+DiscoverySchemaContent.propTypes = {
+    onSubmit: PropTypes.func,
+    onSearchSelect: PropTypes.func,
+    dataset: PropTypes.object,
+    searches: PropTypes.array,
+    selectedSearch: PropTypes.number
+};
 
 export default DiscoverySchemaContent;

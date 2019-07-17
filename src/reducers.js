@@ -7,7 +7,7 @@ import {
     REQUEST_SERVICE_DATASETS,
     RECEIVE_SERVICE_DATASETS,
     REQUEST_SEARCH,
-    RECEIVE_SEARCH
+    RECEIVE_SEARCH, SELECT_SEARCH
 } from "./actions";
 
 const services = (
@@ -23,6 +23,7 @@ const services = (
             return Object.assign({}, state, {
                 isFetching: true,
             });
+
         case RECEIVE_SERVICES:
             return Object.assign({}, state, {
                 isFetching: false,
@@ -30,6 +31,7 @@ const services = (
                 itemsByID: Object.assign({}, state.itemsByID, ...action.services.map(s => ({[s.id]: s}))),
                 lastUpdated: action.receivedAt
             });
+
         default:
             return state;
     }
@@ -48,12 +50,14 @@ const serviceMetadata = (
             return Object.assign({}, state, {
                 isFetching: true,
             });
+
         case RECEIVE_SERVICE_METADATA:
             return Object.assign({}, state, {
                 isFetching: false,
                 metadata: {...action.metadata},
                 lastUpdated: action.receivedAt
             });
+
         default:
             return state;
     }
@@ -72,6 +76,7 @@ const serviceDatasets = (
             return Object.assign({}, state, {
                 isFetching: true,
             });
+
         case RECEIVE_SERVICE_DATASETS:
             return Object.assign({}, state, {
                 isFetching: false,
@@ -85,6 +90,7 @@ const serviceDatasets = (
                 },
                 lastUpdated: action.receivedAt
             });
+
         default:
             return state;
     }
@@ -104,6 +110,7 @@ const searches = (
             return Object.assign({}, state, {
                 isFetching: true
             });
+
         case RECEIVE_SEARCH:
             return Object.assign({}, state, {
                 isFetching: false,
@@ -127,6 +134,17 @@ const searches = (
                     }
                 },
                 lastUpdated: action.receivedAt
+            });
+
+        case SELECT_SEARCH:
+            return Object.assign({}, state, {
+                selectedSearchByServiceAndDatasetID: {
+                    ...state.selectedSearchByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
+                        [action.datasetID]: action.searchIndex
+                    }
+                }
             });
         default:
             return state;

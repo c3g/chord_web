@@ -115,6 +115,14 @@ const receiveSearch = (serviceID, datasetID, results) => ({
     receivedAt: Date.now()
 });
 
+export const SELECT_SEARCH = "SELECT_SEARCH";
+export const selectSearch = (serviceID, datasetID, searchIndex) => ({
+    type: SELECT_SEARCH,
+    serviceID,
+    datasetID,
+    searchIndex
+});
+
 export const performSearch = (serviceID, datasetID, conditions) => {
     return async (dispatch, getState) => {
         // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED

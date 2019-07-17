@@ -11,7 +11,7 @@ import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 
-import {performSearch} from "../actions";
+import {performSearch, selectSearch} from "../actions";
 
 const renderContent = (Content, dataMenus, props) => route => {
     let routedProps = Object.assign({}, ...Object.keys(props).map(p => ({[p]: props[p](route)})));
@@ -96,6 +96,9 @@ class DataDiscoveryContent extends Component {
                 if (!("service_id" in route.match.params) || !("dataset_id" in route.match.params)) return;
                 this.props.requestSearch(route.match.params["service_id"], route.match.params["dataset_id"], cs);
             },
+            onSearchSelect: route => si => {
+                this.props.selectSearch(route.match.params["service_id"], route.match.params["dataset_id"], si);
+            },
             searches: route => {
                 const serviceSearches = this.props.searchesByServiceAndDatasetID
                     [route.match.params["service_id"]];
@@ -134,7 +137,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions))
+    requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions)),
+    selectSearch: (serviceID, datasetID, searchIndex) => dispatch(selectSearch(serviceID, datasetID, searchIndex))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DataDiscoveryContent));
