@@ -99,6 +99,18 @@ export const fetchServicesWithMetadataAndDatasets = () => {
    };
 };
 
+const fetchServicesWithMetadataAndDatasetsIfNeeded = () => {
+    return async (dispatch, getState) => {
+        const state = getState();
+        if ((state.services.items.length === 0 ||
+             Object.keys(state.serviceMetadata.metadata).length === 0 ||
+             Object.keys(state.serviceDatasets.datasets).length === 0) &&
+            !(state.services.isFetching || state.serviceMetadata.isFetching || state.serviceDatasets.isFetching)) {
+            await fetchServicesWithMetadataAndDatasets();
+        }
+    }
+};
+
 export const REQUEST_SEARCH = "REQUEST_SEARCH";
 const requestSearch = (serviceID, datasetID) => ({
     type: REQUEST_SEARCH,
@@ -126,7 +138,7 @@ export const selectSearch = (serviceID, datasetID, searchIndex) => ({
 export const performSearch = (serviceID, datasetID, conditions) => {
     return async (dispatch, getState) => {
         // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
-        await dispatch(fetchServicesWithMetadataAndDatasets());
+        await dispatch(fetchServicesWithMetadataAndDatasetsIfNeeded());
 
         // Perform search
         // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
