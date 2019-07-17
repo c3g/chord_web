@@ -5,16 +5,10 @@ import "antd/es/tree-select/style/css";
 
 import {generateSchemaTreeData} from "../schema";
 
-const generateSchemaTreeSelect = (schema, style, onChange) => (
-    <TreeSelect treeDefaultExpandAll style={style}
-                treeData={[generateSchemaTreeData(schema, "dataset item", "chord_schema")]}
-                onChange={onChange} />
-);
-
 class SchemaTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {
         if ("value" in nextProps) {
-            return {...(nextProps.value ? nextProps.value : {})};
+            return {...(nextProps.value || {})};
         }
         return null;
     }
@@ -39,7 +33,9 @@ class SchemaTreeSelect extends Component {
 
     render() {
         return this.props.schema
-            ? generateSchemaTreeSelect(this.props.schema, this.props.style, this.onChange.bind(this))
+            ? (<TreeSelect treeDefaultExpandAll style={this.props.style}
+                           treeData={[generateSchemaTreeData(this.props.schema, "dataset item", "chord_schema")]}
+                           value={this.state.selected} onChange={this.onChange.bind(this)} />)
             : (<div style={this.props.style} />);
     }
 }
