@@ -1,11 +1,9 @@
 import React, {Component} from "react";
 
-import {Button, Form, Icon, Input, Select} from "antd";
+import {Button, Form, Icon} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
-import "antd/es/input/style/css";
-import "antd/es/select/style/css";
 
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
@@ -32,6 +30,7 @@ class DiscoverySearchForm extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            // TODO: SUBMIT SEARCH FORM
             console.log(values);
         })
     }
