@@ -125,14 +125,6 @@ const searches = (
                         ]
                     }
                 },
-                selectedSearchByServiceAndDatasetID: {
-                    ...state.selectedSearchByServiceAndDatasetID,
-                    [action.serviceID]: {
-                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
-                        [action.datasetID]: ((state.selectedSearchByServiceAndDatasetID[action.serviceID]
-                            || {})[action.datasetID] || []).length
-                    }
-                },
                 lastUpdated: action.receivedAt
             });
 

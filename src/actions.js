@@ -142,7 +142,9 @@ export const performSearch = (serviceID, datasetID, conditions) => {
 
         if (response.ok) {
             const data = await response.json();
-            return dispatch(receiveSearch(serviceID, datasetID, data));
+            await dispatch(receiveSearch(serviceID, datasetID, data));
+            await dispatch(selectSearch(serviceID, datasetID, getState().searches
+                .itemsByServiceAndDatasetID[serviceID][datasetID].length - 1));
         } else {
             console.error(response);
         }

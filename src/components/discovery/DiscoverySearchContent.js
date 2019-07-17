@@ -28,10 +28,9 @@ class DiscoverySchemaContent extends Component {
     }
 
     renderSearches() {
-        const noResults = (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />);
-        if (!this.props.dataset) return noResults;
-        if (!this.props.searches) return noResults;
-        if (this.props.searches.length === 0) return noResults;
+        if (!this.props.dataset || !this.props.searches || this.props.searches.length === 0) return (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
+        );
 
         return (
             <Collapse bordered={false} accordion={true} activeKey={this.props.selectedSearch.toString()}
