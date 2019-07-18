@@ -95,7 +95,7 @@ class DiscoverySearchForm extends Component {
                     xl: {offset: 5, span: 14},
                     xxl: {offset: 3, span: 18}
                 }}>
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" loading={this.props.loading}>
                         Search
                     </Button>
                 </Form.Item>

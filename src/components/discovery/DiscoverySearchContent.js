@@ -2,10 +2,11 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Collapse, Divider, Empty, Table, Typography} from "antd";
+import {Collapse, Divider, Empty, Spin, Table, Typography} from "antd";
 import "antd/es/collapse/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
@@ -63,10 +64,13 @@ class DiscoverySearchContent extends Component {
             <div>
                 <Typography.Title level={2}>Search Dataset '{this.props.dataset.id}'</Typography.Title>
                 <DiscoverySearchForm dataset={this.props.dataset} formValues={this.props.formValues}
+                                     loading={this.props.searchLoading}
                                      onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
                 <Divider />
                 <Typography.Title level={3}>Results</Typography.Title>
-                {this.renderSearches()}
+                <Spin spinning={this.props.searchLoading}>
+                    {this.renderSearches()}
+                </Spin>
             </div>
         ) : (<div>Loading...</div>);
     }
@@ -77,7 +81,9 @@ DiscoverySearchContent.propTypes = {
     service: PropTypes.object,
     dataset: PropTypes.object,
     searches: PropTypes.array,
-    selectedSearch: PropTypes.number
+    selectedSearch: PropTypes.number,
+    searchLoading: PropTypes.bool,
+    formValues: PropTypes.object
 };
 
 const mapStateToProps = state => {
@@ -106,6 +112,8 @@ const mapStateToProps = state => {
         selectedSearch: datasetExists && selectedSearchExists
             ? state.discovery.selectedSearchByServiceAndDatasetID[sID][dID]
             : -1,
+
+        searchLoading: state.discovery.isFetching,
 
         formValues: datasetExists ?
             state.discovery.searchFormsByServiceAndDatasetID[sID][dID]
