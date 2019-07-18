@@ -10,7 +10,7 @@ import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
 
-class DiscoverySchemaContent extends Component {
+class DiscoverySearchContent extends Component {
     constructor(props) {
         super(props);
 
@@ -61,7 +61,7 @@ class DiscoverySchemaContent extends Component {
     }
 }
 
-DiscoverySchemaContent.propTypes = {
+DiscoverySearchContent.propTypes = {
     onSubmit: PropTypes.func,
     onSearchSelect: PropTypes.func,
     dataset: PropTypes.object,
@@ -69,4 +69,4 @@ DiscoverySchemaContent.propTypes = {
     selectedSearch: PropTypes.number
 };
 
-export default DiscoverySchemaContent;
+export default DiscoverySearchContent;
