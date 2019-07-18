@@ -2,10 +2,11 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 
-import {Icon, Layout, Menu} from "antd";
+import {Icon, Layout, Menu, PageHeader} from "antd";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
+import "antd/es/page-header/style/css";
 
 import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
@@ -13,8 +14,10 @@ import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
 
 import {selectDiscoveryServiceDataset, clearDiscoveryServiceDataset} from "../actions";
 
+
 const searchURL = (sID, dID) => `/data/discovery/${sID}/datasets/${dID}/search`;
 const schemaURL = (sID, dID) => `/data/discovery/${sID}/datasets/${dID}/schema`;
+
 
 class DataDiscoveryContent extends Component {
     constructor(props) {
@@ -71,27 +74,31 @@ class DataDiscoveryContent extends Component {
             }
 
             return (
-                <Layout>
-                    <Layout.Sider width="256" theme="light">
-                        <Menu mode="inline"
-                              defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
-                                  ? [`${route.match.params["service_id"]}_menu`,
-                                      `${route.match.params["service_id"]}_dataset_${route.match.params["dataset_id"]}_menu`]
-                                  : []}
-                              selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
-                            <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
-                                <Link to="/data/discovery/home">
-                                    <Icon type="home"/>
-                                    <span>Home</span>
-                                </Link>
-                            </Menu.Item>
-                            {dataMenus}
-                        </Menu>
-                    </Layout.Sider>
-                    <Layout.Content style={{background: "white", padding: "24px 32px"}}>
-                        <Content />
-                    </Layout.Content>
-                </Layout>
+                <div>
+                    <PageHeader title="Data Discovery" subTitle="Federated data exploration"
+                                style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
+                    <Layout>
+                        <Layout.Sider width="256" theme="light">
+                            <Menu mode="inline"
+                                  defaultOpenKeys={Object.keys(route.match.params).includes("service_id")
+                                      ? [`${route.match.params["service_id"]}_menu`,
+                                          `${route.match.params["service_id"]}_dataset_${route.match.params["dataset_id"]}_menu`]
+                                      : []}
+                                  selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
+                                <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
+                                    <Link to="/data/discovery/home">
+                                        <Icon type="home"/>
+                                        <span>Home</span>
+                                    </Link>
+                                </Menu.Item>
+                                {dataMenus}
+                            </Menu>
+                        </Layout.Sider>
+                        <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+                            <Content />
+                        </Layout.Content>
+                    </Layout>
+                </div>
             );
         }
     }

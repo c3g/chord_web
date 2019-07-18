@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import {Layout, Typography} from "antd";
+import {Layout, PageHeader, Typography} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/typography/style/css";
 
@@ -14,12 +14,15 @@ class ServicesContent extends Component {
 
     render() {
         return (
-            <Layout>
-                <Layout.Content style={{background: "white", padding: "24px 32px 4px"}}>
-                    <Typography.Title level={2}>Services</Typography.Title>
-                    <ServiceList />
-                </Layout.Content>
-            </Layout>
+            <div>
+                <PageHeader title="Services" subTitle="Application health monitor"
+                            style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
+                <Layout>
+                    <Layout.Content style={{background: "white", padding: "36px 30px 4px"}}>
+                        <ServiceList />
+                    </Layout.Content>
+                </Layout>
+            </div>
         );
     }
 }

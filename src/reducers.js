@@ -102,53 +102,6 @@ const serviceDatasets = (
     }
 };
 
-const searches = (
-    state = {
-        isFetching: false,
-        items: [],
-        itemsByServiceAndDatasetID: {},
-        selectedSearchByServiceAndDatasetID: {}
-    },
-    action
-) => {
-    switch (action.type) {
-        case REQUEST_SEARCH:
-            return Object.assign({}, state, {
-                isFetching: true
-            });
-
-        case RECEIVE_SEARCH:
-            return Object.assign({}, state, {
-                isFetching: false,
-                items: [...state.items, action.results], // Add search to search history
-                itemsByServiceAndDatasetID: {
-                    ...state.itemsByServiceAndDatasetID,
-                    [action.serviceID]: {
-                        ...(state.itemsByServiceAndDatasetID[action.serviceID] || {}),
-                        [action.datasetID]: [
-                            ...((state.itemsByServiceAndDatasetID[action.serviceID] || {})[action.datasetID] || []),
-                            action.results
-                        ]
-                    }
-                },
-                lastUpdated: action.receivedAt
-            });
-
-        case SELECT_SEARCH:
-            return Object.assign({}, state, {
-                selectedSearchByServiceAndDatasetID: {
-                    ...state.selectedSearchByServiceAndDatasetID,
-                    [action.serviceID]: {
-                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
-                        [action.datasetID]: action.searchIndex
-                    }
-                }
-            });
-        default:
-            return state;
-    }
-};
-
 const discovery = (
     state = {
         isFetching: false,
@@ -239,7 +192,6 @@ const rootReducer = combineReducers({
     services,
     serviceMetadata,
     serviceDatasets,
-    searches,
     discovery
 });
 

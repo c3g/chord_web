@@ -155,8 +155,8 @@ export const performSearch = (serviceID, datasetID, conditions) => {
         if (response.ok) {
             const data = await response.json();
             await dispatch(receiveSearch(serviceID, datasetID, data));
-            await dispatch(selectSearch(serviceID, datasetID, getState().searches
-                .itemsByServiceAndDatasetID[serviceID][datasetID].length - 1));
+            await dispatch(selectSearch(serviceID, datasetID, getState().discovery
+                .searchesByServiceAndDatasetID[serviceID][datasetID].length - 1));
         } else {
             console.error(response);
         }
