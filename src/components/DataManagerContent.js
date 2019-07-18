@@ -15,7 +15,7 @@ class DataManagerContent extends Component {
                 <PageHeader title="Data Manager" subTitle="Share data with the CHORD federation"
                             style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
                 <Layout>
-                    <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+                    <Layout.Content style={{background: "white", padding: "24px"}}>
                         <Typography.Title level={2}>Manage Your Data</Typography.Title>
                     </Layout.Content>
                 </Layout>

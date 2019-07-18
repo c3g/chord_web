@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 
-import {Layout, PageHeader, Typography} from "antd";
+import {Layout, PageHeader} from "antd";
 import "antd/es/layout/style/css";
-import "antd/es/typography/style/css";
 
 import ServiceList from "./ServiceList";
 
@@ -18,7 +17,7 @@ class ServicesContent extends Component {
                 <PageHeader title="Services" subTitle="Application health monitor"
                             style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
                 <Layout>
-                    <Layout.Content style={{background: "white", padding: "36px 30px 4px"}}>
+                    <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <ServiceList />
                     </Layout.Content>
                 </Layout>
