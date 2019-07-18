@@ -162,3 +162,15 @@ export const performSearch = (serviceID, datasetID, conditions) => {
         }
     };
 };
+
+export const SELECT_DISCOVERY_SERVICE_DATASET = "SELECT_DISCOVERY_SERVICE_DATASET";
+export const selectDiscoveryServiceDataset = (serviceID, datasetID) => ({
+    type: SELECT_DISCOVERY_SERVICE_DATASET,
+    serviceID,
+    datasetID
+});
+
+export const CLEAR_DISCOVERY_SERVICE_DATASET = "CLEAR_DISCOVERY_SERVICE_DATASET";
+export const clearDiscoveryServiceDataset = () => ({
+    type: CLEAR_DISCOVERY_SERVICE_DATASET
+});

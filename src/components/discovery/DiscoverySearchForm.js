@@ -95,4 +95,9 @@ class DiscoverySearchForm extends Component {
     }
 }
 
-export default Form.create({name: "discovery_search_form"})(DiscoverySearchForm);
+export default Form.create({
+    name: "discovery_search_form",
+    mapPropsToFields: props => {
+        console.log("a", props);
+    }
+})(DiscoverySearchForm);

@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 
 import {Typography} from "antd";
 import "antd/es/typography/style/css";
@@ -16,4 +17,18 @@ class DiscoverySchemaContent extends Component {
     }
 }
 
-export default DiscoverySchemaContent;
+const mapStateToProps = state => {
+    const sID = state.discovery.selectedServiceID;
+    const dID = state.discovery.selectedDatasetID;
+
+    const datasetExists = sID && dID && sID in state.serviceDatasets.datasetsByServiceAndDatasetID
+        && dID in state.serviceDatasets.datasetsByServiceAndDatasetID[sID];
+
+    return {
+        dataset: datasetExists
+            ? state.serviceDatasets.datasetsByServiceAndDatasetID[sID][dID]
+            : null,
+    };
+};
+
+export default connect(mapStateToProps)(DiscoverySchemaContent);

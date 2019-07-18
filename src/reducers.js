@@ -2,12 +2,18 @@ import {combineReducers} from "redux";
 import {
     REQUEST_SERVICES,
     RECEIVE_SERVICES,
+
     REQUEST_SERVICE_METADATA,
     RECEIVE_SERVICE_METADATA,
+
     REQUEST_SERVICE_DATASETS,
     RECEIVE_SERVICE_DATASETS,
+
     REQUEST_SEARCH,
-    RECEIVE_SEARCH, SELECT_SEARCH
+    RECEIVE_SEARCH,
+    SELECT_SEARCH,
+
+    SELECT_DISCOVERY_SERVICE_DATASET, CLEAR_DISCOVERY_SERVICE_DATASET
 } from "./actions";
 
 const services = (
@@ -143,11 +149,76 @@ const searches = (
     }
 };
 
+const discovery = (
+    state = {
+        isFetching: false,
+        selectedServiceID: null,
+        selectedDatasetID: null,
+        searchKeys: [],
+        searchConditions: [],
+        searches: [],
+        searchesByServiceAndDatasetID: {},
+        selectedSearchByServiceAndDatasetID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_SEARCH:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+
+        case RECEIVE_SEARCH:
+            return Object.assign({}, state, {
+                isFetching: false,
+                searches: [...state.searches, action.results], // Add search to search history
+                searchesByServiceAndDatasetID: {
+                    ...state.searchesByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...(state.searchesByServiceAndDatasetID[action.serviceID] || {}),
+                        [action.datasetID]: [
+                            ...((state.searchesByServiceAndDatasetID[action.serviceID] || {})[action.datasetID] || []),
+                            action.results
+                        ]
+                    }
+                },
+                lastUpdated: action.receivedAt
+            });
+
+        case SELECT_SEARCH:
+            return Object.assign({}, state, {
+                selectedSearchByServiceAndDatasetID: {
+                    ...state.selectedSearchByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
+                        [action.datasetID]: action.searchIndex
+                    }
+                }
+            });
+
+        case SELECT_DISCOVERY_SERVICE_DATASET:
+            return Object.assign({}, state, {
+                selectedServiceID: action.serviceID,
+                selectedDatasetID: action.datasetID
+            });
+
+        case CLEAR_DISCOVERY_SERVICE_DATASET:
+            return Object.assign({}, state, {
+                selectedServiceID: null,
+                selectedDatasetID: null
+            });
+
+        default:
+            return state;
+    }
+};
+
 const rootReducer = combineReducers({
     services,
     serviceMetadata,
     serviceDatasets,
-    searches
+    searches,
+    discovery
 });
 
 export default rootReducer;

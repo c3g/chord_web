@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Collapse, Divider, Empty, Table, Typography} from "antd";
@@ -9,6 +10,7 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
+import {performSearch, selectSearch} from "../../actions";
 
 class DiscoverySearchContent extends Component {
     constructor(props) {
@@ -19,12 +21,14 @@ class DiscoverySearchContent extends Component {
         this.renderSearches = this.renderSearches.bind(this);
     }
 
-    handleSubmit(cs) {
-        this.props.onSubmit(cs);
+    handleSubmit(conditions) {
+        if (this.props.dataset === null) return;
+        this.props.requestSearch(this.props.service.id, this.props.dataset.id, conditions);
     }
 
     handleSearchSelect(searchIndex) {
-        this.props.onSearchSelect(parseInt(searchIndex, 10));
+        if (this.props.dataset === null) return;
+        this.props.selectSearch(this.props.service.id, this.props.dataset.id, parseInt(searchIndex, 10));
     }
 
     renderSearches() {
@@ -62,11 +66,45 @@ class DiscoverySearchContent extends Component {
 }
 
 DiscoverySearchContent.propTypes = {
-    onSubmit: PropTypes.func,
     onSearchSelect: PropTypes.func,
+    service: PropTypes.object,
     dataset: PropTypes.object,
     searches: PropTypes.array,
     selectedSearch: PropTypes.number
 };
 
-export default DiscoverySearchContent;
+const mapStateToProps = state => {
+    const sID = state.discovery.selectedServiceID;
+    const dID = state.discovery.selectedDatasetID;
+
+    const datasetExists = sID && dID && sID in state.serviceDatasets.datasetsByServiceAndDatasetID
+        && dID in state.serviceDatasets.datasetsByServiceAndDatasetID[sID];
+
+    const searchesExist = state.discovery.searchesByServiceAndDatasetID[sID] !== undefined
+        && state.discovery.searchesByServiceAndDatasetID[sID][dID] !== undefined;
+
+    const selectedSearchExists = state.discovery.selectedSearchByServiceAndDatasetID[sID] !== undefined
+        && state.discovery.selectedSearchByServiceAndDatasetID[sID][dID] !== undefined;
+
+    return {
+        service: datasetExists
+            ? state.services.itemsByID[sID]
+            : null,
+        dataset: datasetExists
+            ? state.serviceDatasets.datasetsByServiceAndDatasetID[sID][dID]
+            : null,
+        searches: datasetExists && searchesExist
+            ? state.discovery.searchesByServiceAndDatasetID[sID][dID]
+            : [],
+        selectedSearch: datasetExists && selectedSearchExists
+            ? state.discovery.selectedSearchByServiceAndDatasetID[sID][dID]
+            : -1
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions)),
+    selectSearch: (serviceID, datasetID, searchIndex) => dispatch(selectSearch(serviceID, datasetID, searchIndex)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
