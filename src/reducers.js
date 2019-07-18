@@ -13,7 +13,7 @@ import {
     RECEIVE_SEARCH,
     SELECT_SEARCH,
 
-    SELECT_DISCOVERY_SERVICE_DATASET, CLEAR_DISCOVERY_SERVICE_DATASET
+    SELECT_DISCOVERY_SERVICE_DATASET, CLEAR_DISCOVERY_SERVICE_DATASET, UPDATE_DISCOVERY_SEARCH_FORM
 } from "./actions";
 
 const services = (
@@ -154,8 +154,7 @@ const discovery = (
         isFetching: false,
         selectedServiceID: null,
         selectedDatasetID: null,
-        searchKeys: [],
-        searchConditions: [],
+        searchFormsByServiceAndDatasetID: {},
         searches: [],
         searchesByServiceAndDatasetID: {},
         selectedSearchByServiceAndDatasetID: {}
@@ -163,6 +162,18 @@ const discovery = (
     action
 ) => {
     switch (action.type) {
+        case RECEIVE_SERVICE_DATASETS:
+            return Object.assign({}, state, {
+                searchFormsByServiceAndDatasetID: {
+                    ...state.searchFormsByServiceAndDatasetID,
+                    [action.service]: {
+                        ...Object.assign({}, ...action.datasets.map(d => ({
+                            [d.id]: (state.searchFormsByServiceAndDatasetID[action.service] || {})[d.id] || {}
+                        })))
+                    }
+                }
+            });
+
         case REQUEST_SEARCH:
             return Object.assign({}, state, {
                 isFetching: true
@@ -206,6 +217,17 @@ const discovery = (
             return Object.assign({}, state, {
                 selectedServiceID: null,
                 selectedDatasetID: null
+            });
+
+        case UPDATE_DISCOVERY_SEARCH_FORM:
+            return Object.assign({}, state, {
+                searchFormsByServiceAndDatasetID: {
+                    ...state.searchFormsByServiceAndDatasetID,
+                    [action.serviceID]: {
+                        ...state.searchFormsByServiceAndDatasetID[action.serviceID],
+                        [action.datasetID]: JSON.parse(JSON.stringify(action.fields)) // TODO: Hack-y deep clone
+                    }
+                }
             });
 
         default:

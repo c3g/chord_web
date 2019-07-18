@@ -10,7 +10,7 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
-import {performSearch, selectSearch} from "../../actions";
+import {performSearch, selectSearch, updateDiscoverySearchForm} from "../../actions";
 
 class DiscoverySearchContent extends Component {
     constructor(props) {
@@ -19,6 +19,12 @@ class DiscoverySearchContent extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSearchSelect = this.handleSearchSelect.bind(this);
         this.renderSearches = this.renderSearches.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+    }
+
+    handleFormChange(fields) {
+        if (this.props.dataset === null) return;
+        this.props.updateSearchForm(this.props.service.id, this.props.dataset.id, fields);
     }
 
     handleSubmit(conditions) {
@@ -56,7 +62,8 @@ class DiscoverySearchContent extends Component {
         return this.props.dataset ? (
             <div>
                 <Typography.Title level={2}>Search Dataset '{this.props.dataset.id}'</Typography.Title>
-                <DiscoverySearchForm dataset={this.props.dataset} onSubmit={this.handleSubmit} />
+                <DiscoverySearchForm dataset={this.props.dataset} formValues={this.props.formValues}
+                                     onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
                 <Divider />
                 <Typography.Title level={3}>Results</Typography.Title>
                 {this.renderSearches()}
@@ -98,11 +105,17 @@ const mapStateToProps = state => {
             : [],
         selectedSearch: datasetExists && selectedSearchExists
             ? state.discovery.selectedSearchByServiceAndDatasetID[sID][dID]
-            : -1
+            : -1,
+
+        formValues: datasetExists ?
+            state.discovery.searchFormsByServiceAndDatasetID[sID][dID]
+            : null
     };
 };
 
 const mapDispatchToProps = dispatch => ({
+    updateSearchForm: (serviceID, datasetID, fields) =>
+        dispatch(updateDiscoverySearchForm(serviceID, datasetID, fields)),
     requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions)),
     selectSearch: (serviceID, datasetID, searchIndex) => dispatch(selectSearch(serviceID, datasetID, searchIndex)),
 });

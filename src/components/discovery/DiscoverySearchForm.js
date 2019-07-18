@@ -7,11 +7,9 @@ import "antd/es/icon/style/css";
 
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
-let conditionID = 0;
-
 class DiscoverySearchForm extends Component {
     componentDidMount() {
-        this.addCondition(); // Make sure there's one condition at least
+        // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
     }
 
     removeCondition(k) {
@@ -21,9 +19,20 @@ class DiscoverySearchForm extends Component {
     }
 
     addCondition() {
+        const newKey = this.props.form.getFieldValue("keys").length;
+
+        // Initialize new condition, otherwise the state won't get it
+        this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
+            searchField: undefined,
+            negation: "pos",
+            condition: "eq",
+            searchValue: ""
+        }});
+
         this.props.form.setFieldsValue({
-            keys: this.props.form.getFieldValue("keys").concat(conditionID++)
+            keys: this.props.form.getFieldValue("keys").concat(newKey),
         });
+
     }
 
     onSubmit(e) {
@@ -58,7 +67,7 @@ class DiscoverySearchForm extends Component {
                         {
                             validator: (rule, value, cb) => {
                                 cb(value.searchField === undefined
-                                    ? [new Error("A field must be specified for this search condition.")]
+                                    ? "A field must be specified for this search condition."
                                     : []);
                             }
                         }
@@ -97,7 +106,12 @@ class DiscoverySearchForm extends Component {
 
 export default Form.create({
     name: "discovery_search_form",
-    mapPropsToFields: props => {
-        console.log("a", props);
-    }
+    mapPropsToFields: ({formValues}) => ({
+        keys: Form.createFormField({...formValues.keys}),
+        ...Object.assign({}, ...(formValues["conditions"] || [])
+            .map(c => ({[c.name]: Form.createFormField({...c})})))
+    }),
+    onFieldsChange: ({onChange}, _, allFields) => {
+        onChange({...allFields});
+    },
 })(DiscoverySearchForm);

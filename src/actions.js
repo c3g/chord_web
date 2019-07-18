@@ -174,3 +174,11 @@ export const CLEAR_DISCOVERY_SERVICE_DATASET = "CLEAR_DISCOVERY_SERVICE_DATASET"
 export const clearDiscoveryServiceDataset = () => ({
     type: CLEAR_DISCOVERY_SERVICE_DATASET
 });
+
+export const UPDATE_DISCOVERY_SEARCH_FORM = "UPDATE_DISCOVERY_SEARCH_FORM";
+export const updateDiscoverySearchForm = (serviceID, datasetID, fields) => ({
+    type: UPDATE_DISCOVERY_SEARCH_FORM,
+    serviceID,
+    datasetID,
+    fields
+});
