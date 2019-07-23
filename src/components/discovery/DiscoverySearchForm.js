@@ -73,7 +73,7 @@ class DiscoverySearchForm extends Component {
                         }
 
                     ]
-                })(<DiscoverySearchCondition dataset={this.props.dataset}
+                })(<DiscoverySearchCondition dataType={this.props.dataType}
                                              onRemoveClick={() => this.removeCondition.bind(this)(k)}
                                              removeDisabled={keys.length <= 1}/>)}
             </Form.Item>

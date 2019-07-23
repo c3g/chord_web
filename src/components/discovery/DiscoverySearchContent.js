@@ -24,22 +24,22 @@ class DiscoverySearchContent extends Component {
     }
 
     handleFormChange(fields) {
-        if (this.props.dataset === null) return;
-        this.props.updateSearchForm(this.props.service.id, this.props.dataset.id, fields);
+        if (this.props.dataType === null) return;
+        this.props.updateSearchForm(this.props.service.id, this.props.dataType.id, fields);
     }
 
     handleSubmit(conditions) {
-        if (this.props.dataset === null) return;
-        this.props.requestSearch(this.props.service.id, this.props.dataset.id, conditions);
+        if (this.props.dataType === null) return;
+        this.props.requestSearch(this.props.service.id, this.props.dataType.id, conditions);
     }
 
     handleSearchSelect(searchIndex) {
-        if (this.props.dataset === null) return;
-        this.props.selectSearch(this.props.service.id, this.props.dataset.id, parseInt(searchIndex, 10));
+        if (this.props.dataType === null) return;
+        this.props.selectSearch(this.props.service.id, this.props.dataType.id, parseInt(searchIndex, 10));
     }
 
     renderSearches() {
-        if (!this.props.dataset || !this.props.searches || this.props.searches.length === 0) return (
+        if (!this.props.dataType || !this.props.searches || this.props.searches.length === 0) return (
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
         );
 
@@ -50,9 +50,7 @@ class DiscoverySearchContent extends Component {
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
                                     key={this.props.searches.length - i - 1}>
                         <Table bordered={true} dataSource={s.results} rowKey="id"
-                               columns={Object.keys(this.props.dataset.schema.properties)
-                                   .map(e => ({title: e, dataIndex: e}))} />
-                               {/* TODO: BAD LOGIC (NO NESTED HANDLING, ASSUMES OBJECT AT ROOT LEVEL), HARDCODED ID */}
+                               columns={[{title: "Dataset ID", dataIndex: "id"}]} />
                     </Collapse.Panel>
                 ))}
             </Collapse>
@@ -60,10 +58,10 @@ class DiscoverySearchContent extends Component {
     }
 
     render() {
-        return this.props.dataset ? (
+        return this.props.dataType ? (
             <div>
-                <Typography.Title level={2}>Search Dataset '{this.props.dataset.id}'</Typography.Title>
-                <DiscoverySearchForm dataset={this.props.dataset} formValues={this.props.formValues}
+                <Typography.Title level={2}>Search Data Type '{this.props.dataType.id}'</Typography.Title>
+                <DiscoverySearchForm dataType={this.props.dataType} formValues={this.props.formValues}
                                      loading={this.props.searchLoading}
                                      onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
                 <Divider />
@@ -79,7 +77,7 @@ class DiscoverySearchContent extends Component {
 DiscoverySearchContent.propTypes = {
     onSearchSelect: PropTypes.func,
     service: PropTypes.object,
-    dataset: PropTypes.object,
+    dataType: PropTypes.object,
     searches: PropTypes.array,
     selectedSearch: PropTypes.number,
     searchLoading: PropTypes.bool,
@@ -88,44 +86,44 @@ DiscoverySearchContent.propTypes = {
 
 const mapStateToProps = state => {
     const sID = state.discovery.selectedServiceID;
-    const dID = state.discovery.selectedDatasetID;
+    const dID = state.discovery.selectedDataTypeID;
 
-    const datasetExists = sID && dID && sID in state.serviceDatasets.datasetsByServiceAndDatasetID
-        && dID in state.serviceDatasets.datasetsByServiceAndDatasetID[sID];
+    const dataTypeExists = sID && dID && sID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID
+        && dID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID];
 
-    const searchesExist = state.discovery.searchesByServiceAndDatasetID[sID] !== undefined
-        && state.discovery.searchesByServiceAndDatasetID[sID][dID] !== undefined;
+    const searchesExist = state.discovery.searchesByServiceAndDataTypeID[sID] !== undefined
+        && state.discovery.searchesByServiceAndDataTypeID[sID][dID] !== undefined;
 
-    const selectedSearchExists = state.discovery.selectedSearchByServiceAndDatasetID[sID] !== undefined
-        && state.discovery.selectedSearchByServiceAndDatasetID[sID][dID] !== undefined;
+    const selectedSearchExists = state.discovery.selectedSearchByServiceAndDataTypeID[sID] !== undefined
+        && state.discovery.selectedSearchByServiceAndDataTypeID[sID][dID] !== undefined;
 
     return {
-        service: datasetExists
+        service: dataTypeExists
             ? state.services.itemsByID[sID]
             : null,
-        dataset: datasetExists
-            ? state.serviceDatasets.datasetsByServiceAndDatasetID[sID][dID]
+        dataType: dataTypeExists
+            ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID]
             : null,
-        searches: datasetExists && searchesExist
-            ? state.discovery.searchesByServiceAndDatasetID[sID][dID]
+        searches: dataTypeExists && searchesExist
+            ? state.discovery.searchesByServiceAndDataTypeID[sID][dID]
             : [],
-        selectedSearch: datasetExists && selectedSearchExists
-            ? state.discovery.selectedSearchByServiceAndDatasetID[sID][dID]
+        selectedSearch: dataTypeExists && selectedSearchExists
+            ? state.discovery.selectedSearchByServiceAndDataTypeID[sID][dID]
             : -1,
 
         searchLoading: state.discovery.isFetching,
 
-        formValues: datasetExists ?
-            state.discovery.searchFormsByServiceAndDatasetID[sID][dID]
+        formValues: dataTypeExists ?
+            state.discovery.searchFormsByServiceAndDataTypeID[sID][dID]
             : null
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateSearchForm: (serviceID, datasetID, fields) =>
-        dispatch(updateDiscoverySearchForm(serviceID, datasetID, fields)),
-    requestSearch: (serviceID, datasetID, conditions) => dispatch(performSearch(serviceID, datasetID, conditions)),
-    selectSearch: (serviceID, datasetID, searchIndex) => dispatch(selectSearch(serviceID, datasetID, searchIndex)),
+    updateSearchForm: (serviceID, dataTypeID, fields) =>
+        dispatch(updateDiscoverySearchForm(serviceID, dataTypeID, fields)),
+    requestSearch: (serviceID, dataTypeID, conditions) => dispatch(performSearch(serviceID, dataTypeID, conditions)),
+    selectSearch: (serviceID, dataTypeID, searchIndex) => dispatch(selectSearch(serviceID, dataTypeID, searchIndex)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);

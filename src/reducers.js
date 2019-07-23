@@ -6,18 +6,18 @@ import {
     REQUEST_SERVICE_METADATA,
     RECEIVE_SERVICE_METADATA,
 
-    REQUEST_SERVICE_DATASETS,
-    RECEIVE_SERVICE_DATASETS,
+    REQUEST_SERVICE_DATA_TYPES,
+    RECEIVE_SERVICE_DATA_TYPES,
 
     REQUEST_SEARCH,
     RECEIVE_SEARCH,
     SELECT_SEARCH,
 
-    SELECT_DISCOVERY_SERVICE_DATASET, CLEAR_DISCOVERY_SERVICE_DATASET, UPDATE_DISCOVERY_SEARCH_FORM
+    SELECT_DISCOVERY_SERVICE_DATA_TYPE, CLEAR_DISCOVERY_SERVICE_DATA_TYPE, UPDATE_DISCOVERY_SEARCH_FORM
 } from "./actions";
 
 const services = (
-    state={
+    state = {
         isFetching: false,
         items: [],
         itemsByID: {}
@@ -44,7 +44,7 @@ const services = (
 };
 
 const serviceMetadata = (
-    state={
+    state = {
         isFetching: false,
         didInvalidate: false,
         metadata: {}
@@ -69,30 +69,30 @@ const serviceMetadata = (
     }
 };
 
-const serviceDatasets = (
+const serviceDataTypes = (
     state = {
         isFetching: false,
-        datasets: {},
-        datasetsByServiceAndDatasetID: {}
+        dataTypes: {},
+        dataTypesByServiceAndDataTypeID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case REQUEST_SERVICE_DATASETS:
+        case REQUEST_SERVICE_DATA_TYPES:
             return Object.assign({}, state, {
                 isFetching: true,
             });
 
-        case RECEIVE_SERVICE_DATASETS:
+        case RECEIVE_SERVICE_DATA_TYPES:
             return Object.assign({}, state, {
                 isFetching: false,
-                datasets: {
-                    ...state.datasets,
-                    [action.service]: action.datasets
+                dataTypes: {
+                    ...state.dataTypes,
+                    [action.service]: action.dataTypes
                 },
-                datasetsByServiceAndDatasetID: {
-                    ...state.datasetsByServiceAndDatasetID,
-                    [action.service]: Object.assign({}, ...action.datasets.map(d => ({[d.id]: d})))
+                dataTypesByServiceAndDataTypeID: {
+                    ...state.dataTypesByServiceAndDataTypeID,
+                    [action.service]: Object.assign({}, ...action.dataTypes.map(d => ({[d.id]: d})))
                 },
                 lastUpdated: action.receivedAt
             });
@@ -106,22 +106,22 @@ const discovery = (
     state = {
         isFetching: false,
         selectedServiceID: null,
-        selectedDatasetID: null,
-        searchFormsByServiceAndDatasetID: {},
+        selectedDataTypeID: null,
+        searchFormsByServiceAndDataTypeID: {},
         searches: [],
-        searchesByServiceAndDatasetID: {},
-        selectedSearchByServiceAndDatasetID: {}
+        searchesByServiceAndDataTypeID: {},
+        selectedSearchByServiceAndDataTypeID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case RECEIVE_SERVICE_DATASETS:
+        case RECEIVE_SERVICE_DATA_TYPES:
             return Object.assign({}, state, {
-                searchFormsByServiceAndDatasetID: {
-                    ...state.searchFormsByServiceAndDatasetID,
+                searchFormsByServiceAndDataTypeID: {
+                    ...state.searchFormsByServiceAndDataTypeID,
                     [action.service]: {
-                        ...Object.assign({}, ...action.datasets.map(d => ({
-                            [d.id]: (state.searchFormsByServiceAndDatasetID[action.service] || {})[d.id] || {}
+                        ...Object.assign({}, ...action.dataTypes.map(d => ({
+                            [d.id]: (state.searchFormsByServiceAndDataTypeID[action.service] || {})[d.id] || {}
                         })))
                     }
                 }
@@ -136,12 +136,13 @@ const discovery = (
             return Object.assign({}, state, {
                 isFetching: false,
                 searches: [...state.searches, action.results], // Add search to search history
-                searchesByServiceAndDatasetID: {
-                    ...state.searchesByServiceAndDatasetID,
+                searchesByServiceAndDataTypeID: {
+                    ...state.searchesByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.searchesByServiceAndDatasetID[action.serviceID] || {}),
-                        [action.datasetID]: [
-                            ...((state.searchesByServiceAndDatasetID[action.serviceID] || {})[action.datasetID] || []),
+                        ...(state.searchesByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: [
+                            ...((state.searchesByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || []),
                             action.results
                         ]
                     }
@@ -151,34 +152,34 @@ const discovery = (
 
         case SELECT_SEARCH:
             return Object.assign({}, state, {
-                selectedSearchByServiceAndDatasetID: {
-                    ...state.selectedSearchByServiceAndDatasetID,
+                selectedSearchByServiceAndDataTypeID: {
+                    ...state.selectedSearchByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.selectedSearchByServiceAndDatasetID[action.serviceID] || {}),
-                        [action.datasetID]: action.searchIndex
+                        ...(state.selectedSearchByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: action.searchIndex
                     }
                 }
             });
 
-        case SELECT_DISCOVERY_SERVICE_DATASET:
+        case SELECT_DISCOVERY_SERVICE_DATA_TYPE:
             return Object.assign({}, state, {
                 selectedServiceID: action.serviceID,
-                selectedDatasetID: action.datasetID
+                selectedDataTypeID: action.dataTypeID
             });
 
-        case CLEAR_DISCOVERY_SERVICE_DATASET:
+        case CLEAR_DISCOVERY_SERVICE_DATA_TYPE:
             return Object.assign({}, state, {
                 selectedServiceID: null,
-                selectedDatasetID: null
+                selectedDataTypeID: null
             });
 
         case UPDATE_DISCOVERY_SEARCH_FORM:
             return Object.assign({}, state, {
-                searchFormsByServiceAndDatasetID: {
-                    ...state.searchFormsByServiceAndDatasetID,
+                searchFormsByServiceAndDataTypeID: {
+                    ...state.searchFormsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...state.searchFormsByServiceAndDatasetID[action.serviceID],
-                        [action.datasetID]: JSON.parse(JSON.stringify(action.fields)) // TODO: Hack-y deep clone
+                        ...state.searchFormsByServiceAndDataTypeID[action.serviceID],
+                        [action.dataTypeID]: JSON.parse(JSON.stringify(action.fields)) // TODO: Hack-y deep clone
                     }
                 }
             });
@@ -191,7 +192,7 @@ const discovery = (
 const rootReducer = combineReducers({
     services,
     serviceMetadata,
-    serviceDatasets,
+    serviceDataTypes,
     discovery
 });
 

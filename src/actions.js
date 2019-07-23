@@ -27,18 +27,18 @@ const receiveServiceMetadata = data => ({
     receivedAt: Date.now()
 });
 
-export const REQUEST_SERVICE_DATASETS = "REQUEST_SERVICE_DATASETS";
-const requestServiceDatasets = id => ({type: REQUEST_SERVICE_DATASETS, service: id});
+export const REQUEST_SERVICE_DATA_TYPES = "REQUEST_SERVICE_DATA_TYPES";
+const requestServiceDataTypes = id => ({type: REQUEST_SERVICE_DATA_TYPES, service: id});
 
-export const RECEIVE_SERVICE_DATASETS = "RECEIVE_SERVICE_DATASETS";
-const receiveServiceDatasets = (id, data) => ({
-    type: RECEIVE_SERVICE_DATASETS,
+export const RECEIVE_SERVICE_DATA_TYPES = "RECEIVE_SERVICE_DATA_TYPES";
+const receiveServiceDataTypes = (id, data) => ({
+    type: RECEIVE_SERVICE_DATA_TYPES,
     service: id,
-    datasets: data,
+    dataTypes: data,
     receivedAt: Date.now()
 });
 
-export const fetchServicesWithMetadataAndDatasets = () => {
+export const fetchServicesWithMetadataAndDataTypes = () => {
    return async (dispatch, getState) => {
        // Fetch Services
 
@@ -79,16 +79,16 @@ export const fetchServicesWithMetadataAndDatasets = () => {
        await dispatch(receiveServiceMetadata(serviceMetadata));
 
 
-       // Fetch Data Service Datasets (for searching)
+       // Fetch Data Service Data Types (for searching)
 
        for (let s of getState().services.items) {
            if (!s.metadata["chordDataService"]) continue;
-           await dispatch(requestServiceDatasets(s.id));
+           await dispatch(requestServiceDataTypes(s.id));
            try {
-               const response = await fetch(`/api${s.url}/datasets`);
+               const response = await fetch(`/api${s.url}/data-types`);
                if (response.ok) {
                    const data = await response.json();
-                   await dispatch(receiveServiceDatasets(s.id, data));
+                   await dispatch(receiveServiceDataTypes(s.id, data));
                } else {
                    console.error(response)
                }
@@ -99,86 +99,90 @@ export const fetchServicesWithMetadataAndDatasets = () => {
    };
 };
 
-const fetchServicesWithMetadataAndDatasetsIfNeeded = () => {
+const fetchServicesWithMetadataAndDataTypesIfNeeded = () => {
     return async (dispatch, getState) => {
         const state = getState();
         if ((state.services.items.length === 0 ||
              Object.keys(state.serviceMetadata.metadata).length === 0 ||
-             Object.keys(state.serviceDatasets.datasets).length === 0) &&
-            !(state.services.isFetching || state.serviceMetadata.isFetching || state.serviceDatasets.isFetching)) {
-            await fetchServicesWithMetadataAndDatasets();
+             Object.keys(state.serviceDataTypes.dataTypes).length === 0) &&
+            !(state.services.isFetching || state.serviceMetadata.isFetching || state.serviceDataTypes.isFetching)) {
+            await fetchServicesWithMetadataAndDataTypes();
         }
     }
 };
 
 export const REQUEST_SEARCH = "REQUEST_SEARCH";
-const requestSearch = (serviceID, datasetID) => ({
+const requestSearch = (serviceID, dataTypeID) => ({
     type: REQUEST_SEARCH,
     serviceID,
-    datasetID
+    dataTypeID
 });
 
 export const RECEIVE_SEARCH = "RECEIVE_SEARCH";
-const receiveSearch = (serviceID, datasetID, results) => ({
+const receiveSearch = (serviceID, dataTypeID, results) => ({
     type: RECEIVE_SEARCH,
     serviceID,
-    datasetID,
+    dataTypeID,
     results,
     receivedAt: Date.now()
 });
 
 export const SELECT_SEARCH = "SELECT_SEARCH";
-export const selectSearch = (serviceID, datasetID, searchIndex) => ({
+export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
     type: SELECT_SEARCH,
     serviceID,
-    datasetID,
+    dataTypeID,
     searchIndex
 });
 
-export const performSearch = (serviceID, datasetID, conditions) => {
+export const performSearch = (serviceID, dataTypeID, conditions) => {
     return async (dispatch, getState) => {
         // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
-        await dispatch(fetchServicesWithMetadataAndDatasetsIfNeeded());
+        await dispatch(fetchServicesWithMetadataAndDataTypesIfNeeded());
 
         // Perform search
         // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
 
-        await dispatch(requestSearch(serviceID, datasetID));
-        const serviceSearchURL = `/api${getState().services.itemsByID[serviceID].url}/search`;
+        await dispatch(requestSearch(serviceID, dataTypeID));
+        const serviceSearchURL =
+            `/api/federation/search-aggregate${getState().services.itemsByID[serviceID].url}/search`;
 
         const response = await fetch(serviceSearchURL, {
             method: "POST",
             headers: {"Content-Type": "application/json"}, // TODO: Real GA4GH headers
-            body: JSON.stringify(conditions)
+            body: JSON.stringify({
+                dataTypeID: getState().discovery.selectedDataTypeID,
+                conditions: [...conditions]
+            })
         });
 
         if (response.ok) {
             const data = await response.json();
-            await dispatch(receiveSearch(serviceID, datasetID, data));
-            await dispatch(selectSearch(serviceID, datasetID, getState().discovery
-                .searchesByServiceAndDatasetID[serviceID][datasetID].length - 1));
+            await dispatch(receiveSearch(serviceID, dataTypeID, data));
+            await dispatch(selectSearch(serviceID, dataTypeID, getState().discovery
+                .searchesByServiceAndDataTypeID[serviceID][dataTypeID].length - 1));
         } else {
             console.error(response);
         }
     };
 };
 
-export const SELECT_DISCOVERY_SERVICE_DATASET = "SELECT_DISCOVERY_SERVICE_DATASET";
-export const selectDiscoveryServiceDataset = (serviceID, datasetID) => ({
-    type: SELECT_DISCOVERY_SERVICE_DATASET,
+export const SELECT_DISCOVERY_SERVICE_DATA_TYPE = "SELECT_DISCOVERY_SERVICE_DATA_TYPE";
+export const selectDiscoveryServiceDataType = (serviceID, dataTypeID) => ({
+    type: SELECT_DISCOVERY_SERVICE_DATA_TYPE,
     serviceID,
-    datasetID
+    dataTypeID
 });
 
-export const CLEAR_DISCOVERY_SERVICE_DATASET = "CLEAR_DISCOVERY_SERVICE_DATASET";
-export const clearDiscoveryServiceDataset = () => ({
-    type: CLEAR_DISCOVERY_SERVICE_DATASET
+export const CLEAR_DISCOVERY_SERVICE_DATA_TYPE = "CLEAR_DISCOVERY_SERVICE_DATA_TYPE";
+export const clearDiscoveryServiceDataType = () => ({
+    type: CLEAR_DISCOVERY_SERVICE_DATA_TYPE
 });
 
 export const UPDATE_DISCOVERY_SEARCH_FORM = "UPDATE_DISCOVERY_SEARCH_FORM";
-export const updateDiscoverySearchForm = (serviceID, datasetID, fields) => ({
+export const updateDiscoverySearchForm = (serviceID, dataTypeID, fields) => ({
     type: UPDATE_DISCOVERY_SEARCH_FORM,
     serviceID,
-    datasetID,
+    dataTypeID,
     fields
 });

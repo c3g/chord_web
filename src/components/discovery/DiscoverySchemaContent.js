@@ -8,10 +8,10 @@ import SchemaTree from "../SchemaTree";
 
 class DiscoverySchemaContent extends Component {
     render() {
-        return this.props.dataset ? (
+        return this.props.dataType ? (
             <div>
-                <Typography.Title level={2}>Schema for Dataset '{this.props.dataset.id}'</Typography.Title>
-                <SchemaTree schema={this.props.dataset.schema} />
+                <Typography.Title level={2}>Schema for Data Type '{this.props.dataType.id}'</Typography.Title>
+                <SchemaTree schema={this.props.dataType.schema} />
             </div>
         ) : (<div>Loading...</div>);
     }
@@ -19,14 +19,14 @@ class DiscoverySchemaContent extends Component {
 
 const mapStateToProps = state => {
     const sID = state.discovery.selectedServiceID;
-    const dID = state.discovery.selectedDatasetID;
+    const dID = state.discovery.selectedDataTypeID;
 
-    const datasetExists = sID && dID && sID in state.serviceDatasets.datasetsByServiceAndDatasetID
-        && dID in state.serviceDatasets.datasetsByServiceAndDatasetID[sID];
+    const dataTypeExists = sID && dID && sID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID
+        && dID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID];
 
     return {
-        dataset: datasetExists
-            ? state.serviceDatasets.datasetsByServiceAndDatasetID[sID][dID]
+        dataType: dataTypeExists
+            ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID]
             : null,
     };
 };

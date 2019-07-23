@@ -64,7 +64,7 @@ class DiscoverySearchCondition extends Component {
                         borderTopRightRadius: "0",
                         borderBottomRightRadius: "0"
                     }}
-                    schema={this.props.dataset.schema} value={{selected: this.state.searchField}}
+                    schema={this.props.dataType.schema} value={{selected: this.state.searchField}}
                     onChange={this.handleSearchField.bind(this)} />
                 <Select style={{width: "88px", float: "left"}} value={this.state.negation}
                         onChange={this.handleNegation.bind(this)}>

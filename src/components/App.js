@@ -13,7 +13,7 @@ import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 
-import {fetchServicesWithMetadataAndDatasets} from "../actions";
+import {fetchServicesWithMetadataAndDataTypes} from "../actions";
 
 const renderContent = Content => route => (
     <Layout style={{minHeight: "100vh"}}>
@@ -70,7 +70,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(fetchServicesWithMetadataAndDatasets());
+        this.props.dispatch(fetchServicesWithMetadataAndDataTypes());
     }
 }
 
