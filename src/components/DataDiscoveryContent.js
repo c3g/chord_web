@@ -85,7 +85,7 @@ class DataDiscoveryContent extends Component {
                                           `${route.match.params["service"]}_data_type_${route.match.params["data_type"]}_menu`]
                                       : []}
                                   selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
-                                <Menu.Item key="/data/discovery/home" style={{paddingLeft: "0"}}>
+                                <Menu.Item key="/data/discovery/home">
                                     <Link to="/data/discovery/home">
                                         <Icon type="home"/>
                                         <span>Home</span>
