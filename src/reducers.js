@@ -12,8 +12,11 @@ import {
     REQUEST_SEARCH,
     RECEIVE_SEARCH,
     SELECT_SEARCH,
+    HANDLE_SEARCH_ERROR,
 
-    SELECT_DISCOVERY_SERVICE_DATA_TYPE, CLEAR_DISCOVERY_SERVICE_DATA_TYPE, UPDATE_DISCOVERY_SEARCH_FORM
+    SELECT_DISCOVERY_SERVICE_DATA_TYPE,
+    CLEAR_DISCOVERY_SERVICE_DATA_TYPE,
+    UPDATE_DISCOVERY_SEARCH_FORM
 } from "./actions";
 
 const services = (
@@ -159,6 +162,12 @@ const discovery = (
                         [action.dataTypeID]: action.searchIndex
                     }
                 }
+            });
+
+        case HANDLE_SEARCH_ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
+                // TODO: Error message
             });
 
         case SELECT_DISCOVERY_SERVICE_DATA_TYPE:

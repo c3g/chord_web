@@ -135,6 +135,11 @@ export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
     searchIndex
 });
 
+export const HANDLE_SEARCH_ERROR = "HANDLE_SEARCH_ERROR";
+export const handleSearchError = () => ({
+    type: HANDLE_SEARCH_ERROR
+});
+
 export const performSearch = (serviceID, dataTypeID, conditions) => {
     return async (dispatch, getState) => {
         // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
@@ -163,6 +168,7 @@ export const performSearch = (serviceID, dataTypeID, conditions) => {
                 .searchesByServiceAndDataTypeID[serviceID][dataTypeID].length - 1));
         } else {
             console.error(response);
+            await dispatch(handleSearchError());
         }
     };
 };
