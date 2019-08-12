@@ -10,6 +10,14 @@ import {getFieldSchema, getFields} from "../../schema";
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
 class DiscoverySearchForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.addCondition = this.addCondition.bind(this);
+        this.removeCondition = this.removeCondition.bind(this);
+        this.onSubmit = this.onSubmit.bind(this)
+    }
+
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
         if (this.props.form.getFieldValue("keys").length === 0) {
@@ -31,14 +39,23 @@ class DiscoverySearchForm extends Component {
     addCondition(searchField = undefined) {
         const newKey = this.props.form.getFieldValue("keys").length;
 
+        let operations = ["eq", "lt", "le", "gt", "ge", "co"];
+        let canNegate = false;
+        if (searchField) {
+            const fs = getFieldSchema(this.props.dataType.schema, searchField);
+            if (fs.hasOwnProperty("search") && fs.search.hasOwnProperty("operations")) {
+                operations = fs.search.operations;
+            }
+            if (fs.hasOwnProperty("search") && fs.search.hasOwnProperty("canNegate")) {
+                canNegate = fs.search.canNegate;
+            }
+        }
+
         // Initialize new condition, otherwise the state won't get it
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
             searchField,
             fieldSchema: { // TODO: Deduplicate this default object
-                search: {
-                    operations: ["eq", "lt", "le", "gt", "ge", "co"],
-                    canNegate: false
-                }
+                search: {operations, canNegate}
             },
             negation: "pos",
             condition: "eq",
@@ -90,19 +107,19 @@ class DiscoverySearchForm extends Component {
 
                     ]
                 })(<DiscoverySearchCondition dataType={this.props.dataType}
-                                             onRemoveClick={() => this.removeCondition.bind(this)(k)}
+                                             onRemoveClick={() => this.removeCondition(k)}
                                              removeDisabled={keys.length <= 1}/>)}
             </Form.Item>
         ));
 
         return (
-            <Form onSubmit={this.onSubmit.bind(this)}>
+            <Form onSubmit={this.onSubmit}>
                 {formItems}
                 <Form.Item wrapperCol={{
                     xl: {span: 24},
                     xxl: {offset: 3, span: 18}
                 }}>
-                    <Button type="dashed" onClick={this.addCondition.bind(this)} style={{ width: '100%' }}>
+                    <Button type="dashed" onClick={() => this.addCondition()} style={{ width: '100%' }}>
                         <Icon type="plus" /> Add condition
                     </Button>
                 </Form.Item>
