@@ -3,8 +3,15 @@ import React from "react";
 import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
+export const DEFAULT_SEARCH_PARAMETERS = {
+    operations: ["eq", "lt", "le", "gt", "ge", "co"],
+    canNegate: true,
+    required: false,
+    type: "unlimited"
+};
+
 // TODO: Remove objects/arrays with exclusively unsearchable children, option to remove unsearchable children
-export const generateSchemaTreeData = (node, name, prefix) => {
+export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
     const key = `${prefix}${name}`;
     const value = key;
     const title = (<span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>);
@@ -14,10 +21,12 @@ export const generateSchemaTreeData = (node, name, prefix) => {
         value,
         title,
         selectable: node.hasOwnProperty("search")&& node.search.hasOwnProperty("operations")
-            && node.search.operations.length > 0
+            && node.search.operations.length > 0 && !excludedKeys.includes(key),
+        disabled: excludedKeys.includes(key)
     };
 
     switch (node.type) {
+        // Want to filter here, but upon filtering children ant stops rendering them correctly
         case "object":
             return {
                 ...baseNode,
@@ -29,12 +38,12 @@ export const generateSchemaTreeData = (node, name, prefix) => {
                         }
                         return a[0].localeCompare(b[0]);
                     })
-                    .map(p => generateSchemaTreeData(p[1], p[0], `${key}.`))
+                    .map(p => generateSchemaTreeData(p[1], p[0], `${key}.`, excludedKeys))
             };
         case "array":
             return {
                 ...baseNode,
-                children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`)]
+                children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`, excludedKeys)]
             };
         default:
             return {
@@ -87,7 +96,7 @@ export const getFieldSchema = (schema, fieldString) => {
 export const getFields = schema => {
     // TODO: Deduplicate with tree select
     if (!schema) return [];
-    const treeData = generateSchemaTreeData(schema, "[dataset item]", "");
+    const treeData = generateSchemaTreeData(schema, "[dataset item]", "", []);
     const getFieldsFromTreeData = (node, acc) => {
         acc.push(node.key);
         node.children.map(c => getFieldsFromTreeData(c, acc));

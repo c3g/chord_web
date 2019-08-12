@@ -4,6 +4,8 @@ import {TreeSelect} from "antd";
 import "antd/es/tree-select/style/css";
 
 import {generateSchemaTreeData, getFieldSchema} from "../schema";
+import PropTypes from "prop-types";
+import DiscoverySearchCondition from "./discovery/DiscoverySearchCondition";
 
 class SchemaTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {
@@ -39,10 +41,18 @@ class SchemaTreeSelect extends Component {
     render() {
         return this.props.schema
             ? (<TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
-                           treeData={[generateSchemaTreeData(this.props.schema, "[dataset item]", "")]}
+                           treeData={[generateSchemaTreeData(this.props.schema, "[dataset item]", "",
+                               this.props.excludedKeys)]}
                            value={this.state.selected} onChange={this.onChange.bind(this)} />)
             : (<div style={this.props.style} />);
     }
 }
+
+SchemaTreeSelect.propTypes = {
+    schema: PropTypes.object,
+    excludedKeys: PropTypes.arrayOf(PropTypes.string),
+    onChange: PropTypes.func,
+    value: PropTypes.object
+};
 
 export default SchemaTreeSelect;

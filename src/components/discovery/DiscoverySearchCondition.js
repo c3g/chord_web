@@ -7,6 +7,8 @@ import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
+import {DEFAULT_SEARCH_PARAMETERS} from "../../schema";
+
 import SchemaTreeSelect from "../SchemaTreeSelect";
 
 const OPERATION_TEXT = {
@@ -31,12 +33,7 @@ class DiscoverySearchCondition extends Component {
         this.state = {
             searchField: value.searchField || undefined,
             fieldSchema: value.fieldSchema || {
-                search: {
-                    operations: ["eq", "lt", "le", "gt", "ge", "co"],
-                    canNegate: false,
-                    required: false,
-                    type: "unlimited"
-                }
+                search: {...DEFAULT_SEARCH_PARAMETERS}
             },
             negation: value.negation || "pos",
             condition: value.condition || "eq",
@@ -99,6 +96,7 @@ class DiscoverySearchCondition extends Component {
                     }}
                     disabled={!canRemove}
                     schema={this.props.dataType.schema}
+                    excludedKeys={this.props.existingUniqueFields}
                     value={{selected: this.state.searchField, schema: this.state.fieldSchema}}
                     onChange={this.handleSearchField.bind(this)} />
                 {this.state.fieldSchema.search.canNegate ? (
@@ -129,6 +127,7 @@ class DiscoverySearchCondition extends Component {
 
 DiscoverySearchCondition.propTypes = {
     dataType: PropTypes.object,
+    existingUniqueFields: PropTypes.arrayOf(PropTypes.string),
     value: PropTypes.object,
     onChange: PropTypes.func,
     onRemoveClick: PropTypes.func,

@@ -5,7 +5,7 @@ import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 
-import {getFieldSchema, getFields} from "../../schema";
+import {DEFAULT_SEARCH_PARAMETERS, getFieldSchema, getFields, searchConditionRemovable} from "../../schema";
 
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
@@ -39,17 +39,15 @@ class DiscoverySearchForm extends Component {
     addCondition(searchField = undefined) {
         const newKey = this.props.form.getFieldValue("keys").length;
 
-        let operations = ["eq", "lt", "le", "gt", "ge", "co"];
-        let canNegate = false;
-        let required = false;
-        let type = "unlimited";
+        let searchParameters = {...DEFAULT_SEARCH_PARAMETERS};
+
         if (searchField) {
             const fs = getFieldSchema(this.props.dataType.schema, searchField);
             if (fs.hasOwnProperty("search")) {
-                if (fs.search.hasOwnProperty("operations")) operations = fs.search.operations;
-                if (fs.search.hasOwnProperty("canNegate")) canNegate = fs.search.canNegate;
-                if (fs.search.hasOwnProperty("required")) required = fs.search.required;
-                if (fs.search.hasOwnProperty("type")) type = fs.search.type;
+                if (fs.search.hasOwnProperty("operations")) searchParameters.operations = fs.search.operations;
+                if (fs.search.hasOwnProperty("canNegate")) searchParameters.canNegate = fs.search.canNegate;
+                if (fs.search.hasOwnProperty("required")) searchParameters.required = fs.search.required;
+                if (fs.search.hasOwnProperty("type")) searchParameters.type = fs.search.type;
             }
         }
 
@@ -57,7 +55,7 @@ class DiscoverySearchForm extends Component {
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
             searchField,
             fieldSchema: { // TODO: Deduplicate this default object
-                search: {operations, canNegate, required, type}
+                search: {...searchParameters}
             },
             negation: "pos",
             condition: "eq",
@@ -78,9 +76,19 @@ class DiscoverySearchForm extends Component {
         });
     }
 
+    cannotBeUsed(fieldString) {
+        const fs = getFieldSchema(this.props.dataType.schema, fieldString);
+        return fs.search.hasOwnProperty("type") && fs.search.type === "single";
+    }
+
     render() {
         this.props.form.getFieldDecorator("keys", {initialValue: []}); // Initialize keys if needed
         const keys = this.props.form.getFieldValue("keys");
+        const existingUniqueFields = keys
+            .filter(k => k !== undefined)
+            .map(k => this.props.form.getFieldValue(`conditions[${k}]`).searchField)
+            .filter(f => f !== undefined && this.cannotBeUsed(f));
+
         const formItems = keys.map((k, i) => (
             <Form.Item key={k} labelCol={{
                 lg: {span: 24},
@@ -94,6 +102,7 @@ class DiscoverySearchForm extends Component {
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
                     initialValue: {
                         searchField: undefined,
+                        fieldSchema: undefined,
                         negation: "pos",
                         condition: "eq",
                         searchValue: ""
@@ -109,6 +118,7 @@ class DiscoverySearchForm extends Component {
 
                     ]
                 })(<DiscoverySearchCondition dataType={this.props.dataType}
+                                             existingUniqueFields={existingUniqueFields}
                                              onRemoveClick={() => this.removeCondition(k)}
                                              removeDisabled={keys.length <= 1}/>)}
             </Form.Item>
