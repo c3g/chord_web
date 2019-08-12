@@ -41,13 +41,15 @@ class DiscoverySearchForm extends Component {
 
         let operations = ["eq", "lt", "le", "gt", "ge", "co"];
         let canNegate = false;
+        let required = false;
+        let type = "unlimited";
         if (searchField) {
             const fs = getFieldSchema(this.props.dataType.schema, searchField);
-            if (fs.hasOwnProperty("search") && fs.search.hasOwnProperty("operations")) {
-                operations = fs.search.operations;
-            }
-            if (fs.hasOwnProperty("search") && fs.search.hasOwnProperty("canNegate")) {
-                canNegate = fs.search.canNegate;
+            if (fs.hasOwnProperty("search")) {
+                if (fs.search.hasOwnProperty("operations")) operations = fs.search.operations;
+                if (fs.search.hasOwnProperty("canNegate")) canNegate = fs.search.canNegate;
+                if (fs.search.hasOwnProperty("required")) required = fs.search.required;
+                if (fs.search.hasOwnProperty("type")) type = fs.search.type;
             }
         }
 
@@ -55,7 +57,7 @@ class DiscoverySearchForm extends Component {
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
             searchField,
             fieldSchema: { // TODO: Deduplicate this default object
-                search: {operations, canNegate}
+                search: {operations, canNegate, required, type}
             },
             negation: "pos",
             condition: "eq",

@@ -38,7 +38,7 @@ class SchemaTreeSelect extends Component {
 
     render() {
         return this.props.schema
-            ? (<TreeSelect treeDefaultExpandAll style={this.props.style}
+            ? (<TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
                            treeData={[generateSchemaTreeData(this.props.schema, "[dataset item]", "")]}
                            value={this.state.selected} onChange={this.onChange.bind(this)} />)
             : (<div style={this.props.style} />);

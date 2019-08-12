@@ -33,7 +33,9 @@ class DiscoverySearchCondition extends Component {
             fieldSchema: value.fieldSchema || {
                 search: {
                     operations: ["eq", "lt", "le", "gt", "ge", "co"],
-                    canNegate: false
+                    canNegate: false,
+                    required: false,
+                    type: "unlimited"
                 }
             },
             negation: value.negation || "pos",
@@ -75,13 +77,16 @@ class DiscoverySearchCondition extends Component {
     }
 
     render() {
+        const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
+            && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
+
         const operationOptions = this.state.fieldSchema.search.operations.map(o =>
             (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
 
         const operationsWidth = this.equalsOnly() ? 0 : 116;
 
-        // 256 (width of tree select) + 50 for button to remove
-        const valueWidth = 306 + (this.state.fieldSchema.search.canNegate ? 88 + operationsWidth : operationsWidth);
+        const valueWidth = 256 + (canRemove ? 50 : 0)
+            + (this.state.fieldSchema.search.canNegate ? 88 + operationsWidth : operationsWidth);
 
         return (
             <Input.Group compact>
@@ -92,6 +97,7 @@ class DiscoverySearchCondition extends Component {
                         borderTopRightRadius: "0",
                         borderBottomRightRadius: "0"
                     }}
+                    disabled={!canRemove}
                     schema={this.props.dataType.schema}
                     value={{selected: this.state.searchField, schema: this.state.fieldSchema}}
                     onChange={this.handleSearchField.bind(this)} />
@@ -110,10 +116,12 @@ class DiscoverySearchCondition extends Component {
                 )}
                 <Input style={{width: `calc(100% - ${valueWidth}px)`}} placeholder="value"
                        onChange={this.handleSearchValue.bind(this)} value={this.state.searchValue} />
-                <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
-                        onClick={this.onRemoveClick}>
-                    <Icon type="close" />
-                </Button>
+                {canRemove ? (
+                    <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
+                            onClick={this.onRemoveClick}>
+                        <Icon type="close" />
+                    </Button>
+                ) : null}
             </Input.Group>
         );
     }
