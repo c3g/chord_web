@@ -9,6 +9,15 @@ import "antd/es/select/style/css";
 
 import SchemaTreeSelect from "../SchemaTreeSelect";
 
+const OPERATION_TEXT = {
+    "eq": "=",
+    "lt": "<",
+    "le": "\u2264",
+    "gt": ">",
+    "ge": "\u2265",
+    "co": "contains"
+};
+
 class DiscoverySearchCondition extends Component {
     static getDerivedStateFromProps(nextProps) {
         return "value" in nextProps
@@ -21,6 +30,12 @@ class DiscoverySearchCondition extends Component {
         const value = this.props.value || {};
         this.state = {
             searchField: value.searchField || undefined,
+            fieldSchema: value.fieldSchema || {
+                search: {
+                    operations: ["eq", "lt", "le", "gt", "ge", "co"],
+                    canNegate: false
+                }
+            },
             negation: value.negation || "pos",
             condition: value.condition || "eq",
             searchValue: value.searchValue || ""
@@ -29,8 +44,8 @@ class DiscoverySearchCondition extends Component {
     }
 
     handleSearchField(value) {
-        if (!("value" in this.props)) this.setState({searchField: value.selected});
-        this.triggerChange.bind(this)({searchField: value.selected});
+        if (!("value" in this.props)) this.setState({searchField: value.selected, fieldSchema: value.schema});
+        this.triggerChange.bind(this)({searchField: value.selected, fieldSchema: value.schema});
     }
 
     handleNegation(value) {
@@ -54,7 +69,20 @@ class DiscoverySearchCondition extends Component {
         }
     }
 
+    equalsOnly() {
+        return this.state.fieldSchema.search.operations.includes("eq") &&
+            this.state.fieldSchema.search.operations.length === 1;
+    }
+
     render() {
+        const operationOptions = this.state.fieldSchema.search.operations.map(o =>
+            (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
+
+        const operationsWidth = this.equalsOnly() ? 0 : 116;
+
+        // 256 (width of tree select) + 50 for button to remove
+        const valueWidth = 306 + (this.state.fieldSchema.search.canNegate ? 88 + operationsWidth : operationsWidth);
+
         return (
             <Input.Group compact>
                 <SchemaTreeSelect
@@ -64,23 +92,23 @@ class DiscoverySearchCondition extends Component {
                         borderTopRightRadius: "0",
                         borderBottomRightRadius: "0"
                     }}
-                    schema={this.props.dataType.schema} value={{selected: this.state.searchField}}
+                    schema={this.props.dataType.schema}
+                    value={{selected: this.state.searchField, schema: this.state.fieldSchema}}
                     onChange={this.handleSearchField.bind(this)} />
-                <Select style={{width: "88px", float: "left"}} value={this.state.negation}
-                        onChange={this.handleNegation.bind(this)}>
-                    <Select.Option key="pos">is</Select.Option>
-                    <Select.Option key="neg">is not</Select.Option>
-                </Select>
-                <Select style={{width: "116px", float: "left"}} value={this.state.condition}
-                        onChange={this.handleCondition.bind(this)}>
-                    <Select.Option key="eq">=</Select.Option>
-                    <Select.Option key="lt">&lt;</Select.Option>
-                    <Select.Option key="le">&le;</Select.Option>
-                    <Select.Option key="gt">&gt;</Select.Option>
-                    <Select.Option key="ge">&ge;</Select.Option>
-                    <Select.Option key="co">containing</Select.Option>
-                </Select>
-                <Input style={{width: `calc(100% - 510px)`}} placeholder="value"
+                {this.state.fieldSchema.search.canNegate ? (
+                    <Select style={{width: "88px", float: "left"}} value={this.state.negation}
+                            onChange={this.handleNegation.bind(this)}>
+                        <Select.Option key="pos">is</Select.Option>
+                        <Select.Option key="neg">is not</Select.Option>
+                    </Select>
+                ) : null}
+                {this.equalsOnly() ? null : (
+                    <Select style={{width: "116px", float: "left"}} value={this.state.condition}
+                            onChange={this.handleCondition.bind(this)}>
+                        {operationOptions}
+                    </Select>
+                )}
+                <Input style={{width: `calc(100% - ${valueWidth}px)`}} placeholder="value"
                        onChange={this.handleSearchValue.bind(this)} value={this.state.searchValue} />
                 <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
                         onClick={this.onRemoveClick}>
@@ -92,6 +120,7 @@ class DiscoverySearchCondition extends Component {
 }
 
 DiscoverySearchCondition.propTypes = {
+    dataType: PropTypes.object,
     value: PropTypes.object,
     onChange: PropTypes.func,
     onRemoveClick: PropTypes.func,

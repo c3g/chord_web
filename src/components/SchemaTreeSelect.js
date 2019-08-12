@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {TreeSelect} from "antd";
 import "antd/es/tree-select/style/css";
 
-import {generateSchemaTreeData} from "../schema";
+import {generateSchemaTreeData, getFieldSchema} from "../schema";
 
 class SchemaTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {
@@ -16,19 +16,23 @@ class SchemaTreeSelect extends Component {
     constructor(props) {
         super(props);
         const value = props.value ? props.value : {};
-        this.state = {selected: value.selected ? value.selected : undefined};
+        this.state = {
+            selected: value.selected ? value.selected : undefined,
+            schema: value.schema ? value.schema : undefined
+        };
     }
 
     onChange(selected) {
         // Set the state directly unless value is bound
 
         if (!("value" in this.props)) {
-            this.setState({selected});
+            this.setState({selected, schema: getFieldSchema(this.props.schema, selected)});
         }
 
         // Update the change handler bound to the component
         if (this.props.onChange) {
-            this.props.onChange(Object.assign({}, this.state, {selected}));
+            this.props.onChange(Object.assign({}, this.state,
+                {selected, schema: getFieldSchema(this.props.schema, selected)}));
         }
     }
 
