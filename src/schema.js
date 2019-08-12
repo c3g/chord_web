@@ -92,7 +92,6 @@ export const getFields = schema => {
     // TODO: Deduplicate with tree select
     if (!schema) return [];
     const treeData = generateSchemaTreeData(schema, "[dataset item]", "");
-    console.log(treeData);
     const getFieldsFromTreeData = (node, acc) => {
         acc.push(node.key);
         node.children.map(c => getFieldsFromTreeData(c, acc));
