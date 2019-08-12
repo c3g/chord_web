@@ -18,9 +18,16 @@ export const generateSchemaTreeData = (node, name, prefix) => {
                 value,
                 title,
                 selectable: searchable(node),
-                children: Object.keys(node.properties)
-                    .sort()
-                    .map(k => generateSchemaTreeData(node.properties[k], k, `${key}.`))
+                children: Object.entries(node.properties)
+                    .sort((a, b) => {
+                        if (Object.keys(a[1]).includes("search") && Object.keys(b[1]).includes("search")
+                                && Object.keys(a[1].search).includes("order")
+                                && Object.keys(b[1].search).includes("order")) {
+                            return a[1].search.order - b[1].search.order;
+                        }
+                        return a[0].localeCompare(b[0]);
+                    })
+                    .map(p => generateSchemaTreeData(p[1], p[0], `${key}.`))
             };
         case "array":
             return {
