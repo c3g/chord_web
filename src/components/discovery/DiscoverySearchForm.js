@@ -5,11 +5,21 @@ import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 
+import {getFieldSchema, getFields} from "../../schema";
+
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
 class DiscoverySearchForm extends Component {
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
+        if (this.props.form.getFieldValue("keys").length === 0) {
+            getFields(this.props.dataType.schema)
+                .filter(f => {
+                    const fs = getFieldSchema(this.props.dataType.schema, f);
+                    return fs.hasOwnProperty("search") && fs.search.hasOwnProperty("required") && fs.search.required;
+                })
+                .forEach(c => this.addCondition(c));
+        }
     }
 
     removeCondition(k) {
@@ -18,12 +28,18 @@ class DiscoverySearchForm extends Component {
         });
     }
 
-    addCondition() {
+    addCondition(searchField = undefined) {
         const newKey = this.props.form.getFieldValue("keys").length;
 
         // Initialize new condition, otherwise the state won't get it
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
-            searchField: undefined,
+            searchField,
+            fieldSchema: { // TODO: Deduplicate this default object
+                search: {
+                    operations: ["eq", "lt", "le", "gt", "ge", "co"],
+                    canNegate: false
+                }
+            },
             negation: "pos",
             condition: "eq",
             searchValue: ""
