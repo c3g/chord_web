@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import {message} from "antd";
 
 export const REQUEST_SERVICES = "REQUEST_SERVICES";
 const requestServices = () => ({type: REQUEST_SERVICES});
@@ -90,10 +91,12 @@ export const fetchServicesWithMetadataAndDataTypes = () => {
                    const data = await response.json();
                    await dispatch(receiveServiceDataTypes(s.id, data));
                } else {
-                   console.error(response)
+                   console.error(response);
+                   message.error(`Error fetching data types from service '${s.name}'`)
                }
            } catch (e) {
                console.error(e);
+               message.error(e);
            }
        }
    };
@@ -136,9 +139,10 @@ export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
 });
 
 export const HANDLE_SEARCH_ERROR = "HANDLE_SEARCH_ERROR";
-export const handleSearchError = () => ({
-    type: HANDLE_SEARCH_ERROR
-});
+export const handleSearchError = err => {
+    message.error(err);
+    return {type: HANDLE_SEARCH_ERROR};
+};
 
 export const performSearch = (serviceID, dataTypeID, conditions) => {
     return async (dispatch, getState) => {
@@ -168,7 +172,8 @@ export const performSearch = (serviceID, dataTypeID, conditions) => {
                 .searchesByServiceAndDataTypeID[serviceID][dataTypeID].length - 1));
         } else {
             console.error(response);
-            await dispatch(handleSearchError());
+            // TODO: Better search errors
+            await dispatch(handleSearchError("Search returned an error"));
         }
     };
 };

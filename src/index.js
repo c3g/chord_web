@@ -8,6 +8,8 @@ import {Provider} from "react-redux";
 
 import {BrowserRouter} from "react-router-dom";
 
+import "antd/es/message/style/css";
+
 import App from "./components/App";
 import rootReducer from "./reducers";
 
