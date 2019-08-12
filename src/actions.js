@@ -73,9 +73,8 @@ export const fetchServicesWithMetadataAndDataTypes = () => {
        }
 
        let serviceMetadata = {};
-       getState().services.items.forEach((s, i) => {
-           serviceMetadata[s.id] = responses[i].ok ? responseData[i] : false;
-       });
+       getState().services.items.forEach((s, i) =>
+           serviceMetadata[s.id] = responses[i].ok ? responseData[i] : false);
 
        await dispatch(receiveServiceMetadata(serviceMetadata));
 
@@ -83,8 +82,8 @@ export const fetchServicesWithMetadataAndDataTypes = () => {
        // Fetch Data Service Data Types (for searching)
 
        for (let s of getState().services.items) {
-           if (!s.metadata["chordDataService"]) continue;
-           await dispatch(requestServiceDataTypes(s.id));
+           if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data
+           await dispatch(requestServiceDataTypes(s.id));  // Fetch available data types from all data providers
            try {
                const response = await fetch(`/api${s.url}/data-types`);
                if (response.ok) {

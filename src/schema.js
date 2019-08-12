@@ -3,26 +3,28 @@ import React from "react";
 import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
-const searchable = node => Object.keys(node).includes("search") && Object.keys(node.search).includes("operations")
-    && node.search.operations.length > 0;
-
 // TODO: Remove objects/arrays with exclusively unsearchable children, option to remove unsearchable children
 export const generateSchemaTreeData = (node, name, prefix) => {
     const key = `${prefix}${name}`;
     const value = key;
     const title = (<span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>);
+
+    const baseNode = {
+        key,
+        value,
+        title,
+        selectable: node.hasOwnProperty("search")&& node.search.hasOwnProperty("operations")
+            && node.search.operations.length > 0
+    };
+
     switch (node.type) {
         case "object":
             return {
-                key,
-                value,
-                title,
-                selectable: searchable(node),
+                ...baseNode,
                 children: Object.entries(node.properties)
                     .sort((a, b) => {
-                        if (Object.keys(a[1]).includes("search") && Object.keys(b[1]).includes("search")
-                                && Object.keys(a[1].search).includes("order")
-                                && Object.keys(b[1].search).includes("order")) {
+                        if (a[1].hasOwnProperty("search") && b[1].hasOwnProperty("search")
+                                && a[1].search.hasOwnProperty("order") && b[1].search.hasOwnProperty("order")) {
                             return a[1].search.order - b[1].search.order;
                         }
                         return a[0].localeCompare(b[0]);
@@ -31,18 +33,12 @@ export const generateSchemaTreeData = (node, name, prefix) => {
             };
         case "array":
             return {
-                key,
-                value,
-                title,
-                selectable: searchable(node),
+                ...baseNode,
                 children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`)]
             };
         default:
             return {
-                key,
-                value,
-                title,
-                selectable: searchable(node),
+                ...baseNode,
                 children: []
             };
     }
@@ -65,8 +61,8 @@ export const getFieldSchema = (schema, fieldString) => {
         switch (currentSchema.type) {
             case "object":
                 currentComponent++;
-                if (!Object.keys(currentSchema).includes("properties")
-                        || !Object.keys(currentSchema.properties).includes(components[currentComponent])) {
+                if (!currentSchema.hasOwnProperty("properties")
+                        || !currentSchema.properties.hasOwnProperty(components[currentComponent])) {
                     throw new Error("Invalid field specified in field string.");
                 }
                 currentSchema = currentSchema.properties[components[currentComponent]];
@@ -74,7 +70,7 @@ export const getFieldSchema = (schema, fieldString) => {
 
             case "array":
                 currentComponent++;
-                if (!Object.keys(currentSchema).includes("items") || components[currentComponent] !== "[array item]") {
+                if (!currentSchema.hasOwnProperty("items") || components[currentComponent] !== "[array item]") {
                     throw new Error("Invalid field specified in field string.");
                 }
                 currentSchema = currentSchema.items;
