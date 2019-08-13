@@ -1,6 +1,6 @@
 export const OP_EQUALS = "eq";
 export const OP_LESS_THAN = "lt";
-export const OP_LESS_THAN_OR_EQUAL = "eq";
+export const OP_LESS_THAN_OR_EQUAL = "le";
 export const OP_GREATER_THAN = "gt";
 export const OP_GREATER_THAN_OR_EQUAL = "ge";
 export const OP_CONTAINING = "co";

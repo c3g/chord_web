@@ -44,8 +44,8 @@ class DiscoverySearchCondition extends Component {
     }
 
     handleNegation(value) {
-        if (!("value" in this.props)) this.setState({negated: value === "neg"});
-        this.triggerChange.bind(this)({negated: value});
+        if (!("value" in this.props)) this.setState({negated: (value === true || value === "neg")});
+        this.triggerChange.bind(this)({negated: (value === true || value === "neg")});
     }
 
     handleOperation(value) {

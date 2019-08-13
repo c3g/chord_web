@@ -5,7 +5,8 @@ import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 
-import {DEFAULT_SEARCH_PARAMETERS, getFieldSchema, getFields} from "../../schema";
+import {getFieldSchema, getFields} from "../../schema";
+import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS} from "../../search";
 
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
@@ -58,7 +59,7 @@ class DiscoverySearchForm extends Component {
                 search: {...searchParameters}
             },
             negated: false,
-            operation: "eq",
+            operation: OP_EQUALS,
             searchValue: ""
         }});
 
@@ -104,7 +105,7 @@ class DiscoverySearchForm extends Component {
                         field: undefined,
                         fieldSchema: undefined,
                         negated: false,
-                        operation: "eq",
+                        operation: OP_EQUALS,
                         searchValue: ""
                     },
                     rules: [
