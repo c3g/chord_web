@@ -7,18 +7,9 @@ import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
-import {DEFAULT_SEARCH_PARAMETERS} from "../../schema";
+import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search";
 
 import SchemaTreeSelect from "../SchemaTreeSelect";
-
-const OPERATION_TEXT = {
-    "eq": "=",
-    "lt": "<",
-    "le": "\u2264",
-    "gt": ">",
-    "ge": "\u2265",
-    "co": "containing"
-};
 
 class DiscoverySearchCondition extends Component {
     static getDerivedStateFromProps(nextProps) {
@@ -36,7 +27,7 @@ class DiscoverySearchCondition extends Component {
                 search: {...DEFAULT_SEARCH_PARAMETERS}
             },
             negated: value.negated || false,
-            operation: value.operation || "eq",
+            operation: value.operation || OP_EQUALS,
             searchValue: value.searchValue || ""
         };
         this.onRemoveClick = this.props.onRemoveClick || (() => {});
@@ -74,7 +65,7 @@ class DiscoverySearchCondition extends Component {
     }
 
     equalsOnly() {
-        return this.state.fieldSchema.search.operations.includes("eq") &&
+        return this.state.fieldSchema.search.operations.includes(OP_EQUALS) &&
             this.state.fieldSchema.search.operations.length === 1;
     }
 

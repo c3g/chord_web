@@ -3,13 +3,6 @@ import React from "react";
 import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
-export const DEFAULT_SEARCH_PARAMETERS = {
-    operations: ["eq", "lt", "le", "gt", "ge", "co"],
-    canNegate: true,
-    required: false,
-    type: "unlimited"
-};
-
 // TODO: Remove objects/arrays with exclusively unsearchable children, option to remove unsearchable children
 export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
     const key = `${prefix}${name}`;
