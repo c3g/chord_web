@@ -5,7 +5,7 @@ import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 
-import {DEFAULT_SEARCH_PARAMETERS, getFieldSchema, getFields, searchConditionRemovable} from "../../schema";
+import {DEFAULT_SEARCH_PARAMETERS, getFieldSchema, getFields} from "../../schema";
 
 import DiscoverySearchCondition from "./DiscoverySearchCondition";
 
@@ -36,13 +36,13 @@ class DiscoverySearchForm extends Component {
         });
     }
 
-    addCondition(searchField = undefined) {
+    addCondition(field = undefined) {
         const newKey = this.props.form.getFieldValue("keys").length;
 
         let searchParameters = {...DEFAULT_SEARCH_PARAMETERS};
 
-        if (searchField) {
-            const fs = getFieldSchema(this.props.dataType.schema, searchField);
+        if (field) {
+            const fs = getFieldSchema(this.props.dataType.schema, field);
             if (fs.hasOwnProperty("search")) {
                 if (fs.search.hasOwnProperty("operations")) searchParameters.operations = fs.search.operations;
                 if (fs.search.hasOwnProperty("canNegate")) searchParameters.canNegate = fs.search.canNegate;
@@ -53,12 +53,12 @@ class DiscoverySearchForm extends Component {
 
         // Initialize new condition, otherwise the state won't get it
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
-            searchField,
+            field,
             fieldSchema: { // TODO: Deduplicate this default object
                 search: {...searchParameters}
             },
-            negation: "pos",
-            condition: "eq",
+            negated: false,
+            operation: "eq",
             searchValue: ""
         }});
 
@@ -86,7 +86,7 @@ class DiscoverySearchForm extends Component {
         const keys = this.props.form.getFieldValue("keys");
         const existingUniqueFields = keys
             .filter(k => k !== undefined)
-            .map(k => this.props.form.getFieldValue(`conditions[${k}]`).searchField)
+            .map(k => this.props.form.getFieldValue(`conditions[${k}]`).field)
             .filter(f => f !== undefined && this.cannotBeUsed(f));
 
         const formItems = keys.map((k, i) => (
@@ -101,16 +101,16 @@ class DiscoverySearchForm extends Component {
             }} label={`Condition ${i+1}`}>
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
                     initialValue: {
-                        searchField: undefined,
+                        field: undefined,
                         fieldSchema: undefined,
-                        negation: "pos",
-                        condition: "eq",
+                        negated: false,
+                        operation: "eq",
                         searchValue: ""
                     },
                     rules: [
                         {
                             validator: (rule, value, cb) => {
-                                cb(value.searchField === undefined
+                                cb(value.field === undefined
                                     ? "A field must be specified for this search condition."
                                     : []);
                             }

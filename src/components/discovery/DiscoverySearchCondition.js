@@ -31,30 +31,35 @@ class DiscoverySearchCondition extends Component {
         super(props);
         const value = this.props.value || {};
         this.state = {
-            searchField: value.searchField || undefined,
+            field: value.field || undefined,
             fieldSchema: value.fieldSchema || {
                 search: {...DEFAULT_SEARCH_PARAMETERS}
             },
-            negation: value.negation || "pos",
-            condition: value.condition || "eq",
+            negated: value.negation || false,
+            operation: value.operation || "eq",
             searchValue: value.searchValue || ""
         };
         this.onRemoveClick = this.props.onRemoveClick || (() => {});
+
+        this.handleField = this.handleField.bind(this);
+        this.handleNegation = this.handleNegation.bind(this);
+        this.handleOperation = this.handleOperation.bind(this);
+        this.handleSearchValue = this.handleSearchValue.bind(this);
     }
 
-    handleSearchField(value) {
-        if (!("value" in this.props)) this.setState({searchField: value.selected, fieldSchema: value.schema});
-        this.triggerChange.bind(this)({searchField: value.selected, fieldSchema: value.schema});
+    handleField(value) {
+        if (!("value" in this.props)) this.setState({field: value.selected, fieldSchema: value.schema});
+        this.triggerChange.bind(this)({field: value.selected, fieldSchema: value.schema});
     }
 
     handleNegation(value) {
-        if (!("value" in this.props)) this.setState({negation: value});
-        this.triggerChange.bind(this)({negation: value});
+        if (!("value" in this.props)) this.setState({negated: value === "neg"});
+        this.triggerChange.bind(this)({negated: value});
     }
 
-    handleCondition(value) {
-        if (!("value" in this.props)) this.setState({condition: value});
-        this.triggerChange.bind(this)({condition: value});
+    handleOperation(value) {
+        if (!("value" in this.props)) this.setState({operation: value});
+        this.triggerChange.bind(this)({operation: value});
     }
 
     handleSearchValue(e) {
@@ -80,10 +85,8 @@ class DiscoverySearchCondition extends Component {
         const operationOptions = this.state.fieldSchema.search.operations.map(o =>
             (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
 
-        const operationsWidth = this.equalsOnly() ? 0 : 116;
-
         const valueWidth = 256 + (canRemove ? 50 : 0)
-            + (this.state.fieldSchema.search.canNegate ? 88 + operationsWidth : operationsWidth);
+            + (this.state.fieldSchema.search.canNegate ? 88 : 0) + (this.equalsOnly() ? 0 : 116);
 
         return (
             <Input.Group compact>
@@ -97,23 +100,23 @@ class DiscoverySearchCondition extends Component {
                     disabled={!canRemove}
                     schema={this.props.dataType.schema}
                     excludedKeys={this.props.existingUniqueFields}
-                    value={{selected: this.state.searchField, schema: this.state.fieldSchema}}
-                    onChange={this.handleSearchField.bind(this)} />
+                    value={{selected: this.state.field, schema: this.state.fieldSchema}}
+                    onChange={this.handleField} />
                 {this.state.fieldSchema.search.canNegate ? (
-                    <Select style={{width: "88px", float: "left"}} value={this.state.negation}
-                            onChange={this.handleNegation.bind(this)}>
+                    <Select style={{width: "88px", float: "left"}} value={this.state.negated ? "neg" : "pos"}
+                            onChange={this.handleNegation}>
                         <Select.Option key="pos">is</Select.Option>
                         <Select.Option key="neg">is not</Select.Option>
                     </Select>
                 ) : null}
                 {this.equalsOnly() ? null : (
-                    <Select style={{width: "116px", float: "left"}} value={this.state.condition}
-                            onChange={this.handleCondition.bind(this)}>
+                    <Select style={{width: "116px", float: "left"}} value={this.state.operation}
+                            onChange={this.handleOperation}>
                         {operationOptions}
                     </Select>
                 )}
                 <Input style={{width: `calc(100% - ${valueWidth}px)`}} placeholder="value"
-                       onChange={this.handleSearchValue.bind(this)} value={this.state.searchValue} />
+                       onChange={this.handleSearchValue} value={this.state.searchValue} />
                 {canRemove ? (
                     <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
                             onClick={this.onRemoveClick}>
