@@ -17,7 +17,7 @@ const OPERATION_TEXT = {
     "le": "\u2264",
     "gt": ">",
     "ge": "\u2265",
-    "co": "contains"
+    "co": "containing"
 };
 
 class DiscoverySearchCondition extends Component {
@@ -35,7 +35,7 @@ class DiscoverySearchCondition extends Component {
             fieldSchema: value.fieldSchema || {
                 search: {...DEFAULT_SEARCH_PARAMETERS}
             },
-            negated: value.negation || false,
+            negated: value.negated || false,
             operation: value.operation || "eq",
             searchValue: value.searchValue || ""
         };

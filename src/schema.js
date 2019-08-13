@@ -20,7 +20,7 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
         key,
         value,
         title,
-        selectable: node.hasOwnProperty("search")&& node.search.hasOwnProperty("operations")
+        selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
             && node.search.operations.length > 0 && !excludedKeys.includes(key),
         disabled: excludedKeys.includes(key)
     };

@@ -25,7 +25,6 @@ class SchemaTreeSelect extends Component {
 
     onChange(selected) {
         // Set the state directly unless value is bound
-
         if (!("value" in this.props)) {
             this.setState({selected, schema: getFieldSchema(this.props.schema, selected)});
         }
