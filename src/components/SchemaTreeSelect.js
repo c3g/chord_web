@@ -5,7 +5,6 @@ import "antd/es/tree-select/style/css";
 
 import {generateSchemaTreeData, getFieldSchema} from "../schema";
 import PropTypes from "prop-types";
-import DiscoverySearchCondition from "./discovery/DiscoverySearchCondition";
 
 class SchemaTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {
