@@ -126,18 +126,29 @@ class DiscoverySearchContent extends Component {
                             <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336} render={du => (
                                 <Row gutter={8} type="flex">
                                     {/* TODO: ALIGN WITH rc-align */}
-                                    {DATA_USE_KEYS.map(u => (
-                                        <Col key={u}>
-                                            <Popover title={DATA_USE_INFO[u].title}
-                                                     content={DATA_USE_INFO[u].content}
-                                                     trigger="hover">
-                                                <Icon style={{
-                                                    fontSize: "20px",
-                                                    color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
-                                                }} type={DATA_USE_INFO[u].icon} />
-                                            </Popover>
-                                        </Col>
-                                    ))}
+                                    {DATA_USE_KEYS.map(u => {
+                                        const internalIcon = (
+                                            <Icon style={{
+                                                fontSize: "20px",
+                                                color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
+                                            }} type={DATA_USE_INFO[u].icon} />
+                                        );
+
+                                        // noinspection HtmlDeprecatedAttribute
+                                        return (
+                                            <Col key={u}>
+                                                {du.includes(u) ? (
+                                                    <Popover title={DATA_USE_INFO[u].title}
+                                                             content={DATA_USE_INFO[u].content}
+                                                             trigger="hover"
+                                                             placement="topRight"
+                                                             align={{offset: [10, 0]}}>
+                                                        {internalIcon}
+                                                    </Popover>
+                                                ) : internalIcon}
+                                            </Col>
+                                        );
+                                    })}
                                 </Row>
                             )} />
                             <Table.Column title="Actions" dataIndex="actions" width={136} render={() => (
