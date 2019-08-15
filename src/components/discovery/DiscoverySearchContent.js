@@ -124,7 +124,6 @@ class DiscoverySearchContent extends Component {
                             <Table.Column title="Dataset ID" dataIndex="id" />
                             <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336} render={du => (
                                 <Row gutter={8} type="flex">
-                                    {/* TODO: ALIGN WITH rc-align */}
                                     {DATA_USE_KEYS.map(u => {
                                         let internalIcon = (
                                             <Icon style={{
