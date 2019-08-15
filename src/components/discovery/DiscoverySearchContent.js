@@ -121,33 +121,29 @@ class DiscoverySearchContent extends Component {
                                     key={this.props.searches.length - i - 1}>
                         <Table bordered={true}
                                dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
-                               rowKey="id"
-                               columns={[
-                                   {
-                                       title: "Dataset ID",
-                                       dataIndex: "id"
-                                   },
-                                   {
-                                       title: "Data Use Restrictions",
-                                       dataIndex: "dataUse",
-                                       width: 336,
-                                       render: du => (
-                                           <Row gutter={8} type="flex">
-                                               {/* TODO: ALIGN WITH rc-align */}
-                                               {DATA_USE_KEYS.map(u => (
-                                                   <Col key={u}>
-                                                       <Popover title={DATA_USE_INFO[u].title}
-                                                                content={DATA_USE_INFO[u].content}
-                                                                trigger="hover">
-                                                           <Icon style={{
-                                                               fontSize: "20px",
-                                                               color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
-                                                           }} type={DATA_USE_INFO[u].icon} />
-                                                       </Popover>
-                                                   </Col>
-                                               ))}
-                                           </Row>)
-                                   }]} />
+                               rowKey="id">
+                            <Table.Column title="Dataset ID" dataIndex="id" />
+                            <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336} render={du => (
+                                <Row gutter={8} type="flex">
+                                    {/* TODO: ALIGN WITH rc-align */}
+                                    {DATA_USE_KEYS.map(u => (
+                                        <Col key={u}>
+                                            <Popover title={DATA_USE_INFO[u].title}
+                                                     content={DATA_USE_INFO[u].content}
+                                                     trigger="hover">
+                                                <Icon style={{
+                                                    fontSize: "20px",
+                                                    color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
+                                                }} type={DATA_USE_INFO[u].icon} />
+                                            </Popover>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            )} />
+                            <Table.Column title="Actions" dataIndex="actions" width={136} render={() => (
+                                <a href="#">{/* TODO: Real actions */}Request Access</a>
+                            )} />
+                        </Table>
                     </Collapse.Panel>
                 ))}
             </Collapse>
