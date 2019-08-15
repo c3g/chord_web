@@ -76,8 +76,9 @@ class DiscoverySearchCondition extends Component {
         const operationOptions = this.state.fieldSchema.search.operations.map(o =>
             (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
 
-        const valueWidth = 256 + (canRemove ? 50 : 0)
-            + (this.state.fieldSchema.search.canNegate ? 88 : 0) + (this.equalsOnly() ? 0 : 116);
+        // Subtract 1 from different elements' widths due to -1 margin-left
+        const valueWidth = 256 + (canRemove ? 49 : 0)
+            + (this.state.fieldSchema.search.canNegate ? 87 : 0) + (this.equalsOnly() ? 0 : 115);
 
         return (
             <Input.Group compact>

@@ -98,7 +98,7 @@ class DiscoverySearchForm extends Component {
             }} wrapperCol={{
                 lg: {span: 24},
                 xl: {span: 20},
-                xxl: {span: 21}
+                xxl: {span: 18}
             }} label={`Condition ${i+1}`}>
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
                     initialValue: {
@@ -137,8 +137,7 @@ class DiscoverySearchForm extends Component {
                     </Button>
                 </Form.Item>
                 <Form.Item wrapperCol={{
-                    lg: {span: 24},
-                    xl: {offset: 5, span: 14},
+                    xl: {span: 24},
                     xxl: {offset: 3, span: 18}
                 }}>
                     <Button type="primary" htmlType="submit" loading={this.props.loading}>
