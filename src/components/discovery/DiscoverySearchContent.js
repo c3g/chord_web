@@ -73,7 +73,7 @@ class DiscoverySearchContent extends Component {
                 content: "This requirement indicates that use is limited to use within an approved institution."
             },
             NPU: {
-                icon: "dollar", // TODO: Not correct
+                icon: "dollar", // Gets modified below
                 title: "Not-For-Profit Use Only",
                 content: "This requirement indicates that use of the data is limited to not-for-profit organizations " +
                     "and not-for-profit use, non-commercial use."
@@ -127,12 +127,31 @@ class DiscoverySearchContent extends Component {
                                 <Row gutter={8} type="flex">
                                     {/* TODO: ALIGN WITH rc-align */}
                                     {DATA_USE_KEYS.map(u => {
-                                        const internalIcon = (
+                                        let internalIcon = (
                                             <Icon style={{
                                                 fontSize: "20px",
-                                                color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
+                                                color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1})`
                                             }} type={DATA_USE_INFO[u].icon} />
                                         );
+
+                                        if (u === "NPU") {
+                                            // Special case for non-profit use; stack two icons (dollar + stop) to
+                                            // create a custom synthetic icon.
+                                            internalIcon = (
+                                                <div style={{opacity: du.includes(u) ? 0.65 : 0.1}}>
+                                                    <Icon style={{
+                                                        fontSize: "20px",
+                                                        color: "black"
+                                                    }} type={DATA_USE_INFO[u].icon} />
+                                                    <Icon style={{
+                                                        fontSize: "20px",
+                                                        marginLeft: "-20px",
+                                                        mixBlendMode: "overlay",
+                                                        color: "black"
+                                                    }} type="stop" />
+                                                </div>
+                                            );
+                                        }
 
                                         // noinspection HtmlDeprecatedAttribute
                                         return (
