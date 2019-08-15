@@ -29,8 +29,7 @@ const DATA_USE_INFO = {
     IRB: {
         icon: "reconciliation",
         title: "Ethics Approval Required",
-        content: "This requirement indicates that the requester must provide documentation of local IRB/ERB" +
-            "approval."
+        content: "This requirement indicates that the requester must provide documentation of local IRB/ERB approval."
     },
     GS: {
         icon: "global",
