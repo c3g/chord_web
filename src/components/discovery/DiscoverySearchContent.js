@@ -2,10 +2,14 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Collapse, Divider, Empty, Spin, Table, Typography} from "antd";
+import {Col, Collapse, Divider, Empty, Icon, Popover, Row, Spin, Table, Typography} from "antd";
+import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/icon/style/css";
+import "antd/es/popover/style/css";
+import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
@@ -43,14 +47,107 @@ class DiscoverySearchContent extends Component {
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
         );
 
+        const DATA_USE_KEYS = ["COL", "IRB", "GS", "IS", "NPU", "PS", "MOR", "PUB", "RTN", "TS", "US"];
+
+        const DATA_USE_INFO = {
+            COL: {
+                icon: "team",
+                title: "Collaboration Required",
+                content: "This requirement indicates that the requester must agree to collaboration with the primary " +
+                    "study investigator(s)."
+            },
+            IRB: {
+                icon: "reconciliation",
+                title: "Ethics Approval Required",
+                content: "This requirement indicates that the requester must provide documentation of local IRB/ERB" +
+                    "approval."
+            },
+            GS: {
+                icon: "global",
+                title: "Geographical Restriction",
+                content: "This requirement indicates that use is limited to within a specific geographic region."
+            },
+            IS: {
+                icon: "bank",
+                title: "Institution-Specific Restriction",
+                content: "This requirement indicates that use is limited to use within an approved institution."
+            },
+            NPU: {
+                icon: "dollar", // TODO: Not correct
+                title: "Not-For-Profit Use Only",
+                content: "This requirement indicates that use of the data is limited to not-for-profit organizations " +
+                    "and not-for-profit use, non-commercial use."
+            },
+            PS: {
+                icon: "audit",
+                title: "Project-Specific Restriction",
+                content: "This requirement indicates that use is limited to use within an approved project."
+            },
+            MOR: {
+                icon: "exception",
+                title: "Publication Moratorium",
+                content: "This requirement indicates that requester agrees not to publish results of studies until a " +
+                    "specific date"
+            },
+            PUB: {
+                icon: "file-done",
+                title: "Publication Required",
+                content: "This requirement indicates that requester agrees to make results of studies using the data " +
+                    "available to the larger scientific community."
+            },
+            RTN: {
+                icon: "database",
+                title: "Return to Database or Resource",
+                content: "This requirement indicates that the requester must return derived/enriched data to the " +
+                    "database/resource."
+            },
+            TS: {
+                icon: "clock-circle",
+                title: "Time Limit on Use",
+                content: "This requirement indicates that use is approved for a specific number of months."
+            },
+            US: {
+                icon: "user",
+                title: "User-Specific Restriction",
+                content: "This requirement indicates that use is limited to use by approved users."
+            }
+        };
+
         return (
             <Collapse bordered={false} accordion={true} activeKey={this.props.selectedSearch.toString()}
                       onChange={this.handleSearchSelect}>
                 {[...this.props.searches].reverse().map((s, i) => (
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
                                     key={this.props.searches.length - i - 1}>
-                        <Table bordered={true} dataSource={s.results} rowKey="id"
-                               columns={[{title: "Dataset ID", dataIndex: "id"}]} />
+                        <Table bordered={true}
+                               dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
+                               rowKey="id"
+                               columns={[
+                                   {
+                                       title: "Dataset ID",
+                                       dataIndex: "id"
+                                   },
+                                   {
+                                       title: "Data Use Restrictions",
+                                       dataIndex: "dataUse",
+                                       width: 336,
+                                       render: du => (
+                                           <Row gutter={8} type="flex">
+                                               {/* TODO: ALIGN WITH rc-align */}
+                                               {DATA_USE_KEYS.map(u => (
+                                                   <Col key={u}>
+                                                       <Popover title={DATA_USE_INFO[u].title}
+                                                                content={DATA_USE_INFO[u].content}
+                                                                trigger="hover">
+                                                           <Icon style={{
+                                                               fontSize: "20px",
+                                                               color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1}`
+                                                           }} type={DATA_USE_INFO[u].icon} />
+                                                       </Popover>
+                                                   </Col>
+                                               ))}
+                                           </Row>)
+                                   }]} />
                     </Collapse.Panel>
                 ))}
             </Collapse>
