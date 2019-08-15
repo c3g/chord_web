@@ -22,12 +22,19 @@ class DiscoverySearchForm extends Component {
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
         if (this.props.form.getFieldValue("keys").length === 0) {
-            getFields(this.props.dataType.schema)
+            const requiredFields = getFields(this.props.dataType.schema)
                 .filter(f => {
                     const fs = getFieldSchema(this.props.dataType.schema, f);
-                    return fs.hasOwnProperty("search") && fs.search.hasOwnProperty("required") && fs.search.required;
-                })
-                .forEach(c => this.addCondition(c));
+                    return fs.hasOwnProperty("search") && fs.search.hasOwnProperty("required")
+                        && fs.search.required;
+                });
+
+            requiredFields.forEach(c => this.addCondition(c));
+
+            if (requiredFields.length === 0) {
+                // Add a single default condition
+                this.addCondition();
+            }
         }
     }
 
