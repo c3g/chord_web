@@ -41,22 +41,22 @@ class DiscoverySearchCondition extends Component {
 
     handleField(value) {
         if (!("value" in this.props)) this.setState({field: value.selected, fieldSchema: value.schema});
-        this.triggerChange.bind({field: value.selected, fieldSchema: value.schema});
+        this.triggerChange({field: value.selected, fieldSchema: value.schema});
     }
 
     handleNegation(value) {
         if (!("value" in this.props)) this.setState({negated: (value === true || value === "neg")});
-        this.triggerChange.bind({negated: (value === true || value === "neg")});
+        this.triggerChange({negated: (value === true || value === "neg")});
     }
 
     handleOperation(value) {
         if (!("value" in this.props)) this.setState({operation: value});
-        this.triggerChange.bind({operation: value});
+        this.triggerChange({operation: value});
     }
 
     handleSearchValue(e) {
         if (!("value" in this.props)) this.setState({searchValue: e.target.value});
-        this.triggerChange.bind({searchValue: e.target.value});
+        this.triggerChange({searchValue: e.target.value});
     }
 
     triggerChange(change) {
