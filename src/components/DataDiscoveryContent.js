@@ -1,22 +1,14 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
+import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 
-import {Icon, Layout, Menu, PageHeader} from "antd";
-import "antd/es/icon/style/css";
+import {Layout, PageHeader} from "antd";
 import "antd/es/layout/style/css";
-import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
 
-import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
-import DiscoveryDataTypeSearchContent from "./discovery/DiscoveryDataTypeSearchContent";
-import DiscoveryDataTypeSchemaContent from "./discovery/DiscoveryDataTypeSchemaContent";
+import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 
 import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../actions";
-
-
-const searchURL = (sID, dID) => `/data/discovery/${sID}/data-types/${dID}/search`;
-const schemaURL = (sID, dID) => `/data/discovery/${sID}/data-types/${dID}/schema`;
 
 
 class DataDiscoveryContent extends Component {
@@ -30,31 +22,9 @@ class DataDiscoveryContent extends Component {
     }
 
     renderContent(Content) {
-        const dataMenus = this.props.services.filter(s => s.metadata["chordDataService"]).map(s => {
-            return Object.keys(this.props.dataTypes).includes(s.id)
-                ? this.props.dataTypes[s.id].map(d => (
-                    <Menu.SubMenu key={`${s.id}_data_type_${d.id}_menu`} title={<span>{d.id}</span>}>
-                        <Menu.Item key={searchURL(s.id, d.id)}>
-                            <Link to={searchURL(s.id, d.id)}>
-                                <Icon type="search" />
-                                <span>Search</span>
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key={schemaURL(s.id, d.id)}>
-                            <Link to={schemaURL(s.id, d.id)}>
-                                <Icon type="build" />
-                                <span>Data Schema</span>
-                            </Link>
-                        </Menu.Item>
-                    </Menu.SubMenu>
-                )) : (<div key={`${s.id}_data_types_loading`} />);
-        });
-
-        return route => {
-            if (route.match.params["service"] && route.match.params["data_type"]) {
-                // TODO: HANDLE WRONG IDs
-                this.props.selectDataType(route.match.params["service"], route.match.params["data_type"]);
-            } else if (this.props.selectedServiceID || this.props.selectedDataTypeID) {
+        return () => {
+            if (!(this.props.selectedServiceID && this.props.selectedDataTypeID) &&
+                    (this.props.selectedServiceID || this.props.selectedDataTypeID)) {
                 this.props.clearSelectedDataType();
             }
 
@@ -63,26 +33,7 @@ class DataDiscoveryContent extends Component {
                     <PageHeader title="Data Discovery" subTitle="Federated data exploration"
                                 style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
                     <Layout>
-                        <Layout.Sider width="256" theme="light">
-                            <Menu mode="inline"
-                                  defaultOpenKeys={Object.keys(route.match.params).includes("service")
-                                      ? ["/data/discovery/data_types",
-                                          `${route.match.params["service"]}_data_type_${route.match.params["data_type"]}_menu`]
-                                      : []}
-                                  selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
-                                <Menu.Item key="/data/discovery/home">
-                                    <Link to="/data/discovery/home">
-                                        <Icon type="home" />
-                                        <span>Home</span>
-                                    </Link>
-                                </Menu.Item>
-                                <Menu.SubMenu key="/data/discovery/data_types"
-                                              title={<div><Icon type="database" /><span>Data Types</span></div>}>
-                                    {dataMenus}
-                                </Menu.SubMenu>
-                            </Menu>
-                        </Layout.Sider>
-                        <Layout.Content style={{background: "white", padding: "24px 32px"}}>
+                        <Layout.Content style={{background: "white", padding: "24px 30px"}}>
                             <Content />
                         </Layout.Content>
                     </Layout>
@@ -94,13 +45,9 @@ class DataDiscoveryContent extends Component {
     render() {
         return (
             <Switch>
-                <Route exact path="/data/discovery/home"
-                       component={this.renderContent(DiscoveryHomeContent)} />
-                <Route path="/data/discovery/:service/data-types/:data_type/search"
-                       component={this.renderContent(DiscoveryDataTypeSearchContent)} />
-                <Route path="/data/discovery/:service/data-types/:data_type/schema"
-                       component={this.renderContent(DiscoveryDataTypeSchemaContent)} />
-                <Redirect from="/data/discovery" to="/data/discovery/home" />
+                <Route exact path="/data/discovery/search"
+                       component={this.renderContent(DiscoverySearchContent)} />
+                <Redirect from="/data/discovery" to="/data/discovery/search" />
             </Switch>
         );
     }

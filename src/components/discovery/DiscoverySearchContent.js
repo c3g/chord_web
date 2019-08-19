@@ -2,20 +2,46 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Col, Collapse, Divider, Empty, Icon, Popover, Row, Spin, Table, Typography} from "antd";
+import {
+    Button,
+    Col,
+    Collapse,
+    Divider,
+    Empty,
+    Form,
+    Icon,
+    Modal,
+    Popover,
+    Row,
+    Select,
+    Spin,
+    Table,
+    Typography
+} from "antd";
+import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
+import "antd/es/modal/style/css";
 import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
+import "antd/es/select/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
-import {performSearch, selectSearch, updateDiscoverySearchForm} from "../../actions";
+import SchemaTree from "../SchemaTree";
+import {
+    toggleDiscoverySchemaModal,
+    performSearch,
+    selectDiscoveryServiceDataType,
+    selectSearch,
+    updateDiscoverySearchForm
+} from "../../actions";
 
 const DATA_USE_KEYS = ["COL", "IRB", "GS", "IS", "NPU", "PS", "MOR", "PUB", "RTN", "TS", "US"];
 
@@ -82,7 +108,7 @@ const DATA_USE_INFO = {
     }
 };
 
-class DiscoveryDataTypeSearchContent extends Component {
+class DiscoverySearchContent extends Component {
     constructor(props) {
         super(props);
 
@@ -90,6 +116,8 @@ class DiscoveryDataTypeSearchContent extends Component {
         this.handleSearchSelect = this.handleSearchSelect.bind(this);
         this.renderSearches = this.renderSearches.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
+        this.handleDataTypeChange = this.handleDataTypeChange.bind(this);
+        this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
     }
 
     handleFormChange(fields) {
@@ -108,6 +136,8 @@ class DiscoveryDataTypeSearchContent extends Component {
     }
 
     renderSearches() {
+        // TODO: Group all searches, not data-type specific
+
         if (!this.props.dataType || !this.props.searches || this.props.searches.length === 0) return (
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
         );
@@ -124,6 +154,7 @@ class DiscoveryDataTypeSearchContent extends Component {
                             <Table.Column title="Dataset ID" dataIndex="id" />
                             <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336} render={du => (
                                 <Row gutter={8} type="flex">
+                                    {/* TODO: REFACTOR INTO A COMPONENT */}
                                     {DATA_USE_KEYS.map(u => {
                                         let internalIcon = (
                                             <Icon style={{
@@ -178,27 +209,65 @@ class DiscoveryDataTypeSearchContent extends Component {
         );
     }
 
+    handleDataTypeChange(value) {
+        const [sID, dtID] = value.split("_");
+        this.props.selectDataType(sID, dtID);
+    }
+
+    handleSchemaToggle() {
+        this.props.toggleSchemaModal();
+    }
+
     render() {
-        return this.props.dataType ? (
+        return (
             <div>
-                <Typography.Title level={2}>Search Data Type '{this.props.dataType.id}'</Typography.Title>
-                <DiscoverySearchForm dataType={this.props.dataType} formValues={this.props.formValues}
-                                     loading={this.props.searchLoading}
-                                     onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
-                <Divider />
-                <Typography.Title level={3}>Results</Typography.Title>
-                <Spin spinning={this.props.searchLoading}>
-                    {this.renderSearches()}
-                </Spin>
+                <Form layout="inline">
+                    <Form.Item label="Data Type">
+                        <Select size="large" showSearch placeholder="Data Type" style={{width: 200}}
+                                loading={this.props.dataTypesLoading}
+                                value={this.props.dataType ? `${this.props.service.id}_${this.props.dataType.id}` : undefined}
+                                onChange={this.handleDataTypeChange}>
+                            {this.props.services.filter(s => this.props.dataTypes[s.id])
+                                .flatMap(s => this.props.dataTypes[s.id].map(dt =>  {
+                                    const key = `${s.id}_${dt.id}`;
+                                    return (<Select.Option key={key} value={key}>{dt.id}</Select.Option>);
+                                }))}
+                        </Select>
+                    </Form.Item>
+                    {this.props.dataType ? (<Button size="large" onClick={this.handleSchemaToggle}>Schema</Button>)
+                        : null}
+                </Form>
+
+                {this.props.dataType ? (
+                    <div>
+                        <Modal title={`${this.props.dataType.id} Schema`} visible={this.props.modalShown}
+                               onCancel={this.handleSchemaToggle} footer={null}>
+                            <SchemaTree schema={this.props.dataType.schema} />
+                        </Modal>
+                        <Divider />
+                        <DiscoverySearchForm dataType={this.props.dataType} formValues={this.props.formValues}
+                                             loading={this.props.searchLoading}
+                                             onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
+                        <Divider />
+                        <Typography.Title level={3}>Results</Typography.Title>
+                        <Spin spinning={this.props.searchLoading}>
+                            {this.renderSearches()}
+                        </Spin>
+                    </div>
+                ) : null}
             </div>
-        ) : (<div>Loading...</div>);
+        );
     }
 }
 
-DiscoveryDataTypeSearchContent.propTypes = {
+DiscoverySearchContent.propTypes = {
     onSearchSelect: PropTypes.func,
+    services: PropTypes.arrayOf(PropTypes.object),
+    dataTypes: PropTypes.object,
     service: PropTypes.object,
     dataType: PropTypes.object,
+    dataTypesLoading: PropTypes.bool,
+    modalShown: PropTypes.bool,
     searches: PropTypes.array,
     selectedSearch: PropTypes.number,
     searchLoading: PropTypes.bool,
@@ -219,12 +288,20 @@ const mapStateToProps = state => {
         && state.discovery.selectedSearchByServiceAndDataTypeID[sID][dID] !== undefined;
 
     return {
+        services: state.services.items,
+        dataTypes: state.serviceDataTypes.dataTypes,
         service: dataTypeExists
             ? state.services.itemsByID[sID]
             : null,
         dataType: dataTypeExists
             ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID]
             : null,
+
+        dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetching
+            || Object.keys(state.serviceDataTypes.dataTypes).length === 0,
+
+        modalShown: state.discovery.modalShown,
+
         searches: dataTypeExists && searchesExist
             ? state.discovery.searchesByServiceAndDataTypeID[sID][dID]
             : [],
@@ -241,10 +318,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+    selectDataType: (serviceID, dataTypeID) => dispatch(selectDiscoveryServiceDataType(serviceID, dataTypeID)),
+    toggleSchemaModal: () => dispatch(toggleDiscoverySchemaModal()),
     updateSearchForm: (serviceID, dataTypeID, fields) =>
         dispatch(updateDiscoverySearchForm(serviceID, dataTypeID, fields)),
     requestSearch: (serviceID, dataTypeID, conditions) => dispatch(performSearch(serviceID, dataTypeID, conditions)),
     selectSearch: (serviceID, dataTypeID, searchIndex) => dispatch(selectSearch(serviceID, dataTypeID, searchIndex)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoveryDataTypeSearchContent);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);

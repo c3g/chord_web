@@ -9,6 +9,8 @@ import {
     REQUEST_SERVICE_DATA_TYPES,
     RECEIVE_SERVICE_DATA_TYPES,
 
+    TOGGLE_DISCOVERY_SCHEMA_MODAL,
+
     REQUEST_SEARCH,
     RECEIVE_SEARCH,
     SELECT_SEARCH,
@@ -108,6 +110,7 @@ const serviceDataTypes = (
 const discovery = (
     state = {
         isFetching: false,
+        modalShown: false,
         selectedServiceID: null,
         selectedDataTypeID: null,
         searchFormsByServiceAndDataTypeID: {},
@@ -128,6 +131,11 @@ const discovery = (
                         })))
                     }
                 }
+            });
+
+        case TOGGLE_DISCOVERY_SCHEMA_MODAL:
+            return Object.assign({}, state, {
+                modalShown: !state.modalShown
             });
 
         case REQUEST_SEARCH:

@@ -78,14 +78,14 @@ class DiscoverySearchCondition extends Component {
             (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
 
         // Subtract 1 from different elements' widths due to -1 margin-left
-        const valueWidth = 256 + (canRemove ? 49 : 0)
+        const valueWidth = 224 + (canRemove ? 49 : 0)
             + (this.state.fieldSchema.search.canNegate ? 87 : 0) + (this.equalsOnly() ? 0 : 115);
 
         return (
             <Input.Group compact>
                 <SchemaTreeSelect
                     style={{
-                        width: "256px",
+                        width: "224px",
                         float: "left",
                         borderTopRightRadius: "0",
                         borderBottomRightRadius: "0"

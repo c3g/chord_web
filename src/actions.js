@@ -113,6 +113,11 @@ const fetchServicesWithMetadataAndDataTypesIfNeeded = () => {
     }
 };
 
+export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
+export const toggleDiscoverySchemaModal = () => ({
+    type: TOGGLE_DISCOVERY_SCHEMA_MODAL
+});
+
 export const REQUEST_SEARCH = "REQUEST_SEARCH";
 const requestSearch = (serviceID, dataTypeID) => ({
     type: REQUEST_SEARCH,
