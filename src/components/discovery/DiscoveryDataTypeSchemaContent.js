@@ -6,7 +6,7 @@ import "antd/es/typography/style/css";
 
 import SchemaTree from "../SchemaTree";
 
-class DiscoverySchemaContent extends Component {
+class DiscoveryDataTypeSchemaContent extends Component {
     render() {
         return this.props.dataType ? (
             <div>
@@ -31,4 +31,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DiscoverySchemaContent);
+export default connect(mapStateToProps)(DiscoveryDataTypeSchemaContent);

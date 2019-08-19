@@ -9,8 +9,8 @@ import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
 
 import DiscoveryHomeContent from "./discovery/DiscoveryHomeContent";
-import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
-import DiscoverySchemaContent from "./discovery/DiscoverySchemaContent";
+import DiscoveryDataTypeSearchContent from "./discovery/DiscoveryDataTypeSearchContent";
+import DiscoveryDataTypeSchemaContent from "./discovery/DiscoveryDataTypeSchemaContent";
 
 import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../actions";
 
@@ -97,9 +97,9 @@ class DataDiscoveryContent extends Component {
                 <Route exact path="/data/discovery/home"
                        component={this.renderContent(DiscoveryHomeContent)} />
                 <Route path="/data/discovery/:service/data-types/:data_type/search"
-                       component={this.renderContent(DiscoverySearchContent)} />
+                       component={this.renderContent(DiscoveryDataTypeSearchContent)} />
                 <Route path="/data/discovery/:service/data-types/:data_type/schema"
-                       component={this.renderContent(DiscoverySchemaContent)} />
+                       component={this.renderContent(DiscoveryDataTypeSchemaContent)} />
                 <Redirect from="/data/discovery" to="/data/discovery/home" />
             </Switch>
         );

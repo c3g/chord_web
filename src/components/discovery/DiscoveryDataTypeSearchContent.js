@@ -82,7 +82,7 @@ const DATA_USE_INFO = {
     }
 };
 
-class DiscoverySearchContent extends Component {
+class DiscoveryDataTypeSearchContent extends Component {
     constructor(props) {
         super(props);
 
@@ -195,7 +195,7 @@ class DiscoverySearchContent extends Component {
     }
 }
 
-DiscoverySearchContent.propTypes = {
+DiscoveryDataTypeSearchContent.propTypes = {
     onSearchSelect: PropTypes.func,
     service: PropTypes.object,
     dataType: PropTypes.object,
@@ -247,4 +247,4 @@ const mapDispatchToProps = dispatch => ({
     selectSearch: (serviceID, dataTypeID, searchIndex) => dispatch(selectSearch(serviceID, dataTypeID, searchIndex)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoveryDataTypeSearchContent);

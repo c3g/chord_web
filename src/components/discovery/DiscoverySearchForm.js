@@ -161,6 +161,7 @@ export default Form.create({
     mapPropsToFields: ({formValues}) => ({
         keys: Form.createFormField({...formValues.keys}),
         ...Object.assign({}, ...(formValues["conditions"] || [])
+            .filter(c => c !== null)  // TODO: Why does this happen?
             .map(c => ({[c.name]: Form.createFormField({...c})})))
     }),
     onFieldsChange: ({onChange}, _, allFields) => {
