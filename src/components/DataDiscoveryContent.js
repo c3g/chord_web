@@ -31,7 +31,7 @@ class DataDiscoveryContent extends Component {
 
     renderContent(Content) {
         const dataMenus = this.props.services.filter(s => s.metadata["chordDataService"]).map(s => {
-            const menuItems = Object.keys(this.props.dataTypes).includes(s.id)
+            return Object.keys(this.props.dataTypes).includes(s.id)
                 ? this.props.dataTypes[s.id].map(d => (
                     <Menu.SubMenu key={`${s.id}_data_type_${d.id}_menu`} title={<span>{d.id}</span>}>
                         <Menu.Item key={searchURL(s.id, d.id)}>
@@ -47,22 +47,7 @@ class DataDiscoveryContent extends Component {
                             </Link>
                         </Menu.Item>
                     </Menu.SubMenu>
-                ))
-                : (
-                    <Menu.Item key={`${s.id}_loading_data_types`} disabled>
-                        <span>
-                            <Icon type="close" />
-                            <span>No data types loaded</span>
-                        </span>
-                    </Menu.Item>
-                );
-
-            return (
-                <Menu.SubMenu key={`${s.id}_menu`} title={<span>
-                    <Icon type="database" />
-                    <span>{s.name} data types</span>
-                </span>}>{menuItems}</Menu.SubMenu>
-            );
+                )) : (<div key={`${s.id}_data_types_loading`} />);
         });
 
         return route => {
@@ -81,17 +66,20 @@ class DataDiscoveryContent extends Component {
                         <Layout.Sider width="256" theme="light">
                             <Menu mode="inline"
                                   defaultOpenKeys={Object.keys(route.match.params).includes("service")
-                                      ? [`${route.match.params["service"]}_menu`,
+                                      ? ["/data/discovery/data_types",
                                           `${route.match.params["service"]}_data_type_${route.match.params["data_type"]}_menu`]
                                       : []}
                                   selectedKeys={[route.location.pathname]} style={{height: "100%", padding: "16px 0"}}>
                                 <Menu.Item key="/data/discovery/home">
                                     <Link to="/data/discovery/home">
-                                        <Icon type="home"/>
+                                        <Icon type="home" />
                                         <span>Home</span>
                                     </Link>
                                 </Menu.Item>
-                                {dataMenus}
+                                <Menu.SubMenu key="/data/discovery/data_types"
+                                              title={<div><Icon type="database" /><span>Data Types</span></div>}>
+                                    {dataMenus}
+                                </Menu.SubMenu>
                             </Menu>
                         </Layout.Sider>
                         <Layout.Content style={{background: "white", padding: "24px 32px"}}>
