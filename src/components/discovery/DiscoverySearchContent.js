@@ -4,35 +4,28 @@ import PropTypes from "prop-types";
 
 import {
     Button,
-    Col,
     Collapse,
     Divider,
     Empty,
     Form,
-    Icon,
     Modal,
-    Popover,
-    Row,
     Select,
     Spin,
     Table,
     Typography
 } from "antd";
 import "antd/es/button/style/css";
-import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/form/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
-import "antd/es/popover/style/css";
-import "antd/es/row/style/css";
 import "antd/es/select/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import DataUseDisplay from "../DataUseDisplay";
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SchemaTree from "../SchemaTree";
 
@@ -44,71 +37,6 @@ import {
     updateDiscoverySearchForm
 } from "../../modules/discovery/actions";
 
-
-const DATA_USE_KEYS = ["COL", "IRB", "GS", "IS", "NPU", "PS", "MOR", "PUB", "RTN", "TS", "US"];
-
-const DATA_USE_INFO = {
-    COL: {
-        icon: "team",
-        title: "Collaboration Required",
-        content: "This requirement indicates that the requester must agree to collaboration with the primary " +
-            "study investigator(s)."
-    },
-    IRB: {
-        icon: "reconciliation",
-        title: "Ethics Approval Required",
-        content: "This requirement indicates that the requester must provide documentation of local IRB/ERB approval."
-    },
-    GS: {
-        icon: "global",
-        title: "Geographical Restriction",
-        content: "This requirement indicates that use is limited to within a specific geographic region."
-    },
-    IS: {
-        icon: "bank",
-        title: "Institution-Specific Restriction",
-        content: "This requirement indicates that use is limited to use within an approved institution."
-    },
-    NPU: {
-        icon: "dollar", // Gets modified below
-        title: "Not-For-Profit Use Only",
-        content: "This requirement indicates that use of the data is limited to not-for-profit organizations " +
-            "and not-for-profit use, non-commercial use."
-    },
-    PS: {
-        icon: "audit",
-        title: "Project-Specific Restriction",
-        content: "This requirement indicates that use is limited to use within an approved project."
-    },
-    MOR: {
-        icon: "exception",
-        title: "Publication Moratorium",
-        content: "This requirement indicates that requester agrees not to publish results of studies until a " +
-            "specific date"
-    },
-    PUB: {
-        icon: "file-done",
-        title: "Publication Required",
-        content: "This requirement indicates that requester agrees to make results of studies using the data " +
-            "available to the larger scientific community."
-    },
-    RTN: {
-        icon: "database",
-        title: "Return to Database or Resource",
-        content: "This requirement indicates that the requester must return derived/enriched data to the " +
-            "database/resource."
-    },
-    TS: {
-        icon: "clock-circle",
-        title: "Time Limit on Use",
-        content: "This requirement indicates that use is approved for a specific number of months."
-    },
-    US: {
-        icon: "user",
-        title: "User-Specific Restriction",
-        content: "This requirement indicates that use is limited to use by approved users."
-    }
-};
 
 class DiscoverySearchContent extends Component {
     constructor(props) {
@@ -154,53 +82,8 @@ class DiscoverySearchContent extends Component {
                                dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
                                rowKey="id">
                             <Table.Column title="Dataset ID" dataIndex="id" />
-                            <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336} render={du => (
-                                <Row gutter={8} type="flex">
-                                    {/* TODO: REFACTOR INTO A COMPONENT */}
-                                    {DATA_USE_KEYS.map(u => {
-                                        let internalIcon = (
-                                            <Icon style={{
-                                                fontSize: "20px",
-                                                color: `rgba(0, 0, 0, ${du.includes(u) ? 0.65 : 0.1})`
-                                            }} type={DATA_USE_INFO[u].icon} />
-                                        );
-
-                                        if (u === "NPU") {
-                                            // Special case for non-profit use; stack two icons (dollar + stop) to
-                                            // create a custom synthetic icon.
-                                            internalIcon = (
-                                                <div style={{opacity: du.includes(u) ? 0.65 : 0.1}}>
-                                                    <Icon style={{
-                                                        fontSize: "20px",
-                                                        color: "black"
-                                                    }} type={DATA_USE_INFO[u].icon} />
-                                                    <Icon style={{
-                                                        fontSize: "20px",
-                                                        marginLeft: "-20px",
-                                                        mixBlendMode: "overlay",
-                                                        color: "black"
-                                                    }} type="stop" />
-                                                </div>
-                                            );
-                                        }
-
-                                        // noinspection HtmlDeprecatedAttribute
-                                        return (
-                                            <Col key={u}>
-                                                {du.includes(u) ? (
-                                                    <Popover title={DATA_USE_INFO[u].title}
-                                                             content={DATA_USE_INFO[u].content}
-                                                             trigger="hover"
-                                                             placement="topRight"
-                                                             align={{offset: [10, 0]}}>
-                                                        {internalIcon}
-                                                    </Popover>
-                                                ) : internalIcon}
-                                            </Col>
-                                        );
-                                    })}
-                                </Row>
-                            )} />
+                            <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336}
+                                          render={du => (<DataUseDisplay uses={du} />)} />
                             <Table.Column title="Actions" dataIndex="actions" width={136} render={() => (
                                 <a href="#">{/* TODO: Real actions */}Request Access</a>
                             )} />
