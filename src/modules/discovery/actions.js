@@ -1,7 +1,7 @@
 import {message} from "antd";
 import fetch from "cross-fetch";
 
-import {fetchServicesWithMetadataAndDataTypesIfNeeded} from "../services/actions";
+import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../services/actions";
 
 export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
 export const toggleDiscoverySchemaModal = () => ({
@@ -41,7 +41,7 @@ export const handleSearchError = err => {
 export const performSearch = (serviceID, dataTypeID, conditions) => {
     return async (dispatch, getState) => {
         // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
-        await dispatch(fetchServicesWithMetadataAndDataTypesIfNeeded());
+        await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded());
 
         // Perform search
         // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT

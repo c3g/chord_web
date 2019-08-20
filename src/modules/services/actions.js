@@ -39,7 +39,24 @@ const receiveServiceDataTypes = (id, data) => ({
     receivedAt: Date.now()
 });
 
-export const fetchServicesWithMetadataAndDataTypes = () => {
+export const REQUEST_SERVICE_DATASETS = "REQUEST_SERVICE_DATASETS";
+const requestServiceDatasets = (serviceID, dataTypeID) => ({
+    type: REQUEST_SERVICE_DATASETS,
+    serviceID,
+    dataTypeID
+});
+
+export const RECEIVE_SERVICE_DATASETS = "RECEIVE_SERVICE_DATASETS";
+const receiveServiceDatasets = (serviceID, dataTypeID, datasets) => ({
+    type: RECEIVE_SERVICE_DATASETS,
+    serviceID,
+    dataTypeID,
+    datasets,
+    receivedAt: Date.now()
+});
+
+
+export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
     return async (dispatch, getState) => {
         // Fetch Services
 
@@ -81,34 +98,63 @@ export const fetchServicesWithMetadataAndDataTypes = () => {
 
         // Fetch Data Service Data Types (for searching)
 
+        await (async () => {
+            for (let s of getState().services.items) {
+                if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data
+                await dispatch(requestServiceDataTypes(s.id));  // Fetch available data types from all data providers
+                try {
+                    const response = await fetch(`/api${s.url}/data-types`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        await dispatch(receiveServiceDataTypes(s.id, data));
+                    } else {
+                        console.error(response);
+                        message.error(`Error fetching data types from service '${s.name}'`)
+                    }
+                } catch (e) {
+                    console.error(e);
+                    message.error(e);
+                }
+            }
+        })();
+
+
+        // Fetch Data Service Local Datasets
+
         for (let s of getState().services.items) {
             if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data
-            await dispatch(requestServiceDataTypes(s.id));  // Fetch available data types from all data providers
-            try {
-                const response = await fetch(`/api${s.url}/data-types`);
-                if (response.ok) {
-                    const data = await response.json();
-                    await dispatch(receiveServiceDataTypes(s.id, data));
-                } else {
-                    console.error(response);
-                    message.error(`Error fetching data types from service '${s.name}'`)
+            const dataTypes = getState().serviceDataTypes.dataTypes[s.id];
+            if (dataTypes === undefined) continue;  // Error fetching data types in previous step
+            for (let dt of getState().serviceDataTypes.dataTypes[s.id]) {
+                await dispatch(requestServiceDatasets(s.id, dt.id));
+                try {
+                    const params = new URLSearchParams();
+                    params.set("data-type", dt.id);
+                    const response = await fetch(`/api${s.url}/datasets?${params.toString()}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        await dispatch(receiveServiceDatasets(s.id, dt.id, data));
+                    } else {
+                        console.error(response);
+                        message.error(`Error fetching datasets from service '${s.name}' (data type ${dt.id})`);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    message.error(e);
                 }
-            } catch (e) {
-                console.error(e);
-                message.error(e);
             }
         }
     };
 };
 
-export const fetchServicesWithMetadataAndDataTypesIfNeeded = () => {
+export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => {
     return async (dispatch, getState) => {
         const state = getState();
         if ((state.services.items.length === 0 ||
             Object.keys(state.serviceMetadata.metadata).length === 0 ||
             Object.keys(state.serviceDataTypes.dataTypes).length === 0) &&
             !(state.services.isFetching || state.serviceMetadata.isFetching || state.serviceDataTypes.isFetching)) {
-            await fetchServicesWithMetadataAndDataTypes();
+            await fetchServicesWithMetadataAndDataTypesAndDatasets();
         }
     }
 };

@@ -6,7 +6,10 @@ import {
     RECEIVE_SERVICE_METADATA,
 
     REQUEST_SERVICE_DATA_TYPES,
-    RECEIVE_SERVICE_DATA_TYPES
+    RECEIVE_SERVICE_DATA_TYPES,
+
+    REQUEST_SERVICE_DATASETS,
+    RECEIVE_SERVICE_DATASETS
 } from "./actions";
 
 export const services = (
@@ -88,6 +91,36 @@ export const serviceDataTypes = (
                     [action.service]: Object.assign({}, ...action.dataTypes.map(d => ({[d.id]: d})))
                 },
                 lastUpdated: action.receivedAt
+            });
+
+        default:
+            return state;
+    }
+};
+
+export const serviceDatasets = (
+    state = {
+        isFetching: false,
+        datasetsByServiceAndDataTypeID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_SERVICE_DATASETS:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+
+        case RECEIVE_SERVICE_DATASETS:
+            return Object.assign({}, state, {
+                isFetching: true,
+                datasetsByServiceAndDataTypeID: {
+                    ...state.datasetsByServiceAndDataTypeID,
+                    [action.serviceID]: {
+                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: action.datasets
+                    }
+                }
             });
 
         default:

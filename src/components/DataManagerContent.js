@@ -9,9 +9,12 @@ import "antd/es/page-header/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
+
 class DataManagerContent extends Component {
     componentDidMount() {
         document.title = "CHORD - Manage Your Data";
+        this.props.fetchIfNeeded();
     }
 
     render() {
@@ -43,12 +46,13 @@ class DataManagerContent extends Component {
                             Datasets
                             <Button icon="plus" style={{verticalAlign: "top", marginTop: "2px", float: "right"}}>Add Dataset</Button>
                         </Typography.Title>
-                        <Table bordered rowSelection={{selectedRowKeys: [], onChange: () => {}}}>
-                            <Table.Column title="ID" />
-                            <Table.Column title="Data Type" />
-                            <Table.Column title="Files" />
-                            <Table.Column title="Shared With" />
-                            <Table.Column title="Actions" />
+                        <Table bordered rowSelection={{selectedRowKeys: [], onChange: () => {}}}
+                               dataSource={this.props.datasets} rowKey="id">
+                            <Table.Column dataIndex="id" title="ID" />
+                            <Table.Column dataIndex="dataTypeID" title="Data Type" />
+                            <Table.Column key="files" title="Files" />
+                            <Table.Column key="sharedWith" title="Shared With" />
+                            <Table.Column key="actions" title="Actions" />
                         </Table>
                     </Layout.Content>
                 </Layout>
@@ -57,10 +61,21 @@ class DataManagerContent extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    datasets: []  // TODO
-});
+const mapStateToProps = state => {
+    const datasets = state.serviceDatasets.datasetsByServiceAndDataTypeID;
+    const datasetList = Object.keys(datasets)
+        .map(sID => Object.keys(datasets[sID])
+            .map(dtID => datasets[sID][dtID].map(ds => ({...ds, dataTypeID: dtID})))
+            .flat())
+        .flat();
+    return {
+        loadingDatasets: state.serviceDatasets.isFetching, // TODO
+        datasets: datasetList  // TODO
+    };
+};
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+    fetchIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded())
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);
