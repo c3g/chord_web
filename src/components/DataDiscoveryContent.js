@@ -8,7 +8,7 @@ import "antd/es/page-header/style/css";
 
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 
-import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../actions";
+import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../modules/discovery/actions";
 
 
 class DataDiscoveryContent extends Component {

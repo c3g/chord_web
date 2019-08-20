@@ -35,13 +35,15 @@ import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SchemaTree from "../SchemaTree";
+
 import {
     toggleDiscoverySchemaModal,
-    performSearch,
     selectDiscoveryServiceDataType,
+    performSearch,
     selectSearch,
     updateDiscoverySearchForm
-} from "../../actions";
+} from "../../modules/discovery/actions";
+
 
 const DATA_USE_KEYS = ["COL", "IRB", "GS", "IS", "NPU", "PS", "MOR", "PUB", "RTN", "TS", "US"];
 

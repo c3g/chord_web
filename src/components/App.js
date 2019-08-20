@@ -13,7 +13,7 @@ import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 
-import {fetchServicesWithMetadataAndDataTypes} from "../actions";
+import {fetchServicesWithMetadataAndDataTypes} from "../modules/services/actions";
 
 const renderContent = Content => route => (
     <Layout style={{minHeight: "100vh"}}>
