@@ -1,6 +1,12 @@
 import fetch from "cross-fetch";
 import {message} from "antd";
 
+export const BEGIN_LOADING_ALL_SERVICE_DATA = "BEGIN_LOADING_ALL_SERVICE_DATA";
+const beginLoadingAllServiceData = () => ({type: BEGIN_LOADING_ALL_SERVICE_DATA});
+
+export const END_LOADING_ALL_SERVICE_DATA = "END_LOADING_ALL_SERVICE_DATA";
+const endLoadingAllServiceData = () => ({type: END_LOADING_ALL_SERVICE_DATA});
+
 export const REQUEST_SERVICES = "REQUEST_SERVICES";
 const requestServices = () => ({type: REQUEST_SERVICES});
 
@@ -60,6 +66,8 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
     return async (dispatch, getState) => {
         // Fetch Services
 
+        await dispatch(beginLoadingAllServiceData());
+
         await dispatch(fetchServices());
         await dispatch(requestServiceMetadata());
 
@@ -69,7 +77,6 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
         const serviceInfoURLs = getState().services.items.map(service => `/api${service.url}/service-info`);
 
         let responses = [];
-
         for (let u of serviceInfoURLs) {
             try {
                 responses.push(await fetch(u));
@@ -98,25 +105,23 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
 
         // Fetch Data Service Data Types (for searching)
 
-        await (async () => {
-            for (let s of getState().services.items) {
-                if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data
-                await dispatch(requestServiceDataTypes(s.id));  // Fetch available data types from all data providers
-                try {
-                    const response = await fetch(`/api${s.url}/data-types`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        await dispatch(receiveServiceDataTypes(s.id, data));
-                    } else {
-                        console.error(response);
-                        message.error(`Error fetching data types from service '${s.name}'`)
-                    }
-                } catch (e) {
-                    console.error(e);
-                    message.error(e);
+        for (let s of getState().services.items) {
+            if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data
+            await dispatch(requestServiceDataTypes(s.id));  // Fetch available data types from all data providers
+            try {
+                const response = await fetch(`/api${s.url}/data-types`);
+                if (response.ok) {
+                    const data = await response.json();
+                    await dispatch(receiveServiceDataTypes(s.id, data));
+                } else {
+                    console.error(response);
+                    message.error(`Error fetching data types from service '${s.name}'`)
                 }
+            } catch (e) {
+                console.error(e);
+                message.error(e);
             }
-        })();
+        }
 
 
         // Fetch Data Service Local Datasets
@@ -136,7 +141,8 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
                         await dispatch(receiveServiceDatasets(s.id, dt.id, data));
                     } else {
                         console.error(response);
-                        message.error(`Error fetching datasets from service '${s.name}' (data type ${dt.id})`);
+                        message.error(
+                            `Error fetching datasets from service '${s.name}' (data type ${dt.id})`);
                     }
                 } catch (e) {
                     console.error(e);
@@ -144,6 +150,8 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
                 }
             }
         }
+
+        await dispatch(endLoadingAllServiceData());
     };
 };
 

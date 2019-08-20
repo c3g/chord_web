@@ -1,4 +1,7 @@
 import {
+    BEGIN_LOADING_ALL_SERVICE_DATA,
+    END_LOADING_ALL_SERVICE_DATA,
+
     REQUEST_SERVICES,
     RECEIVE_SERVICES,
 
@@ -9,18 +12,25 @@ import {
     RECEIVE_SERVICE_DATA_TYPES,
 
     REQUEST_SERVICE_DATASETS,
-    RECEIVE_SERVICE_DATASETS
+    RECEIVE_SERVICE_DATASETS,
 } from "./actions";
 
 export const services = (
     state = {
         isFetching: false,
+        isLoadingAllData: false,
         items: [],
         itemsByID: {}
     },
     action
 ) => {
     switch (action.type) {
+        case BEGIN_LOADING_ALL_SERVICE_DATA:
+            return Object.assign({}, state, {isLoadingAllData: true});
+
+        case END_LOADING_ALL_SERVICE_DATA:
+            return Object.assign({}, state, {isLoadingAllData: false});
+
         case REQUEST_SERVICES:
             return Object.assign({}, state, {
                 isFetching: true,
@@ -113,7 +123,7 @@ export const serviceDatasets = (
 
         case RECEIVE_SERVICE_DATASETS:
             return Object.assign({}, state, {
-                isFetching: true,
+                isFetching: false,
                 datasetsByServiceAndDataTypeID: {
                     ...state.datasetsByServiceAndDataTypeID,
                     [action.serviceID]: {

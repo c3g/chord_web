@@ -227,7 +227,8 @@ class DiscoverySearchContent extends Component {
                     <Form.Item label="Data Type">
                         <Select size="large" showSearch placeholder="Data Type" style={{width: 200}}
                                 loading={this.props.dataTypesLoading}
-                                value={this.props.dataType ? `${this.props.service.id}_${this.props.dataType.id}` : undefined}
+                                value={this.props.dataType ? `${this.props.service.id}_${this.props.dataType.id}`
+                                    : undefined}
                                 onChange={this.handleDataTypeChange}>
                             {this.props.services.filter(s => this.props.dataTypes[s.id])
                                 .flatMap(s => this.props.dataTypes[s.id].map(dt =>  {

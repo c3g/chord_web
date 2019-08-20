@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Button, Layout, Menu, PageHeader, Table, Typography} from "antd";
+import {Button, Col, Layout, Menu, PageHeader, Row, Spin, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
+import "antd/es/row/style/css";
+import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
@@ -32,11 +34,15 @@ class DataManagerContent extends Component {
                             <Menu.Item key="1">Project 1</Menu.Item>
                         </Menu>
                     </Layout.Sider>
-                    <Layout.Content style={{background: "white", padding: "24px"}}>
+                    <Layout.Content style={{background: "white", padding: "24px", position: "relative"}}>
                         <Typography.Title level={2}>
                             Project 1
-                            <Button shape="circle" icon="edit" style={{verticalAlign: "top", margin: "6px 0 0 1em"}} />
                         </Typography.Title>
+                        <div style={{position: "absolute", top: "24px", right: "24px"}}>
+                            <Button icon="edit">Edit</Button>
+                            <Button type="danger" icon="delete"
+                                    style={{verticalAlign: "top", margin: "0 0 0 10px"}}>Delete</Button>
+                        </div>
                         <Typography.Paragraph style={{maxWidth: "600px"}}>
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis earum et laboriosam
                             laborum maxime reiciendis sunt temporibus. Alias, consectetur corporis cumque dignissimos
@@ -44,16 +50,26 @@ class DataManagerContent extends Component {
                         </Typography.Paragraph>
                         <Typography.Title level={3}>
                             Datasets
-                            <Button icon="plus" style={{verticalAlign: "top", marginTop: "2px", float: "right"}}>Add Dataset</Button>
+                            <Button icon="plus" style={{verticalAlign: "top", float: "right"}}>
+                                Add Dataset
+                            </Button>
                         </Typography.Title>
-                        <Table bordered rowSelection={{selectedRowKeys: [], onChange: () => {}}}
-                               dataSource={this.props.datasets} rowKey="id">
-                            <Table.Column dataIndex="id" title="ID" />
-                            <Table.Column dataIndex="dataTypeID" title="Data Type" />
-                            <Table.Column key="files" title="Files" />
-                            <Table.Column key="sharedWith" title="Shared With" />
-                            <Table.Column key="actions" title="Actions" />
-                        </Table>
+                        <Spin spinning={this.props.loadingDatasets}>
+                            <Table bordered dataSource={this.props.datasets} rowKey="id"
+                                   expandedRowRender={() => (<span>TODO: List of files</span>)}>
+                                <Table.Column dataIndex="id" title="ID" /> {/* TODO: Dataset name */}
+                                <Table.Column dataIndex="dataTypeID" title="Data Type" />
+                                <Table.Column key="files" title="Files" />
+                                <Table.Column key="actions" title="Actions" width={330} render={() => (
+                                    <Row gutter={10}>
+                                        <Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>
+                                        <Col span={7}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                                        <Col span={9}><Button type="danger" icon="delete"
+                                                               style={{width: "100%"}}>Delete</Button></Col>
+                                    </Row>
+                                )} />
+                            </Table>
+                        </Spin>
                     </Layout.Content>
                 </Layout>
             </div>
@@ -69,7 +85,7 @@ const mapStateToProps = state => {
             .flat())
         .flat();
     return {
-        loadingDatasets: state.serviceDatasets.isFetching, // TODO
+        loadingDatasets: state.services.isLoadingAllData,
         datasets: datasetList  // TODO
     };
 };
