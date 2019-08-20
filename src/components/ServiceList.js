@@ -69,6 +69,7 @@ const columns = [
     }
 ];
 
+// noinspection JSUnusedGlobalSymbols
 const ServiceList = connect(
     state => ({
         dataSource: state.services.items.map(service => ({
