@@ -15,7 +15,7 @@ import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modul
 class DataManagerContent extends Component {
     componentDidMount() {
         document.title = "CHORD - Manage Your Data";
-        this.props.fetchIfNeeded();
+        this.props.fetchServiceDataIfNeeded();
     }
 
     render() {
@@ -63,7 +63,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded())
+    fetchServiceDataIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);
