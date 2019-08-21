@@ -29,7 +29,7 @@ class DataDiscoveryContent extends Component {
             }
 
             return (
-                <div>
+                <>
                     <PageHeader title="Data Discovery" subTitle="Federated data exploration"
                                 style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
                     <Layout>
@@ -37,7 +37,7 @@ class DataDiscoveryContent extends Component {
                             <Content />
                         </Layout.Content>
                     </Layout>
-                </div>
+                </>
             );
         }
     }

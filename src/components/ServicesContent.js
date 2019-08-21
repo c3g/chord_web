@@ -13,7 +13,7 @@ class ServicesContent extends Component {
 
     render() {
         return (
-            <div>
+            <>
                 <PageHeader title="Services" subTitle="Application health monitor"
                             style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
                 <Layout>
@@ -21,7 +21,7 @@ class ServicesContent extends Component {
                         <ServiceList />
                     </Layout.Content>
                 </Layout>
-            </div>
+            </>
         );
     }
 }
