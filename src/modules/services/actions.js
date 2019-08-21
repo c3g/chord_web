@@ -66,6 +66,8 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
     return async (dispatch, getState) => {
         // Fetch Services
 
+        if (getState().services.isLoadingAllData) return;
+
         await dispatch(beginLoadingAllServiceData());
 
         await dispatch(fetchServices());
@@ -159,9 +161,9 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => {
     return async (dispatch, getState) => {
         const state = getState();
         if ((state.services.items.length === 0 ||
-            Object.keys(state.serviceMetadata.metadata).length === 0 ||
-            Object.keys(state.serviceDataTypes.dataTypes).length === 0) &&
-            !(state.services.isFetching || state.serviceMetadata.isFetching || state.serviceDataTypes.isFetching)) {
+                Object.keys(state.serviceMetadata.metadata).length === 0 ||
+                Object.keys(state.serviceDataTypes.dataTypes).length === 0) &&
+                !state.services.isLoadingAllData) {
             await fetchServicesWithMetadataAndDataTypesAndDatasets();
         }
     }
