@@ -5,7 +5,9 @@ import {
 
     BEGIN_PROJECT_CREATION,
     END_PROJECT_CREATION,
-    TERMINATE_PROJECT_CREATION
+    TERMINATE_PROJECT_CREATION,
+
+    TOGGLE_PROJECT_CREATION_MODAL
 } from "./actions";
 
 export const projects = (
@@ -24,7 +26,6 @@ export const projects = (
             });
 
         case RECEIVE_PROJECTS:
-            console.log(action);
             return Object.assign({}, state, {
                 isFetching: false,
                 items: action.projects,
@@ -54,6 +55,23 @@ export const projects = (
         case TERMINATE_PROJECT_CREATION:
             return Object.assign({}, state, {
                 isCreating: false
+            });
+
+        default:
+            return state;
+    }
+};
+
+export const manager = (
+    state = {
+        projectCreationModal: false
+    },
+    action
+) => {
+    switch (action.type) {
+        case TOGGLE_PROJECT_CREATION_MODAL:
+            return Object.assign({}, state, {
+                projectCreationModal: !state.projectCreationModal
             });
 
         default:
