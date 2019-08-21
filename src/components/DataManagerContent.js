@@ -39,7 +39,7 @@ class DataManagerContent extends Component {
         };
 
         return (
-            <div>
+            <>
                 <PageHeader title="Data Manager" subTitle="Share data with the CHORD federation"
                             style={{borderBottom: "1px solid rgb(232, 232, 232)"}}
                             extra={[<Button key="create_project" style={{marginTop: "-3px"}} type="primary"
@@ -76,7 +76,7 @@ class DataManagerContent extends Component {
                         </>
                     )}
                 </Layout>
-            </div>
+            </>
         );
     }
 }
