@@ -10,12 +10,31 @@ import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import DataUseDisplay from "../DataUseDisplay";
+
 class Project extends Component {
+    static getDerivedStateFromProps(nextProps) {
+        if ("value" in nextProps) {
+            return {...(nextProps.value || {})};
+        }
+        return null;
+    }
+
+    constructor(props) {
+        super(props);
+        const value = props.value || {};
+        this.state = {
+            name: value.name || "",
+            description: value.description || "",
+            data_use: value.data_use || []
+        }
+    }
+
     render() {
         return (
             <div>
                 <Typography.Title level={2}>
-                    {this.props.project.name}
+                    {this.state.name}
                 </Typography.Title>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
                     <Button icon="edit">Edit</Button>
@@ -23,9 +42,13 @@ class Project extends Component {
                             style={{verticalAlign: "top", margin: "0 0 0 10px"}}>Delete</Button>
                 </div>
                 <Typography.Paragraph style={{maxWidth: "600px"}}>
-                    {this.props.project.description}
+                    {this.state.description}
                 </Typography.Paragraph>
-                <Typography.Title level={3}>
+
+                <Typography.Title level={3}>Data Use</Typography.Title>
+                <DataUseDisplay uses={this.state.data_use} size="large" />
+
+                <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
                         <Button icon="plus" style={{verticalAlign: "top"}}>
@@ -55,7 +78,7 @@ class Project extends Component {
 }
 
 Project.propTypes = {
-    project: PropTypes.object,
+    value: PropTypes.object,
     datasets: PropTypes.arrayOf(PropTypes.object),
     loadingDatasets: PropTypes.bool
 };

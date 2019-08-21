@@ -78,11 +78,11 @@ const DATA_USE_INFO = {
 class DataUseDisplay extends Component {
     render() {
         return (
-            <Row gutter={8} type="flex">
+            <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
                 {DATA_USE_KEYS.map(u => {
                     let internalIcon = (
                         <Icon style={{
-                            fontSize: "20px",
+                            fontSize: this.props.size === "large" ? "24px" : "20px",
                             color: `rgba(0, 0, 0, ${this.props.uses.includes(u) ? 0.65 : 0.1})`
                         }} type={DATA_USE_INFO[u].icon} />
                     );
@@ -93,12 +93,12 @@ class DataUseDisplay extends Component {
                         internalIcon = (
                             <div style={{opacity: this.props.uses.includes(u) ? 0.65 : 0.1}}>
                                 <Icon style={{
-                                    fontSize: "20px",
+                                    fontSize: this.props.size === "large" ? "24px" : "20px",
                                     color: "black"
                                 }} type={DATA_USE_INFO[u].icon} />
                                 <Icon style={{
-                                    fontSize: "20px",
-                                    marginLeft: "-20px",
+                                    fontSize: this.props.size === "large" ? "24px" : "20px",
+                                    marginLeft: this.props.size === "large" ? "-24px" : "-20px",
                                     mixBlendMode: "overlay",
                                     color: "black"
                                 }} type="stop" />
@@ -127,7 +127,8 @@ class DataUseDisplay extends Component {
 }
 
 DataUseDisplay.propTypes = {
-    uses: PropTypes.arrayOf(PropTypes.string)
+    uses: PropTypes.arrayOf(PropTypes.string),
+    size: PropTypes.string
 };
 
 export default DataUseDisplay;

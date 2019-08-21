@@ -39,7 +39,7 @@ class DataManagerContent extends Component {
                         </Menu>
                     </Layout.Sider>
                     <Layout.Content style={{background: "white", padding: "24px", position: "relative"}}>
-                        <Project project={{name: projectName, description: projectDescription}}
+                        <Project value={{name: projectName, description: projectDescription}}
                                  datasets={this.props.datasets}
                                  loadingDatasets={this.props.loadingDatasets} />
                     </Layout.Content>
