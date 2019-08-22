@@ -69,11 +69,6 @@ class DataManagerContent extends Component {
             <Menu.Item key={project.id}>{project.name}</Menu.Item>
         ));
 
-        const projectName = "Project 1";
-        const projectDescription = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis earum et " +
-            "laboriosam laborum maxime reiciendis sunt temporibus. Alias, consectetur corporis cumque dignissimos " +
-            "eius eveniet ipsa laudantium numquam quis, suscipit vero!";
-
         const contentStyling = {
             background: "white",
             padding: "24px",
