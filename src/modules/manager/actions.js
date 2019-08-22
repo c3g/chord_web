@@ -71,7 +71,7 @@ export const createProject = project => async (dispatch, getState) => {
         const response = await fetch("/api/project/projects", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: {...project}
+            body: JSON.stringify(project)
         });
 
         if (response.ok) {
