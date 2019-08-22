@@ -3,6 +3,12 @@ import {
     REQUEST_PROJECTS,
     HANDLE_PROJECTS_ERROR,
 
+    BEGIN_FETCHING_PROJECT_DATASETS,
+    END_FETCHING_PROJECT_DATASETS,
+    REQUEST_PROJECT_DATASETS,
+    RECEIVE_PROJECT_DATASETS,
+    HANDLE_PROJECT_DATASETS_ERROR,
+
     BEGIN_PROJECT_CREATION,
     END_PROJECT_CREATION,
     TERMINATE_PROJECT_CREATION,
@@ -89,6 +95,50 @@ export const projects = (
                 isDeleting: false
             });
 
+
+        default:
+            return state;
+    }
+};
+
+export const projectDatasets = (
+    state = {
+        isFetching: false,
+        isFetchingAll: false,
+        itemsByProjectID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case BEGIN_FETCHING_PROJECT_DATASETS:
+            return Object.assign({}, state, {
+                isFetchingAll: true
+            });
+
+        case END_FETCHING_PROJECT_DATASETS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                isFetchingAll: false
+            });
+
+        case REQUEST_PROJECT_DATASETS:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+
+        case RECEIVE_PROJECT_DATASETS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                itemsByProjectID: {
+                    ...state.itemsByProjectID,
+                    [action.projectID]: action.datasets
+                }
+            });
+
+        case HANDLE_PROJECT_DATASETS_ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
 
         default:
             return state;

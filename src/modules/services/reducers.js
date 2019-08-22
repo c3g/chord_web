@@ -18,7 +18,7 @@ import {
 export const services = (
     state = {
         isFetching: false,
-        isLoadingAllData: false,
+        isFetchingAll: false,
         items: [],
         itemsByID: {}
     },
@@ -26,10 +26,10 @@ export const services = (
 ) => {
     switch (action.type) {
         case BEGIN_LOADING_ALL_SERVICE_DATA:
-            return Object.assign({}, state, {isLoadingAllData: true});
+            return Object.assign({}, state, {isFetchingAll: true});
 
         case END_LOADING_ALL_SERVICE_DATA:
-            return Object.assign({}, state, {isLoadingAllData: false});
+            return Object.assign({}, state, {isFetchingAll: false});
 
         case REQUEST_SERVICES:
             return Object.assign({}, state, {

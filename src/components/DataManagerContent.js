@@ -18,7 +18,7 @@ import ProjectCreationForm from "./manager/ProjectCreationForm";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
 import {
-    fetchProjects,
+    fetchProjectsWithDatasets,
     selectProjectIfItExists,
     createProject,
     deleteProject,
@@ -37,7 +37,7 @@ class DataManagerContent extends Component {
         this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
 
         await this.props.fetchServiceDataIfNeeded();
-        await this.props.fetchProjects();  // TODO: If needed
+        await this.props.fetchProjectsWithDatasets();  // TODO: If needed
         if (!this.props.selectedProject && this.props.projects.length > 0) {
             this.props.selectProject(this.props.projects[0].id);
         }
@@ -194,24 +194,38 @@ DataManagerContent.propTypes = {
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
-    fetchProjects: PropTypes.func,
+    fetchProjectsWithDatasets: PropTypes.func,
     createProject: PropTypes.func
 };
 
 const mapStateToProps = state => {
     const datasets = state.serviceDatasets.datasetsByServiceAndDataTypeID;
-    const datasetList = Object.keys(datasets)
-        .map(sID => Object.keys(datasets[sID])
-            .map(dtID => datasets[sID][dtID].map(ds => ({...ds, dataTypeID: dtID})))
-            .flat())
+
+    /**
+     * @typedef {Object} ProjectDataset
+     * @property {string} dataset_id
+     * @property {string} service_id
+     * @property {string} data_type_id
+     * @type {ProjectDataset[]}
+     */
+    const projectDatasetRecords = state.manager.selectedProjectID !== null
+        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID]
+        : [];
+
+    const datasetList = projectDatasetRecords
+        .filter(dataset => datasets.hasOwnProperty(dataset.service_id))
+        .map(dataset => datasets[dataset.service_id][dataset.data_type_id]
+            .filter(ds => ds.id === dataset.dataset_id)
+            .map(ds => ({...ds, dataTypeID: dataset.data_type_id})))
         .flat();
+
     return {
         showCreationModal: state.manager.projectCreationModal,
         showDeletionModal: state.manager.projectDeletionModal,
         projects: state.projects.items,
         loadingProjects: state.projects.isFetching,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
-        loadingDatasets: state.services.isLoadingAllData,
+        loadingDatasets: state.services.isFetchingAll || state.projectDatasets.isFetchingAll,
         datasets: datasetList  // TODO
     };
 };
@@ -220,7 +234,7 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    fetchProjects: async () => await dispatch(fetchProjects()),
+    fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     createProject: async project => await dispatch(createProject(project)),
     deleteProject: async projectID => await dispatch(deleteProject(projectID))

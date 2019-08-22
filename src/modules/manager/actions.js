@@ -17,6 +17,34 @@ const handleProjectsError = () => ({
 });
 
 
+export const BEGIN_FETCHING_PROJECT_DATASETS = "BEGIN_FETCHING_PROJECT_DATASETS";
+const beginFetchingProjectDatasets = () => ({
+    type: BEGIN_FETCHING_PROJECT_DATASETS
+});
+
+export const END_FETCHING_PROJECT_DATASETS = "END_FETCHING_PROJECT_DATASETS";
+const endFetchingProjectDatasets = () => ({
+    type: END_FETCHING_PROJECT_DATASETS
+});
+
+export const REQUEST_PROJECT_DATASETS = "REQUEST_PROJECT_DATASETS";
+const requestProjectDatasets = () => ({
+    type: REQUEST_PROJECT_DATASETS
+});
+
+export const RECEIVE_PROJECT_DATASETS = "RECEIVE_PROJECT_DATASETS";
+const receiveProjectDatasets = (projectID, datasets) => ({
+    type: RECEIVE_PROJECT_DATASETS,
+    projectID,
+    datasets
+});
+
+export const HANDLE_PROJECT_DATASETS_ERROR = "HANDLE_PROJECT_DATASETS_ERROR";
+const handleProjectDatasetsError = () => ({
+    type: HANDLE_PROJECT_DATASETS_ERROR
+});
+
+
 export const BEGIN_PROJECT_CREATION = "BEGIN_PROJECT_CREATION";
 const beginProjectCreation = () => ({
     type: BEGIN_PROJECT_CREATION
@@ -75,25 +103,45 @@ export const toggleProjectDeletionModal = () => ({
 
 
 // TODO: if needed fetching + invalidation
-export const fetchProjects = () => async (dispatch, getState) => {
+export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
     if (getState().projects.isFetching || getState().projects.isCreating || getState().projects.isDeleting) return;
 
     await dispatch(requestProjects());
 
     try {
         const response = await fetch("/api/project/projects");
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveProjects(data));
-        } else {
+        if (!response.ok) {
             // TODO: GUI error message
             console.error(response);
             await dispatch(handleProjectsError());
+            return;
         }
+
+        const data = await response.json();
+        await dispatch(receiveProjects(data));
+
+        await dispatch(beginFetchingProjectDatasets());
+
+        for (let project of getState().projects.items) {
+            await dispatch(requestProjectDatasets());
+
+            const dsResponse = await fetch(`/api/project/projects/${project.id}/datasets`);
+            if (dsResponse.ok) {
+                const datasets = await dsResponse.json();
+                await dispatch(receiveProjectDatasets(project.id, datasets));
+            } else {
+                // TODO: GUI Error message
+                console.error(dsResponse);
+                await dispatch(handleProjectDatasetsError());
+            }
+        }
+
+        await dispatch(endFetchingProjectDatasets());
     } catch (e) {
         // TODO: GUI error message
         console.error(e);
         await dispatch(handleProjectsError());
+        await dispatch(endFetchingProjectDatasets());
     }
 };
 
