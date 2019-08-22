@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Layout, Menu, Modal, PageHeader, Typography} from "antd";
+import {Button, Empty, Layout, Menu, Modal, PageHeader, Skeleton, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
@@ -10,6 +10,7 @@ import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/page-header/style/css";
+import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
 import Project from "./manager/Project";
@@ -95,8 +96,6 @@ class DataManagerContent extends Component {
             position: "relative"
         };
 
-        // TODO: LOADING INSTEAD OF "NO PROJECTS" MESSAGE
-
         return (
             <>
                 <PageHeader title="Data Manager" subTitle="Share data with the CHORD federation"
@@ -128,7 +127,7 @@ class DataManagerContent extends Component {
                     </Typography.Paragraph>
                 </Modal>
                 <Layout>
-                    {projectMenuItems.length === 0 ? (
+                    {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
                         <Layout.Content style={contentStyling}>
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false}>
                                 <Typography.Title level={3}>No Projects</Typography.Title>
@@ -163,8 +162,14 @@ class DataManagerContent extends Component {
                                              loadingDatasets={this.props.loadingDatasets}
                                              onDelete={() => this.props.toggleProjectDeletionModal()} />
                                  ) : (
-                                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                            description="Select a project from the menu on the left to manage it." />
+                                     this.props.loadingProjects ? (
+                                         <Skeleton title={{width: 300}}
+                                                   paragraph={{rows: 4, width: [600, 580, 600, 480]}} />
+                                     ) : (
+                                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                                description="Select a project from the menu on the left to manage it."
+                                         />
+                                     )
                                 )}
                             </Layout.Content>
                         </>
@@ -178,8 +183,11 @@ class DataManagerContent extends Component {
 DataManagerContent.propTypes = {
     showCreationModal: PropTypes.bool,
     showDeletionModal: PropTypes.bool,
+
     projects: PropTypes.arrayOf(PropTypes.object),
+    loadingProjects: PropTypes.bool,
     selectedProject: PropTypes.object,
+
     loadingDatasets: PropTypes.bool,
     datasets: PropTypes.arrayOf(PropTypes.object),
 
@@ -201,6 +209,7 @@ const mapStateToProps = state => {
         showCreationModal: state.manager.projectCreationModal,
         showDeletionModal: state.manager.projectDeletionModal,
         projects: state.projects.items,
+        loadingProjects: state.projects.isFetching,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
         loadingDatasets: state.services.isLoadingAllData,
         datasets: datasetList  // TODO
