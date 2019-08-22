@@ -32,7 +32,27 @@ class DataManagerContent extends Component {
     }
 
     handleSubmit() {
+        this.form.validateFields((err, values) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
 
+            // TODO: Update after response from Adrian
+            // TODO: Don't hard-code data use
+            const project = {
+                ...values,
+                data_use: {
+                    consent_code: {
+                        primary_category: {code: "GRU"},
+                        secondary_categories: [{code: "NGMR"}]
+                    },
+                    data_use_requirements: [{code: "COL"}, {code: "US"}]
+                }
+            };
+
+            this.props.createProject(project);
+        })
     }
 
     render() {
@@ -64,7 +84,7 @@ class DataManagerContent extends Component {
                     <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                     <Button key="create" icon="plus" type="primary" onClick={this.handleSubmit}>Create</Button>
                 ]} onCancel={this.handleCancel}>
-                    <ProjectCreationForm />
+                    <ProjectCreationForm ref={form => this.form = form} />
                 </Modal>
                 <Layout>
                     {projectMenuItems.length === 0 ? (
