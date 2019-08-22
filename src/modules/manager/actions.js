@@ -16,6 +16,7 @@ const handleProjectsError = () => ({
     type: HANDLE_PROJECTS_ERROR
 });
 
+
 export const BEGIN_PROJECT_CREATION = "BEGIN_PROJECT_CREATION";
 const beginProjectCreation = () => ({
     type: BEGIN_PROJECT_CREATION
@@ -30,6 +31,23 @@ const endProjectCreation = project => ({
 export const TERMINATE_PROJECT_CREATION = "TERMINATE_PROJECT_CREATION";
 const terminateProjectCreation = () => ({
     type: TERMINATE_PROJECT_CREATION
+});
+
+
+export const BEGIN_PROJECT_DELETION = "BEGIN_PROJECT_DELETION";
+const beginProjectDeletion = () => ({
+    type: BEGIN_PROJECT_DELETION
+});
+
+export const END_PROJECT_DELETION = "END_PROJECT_DELETION";
+const endProjectDeletion = projectID => ({
+    type: END_PROJECT_DELETION,
+    projectID
+});
+
+export const TERMINATE_PROJECT_DELETION = "TERMINATE_PROJECT_DELETION";
+const terminateProjectDeletion = () => ({
+    type: TERMINATE_PROJECT_DELETION
 });
 
 
@@ -58,7 +76,7 @@ export const toggleProjectDeletionModal = () => ({
 
 // TODO: if needed fetching + invalidation
 export const fetchProjects = () => async (dispatch, getState) => {
-    if (getState().projects.isFetching) return;
+    if (getState().projects.isFetching || getState().projects.isCreating || getState().projects.isDeleting) return;
 
     await dispatch(requestProjects());
 
@@ -107,5 +125,27 @@ export const createProject = project => async (dispatch, getState) => {
         // TODO: GUI error message
         console.error(e);
         await dispatch(terminateProjectCreation());
+    }
+};
+
+export const deleteProject = projectID => async (dispatch, getState) => {
+    if (getState().projects.isDeleting) return;
+
+    await dispatch(beginProjectDeletion());
+
+    try {
+        const response = await fetch(`/api/project/projects/${projectID}`, {method: "DELETE"});
+        if (response.ok) {
+            await dispatch(endProjectDeletion(projectID));
+            // TODO: Fix project selection
+        } else {
+            // TODO: GUI error message
+            console.error(response);
+            await dispatch(terminateProjectDeletion());
+        }
+    } catch (e) {
+        // TODO: GUI error message
+        console.error(e);
+        await dispatch(terminateProjectDeletion());
     }
 };

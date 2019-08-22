@@ -7,6 +7,10 @@ import {
     END_PROJECT_CREATION,
     TERMINATE_PROJECT_CREATION,
 
+    BEGIN_PROJECT_DELETION,
+    END_PROJECT_DELETION,
+    TERMINATE_PROJECT_DELETION,
+
     SELECT_PROJECT,
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL
@@ -16,6 +20,7 @@ export const projects = (
     state = {
         isFetching: false,
         isCreating: false,
+        isDeleting: false,
         items: [],
         itemsByID: {}
     },
@@ -39,6 +44,7 @@ export const projects = (
                 isFetching: false
             });
 
+
         case BEGIN_PROJECT_CREATION:
             return Object.assign({}, state, {
                 isCreating: true
@@ -59,6 +65,31 @@ export const projects = (
                 isCreating: false
             });
 
+
+        case BEGIN_PROJECT_DELETION:
+            return Object.assign({}, state, {
+                isDeleting: true
+            });
+
+        case END_PROJECT_DELETION:
+            let newState = Object.assign({}, state, {
+                isDeleting: false,
+                items: state.items.filter(p => p.id !== action.projectID),
+                itemsByID: {...state.itemsByID}
+            });
+
+            if (newState.itemsByID.hasOwnProperty(action.projectID)) {
+                delete newState.itemsByID[action.projectID];
+            }
+
+            return newState;
+
+        case TERMINATE_PROJECT_DELETION:
+            return Object.assign({}, state, {
+                isDeleting: false
+            });
+
+
         default:
             return state;
     }
@@ -74,9 +105,13 @@ export const manager = (
 ) => {
     switch (action.type) {
         case SELECT_PROJECT:
-            // TODO: Check if project exists? or do that in actions
             return Object.assign({}, state, {
                 selectedProjectID: action.projectID
+            });
+
+        case END_PROJECT_DELETION:
+            return Object.assign({}, state, {
+                selectedProjectID: state.selectedProjectID === action.projectID ? null : state.selectedProjectID
             });
 
         case TOGGLE_PROJECT_CREATION_MODAL:

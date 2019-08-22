@@ -20,21 +20,26 @@ import {
     fetchProjects,
     selectProjectIfItExists,
     createProject,
+    deleteProject,
     toggleProjectCreationModal,
     toggleProjectDeletionModal
 } from "../modules/manager/actions";
 
 class DataManagerContent extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         document.title = "CHORD - Manage Your Data";
-        this.props.fetchServiceDataIfNeeded();
-        this.props.fetchProjects();  // TODO: If needed
 
         this.handleCreateCancel = this.handleCreateCancel.bind(this);
         this.handleCreateSubmit = this.handleCreateSubmit.bind(this);
 
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
         this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
+
+        await this.props.fetchServiceDataIfNeeded();
+        await this.props.fetchProjects();  // TODO: If needed
+        if (!this.props.selectedProject && this.props.projects.length > 0) {
+            this.props.selectProject(this.props.projects[0].id);
+        }
     }
 
     handleCreateCancel() {
@@ -72,8 +77,11 @@ class DataManagerContent extends Component {
         this.props.toggleProjectDeletionModal();
     }
 
-    handleDeleteSubmit() {
-        // this.props.deleteProject(this.props.selectedProject.id);
+    async handleDeleteSubmit() {
+        await this.props.deleteProject(this.props.selectedProject.id);
+
+        // TODO: Only close modal if deletion was a success
+        this.props.toggleProjectDeletionModal();
     }
 
     render() {
@@ -86,6 +94,8 @@ class DataManagerContent extends Component {
             padding: "24px",
             position: "relative"
         };
+
+        // TODO: LOADING INSTEAD OF "NO PROJECTS" MESSAGE
 
         return (
             <>
@@ -198,12 +208,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchServiceDataIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
+    fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    fetchProjects: () => dispatch(fetchProjects()),
+    fetchProjects: async () => await dispatch(fetchProjects()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
-    createProject: async project => await dispatch(createProject(project))
+    createProject: async project => await dispatch(createProject(project)),
+    deleteProject: async projectID => await dispatch(deleteProject(projectID))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);
