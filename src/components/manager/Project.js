@@ -23,6 +23,7 @@ class Project extends Component {
     constructor(props) {
         super(props);
         const value = props.value || {};
+        this.onDelete = props.onDelete || (() => {});
         this.state = {
             name: value.name || "",
             description: value.description || "",
@@ -39,7 +40,8 @@ class Project extends Component {
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
                     <Button icon="edit">Edit</Button>
                     <Button type="danger" icon="delete"
-                            style={{verticalAlign: "top", margin: "0 0 0 10px"}}>Delete</Button>
+                            style={{verticalAlign: "top", margin: "0 0 0 10px"}}
+                            onClick={() => this.onDelete()}>Delete</Button>
                 </div>
                 <Typography.Paragraph style={{maxWidth: "600px"}}>
                     {this.state.description}
@@ -80,7 +82,8 @@ class Project extends Component {
 Project.propTypes = {
     value: PropTypes.object,
     datasets: PropTypes.arrayOf(PropTypes.object),
-    loadingDatasets: PropTypes.bool
+    loadingDatasets: PropTypes.bool,
+    onDelete: PropTypes.func
 };
 
 export default Project;

@@ -50,6 +50,11 @@ export const toggleProjectCreationModal = () => ({
     type: TOGGLE_PROJECT_CREATION_MODAL
 });
 
+export const TOGGLE_PROJECT_DELETION_MODAL = "TOGGLE_PROJECT_DELETION_MODAL";
+export const toggleProjectDeletionModal = () => ({
+    type: TOGGLE_PROJECT_DELETION_MODAL
+});
+
 
 // TODO: if needed fetching + invalidation
 export const fetchProjects = () => async (dispatch, getState) => {

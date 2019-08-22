@@ -20,7 +20,8 @@ import {
     fetchProjects,
     selectProjectIfItExists,
     createProject,
-    toggleProjectCreationModal
+    toggleProjectCreationModal,
+    toggleProjectDeletionModal
 } from "../modules/manager/actions";
 
 class DataManagerContent extends Component {
@@ -29,15 +30,18 @@ class DataManagerContent extends Component {
         this.props.fetchServiceDataIfNeeded();
         this.props.fetchProjects();  // TODO: If needed
 
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCreateCancel = this.handleCreateCancel.bind(this);
+        this.handleCreateSubmit = this.handleCreateSubmit.bind(this);
+
+        this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
+        this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
     }
 
-    handleCancel() {
+    handleCreateCancel() {
         this.props.toggleProjectCreationModal();
     }
 
-    handleSubmit() {
+    handleCreateSubmit() {
         this.form.validateFields(async (err, values) => {
             if (err) {
                 console.error(err);
@@ -64,6 +68,14 @@ class DataManagerContent extends Component {
         });
     }
 
+    handleDeleteCancel() {
+        this.props.toggleProjectDeletionModal();
+    }
+
+    handleDeleteSubmit() {
+        // this.props.deleteProject(this.props.selectedProject.id);
+    }
+
     render() {
         const projectMenuItems = this.props.projects.map(project => (
             <Menu.Item key={project.id}>{project.name}</Menu.Item>
@@ -85,10 +97,25 @@ class DataManagerContent extends Component {
                                 Create Project
                             </Button>]} />
                 <Modal visible={this.props.showCreationModal} title="Create Project" footer={[
-                    <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
-                    <Button key="create" icon="plus" type="primary" onClick={this.handleSubmit}>Create</Button>
-                ]} onCancel={this.handleCancel}>
+                    <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
+                    <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}>Create</Button>
+                ]} onCancel={this.handleCreateCancel}>
                     <ProjectCreationForm ref={form => this.form = form} />
+                </Modal>
+                <Modal visible={this.props.showDeletionModal}
+                       title={`Are you sure you want to delete the "${(this.props.selectedProject
+                           || {name: ""}).name}" project?`}
+                       footer={[
+                           <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
+                           <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}>
+                               Delete
+                           </Button>
+                       ]}
+                       onCancel={this.handleDeleteCancel}>
+                    <Typography.Paragraph>
+                        Deleting this project means all data contained in the project will be deleted permanently, and
+                        datasets will no longer be available for discovery within the CHORD federation.
+                    </Typography.Paragraph>
                 </Modal>
                 <Layout>
                     {projectMenuItems.length === 0 ? (
@@ -123,7 +150,8 @@ class DataManagerContent extends Component {
                                 {this.props.selectedProject ? (
                                     <Project value={this.props.selectedProject}
                                              datasets={this.props.datasets}
-                                             loadingDatasets={this.props.loadingDatasets} />
+                                             loadingDatasets={this.props.loadingDatasets}
+                                             onDelete={() => this.props.toggleProjectDeletionModal()} />
                                  ) : (
                                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
                                             description="Select a project from the menu on the left to manage it." />
@@ -139,6 +167,7 @@ class DataManagerContent extends Component {
 
 DataManagerContent.propTypes = {
     showCreationModal: PropTypes.bool,
+    showDeletionModal: PropTypes.bool,
     projects: PropTypes.arrayOf(PropTypes.object),
     selectedProject: PropTypes.object,
     loadingDatasets: PropTypes.bool,
@@ -146,6 +175,7 @@ DataManagerContent.propTypes = {
 
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
+    toggleProjectDeletionModal: PropTypes.func,
     fetchProjects: PropTypes.func,
     createProject: PropTypes.func
 };
@@ -159,6 +189,7 @@ const mapStateToProps = state => {
         .flat();
     return {
         showCreationModal: state.manager.projectCreationModal,
+        showDeletionModal: state.manager.projectDeletionModal,
         projects: state.projects.items,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
         loadingDatasets: state.services.isLoadingAllData,
@@ -169,6 +200,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
+    toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
     fetchProjects: () => dispatch(fetchProjects()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     createProject: async project => await dispatch(createProject(project))
