@@ -33,7 +33,7 @@ class DataManagerContent extends Component {
     }
 
     handleSubmit() {
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
             if (err) {
                 console.error(err);
                 return;
@@ -52,8 +52,11 @@ class DataManagerContent extends Component {
                 }
             };
 
-            this.props.createProject(project);
-        })
+            await this.props.createProject(project);
+
+            // TODO: Only close modal if submission was a success
+            this.props.toggleProjectCreationModal();
+        });
     }
 
     render() {
@@ -137,6 +140,7 @@ DataManagerContent.propTypes = {
     fetchProjects: PropTypes.func,
     createProject: PropTypes.func
 };
+
 const mapStateToProps = state => {
     const datasets = state.serviceDatasets.datasetsByServiceAndDataTypeID;
     const datasetList = Object.keys(datasets)
@@ -156,7 +160,7 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     fetchProjects: () => dispatch(fetchProjects()),
-    createProject: project => dispatch(createProject(project))
+    createProject: async project => await dispatch(createProject(project))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);
