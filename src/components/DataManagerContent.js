@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Button, Empty, Layout, Menu, Modal, PageHeader, Typography} from "antd";
 
@@ -125,6 +126,17 @@ class DataManagerContent extends Component {
     }
 }
 
+DataManagerContent.propTypes = {
+    showCreationModal: PropTypes.bool,
+    projects: PropTypes.arrayOf(PropTypes.object),
+    loadingDatasets: PropTypes.bool,
+    datasets: PropTypes.arrayOf(PropTypes.object),
+
+    fetchServiceDataIfNeeded: PropTypes.func,
+    toggleProjectCreationModal: PropTypes.func,
+    fetchProjects: PropTypes.func,
+    createProject: PropTypes.func
+};
 const mapStateToProps = state => {
     const datasets = state.serviceDatasets.datasetsByServiceAndDataTypeID;
     const datasetList = Object.keys(datasets)
