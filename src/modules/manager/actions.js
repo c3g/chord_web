@@ -32,10 +32,24 @@ const terminateProjectCreation = () => ({
     type: TERMINATE_PROJECT_CREATION
 });
 
+
+export const SELECT_PROJECT = "SELECT_PROJECT";
+const selectProject = projectID => ({
+    type: SELECT_PROJECT,
+    projectID
+});
+
+export const selectProjectIfItExists = projectID => async (dispatch, getState) => {
+    if (!getState().projects.itemsByID.hasOwnProperty(projectID)) return;
+    await dispatch(selectProject(projectID));
+};
+
+
 export const TOGGLE_PROJECT_CREATION_MODAL = "TOGGLE_PROJECT_CREATION_MODAL";
 export const toggleProjectCreationModal = () => ({
     type: TOGGLE_PROJECT_CREATION_MODAL
 });
+
 
 // TODO: if needed fetching + invalidation
 export const fetchProjects = () => async (dispatch, getState) => {
@@ -78,6 +92,7 @@ export const createProject = project => async (dispatch, getState) => {
             // Created
             const data = await response.json();
             await dispatch(endProjectCreation(data));
+            await dispatch(selectProject(data.id));
         } else {
             // TODO: GUI error message
             console.error(response);

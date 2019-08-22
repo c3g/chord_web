@@ -46,7 +46,7 @@ class Project extends Component {
                 </Typography.Paragraph>
 
                 <Typography.Title level={3}>Data Use</Typography.Title>
-                <DataUseDisplay uses={this.state.data_use} size="large" />
+                <DataUseDisplay uses={this.state.data_use.data_use_requirements.map(d => d.code)} size="large" />
 
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets

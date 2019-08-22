@@ -16,7 +16,12 @@ import Project from "./manager/Project";
 import ProjectCreationForm from "./manager/ProjectCreationForm";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
-import {fetchProjects, createProject, toggleProjectCreationModal} from "../modules/manager/actions";
+import {
+    fetchProjects,
+    selectProjectIfItExists,
+    createProject,
+    toggleProjectCreationModal
+} from "../modules/manager/actions";
 
 class DataManagerContent extends Component {
     componentDidMount() {
@@ -112,14 +117,22 @@ class DataManagerContent extends Component {
                     ) : (
                         <>
                             <Layout.Sider style={{background: "white"}} width={256}>
-                                <Menu style={{height: "100%"}} mode="inline">
+                                <Menu style={{height: "100%"}} mode="inline"
+                                      onClick={item => this.props.selectProject(item.key)}
+                                      selectedKeys={this.props.selectedProject ? [this.props.selectedProject.id] : []}>
                                     {projectMenuItems}
                                 </Menu>
                             </Layout.Sider>
                             <Layout.Content style={contentStyling}>
-                                <Project value={{name: projectName, description: projectDescription}}
-                                         datasets={this.props.datasets}
-                                         loadingDatasets={this.props.loadingDatasets} />
+                                {/* TODO: Fix project datasets */}
+                                {this.props.selectedProject ? (
+                                    <Project value={this.props.selectedProject}
+                                             datasets={this.props.datasets}
+                                             loadingDatasets={this.props.loadingDatasets} />
+                                 ) : (
+                                     <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                            description="Select a project from the menu on the left to manage it." />
+                                )}
                             </Layout.Content>
                         </>
                     )}
@@ -132,6 +145,7 @@ class DataManagerContent extends Component {
 DataManagerContent.propTypes = {
     showCreationModal: PropTypes.bool,
     projects: PropTypes.arrayOf(PropTypes.object),
+    selectedProject: PropTypes.object,
     loadingDatasets: PropTypes.bool,
     datasets: PropTypes.arrayOf(PropTypes.object),
 
@@ -151,6 +165,7 @@ const mapStateToProps = state => {
     return {
         showCreationModal: state.manager.projectCreationModal,
         projects: state.projects.items,
+        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
         loadingDatasets: state.services.isLoadingAllData,
         datasets: datasetList  // TODO
     };
@@ -160,6 +175,7 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: () => dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     fetchProjects: () => dispatch(fetchProjects()),
+    selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     createProject: async project => await dispatch(createProject(project))
 });
 

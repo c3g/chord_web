@@ -7,6 +7,7 @@ import {
     END_PROJECT_CREATION,
     TERMINATE_PROJECT_CREATION,
 
+    SELECT_PROJECT,
     TOGGLE_PROJECT_CREATION_MODAL
 } from "./actions";
 
@@ -64,11 +65,18 @@ export const projects = (
 
 export const manager = (
     state = {
+        selectedProjectID: null,
         projectCreationModal: false
     },
     action
 ) => {
     switch (action.type) {
+        case SELECT_PROJECT:
+            // TODO: Check if project exists? or do that in actions
+            return Object.assign({}, state, {
+                selectedProjectID: action.projectID
+            });
+
         case TOGGLE_PROJECT_CREATION_MODAL:
             return Object.assign({}, state, {
                 projectCreationModal: !state.projectCreationModal
