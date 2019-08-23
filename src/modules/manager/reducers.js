@@ -19,7 +19,9 @@ import {
 
     SELECT_PROJECT,
     TOGGLE_PROJECT_CREATION_MODAL,
-    TOGGLE_PROJECT_DELETION_MODAL
+    TOGGLE_PROJECT_DELETION_MODAL,
+    BEGIN_PROJECT_EDITING,
+    END_PROJECT_EDITING
 } from "./actions";
 
 export const projects = (
@@ -149,7 +151,8 @@ export const manager = (
     state = {
         selectedProjectID: null,
         projectCreationModal: false,
-        projectDeletionModal: false
+        projectDeletionModal: false,
+        editingProject: false
     },
     action
 ) => {
@@ -172,6 +175,16 @@ export const manager = (
         case TOGGLE_PROJECT_DELETION_MODAL:
             return Object.assign({}, state, {
                 projectDeletionModal: !state.projectDeletionModal
+            });
+
+        case BEGIN_PROJECT_EDITING:
+            return Object.assign({}, state, {
+                editingProject: true
+            });
+
+        case END_PROJECT_EDITING:
+            return Object.assign({}, state, {
+                editingProject: false
             });
 
         default:

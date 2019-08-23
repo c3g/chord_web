@@ -101,6 +101,16 @@ export const toggleProjectDeletionModal = () => ({
     type: TOGGLE_PROJECT_DELETION_MODAL
 });
 
+export const BEGIN_PROJECT_EDITING = "BEGIN_PROJECT_EDITING";
+export const beginProjectEditing = () => ({
+    type: BEGIN_PROJECT_EDITING
+});
+
+export const END_PROJECT_EDITING = "END_PROJECT_EDITING";
+export const endProjectEditing = () => ({
+    type: END_PROJECT_EDITING
+});
+
 
 // TODO: if needed fetching + invalidation
 export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {

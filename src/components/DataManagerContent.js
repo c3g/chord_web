@@ -23,7 +23,9 @@ import {
     createProject,
     deleteProject,
     toggleProjectCreationModal,
-    toggleProjectDeletionModal
+    toggleProjectDeletionModal,
+    beginProjectEditing,
+    endProjectEditing
 } from "../modules/manager/actions";
 
 class DataManagerContent extends Component {
@@ -160,7 +162,11 @@ class DataManagerContent extends Component {
                                     <Project value={this.props.selectedProject}
                                              datasets={this.props.datasets}
                                              loadingDatasets={this.props.loadingDatasets}
-                                             onDelete={() => this.props.toggleProjectDeletionModal()} />
+                                             editing={this.props.editingProject}
+                                             onDelete={() => this.props.toggleProjectDeletionModal()}
+                                             onEdit={() => this.props.beginProjectEditing()}
+                                             onCancelEdit={() => this.props.endProjectEditing()}
+                                             onSave={() => this.props.endProjectEditing()} />
                                  ) : (
                                      this.props.loadingProjects ? (
                                          <Skeleton title={{width: 300}}
@@ -187,6 +193,7 @@ DataManagerContent.propTypes = {
     projects: PropTypes.arrayOf(PropTypes.object),
     loadingProjects: PropTypes.bool,
     selectedProject: PropTypes.object,
+    editingProject: PropTypes.bool,
 
     loadingDatasets: PropTypes.bool,
     datasets: PropTypes.arrayOf(PropTypes.object),
@@ -194,6 +201,8 @@ DataManagerContent.propTypes = {
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
+    beginProjectEditing: PropTypes.func,
+    endProjectEditing: PropTypes.func,
     fetchProjectsWithDatasets: PropTypes.func,
     createProject: PropTypes.func
 };
@@ -222,6 +231,7 @@ const mapStateToProps = state => {
     return {
         showCreationModal: state.manager.projectCreationModal,
         showDeletionModal: state.manager.projectDeletionModal,
+        editingProject: state.manager.editingProject,
         projects: state.projects.items,
         loadingProjects: state.projects.isFetching,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
@@ -234,6 +244,8 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
+    beginProjectEditing: () => dispatch(beginProjectEditing()),
+    endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     createProject: async project => await dispatch(createProject(project)),

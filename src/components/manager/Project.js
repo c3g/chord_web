@@ -14,20 +14,37 @@ import DataUseDisplay from "../DataUseDisplay";
 
 class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
+        // TODO: Want to warn the user if the description has changed and they're editing...
         if ("value" in nextProps) {
-            return {...(nextProps.value || {})};
+            return {...(nextProps.value || {}), editing: nextProps.editing || false};
         }
         return null;
     }
 
+    handleCancelEdit() {
+        this._onCancelEdit();
+        this.setState({editedName: this.state.name, editedDescription: this.state.description});
+    }
+
     constructor(props) {
         super(props);
-        const value = props.value || {};
+
         this.onDelete = props.onDelete || (() => {});
+        this.onEdit = props.onEdit || (() => {});
+        this._onCancelEdit = props.onCancelEdit || (() => {});
+        this.onSave = props.onSave || (() => {});
+
+        this.handleCancelEdit = this.handleCancelEdit.bind(this);
+
+        const value = props.value || {};
         this.state = {
             name: value.name || "",
             description: value.description || "",
-            data_use: value.data_use || []
+            data_use: value.data_use || [],
+
+            editing: props.editing || false,
+            editedName: value.name || "",
+            editedDescription: value.description || ""
         }
     }
 
@@ -38,10 +55,24 @@ class Project extends Component {
                     {this.state.name}
                 </Typography.Title>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
-                    <Button icon="edit">Edit</Button>
-                    <Button type="danger" icon="delete"
-                            style={{verticalAlign: "top", margin: "0 0 0 10px"}}
-                            onClick={() => this.onDelete()}>Delete</Button>
+                    {this.state.editing ? (
+                        <>
+                            <Button type="primary" icon="check" onClick={() => this.onSave({
+                                name: this.state.editedName,
+                                description: this.state.editedDescription
+                            })}>Save</Button>
+                            <Button icon="close"
+                                    style={{marginLeft: "10px"}}
+                                    onClick={() => this.handleCancelEdit()}>Cancel</Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button icon="edit" onClick={() => this.onEdit()}>Edit</Button>
+                            <Button type="danger" icon="delete"
+                                    style={{marginLeft: "10px"}}
+                                    onClick={() => this.onDelete()}>Delete</Button>
+                        </>
+                    )}
                 </div>
                 <Typography.Paragraph style={{maxWidth: "600px"}}>
                     {this.state.description}
@@ -83,7 +114,11 @@ Project.propTypes = {
     value: PropTypes.object,
     datasets: PropTypes.arrayOf(PropTypes.object),
     loadingDatasets: PropTypes.bool,
-    onDelete: PropTypes.func
+    editing: PropTypes.bool,
+    onDelete: PropTypes.func,
+    onEdit: PropTypes.func,
+    onCancelEdit: PropTypes.func,
+    onSave: PropTypes.func
 };
 
 export default Project;
