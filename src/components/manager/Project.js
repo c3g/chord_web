@@ -16,7 +16,7 @@ class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
         // TODO: Want to warn the user if the description has changed and they're editing...
         if ("value" in nextProps) {
-            return {...(nextProps.value || {}), editing: nextProps.editing || false};
+            return {...(nextProps.value || {})};
         }
         return null;
     }
@@ -43,7 +43,6 @@ class Project extends Component {
             description: value.description || "",
             dataUse: JSON.parse(JSON.stringify(value.data_use)) || {},  // TODO: Defaults that follow schema, deep clone
 
-            editing: props.editing || false,
             editedName: value.name || "",
             editedDescription: value.description || "",
             editedDataUse: JSON.parse(JSON.stringify(value.data_use)) || {}  // TODO: Defaults that follow schema, clone
@@ -57,9 +56,9 @@ class Project extends Component {
                     {this.state.name}
                 </Typography.Title>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
-                    {this.state.editing ? (
+                    {this.props.editing ? (
                         <>
-                            <Button type="primary" icon="check" onClick={() => this.onSave({
+                            <Button type="primary" icon="check" loading={this.props.saving} onClick={() => this.onSave({
                                 id: this.state.id,
                                 name: this.state.editedName,
                                 description: this.state.editedDescription,
@@ -67,6 +66,7 @@ class Project extends Component {
                             })}>Save</Button>
                             <Button icon="close"
                                     style={{marginLeft: "10px"}}
+                                    disabled={this.props.saving}
                                     onClick={() => this.handleCancelEdit()}>Cancel</Button>
                         </>
                     ) : (
@@ -117,8 +117,11 @@ class Project extends Component {
 Project.propTypes = {
     value: PropTypes.object,
     datasets: PropTypes.arrayOf(PropTypes.object),
+
     loadingDatasets: PropTypes.bool,
     editing: PropTypes.bool,
+    saving: PropTypes.bool,
+
     onDelete: PropTypes.func,
     onEdit: PropTypes.func,
     onCancelEdit: PropTypes.func,

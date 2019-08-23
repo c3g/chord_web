@@ -25,7 +25,8 @@ import {
     toggleProjectCreationModal,
     toggleProjectDeletionModal,
     beginProjectEditing,
-    endProjectEditing
+    endProjectEditing,
+    saveProject
 } from "../modules/manager/actions";
 
 class DataManagerContent extends Component {
@@ -85,6 +86,11 @@ class DataManagerContent extends Component {
 
         // TODO: Only close modal if deletion was a success
         this.props.toggleProjectDeletionModal();
+    }
+
+    handleProjectSave(project) {
+        // TODO: Form validation for project
+        this.props.saveProject(project);
     }
 
     render() {
@@ -163,10 +169,11 @@ class DataManagerContent extends Component {
                                              datasets={this.props.datasets}
                                              loadingDatasets={this.props.loadingDatasets}
                                              editing={this.props.editingProject}
+                                             saving={this.props.savingProject}
                                              onDelete={() => this.props.toggleProjectDeletionModal()}
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
-                                             onSave={() => this.props.endProjectEditing()} />
+                                             onSave={project => this.handleProjectSave(project)} />
                                  ) : (
                                      this.props.loadingProjects ? (
                                          <Skeleton title={{width: 300}}
@@ -194,6 +201,7 @@ DataManagerContent.propTypes = {
     loadingProjects: PropTypes.bool,
     selectedProject: PropTypes.object,
     editingProject: PropTypes.bool,
+    savingProject: PropTypes.bool,
 
     loadingDatasets: PropTypes.bool,
     datasets: PropTypes.arrayOf(PropTypes.object),
@@ -204,7 +212,8 @@ DataManagerContent.propTypes = {
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
     fetchProjectsWithDatasets: PropTypes.func,
-    createProject: PropTypes.func
+    createProject: PropTypes.func,
+    saveProject: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -232,6 +241,7 @@ const mapStateToProps = state => {
         showCreationModal: state.manager.projectCreationModal,
         showDeletionModal: state.manager.projectDeletionModal,
         editingProject: state.manager.editingProject,
+        savingProject: state.projects.isSaving,
         projects: state.projects.items,
         loadingProjects: state.projects.isFetching,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
@@ -249,7 +259,8 @@ const mapDispatchToProps = dispatch => ({
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     createProject: async project => await dispatch(createProject(project)),
-    deleteProject: async projectID => await dispatch(deleteProject(projectID))
+    deleteProject: async projectID => await dispatch(deleteProject(projectID)),
+    saveProject: project => dispatch(saveProject(project))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);

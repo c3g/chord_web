@@ -111,6 +111,24 @@ export const endProjectEditing = () => ({
     type: END_PROJECT_EDITING
 });
 
+export const BEGIN_PROJECT_SAVE = "BEGIN_PROJECT_SAVE";
+export const beginProjectSave = projectID => ({
+    type: BEGIN_PROJECT_SAVE,
+    projectID
+});
+
+export const END_PROJECT_SAVE = "END_PROJECT_SAVE";
+export const endProjectSave = project => ({
+    type: END_PROJECT_SAVE,
+    project
+});
+
+export const TERMINATE_PROJECT_SAVE = "TERMINATE_PROJECT_SAVE";
+export const terminateProjectSave = project => ({
+    type: TERMINATE_PROJECT_SAVE,
+    project
+});
+
 
 // TODO: if needed fetching + invalidation
 export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
@@ -205,5 +223,36 @@ export const deleteProject = projectID => async (dispatch, getState) => {
         // TODO: GUI error message
         console.error(e);
         await dispatch(terminateProjectDeletion());
+    }
+};
+
+export const saveProject = project => async (dispatch, getState) => {
+    if (getState().projects.isDeleting) return;
+    if (getState().projects.isSaving) return;
+
+    console.log(project);
+
+    await dispatch(beginProjectSave(project.id));
+
+    try {
+        const response = await fetch(`/api/project/projects/${project.id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(project)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            await dispatch(endProjectEditing());
+            await dispatch(endProjectSave(data));
+        } else {
+            // TODO: GUI error message
+            console.error(response);
+            await dispatch(terminateProjectSave());
+        }
+    } catch (e) {
+        // TODO: GUI error message
+        console.error(e);
+        await dispatch(terminateProjectSave());
     }
 };

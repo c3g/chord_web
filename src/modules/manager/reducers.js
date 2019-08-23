@@ -20,8 +20,13 @@ import {
     SELECT_PROJECT,
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
+
     BEGIN_PROJECT_EDITING,
-    END_PROJECT_EDITING
+    END_PROJECT_EDITING,
+
+    BEGIN_PROJECT_SAVE,
+    END_PROJECT_SAVE,
+    TERMINATE_PROJECT_SAVE
 } from "./actions";
 
 export const projects = (
@@ -29,6 +34,7 @@ export const projects = (
         isFetching: false,
         isCreating: false,
         isDeleting: false,
+        isSaving: false,
         items: [],
         itemsByID: {}
     },
@@ -98,6 +104,27 @@ export const projects = (
             });
 
 
+        case BEGIN_PROJECT_SAVE:
+            return Object.assign({}, state, {
+                isSaving: true
+            });
+
+        case END_PROJECT_SAVE:
+            return Object.assign({}, state, {
+                isSaving: false,
+                items: [...state.items.filter(p => p.id !== action.project.id), action.project],
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.project.id]: action.project
+                }
+            });
+
+        case TERMINATE_PROJECT_SAVE:
+            return Object.assign({}, state, {
+                isSaving: false
+            });
+
+
         default:
             return state;
     }
@@ -112,6 +139,18 @@ export const projectDatasets = (
     action
 ) => {
     switch (action.type) {
+        case END_PROJECT_DELETION:
+            let newState = Object.assign({}, state, {
+                isDeleting: false,
+                itemsByProjectID: {...state.itemsByProjectID}
+            });
+
+            if (newState.itemsByProjectID.hasOwnProperty(action.projectID)) {
+                delete newState.itemsByProjectID[action.projectID];
+            }
+
+            return newState;
+
         case BEGIN_FETCHING_PROJECT_DATASETS:
             return Object.assign({}, state, {
                 isFetchingAll: true
