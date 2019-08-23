@@ -18,8 +18,10 @@ import {
     TERMINATE_PROJECT_DELETION,
 
     SELECT_PROJECT,
+
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
+    TOGGLE_PROJECT_DATASET_CREATION_MODAL,
 
     BEGIN_PROJECT_EDITING,
     END_PROJECT_EDITING,
@@ -202,6 +204,7 @@ export const manager = (
         selectedProjectID: null,
         projectCreationModal: false,
         projectDeletionModal: false,
+        projectDatasetCreationModal: false,
         editingProject: false
     },
     action
@@ -225,6 +228,11 @@ export const manager = (
         case TOGGLE_PROJECT_DELETION_MODAL:
             return Object.assign({}, state, {
                 projectDeletionModal: !state.projectDeletionModal
+            });
+
+        case TOGGLE_PROJECT_DATASET_CREATION_MODAL:
+            return Object.assign({}, state, {
+                projectDatasetCreationModal: !state.projectDatasetCreationModal
             });
 
         case BEGIN_PROJECT_EDITING:

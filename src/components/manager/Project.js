@@ -1,11 +1,10 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Col, Input, Row, Spin, Table, Typography} from "antd";
+import {Button, Col, Row, Spin, Table, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
-import "antd/es/input/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
@@ -13,6 +12,7 @@ import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
+
 
 class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
@@ -35,6 +35,7 @@ class Project extends Component {
         this.onEdit = props.onEdit || (() => {});
         this._onCancelEdit = props.onCancelEdit || (() => {});
         this._onSave = props.onSave || (() => {});
+        this.onCreateDataset = props.onCreateDataset || (() => {});
 
         this.editingForm = null;
 
@@ -112,8 +113,8 @@ class Project extends Component {
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}}>
-                            Add Dataset
+                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onCreateDataset()}>
+                            Create Dataset
                         </Button>
                     </div>
                 </Typography.Title>
@@ -149,7 +150,8 @@ Project.propTypes = {
     onDelete: PropTypes.func,
     onEdit: PropTypes.func,
     onCancelEdit: PropTypes.func,
-    onSave: PropTypes.func
+    onSave: PropTypes.func,
+    onCreateDataset: PropTypes.func
 };
 
 export default Project;

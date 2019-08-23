@@ -24,6 +24,7 @@ import {
     deleteProject,
     toggleProjectCreationModal,
     toggleProjectDeletionModal,
+    toggleProjectDatasetCreationModal,
     beginProjectEditing,
     endProjectEditing,
     saveProject
@@ -120,8 +121,7 @@ class DataManagerContent extends Component {
                     <ProjectForm ref={form => this.form = form} />
                 </Modal>
                 <Modal visible={this.props.showDeletionModal}
-                       title={`Are you sure you want to delete the "${(this.props.selectedProject
-                           || {name: ""}).name}" project?`}
+                       title={`Are you sure you want to delete the "${this.props.selectedProjectName}" project?`}
                        footer={[
                            <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
                            <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}>
@@ -133,6 +133,14 @@ class DataManagerContent extends Component {
                         Deleting this project means all data contained in the project will be deleted permanently, and
                         datasets will no longer be available for discovery within the CHORD federation.
                     </Typography.Paragraph>
+                </Modal>
+                <Modal visible={this.props.showDatasetCreationModal}
+                       title={`Create Dataset in "${this.props.selectedProjectName}"`}
+                       onCancel={() => this.props.toggleProjectDatasetCreationModal()}>
+                    {/* TODO: Dataset creation modal */}
+                    TODO: Dataset name
+                    TODO: Dataset service / data type (data type dropdown)
+                    TODO: Dataset file upload / pipeline selection? (or one pipeline per data type?)
                 </Modal>
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
@@ -173,7 +181,8 @@ class DataManagerContent extends Component {
                                              onDelete={() => this.props.toggleProjectDeletionModal()}
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
-                                             onSave={project => this.handleProjectSave(project)} />
+                                             onSave={project => this.handleProjectSave(project)}
+                                             onCreateDataset={() => this.props.toggleProjectDatasetCreationModal()} />
                                  ) : (
                                      this.props.loadingProjects ? (
                                          <Skeleton title={{width: 300}}
@@ -196,10 +205,15 @@ class DataManagerContent extends Component {
 DataManagerContent.propTypes = {
     showCreationModal: PropTypes.bool,
     showDeletionModal: PropTypes.bool,
+    showDatasetCreationModal: PropTypes.bool,
 
     projects: PropTypes.arrayOf(PropTypes.object),
+
     loadingProjects: PropTypes.bool,
+
     selectedProject: PropTypes.object,
+    selectedProjectName: PropTypes.string,
+
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
 
@@ -209,9 +223,13 @@ DataManagerContent.propTypes = {
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
+    toggleProjectDatasetCreationModal: PropTypes.func,
+
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
+
     fetchProjectsWithDatasets: PropTypes.func,
+
     createProject: PropTypes.func,
     saveProject: PropTypes.func
 };
@@ -237,14 +255,19 @@ const mapStateToProps = state => {
             .map(ds => ({...ds, dataTypeID: dataset.data_type_id})))
         .flat();
 
+    const selectedProject = state.projects.itemsByID[state.manager.selectedProjectID] || null;
+
     return {
         showCreationModal: state.manager.projectCreationModal,
         showDeletionModal: state.manager.projectDeletionModal,
+        showDatasetCreationModal: state.manager.projectDatasetCreationModal,
+
         editingProject: state.manager.editingProject,
         savingProject: state.projects.isSaving,
         projects: state.projects.items,
         loadingProjects: state.projects.isFetching,
-        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
+        selectedProject,
+        selectedProjectName: (selectedProject || {name: ""}).name,
         loadingDatasets: state.services.isFetchingAll || state.projectDatasets.isFetchingAll,
         datasets: datasetList
     };
@@ -254,6 +277,7 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
+    toggleProjectDatasetCreationModal: () => dispatch(toggleProjectDatasetCreationModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
