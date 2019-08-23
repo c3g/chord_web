@@ -29,6 +29,8 @@ import {
     TERMINATE_PROJECT_SAVE
 } from "./actions";
 
+const projectSort = (a, b) => a.name.localeCompare(b.name);
+
 export const projects = (
     state = {
         isFetching: false,
@@ -49,7 +51,7 @@ export const projects = (
         case RECEIVE_PROJECTS:
             return Object.assign({}, state, {
                 isFetching: false,
-                items: action.projects,
+                items: action.projects.sort(projectSort),
                 itemsByID: Object.assign({}, ...action.projects.map(p => ({[p.id]: p}))),
             });
 
@@ -67,7 +69,7 @@ export const projects = (
         case END_PROJECT_CREATION:
             return Object.assign({}, state, {
                 isCreating: false,
-                items: [...state.items, action.project],
+                items: [...state.items, action.project].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.project.id]: action.project
@@ -112,7 +114,7 @@ export const projects = (
         case END_PROJECT_SAVE:
             return Object.assign({}, state, {
                 isSaving: false,
-                items: [...state.items.filter(p => p.id !== action.project.id), action.project],
+                items: [...state.items.filter(p => p.id !== action.project.id), action.project].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.project.id]: action.project
@@ -139,6 +141,15 @@ export const projectDatasets = (
     action
 ) => {
     switch (action.type) {
+        case END_PROJECT_CREATION:
+            // TODO: Might want to re-fetch upon project creation instead...
+            return Object.assign({}, state, {
+                itemsByProjectID: {
+                    ...state.itemsByProjectID,
+                    [action.project.id]: []
+                }
+            });
+
         case END_PROJECT_DELETION:
             let newState = Object.assign({}, state, {
                 isDeleting: false,
