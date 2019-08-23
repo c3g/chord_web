@@ -35,7 +35,7 @@ class Project extends Component {
         this.onEdit = props.onEdit || (() => {});
         this._onCancelEdit = props.onCancelEdit || (() => {});
         this._onSave = props.onSave || (() => {});
-        this.onCreateDataset = props.onCreateDataset || (() => {});
+        this.onAddDataset = props.onAddDataset || (() => {});
 
         this.editingForm = null;
 
@@ -113,8 +113,8 @@ class Project extends Component {
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onCreateDataset()}>
-                            Create Dataset
+                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onAddDataset()}>
+                            Add Dataset
                         </Button>
                     </div>
                 </Typography.Title>
@@ -151,7 +151,7 @@ Project.propTypes = {
     onEdit: PropTypes.func,
     onCancelEdit: PropTypes.func,
     onSave: PropTypes.func,
-    onCreateDataset: PropTypes.func
+    onAddDataset: PropTypes.func
 };
 
 export default Project;

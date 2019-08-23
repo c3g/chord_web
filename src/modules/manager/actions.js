@@ -101,9 +101,9 @@ export const toggleProjectDeletionModal = () => ({
     type: TOGGLE_PROJECT_DELETION_MODAL
 });
 
-export const TOGGLE_PROJECT_DATASET_CREATION_MODAL = "TOGGLE_PROJECT_DATASET_CREATION_MODAL";
-export const toggleProjectDatasetCreationModal = () => ({
-    type: TOGGLE_PROJECT_DATASET_CREATION_MODAL
+export const TOGGLE_PROJECT_DATASET_ADDITION_MODAL = "TOGGLE_PROJECT_DATASET_ADDITION_MODAL";
+export const toggleProjectDatasetAdditionModal = () => ({
+    type: TOGGLE_PROJECT_DATASET_ADDITION_MODAL
 });
 
 export const BEGIN_PROJECT_EDITING = "BEGIN_PROJECT_EDITING";

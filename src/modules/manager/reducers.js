@@ -21,7 +21,7 @@ import {
 
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
-    TOGGLE_PROJECT_DATASET_CREATION_MODAL,
+    TOGGLE_PROJECT_DATASET_ADDITION_MODAL,
 
     BEGIN_PROJECT_EDITING,
     END_PROJECT_EDITING,
@@ -230,7 +230,7 @@ export const manager = (
                 projectDeletionModal: !state.projectDeletionModal
             });
 
-        case TOGGLE_PROJECT_DATASET_CREATION_MODAL:
+        case TOGGLE_PROJECT_DATASET_ADDITION_MODAL:
             return Object.assign({}, state, {
                 projectDatasetCreationModal: !state.projectDatasetCreationModal
             });

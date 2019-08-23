@@ -24,7 +24,7 @@ import {
     deleteProject,
     toggleProjectCreationModal,
     toggleProjectDeletionModal,
-    toggleProjectDatasetCreationModal,
+    toggleProjectDatasetAdditionModal,
     beginProjectEditing,
     endProjectEditing,
     saveProject
@@ -135,8 +135,8 @@ class DataManagerContent extends Component {
                     </Typography.Paragraph>
                 </Modal>
                 <Modal visible={this.props.showDatasetCreationModal}
-                       title={`Create Dataset in "${this.props.selectedProjectName}"`}
-                       onCancel={() => this.props.toggleProjectDatasetCreationModal()}>
+                       title={`Add Dataset to "${this.props.selectedProjectName}"`}
+                       onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
                     {/* TODO: Dataset creation modal */}
                     TODO: Dataset name
                     TODO: Dataset service / data type (data type dropdown)
@@ -182,7 +182,7 @@ class DataManagerContent extends Component {
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
-                                             onCreateDataset={() => this.props.toggleProjectDatasetCreationModal()} />
+                                             onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()} />
                                  ) : (
                                      this.props.loadingProjects ? (
                                          <Skeleton title={{width: 300}}
@@ -223,7 +223,7 @@ DataManagerContent.propTypes = {
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
-    toggleProjectDatasetCreationModal: PropTypes.func,
+    toggleProjectDatasetAdditionModal: PropTypes.func,
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
@@ -277,7 +277,7 @@ const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    toggleProjectDatasetCreationModal: () => dispatch(toggleProjectDatasetCreationModal()),
+    toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
