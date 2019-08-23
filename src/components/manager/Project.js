@@ -1,16 +1,18 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Col, Row, Spin, Table, Typography} from "antd";
+import {Button, Col, Input, Row, Spin, Table, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
+import "antd/es/input/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
+import ProjectForm from "./ProjectForm";
 
 class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
@@ -32,9 +34,12 @@ class Project extends Component {
         this.onDelete = props.onDelete || (() => {});
         this.onEdit = props.onEdit || (() => {});
         this._onCancelEdit = props.onCancelEdit || (() => {});
-        this.onSave = props.onSave || (() => {});
+        this._onSave = props.onSave || (() => {});
+
+        this.editingForm = null;
 
         this.handleCancelEdit = this.handleCancelEdit.bind(this);
+        this.handleSave = this.handleSave.bind(this);
 
         const value = props.value || {};
         this.state = {
@@ -43,27 +48,36 @@ class Project extends Component {
             description: value.description || "",
             dataUse: JSON.parse(JSON.stringify(value.data_use)) || {},  // TODO: Defaults that follow schema, deep clone
 
-            editedName: value.name || "",
-            editedDescription: value.description || "",
             editedDataUse: JSON.parse(JSON.stringify(value.data_use)) || {}  // TODO: Defaults that follow schema, clone
         }
+    }
+
+    handleSave() {
+        this.editingForm.validateFields((err, values) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            this._onSave({
+                id: this.state.id,
+                name: values.name || this.state.name,  // Name can't be blank, so false-y "" case can be ignored.
+                description: values.description === undefined
+                    ? this.state.description
+                    : values.description,
+                data_use: this.state.editedDataUse // TODO
+            });
+        })
     }
 
     render() {
         return (
             <div>
-                <Typography.Title level={2}>
-                    {this.state.name}
-                </Typography.Title>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
                     {this.props.editing ? (
                         <>
-                            <Button type="primary" icon="check" loading={this.props.saving} onClick={() => this.onSave({
-                                id: this.state.id,
-                                name: this.state.editedName,
-                                description: this.state.editedDescription,
-                                data_use: this.state.editedDataUse
-                            })}>Save</Button>
+                            <Button type="primary" icon="check" loading={this.props.saving}
+                                    onClick={() => this.handleSave()}>Save</Button>
                             <Button icon="close"
                                     style={{marginLeft: "10px"}}
                                     disabled={this.props.saving}
@@ -78,12 +92,22 @@ class Project extends Component {
                         </>
                     )}
                 </div>
-                <Typography.Paragraph style={{maxWidth: "600px"}}>
-                    {this.state.description}
-                </Typography.Paragraph>
-
-                <Typography.Title level={3}>Data Use</Typography.Title>
-                <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} size="large" />
+                {this.props.editing ? (
+                    <ProjectForm style={{maxWidth: "600px"}}
+                                 initialValue={{name: this.state.name, description: this.state.description}}
+                                 ref={form => this.editingForm = form} />
+                ) : (
+                    <>
+                        <Typography.Title level={2}>
+                            {this.state.name}
+                        </Typography.Title>
+                        <Typography.Paragraph style={{maxWidth: "600px"}}>
+                            {this.state.description}
+                        </Typography.Paragraph>
+                        <Typography.Title level={3}>Data Use</Typography.Title>
+                        <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} size="large" />
+                    </>
+                )}
 
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets

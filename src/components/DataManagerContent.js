@@ -14,7 +14,7 @@ import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
 import Project from "./manager/Project";
-import ProjectCreationForm from "./manager/ProjectCreationForm";
+import ProjectForm from "./manager/ProjectForm";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
 import {
@@ -117,7 +117,7 @@ class DataManagerContent extends Component {
                     <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
                     <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}>Create</Button>
                 ]} onCancel={this.handleCreateCancel}>
-                    <ProjectCreationForm ref={form => this.form = form} />
+                    <ProjectForm ref={form => this.form = form} />
                 </Modal>
                 <Modal visible={this.props.showDeletionModal}
                        title={`Are you sure you want to delete the "${(this.props.selectedProject
