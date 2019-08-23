@@ -38,13 +38,15 @@ class Project extends Component {
 
         const value = props.value || {};
         this.state = {
+            id: value.id || null,
             name: value.name || "",
             description: value.description || "",
-            data_use: value.data_use || [],
+            dataUse: JSON.parse(JSON.stringify(value.data_use)) || {},  // TODO: Defaults that follow schema, deep clone
 
             editing: props.editing || false,
             editedName: value.name || "",
-            editedDescription: value.description || ""
+            editedDescription: value.description || "",
+            editedDataUse: JSON.parse(JSON.stringify(value.data_use)) || {}  // TODO: Defaults that follow schema, clone
         }
     }
 
@@ -58,8 +60,10 @@ class Project extends Component {
                     {this.state.editing ? (
                         <>
                             <Button type="primary" icon="check" onClick={() => this.onSave({
+                                id: this.state.id,
                                 name: this.state.editedName,
-                                description: this.state.editedDescription
+                                description: this.state.editedDescription,
+                                data_use: this.state.editedDataUse
                             })}>Save</Button>
                             <Button icon="close"
                                     style={{marginLeft: "10px"}}
@@ -79,7 +83,7 @@ class Project extends Component {
                 </Typography.Paragraph>
 
                 <Typography.Title level={3}>Data Use</Typography.Title>
-                <DataUseDisplay uses={this.state.data_use.data_use_requirements.map(d => d.code)} size="large" />
+                <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} size="large" />
 
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
