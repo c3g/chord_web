@@ -226,7 +226,7 @@ const mapStateToProps = state => {
         loadingProjects: state.projects.isFetching,
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
         loadingDatasets: state.services.isFetchingAll || state.projectDatasets.isFetchingAll,
-        datasets: datasetList  // TODO
+        datasets: datasetList
     };
 };
 
