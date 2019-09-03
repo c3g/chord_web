@@ -30,6 +30,8 @@ import {
     saveProject
 } from "../modules/manager/actions";
 
+import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+
 class DataManagerContent extends Component {
     async componentDidMount() {
         document.title = "CHORD - Manage Your Data";
@@ -107,9 +109,12 @@ class DataManagerContent extends Component {
 
         return (
             <>
-                <PageHeader title="Data Manager" subTitle="Share data with the CHORD federation"
-                            style={{borderBottom: "1px solid rgb(232, 232, 232)"}}
-                            extra={[<Button key="create_project" style={{marginTop: "-3px"}} type="primary"
+                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Manager</div>}
+                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>
+                                Share data with the CHORD federation
+                            </span>}
+                            style={PAGE_HEADER_STYLE}
+                            extra={[<Button key="create_project" type="primary"
                                             onClick={() => this.props.toggleProjectCreationModal()}
                                             icon="plus">
                                 Create Project

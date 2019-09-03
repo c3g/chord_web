@@ -10,6 +10,8 @@ import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 
 import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../modules/discovery/actions";
 
+import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+
 
 class DataDiscoveryContent extends Component {
     constructor(props) {
@@ -30,8 +32,9 @@ class DataDiscoveryContent extends Component {
 
             return (
                 <>
-                    <PageHeader title="Data Discovery" subTitle="Federated data exploration"
-                                style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
+                    <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Discovery</div>}
+                                subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Federated data exploration</span>}
+                                style={PAGE_HEADER_STYLE} />
                     <Layout>
                         <Layout.Content style={{background: "white", padding: "24px 30px"}}>
                             <Content />

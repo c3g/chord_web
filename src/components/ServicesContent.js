@@ -5,6 +5,8 @@ import "antd/es/layout/style/css";
 
 import ServiceList from "./ServiceList";
 
+import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+
 
 class ServicesContent extends Component {
     componentDidMount() {
@@ -14,8 +16,9 @@ class ServicesContent extends Component {
     render() {
         return (
             <>
-                <PageHeader title="Services" subTitle="Application health monitor"
-                            style={{borderBottom: "1px solid rgb(232, 232, 232)"}}/>
+                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Services</div>}
+                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Application health monitor</span>}
+                            style={PAGE_HEADER_STYLE}/>
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <ServiceList />
