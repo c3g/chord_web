@@ -33,4 +33,4 @@ class ProjectForm extends Component {
     }
 }
 
-export default Form.create({name: "project_creation_form"})(ProjectForm);
+export default Form.create({name: "project_form"})(ProjectForm);

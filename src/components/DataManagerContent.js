@@ -13,6 +13,7 @@ import "antd/es/page-header/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
+import DatasetForm from "./manager/DatasetForm";
 import Project from "./manager/Project";
 import ProjectForm from "./manager/ProjectForm";
 
@@ -142,9 +143,7 @@ class DataManagerContent extends Component {
                 <Modal visible={this.props.showDatasetCreationModal}
                        title={`Add Dataset to "${this.props.selectedProjectName}"`}
                        onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
-                    {/* TODO: Dataset creation modal */}
-                    TODO: Dataset name
-                    TODO: Dataset service / data type (data type dropdown)
+                    <DatasetForm /> {/* TODO */}
                     TODO: Dataset file upload / pipeline selection? (or one pipeline per data type?)
                 </Modal>
                 <Layout>
