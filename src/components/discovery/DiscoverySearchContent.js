@@ -4,11 +4,13 @@ import PropTypes from "prop-types";
 
 import {
     Button,
+    Col,
     Collapse,
     Divider,
     Empty,
     Form,
     Modal,
+    Row,
     Select,
     Spin,
     Table,
@@ -42,12 +44,21 @@ class DiscoverySearchContent extends Component {
     constructor(props) {
         super(props);
 
+        // TODO: Redux?
+        this.state = {
+            dataUseTermsModalShown: false,
+            dataset: null,
+            terms: null
+        };
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSearchSelect = this.handleSearchSelect.bind(this);
         this.renderSearches = this.renderSearches.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleDataTypeChange = this.handleDataTypeChange.bind(this);
         this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
+        this.handleDatasetTermsClick = this.handleDatasetTermsClick.bind(this);
+        this.handleDatasetTermsCancel = this.handleDatasetTermsCancel.bind(this);
     }
 
     handleFormChange(fields) {
@@ -63,6 +74,27 @@ class DiscoverySearchContent extends Component {
     handleSearchSelect(searchIndex) {
         if (this.props.dataType === null) return;
         this.props.selectSearch(this.props.service.id, this.props.dataType.id, parseInt(searchIndex, 10));
+    }
+
+    handleDatasetTermsClick(dataset) {
+        this.setState({
+            dataUseTermsModalShown: true,
+            dataset: dataset.id,
+            terms: dataset.dataUse
+        });
+    }
+
+    handleDatasetTermsCancel() {
+        this.setState({dataUseTermsModalShown: false});
+    }
+
+    handleDataTypeChange(value) {
+        const [sID, dtID] = value.split("_");
+        this.props.selectDataType(sID, dtID);
+    }
+
+    handleSchemaToggle() {
+        this.props.toggleSchemaModal();
     }
 
     renderSearches() {
@@ -82,10 +114,17 @@ class DiscoverySearchContent extends Component {
                                dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
                                rowKey="id">
                             <Table.Column title="Dataset ID" dataIndex="id" />
-                            <Table.Column title="Data Use" dataIndex="dataUse"
-                                          render={du => (<DataUseDisplay uses={du} />)} />
-                            <Table.Column title="Actions" dataIndex="actions" width={136} render={() => (
-                                <a href="#">{/* TODO: Real actions */}Request Access</a>
+                            <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
+                                <Row type="flex">
+                                    <Col>
+                                        <Button type="link" onClick={() => this.handleDatasetTermsClick(dataset)}>
+                                            Show Data Use Terms
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button type="link">{/* TODO: Real actions */}Request Access</Button>
+                                    </Col>
+                                </Row>
                             )} />
                         </Table>
                     </Collapse.Panel>
@@ -94,18 +133,9 @@ class DiscoverySearchContent extends Component {
         );
     }
 
-    handleDataTypeChange(value) {
-        const [sID, dtID] = value.split("_");
-        this.props.selectDataType(sID, dtID);
-    }
-
-    handleSchemaToggle() {
-        this.props.toggleSchemaModal();
-    }
-
     render() {
         return (
-            <div>
+            <>
                 <Form layout="inline">
                     <Form.Item label="Data Type">
                         <Select size="large" showSearch placeholder="Data Type" style={{width: 200}}
@@ -125,23 +155,33 @@ class DiscoverySearchContent extends Component {
                 </Form>
 
                 {this.props.dataType ? (
-                    <div>
-                        <Modal title={`${this.props.dataType.id} Schema`} visible={this.props.modalShown}
+                    <>
+                        <Modal title={`${this.props.dataType.id} Schema`} visible={this.props.schemaModalShown}
                                onCancel={this.handleSchemaToggle} footer={null}>
                             <SchemaTree schema={this.props.dataType.schema} />
                         </Modal>
+
                         <Divider />
+
                         <DiscoverySearchForm dataType={this.props.dataType} formValues={this.props.formValues}
                                              loading={this.props.searchLoading}
                                              onChange={this.handleFormChange} onSubmit={this.handleSubmit} />
+
                         <Divider />
+
+                        <Modal title={`Dataset ${(this.state.dataset || "").substr(0, 18)}…: Data Use Terms`}
+                               visible={this.state.dataUseTermsModalShown}
+                               onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
+                            <DataUseDisplay uses={this.state.terms} />
+                        </Modal>
+
                         <Typography.Title level={3}>Results</Typography.Title>
                         <Spin spinning={this.props.searchLoading}>
                             {this.renderSearches()}
                         </Spin>
-                    </div>
+                    </>
                 ) : null}
-            </div>
+            </>
         );
     }
 }
@@ -186,7 +226,7 @@ const mapStateToProps = state => {
         dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetching
             || Object.keys(state.serviceDataTypes.dataTypes).length === 0,
 
-        modalShown: state.discovery.modalShown,
+        schemaModalShown: state.discovery.schemaModalShown,
 
         searches: dataTypeExists && searchesExist
             ? state.discovery.searchesByServiceAndDataTypeID[sID][dID]

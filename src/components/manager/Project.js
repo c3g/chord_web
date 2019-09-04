@@ -106,7 +106,7 @@ class Project extends Component {
                             {this.state.description}
                         </Typography.Paragraph>
                         <Typography.Title level={3}>Data Use</Typography.Title>
-                        <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} size="large" />
+                        <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} />
                     </>
                 )}
 

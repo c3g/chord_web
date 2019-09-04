@@ -87,16 +87,15 @@ const TAG_LABEL_STYLING = {
 
 class DataUseDisplay extends Component {
     render() {
+        const uses = this.props.uses || [];
+
         return (
-            <div style={{
-                display: "flex",
-                flexDirection: this.props.size === "large" ? "column" : "row"
-            }}>
+            <>
                 <div>
-                    <Typography.Title level={4} style={{fontSize: this.props.size === "large" ? "20px" : "14px"}}>
+                    <Typography.Title level={4} style={{fontSize: "20px"}}>
                         Consent Code
                     </Typography.Title>
-                    <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
+                    <Row gutter={10} type="flex">
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Primary</div>
                             <Tag color="blue" style={{fontFamily: "monospace"}}>GRU-CC</Tag>
@@ -110,16 +109,16 @@ class DataUseDisplay extends Component {
                         </Col>
                     </Row>
                 </div>
-                <div style={{margin: this.props.size === "large" ? "20px 0 0 0" : "0 0 0 20px"}}>
-                <Typography.Title level={4} style={{fontSize: this.props.size === "large" ? "20px" : "14px"}}>
+                <div style={{marginTop: "20px"}}>
+                <Typography.Title level={4}>
                     Restrictions and Conditions
                 </Typography.Title>
-                <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
+                <Row gutter={10} type="flex">
                     {DATA_USE_KEYS.map(u => {
                         let internalIcon = (
                             <Icon style={{
-                                fontSize: this.props.size === "large" ? "24px" : "20px",
-                                color: `rgba(0, 0, 0, ${this.props.uses.includes(u) ? 0.65 : 0.1})`
+                                fontSize: "24px",
+                                color: `rgba(0, 0, 0, ${uses.includes(u) ? 0.65 : 0.1})`
                             }} type={DATA_USE_INFO[u].icon} />
                         );
 
@@ -127,14 +126,14 @@ class DataUseDisplay extends Component {
                             // Special case for non-profit use; stack two icons (dollar + stop) to
                             // create a custom synthetic icon.
                             internalIcon = (
-                                <div style={{opacity: this.props.uses.includes(u) ? 0.65 : 0.1}}>
+                                <div style={{opacity: uses.includes(u) ? 0.65 : 0.1}}>
                                     <Icon style={{
-                                        fontSize: this.props.size === "large" ? "24px" : "20px",
+                                        fontSize: "24px",
                                         color: "black"
                                     }} type={DATA_USE_INFO[u].icon} />
                                     <Icon style={{
-                                        fontSize: this.props.size === "large" ? "24px" : "20px",
-                                        marginLeft: this.props.size === "large" ? "-24px" : "-20px",
+                                        fontSize: "24px",
+                                        marginLeft: "-24px",
                                         mixBlendMode: "overlay",
                                         color: "black"
                                     }} type="stop" />
@@ -145,7 +144,7 @@ class DataUseDisplay extends Component {
                         // noinspection HtmlDeprecatedAttribute
                         return (
                             <Col key={u}>
-                                {this.props.uses.includes(u) ? (
+                                {uses.includes(u) ? (
                                     <Popover title={DATA_USE_INFO[u].title}
                                              content={DATA_USE_INFO[u].content}
                                              trigger="hover"
@@ -159,14 +158,13 @@ class DataUseDisplay extends Component {
                     })}
                 </Row>
                 </div>
-            </div>
+            </>
         );
     }
 }
 
 DataUseDisplay.propTypes = {
-    uses: PropTypes.arrayOf(PropTypes.string),
-    size: PropTypes.string
+    uses: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default DataUseDisplay;

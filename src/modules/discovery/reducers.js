@@ -16,7 +16,7 @@ import {
 export const discovery = (
     state = {
         isFetching: false,
-        modalShown: false,
+        schemaModalShown: false,
         selectedServiceID: null,
         selectedDataTypeID: null,
         searchFormsByServiceAndDataTypeID: {},
@@ -41,7 +41,7 @@ export const discovery = (
 
         case TOGGLE_DISCOVERY_SCHEMA_MODAL:
             return Object.assign({}, state, {
-                modalShown: !state.modalShown
+                schemaModalShown: !state.schemaModalShown
             });
 
         case REQUEST_SEARCH:
