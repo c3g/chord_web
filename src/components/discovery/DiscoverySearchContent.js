@@ -82,7 +82,7 @@ class DiscoverySearchContent extends Component {
                                dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
                                rowKey="id">
                             <Table.Column title="Dataset ID" dataIndex="id" />
-                            <Table.Column title="Data Use Restrictions" dataIndex="dataUse" width={336}
+                            <Table.Column title="Data Use" dataIndex="dataUse"
                                           render={du => (<DataUseDisplay uses={du} />)} />
                             <Table.Column title="Actions" dataIndex="actions" width={136} render={() => (
                                 <a href="#">{/* TODO: Real actions */}Request Access</a>

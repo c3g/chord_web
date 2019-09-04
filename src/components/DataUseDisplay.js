@@ -1,12 +1,14 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Col, Icon, Popover, Row} from "antd";
+import {Col, Icon, Popover, Row, Tag, Typography} from "antd";
 
 import "antd/es/col/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
+import "antd/es/tag/style/css";
+import "antd/es/typography/style/css";
 
 
 const DATA_USE_KEYS = ["COL", "IRB", "GS", "IS", "NPU", "PS", "MOR", "PUB", "RTN", "TS", "US"];
@@ -75,53 +77,89 @@ const DATA_USE_INFO = {
 };
 
 
+const TAG_LABEL_STYLING = {
+    fontSize: "0.65rem",
+    color: "#777",
+    marginTop: "-4px",
+    marginBottom: "4px"
+};
+
+
 class DataUseDisplay extends Component {
     render() {
         return (
-            <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
-                {DATA_USE_KEYS.map(u => {
-                    let internalIcon = (
-                        <Icon style={{
-                            fontSize: this.props.size === "large" ? "24px" : "20px",
-                            color: `rgba(0, 0, 0, ${this.props.uses.includes(u) ? 0.65 : 0.1})`
-                        }} type={DATA_USE_INFO[u].icon} />
-                    );
-
-                    if (u === "NPU") {
-                        // Special case for non-profit use; stack two icons (dollar + stop) to
-                        // create a custom synthetic icon.
-                        internalIcon = (
-                            <div style={{opacity: this.props.uses.includes(u) ? 0.65 : 0.1}}>
-                                <Icon style={{
-                                    fontSize: this.props.size === "large" ? "24px" : "20px",
-                                    color: "black"
-                                }} type={DATA_USE_INFO[u].icon} />
-                                <Icon style={{
-                                    fontSize: this.props.size === "large" ? "24px" : "20px",
-                                    marginLeft: this.props.size === "large" ? "-24px" : "-20px",
-                                    mixBlendMode: "overlay",
-                                    color: "black"
-                                }} type="stop" />
-                            </div>
-                        );
-                    }
-
-                    // noinspection HtmlDeprecatedAttribute
-                    return (
-                        <Col key={u}>
-                            {this.props.uses.includes(u) ? (
-                                <Popover title={DATA_USE_INFO[u].title}
-                                         content={DATA_USE_INFO[u].content}
-                                         trigger="hover"
-                                         placement="topRight"
-                                         align={{offset: [10, 0]}}>
-                                    {internalIcon}
-                                </Popover>
-                            ) : internalIcon}
+            <div style={{
+                display: "flex",
+                flexDirection: this.props.size === "large" ? "column" : "row"
+            }}>
+                <div>
+                    <Typography.Title level={4} style={{fontSize: this.props.size === "large" ? "20px" : "14px"}}>
+                        Consent Code
+                    </Typography.Title>
+                    <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
+                        <Col>
+                            <div style={TAG_LABEL_STYLING}>Primary</div>
+                            <Tag color="blue" style={{fontFamily: "monospace"}}>GRU-CC</Tag>
                         </Col>
-                    );
-                })}
-            </Row>
+                        <Col>
+                            <div style={TAG_LABEL_STYLING}>Secondary</div>
+                            <Tag style={{fontFamily: "monospace"}}>GSO</Tag>
+                            <Tag style={{fontFamily: "monospace"}}>NGMR</Tag>
+                            <Tag style={{fontFamily: "monospace"}}>RS</Tag>
+                            <Tag style={{fontFamily: "monospace"}}>RU</Tag>
+                        </Col>
+                    </Row>
+                </div>
+                <div style={{margin: this.props.size === "large" ? "20px 0 0 0" : "0 0 0 20px"}}>
+                <Typography.Title level={4} style={{fontSize: this.props.size === "large" ? "20px" : "14px"}}>
+                    Restrictions and Conditions
+                </Typography.Title>
+                <Row gutter={this.props.size === "large" ? 10 : 8} type="flex">
+                    {DATA_USE_KEYS.map(u => {
+                        let internalIcon = (
+                            <Icon style={{
+                                fontSize: this.props.size === "large" ? "24px" : "20px",
+                                color: `rgba(0, 0, 0, ${this.props.uses.includes(u) ? 0.65 : 0.1})`
+                            }} type={DATA_USE_INFO[u].icon} />
+                        );
+
+                        if (u === "NPU") {
+                            // Special case for non-profit use; stack two icons (dollar + stop) to
+                            // create a custom synthetic icon.
+                            internalIcon = (
+                                <div style={{opacity: this.props.uses.includes(u) ? 0.65 : 0.1}}>
+                                    <Icon style={{
+                                        fontSize: this.props.size === "large" ? "24px" : "20px",
+                                        color: "black"
+                                    }} type={DATA_USE_INFO[u].icon} />
+                                    <Icon style={{
+                                        fontSize: this.props.size === "large" ? "24px" : "20px",
+                                        marginLeft: this.props.size === "large" ? "-24px" : "-20px",
+                                        mixBlendMode: "overlay",
+                                        color: "black"
+                                    }} type="stop" />
+                                </div>
+                            );
+                        }
+
+                        // noinspection HtmlDeprecatedAttribute
+                        return (
+                            <Col key={u}>
+                                {this.props.uses.includes(u) ? (
+                                    <Popover title={DATA_USE_INFO[u].title}
+                                             content={DATA_USE_INFO[u].content}
+                                             trigger="hover"
+                                             placement="topRight"
+                                             align={{offset: [10, 0]}}>
+                                        {internalIcon}
+                                    </Popover>
+                                ) : internalIcon}
+                            </Col>
+                        );
+                    })}
+                </Row>
+                </div>
+            </div>
         );
     }
 }
