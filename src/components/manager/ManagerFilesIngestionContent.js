@@ -6,7 +6,7 @@ import "antd/es/layout/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
-class ManagerIngestionContent extends Component {
+class ManagerFilesIngestionContent extends Component {
     render() {
         return (
             <Layout>
@@ -16,4 +16,4 @@ class ManagerIngestionContent extends Component {
     }
 }
 
-export default ManagerIngestionContent;
+export default ManagerFilesIngestionContent;

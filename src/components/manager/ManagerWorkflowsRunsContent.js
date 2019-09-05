@@ -6,7 +6,7 @@ import "antd/es/layout/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
-class ManagerFilesContent extends Component {
+class ManagerWorkflowsRunsContent extends Component {
     render() {
         return (
             <Layout>
@@ -16,4 +16,4 @@ class ManagerFilesContent extends Component {
     }
 }
 
-export default ManagerFilesContent;
+export default ManagerWorkflowsRunsContent;
