@@ -13,6 +13,11 @@ import {
 
     REQUEST_SERVICE_DATASETS,
     RECEIVE_SERVICE_DATASETS,
+
+    BEGIN_FETCHING_SERVICE_WORKFLOWS,
+    END_FETCHING_SERVICE_WORKFLOWS,
+    REQUEST_SERVICE_WORKFLOWS,
+    RECEIVE_SERVICE_WORKFLOWS
 } from "./actions";
 
 export const services = (
@@ -129,6 +134,52 @@ export const serviceDatasets = (
                     [action.serviceID]: {
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: action.datasets
+                    }
+                }
+            });
+
+        default:
+            return state;
+    }
+};
+
+export const serviceWorkflows = (
+    state = {
+        isFetchingAll: false,
+        workflowsByServiceID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case BEGIN_FETCHING_SERVICE_WORKFLOWS:
+            return Object.assign({}, state, {
+                isFetchingAll: true
+            });
+
+        case END_FETCHING_SERVICE_WORKFLOWS:
+            return Object.assign({}, state, {
+                isFetchingAll: false
+            });
+
+        case REQUEST_SERVICE_WORKFLOWS:
+            return Object.assign({}, state, {
+                workflowsByServiceID: {
+                    ...state.workflowsByServiceID,
+                    [action.serviceID]: {
+                        isFetching: true,
+                        ...(state.workflowsByServiceID[action.serviceID] || {})
+                    }
+                }
+            });
+
+        case RECEIVE_SERVICE_WORKFLOWS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                workflowsByServiceID: {
+                    ...state.workflowsByServiceID,
+                    [action.serviceID]: {
+                        isFetching: false,
+                        workflows: action.workflows
                     }
                 }
             });

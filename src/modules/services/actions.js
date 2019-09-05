@@ -61,6 +61,29 @@ const receiveServiceDatasets = (serviceID, dataTypeID, datasets) => ({
     receivedAt: Date.now()
 });
 
+export const BEGIN_FETCHING_SERVICE_WORKFLOWS = "BEGIN_FETCHING_SERVICE_WORKFLOWS";
+const beginFetchingServiceWorkflows = () => ({
+    type: BEGIN_FETCHING_SERVICE_WORKFLOWS
+});
+
+export const END_FETCHING_SERVICE_WORKFLOWS = "END_FETCHING_SERVICE_WORKFLOWS";
+const endFetchingServiceWorkflows = () => ({
+    type: END_FETCHING_SERVICE_WORKFLOWS
+});
+
+export const REQUEST_SERVICE_WORKFLOWS = "REQUEST_SERVICE_WORKFLOWS";
+const requestServiceWorkflows = serviceID => ({
+    type: REQUEST_SERVICE_WORKFLOWS,
+    serviceID
+});
+
+export const RECEIVE_SERVICE_WORKFLOWS = "RECEIVE_SERVICE_WORKFLOWS";
+const receiveServiceWorkflows = (serviceID, workflows) => ({
+    type: RECEIVE_SERVICE_WORKFLOWS,
+    serviceID,
+    workflows
+});
+
 
 export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
     return async (dispatch, getState) => {
@@ -152,6 +175,32 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
                 }
             }
         }
+
+
+        // Fetch Data Service Workflows
+
+        await dispatch(beginFetchingServiceWorkflows());
+
+        for (let s of getState().services.items) {
+            if (!s.metadata["chordDataService"]) continue;  // Skip services that don't provide data (i.e. no workflows)
+            await dispatch(requestServiceWorkflows(s.id));
+            try {
+                const response = await fetch(`/api${s.url}/workflows`);
+                if (response.ok) {
+                    const workflows = await response.json();
+                    await dispatch(receiveServiceWorkflows(s.id, workflows));
+                } else {
+                    // TODO: Separate action instead of "fake" receive?
+                    await dispatch(receiveServiceWorkflows(s.id, {ingestion: {}, analysis: {}}));
+                }
+            } catch (e) {
+                console.error(e);
+                message.error(e);
+            }
+        }
+
+        await dispatch(endFetchingServiceWorkflows());
+
 
         await dispatch(endLoadingAllServiceData());
     };
