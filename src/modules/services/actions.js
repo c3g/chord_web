@@ -66,7 +66,7 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
     return async (dispatch, getState) => {
         // Fetch Services
 
-        if (getState().services.isLoadingAllData) return;
+        if (getState().services.isFetchingAll) return;
 
         await dispatch(beginLoadingAllServiceData());
 
