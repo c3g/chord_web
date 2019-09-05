@@ -28,7 +28,13 @@ import {
 
     BEGIN_PROJECT_SAVE,
     END_PROJECT_SAVE,
-    TERMINATE_PROJECT_SAVE
+    TERMINATE_PROJECT_SAVE,
+
+    REQUEST_RUNS,
+    RECEIVE_RUNS,
+
+    REQUEST_RUN_DETAILS,
+    RECEIVE_RUN_DETAILS
 } from "./actions";
 
 const projectSort = (a, b) => a.name.localeCompare(b.name);
@@ -243,6 +249,51 @@ export const manager = (
         case END_PROJECT_EDITING:
             return Object.assign({}, state, {
                 editingProject: false
+            });
+
+        default:
+            return state;
+    }
+};
+
+export const runs = (
+    state = {
+        isFetching: false,
+        items: [],
+        itemDetails: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_RUNS:
+            return Object.assign({}, state, {
+                isFetching: true,
+            });
+
+        case RECEIVE_RUNS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                items: action.runs
+            });
+
+        case REQUEST_RUN_DETAILS:
+            return Object.assign({}, state, {
+                [state.runID]: {
+                    isFetching: true,
+                    details: null
+                }
+            });
+
+        case RECEIVE_RUN_DETAILS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                itemDetails: {
+                    ...state.itemDetails,
+                    [state.runID]: {
+                        isFetching: false,
+                        details: action.details
+                    }
+                }
             });
 
         default:

@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
+
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 
 import {Menu, PageHeader} from "antd";
@@ -12,6 +14,8 @@ import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
 import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
+import {fetchRuns} from "../modules/manager/actions";
 
 const renderContent = Content => route => (
     <>
@@ -45,8 +49,13 @@ const renderContent = Content => route => (
 );
 
 class DataManagerContent extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         document.title = "CHORD - Manage Your Data";
+
+        await Promise.all([
+            this.props.fetchServiceDataIfNeeded(),
+            this.props.fetchRuns()
+        ]);
     }
 
     render() {
@@ -62,4 +71,9 @@ class DataManagerContent extends Component {
     }
 }
 
-export default DataManagerContent;
+const mapDispatchToProps = dispatch => ({
+    fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
+    fetchRuns: async () => await dispatch(fetchRuns())
+});
+
+export default connect(null, mapDispatchToProps)(DataManagerContent);

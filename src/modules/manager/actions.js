@@ -135,6 +135,31 @@ export const terminateProjectSave = project => ({
 });
 
 
+export const REQUEST_RUNS = "REQUEST_RUNS";
+export const requestRuns = () => ({
+    type: REQUEST_RUNS
+});
+
+export const RECEIVE_RUNS = "RECEIVE_RUNS";
+export const receiveRuns = runs => ({
+    type: RECEIVE_RUNS,
+    runs
+});
+
+export const REQUEST_RUN_DETAILS = "REQUEST_RUN_DETAILS";
+export const requestRunDetails = runID => ({
+    type: REQUEST_RUN_DETAILS,
+    runID
+});
+
+export const RECEIVE_RUN_DETAILS = "RECEIVE_RUN_DETAILS";
+export const receiveRunDetails = (runID, details) => ({
+    type: RECEIVE_RUN_DETAILS,
+    runID,
+    details
+});
+
+
 // TODO: if needed fetching + invalidation
 export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
     if (getState().projects.isFetching || getState().projects.isCreating || getState().projects.isDeleting) return;
@@ -259,5 +284,30 @@ export const saveProject = project => async (dispatch, getState) => {
         // TODO: GUI error message
         console.error(e);
         await dispatch(terminateProjectSave());
+    }
+};
+
+
+// TODO: If needed
+export const fetchRuns = () => async dispatch => {
+    await dispatch(requestRuns());
+
+    try {
+        const response = await fetch(`/api/wes/runs`);
+        if (response.ok) {
+            const runs = await response.json();
+            await dispatch(receiveRuns(runs));
+        } else {
+            // TODO: GUI error message
+            // TODO: Don't "receive" anything...
+            console.error(response);
+            await dispatch(receiveRuns([]));
+
+        }
+    } catch (e) {
+        // TODO: GUI error message
+        // TODO: Don't "receive" anything...
+        console.error(e);
+        await dispatch(receiveRuns([]));
     }
 };

@@ -2,7 +2,7 @@ import {combineReducers} from "redux";
 
 import {services, serviceMetadata, serviceDataTypes, serviceDatasets} from "./modules/services/reducers";
 import {discovery} from "./modules/discovery/reducers";
-import {projects, projectDatasets, manager} from "./modules/manager/reducers";
+import {projects, projectDatasets, manager, runs} from "./modules/manager/reducers";
 
 const rootReducer = combineReducers({
     services,
@@ -12,7 +12,8 @@ const rootReducer = combineReducers({
     discovery,
     projects,
     projectDatasets,
-    manager
+    manager,
+    runs
 });
 
 export default rootReducer;
