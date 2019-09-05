@@ -8,7 +8,8 @@ import "antd/es/page-header/style/css";
 
 import ManagerProjectDatasetContent from "./manager/ManagerProjectDatasetContent";
 import ManagerFilesIngestionContent from "./manager/ManagerFilesIngestionContent";
-import ManagerWorkflowsRunsContent from "./manager/ManagerWorkflowsRunsContent";
+import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
+import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
@@ -32,7 +33,10 @@ const renderContent = Content => route => (
                                 <Link to="/data/manager/files">Files and Ingestion</Link>
                             </Menu.Item>
                             <Menu.Item key="/data/manager/workflows">
-                                <Link to="/data/manager/workflows">Workflows and Runs</Link>
+                                <Link to="/data/manager/workflows">Workflows</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/data/manager/runs">
+                                <Link to="/data/manager/runs">Workflow Runs</Link>
                             </Menu.Item>
                         </Menu>
                     } />
@@ -50,7 +54,8 @@ class DataManagerContent extends Component {
             <Switch>
                 <Route exact path="/data/manager/projects" component={renderContent(ManagerProjectDatasetContent)} />
                 <Route exact path="/data/manager/files" component={renderContent(ManagerFilesIngestionContent)} />
-                <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsRunsContent)} />
+                <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsContent)} />
+                <Route exact path="/data/manager/runs" component={renderContent(ManagerRunsContent)} />
                 <Redirect from="/data/manager" to="/data/manager/projects" />
             </Switch>
         );

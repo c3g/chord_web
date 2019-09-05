@@ -10,12 +10,12 @@ import "antd/es/typography/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
-class ManagerWorkflowsRunsContent extends Component {
+class ManagerWorkflowsContent extends Component {
     render() {
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <Typography.Title level={3}>Ingestion Workflows</Typography.Title>
+                    <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
                     <List itemLayout="vertical">
                         <List.Item>
                             <List.Item.Meta
@@ -64,4 +64,4 @@ class ManagerWorkflowsRunsContent extends Component {
     }
 }
 
-export default ManagerWorkflowsRunsContent;
+export default ManagerWorkflowsContent;
