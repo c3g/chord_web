@@ -14,6 +14,8 @@ import DataUseDisplay from "../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
 
+const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
+
 class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
         // TODO: Want to warn the user if the description has changed and they're editing...
@@ -106,7 +108,7 @@ class Project extends Component {
                             {this.state.description}
                         </Typography.Paragraph>
                         <Typography.Title level={3}>Data Use</Typography.Title>
-                        <DataUseDisplay uses={this.state.dataUse.data_use_requirements.map(d => d.code)} />
+                        <DataUseDisplay dataUse={this.state.dataUse} />
                     </>
                 )}
 
@@ -119,16 +121,17 @@ class Project extends Component {
                     </div>
                 </Typography.Title>
                 <Spin spinning={this.props.loadingDatasets}>
-                    <Table bordered dataSource={this.props.datasets} rowKey="id"
-                           expandedRowRender={() => (<span>TODO: List of files</span>)}>
+                    <Table bordered dataSource={this.props.datasets.map(d => ({...d, name: d.name || null}))}
+                           rowKey="id" expandedRowRender={() => (<span>TODO: List of files</span>)}>
                         <Table.Column dataIndex="id" title="ID" /> {/* TODO: Dataset name */}
+                        <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
                         <Table.Column dataIndex="dataTypeID" title="Data Type" />
-                        <Table.Column key="files" title="Files" />
                         <Table.Column key="actions" title="Actions" width={330} render={() => (
                             <Row gutter={10}>
-                                <Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>
-                                <Col span={7}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                                <Col span={9}><Button type="danger" icon="delete"
+                                <Col span={8}><Button icon="import" style={{width: "100%"}}>Ingest</Button></Col>
+                                {/*<Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>*/}
+                                <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                                <Col span={8}><Button type="danger" icon="delete"
                                                       style={{width: "100%"}}>Delete</Button></Col>
                             </Row>
                         )} />

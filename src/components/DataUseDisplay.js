@@ -87,7 +87,7 @@ const TAG_LABEL_STYLING = {
 
 class DataUseDisplay extends Component {
     render() {
-        const uses = this.props.uses || [];
+        const uses = this.props.dataUse.data_use_requirements.map(u => u.code) || [];
 
         return (
             <>
@@ -98,14 +98,14 @@ class DataUseDisplay extends Component {
                     <Row gutter={10} type="flex">
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Primary</div>
-                            <Tag color="blue" style={{fontFamily: "monospace"}}>GRU-CC</Tag>
+                            <Tag color="blue" style={{fontFamily: "monospace"}}>
+                                {this.props.dataUse.consent_code.primary_category.code}
+                            </Tag>
                         </Col>
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Secondary</div>
-                            <Tag style={{fontFamily: "monospace"}}>GSO</Tag>
-                            <Tag style={{fontFamily: "monospace"}}>NGMR</Tag>
-                            <Tag style={{fontFamily: "monospace"}}>RS</Tag>
-                            <Tag style={{fontFamily: "monospace"}}>RU</Tag>
+                            {this.props.dataUse.consent_code.secondary_categories.map(sc =>
+                                <Tag style={{fontFamily: "monospace"}} key={sc.code}>{sc.code}</Tag>)}
                         </Col>
                     </Row>
                 </div>
@@ -164,7 +164,7 @@ class DataUseDisplay extends Component {
 }
 
 DataUseDisplay.propTypes = {
-    uses: PropTypes.arrayOf(PropTypes.string)
+    dataUse: PropTypes.object
 };
 
 export default DataUseDisplay;

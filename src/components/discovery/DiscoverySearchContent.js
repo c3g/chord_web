@@ -48,7 +48,7 @@ class DiscoverySearchContent extends Component {
         this.state = {
             dataUseTermsModalShown: false,
             dataset: null,
-            terms: null
+            dataUse: null
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -80,7 +80,7 @@ class DiscoverySearchContent extends Component {
         this.setState({
             dataUseTermsModalShown: true,
             dataset: dataset.id,
-            terms: dataset.dataUse
+            dataUse: dataset.dataUse
         });
     }
 
@@ -111,7 +111,16 @@ class DiscoverySearchContent extends Component {
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
                                     key={this.props.searches.length - i - 1}>
                         <Table bordered={true}
-                               dataSource={s.results.map(s => ({...s, dataUse: ["COL", "PS", "RTN", "US"]}))}
+                               dataSource={s.results.map(s => ({
+                                   ...s,
+                                   dataUse: {
+                                       consent_code: {
+                                           primary_category: {code: "GRU"},
+                                           secondary_categories: [{code: "NGMR"}]
+                                       },
+                                       data_use_requirements: [{code: "COL"}, {code: "US"}]
+                                   }
+                               }))}
                                rowKey="id">
                             <Table.Column title="Dataset ID" dataIndex="id" />
                             <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
@@ -172,7 +181,7 @@ class DiscoverySearchContent extends Component {
                         <Modal title={`Dataset ${(this.state.dataset || "").substr(0, 18)}…: Data Use Terms`}
                                visible={this.state.dataUseTermsModalShown}
                                onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
-                            <DataUseDisplay uses={this.state.terms} />
+                            <DataUseDisplay dataUse={this.state.dataUse} />
                         </Modal>
 
                         <Typography.Title level={3}>Results</Typography.Title>
