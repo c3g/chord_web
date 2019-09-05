@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Layout, Menu, Modal, PageHeader, Skeleton, Typography} from "antd";
+import {Button, Empty, Layout, Menu, Modal, PageHeader, Skeleton, Tabs, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
@@ -11,6 +11,7 @@ import "antd/es/menu/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/page-header/style/css";
 import "antd/es/skeleton/style/css";
+import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
 
 import DatasetForm from "./manager/DatasetForm";
@@ -114,12 +115,18 @@ class DataManagerContent extends Component {
                             subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>
                                 Share data with the CHORD federation
                             </span>}
-                            style={PAGE_HEADER_STYLE}
-                            extra={[<Button key="create_project" type="primary"
-                                            onClick={() => this.props.toggleProjectCreationModal()}
-                                            icon="plus">
-                                Create Project
-                            </Button>]} />
+                            style={{...PAGE_HEADER_STYLE, borderBottom: "none", paddingBottom: "0"}}
+                            footer={
+                                <Menu mode="horizontal" style={{
+                                    marginLeft: "-24px",
+                                    marginRight: "-24px",
+                                    marginTop: "-12px"
+                                }}>
+                                    <Menu.Item style={{marginLeft: "4px"}}>Projects and Datasets</Menu.Item>
+                                    <Menu.Item>Files</Menu.Item>
+                                    <Menu.Item>Ingestion</Menu.Item>
+                                </Menu>
+                            } />
                 <Modal visible={this.props.showCreationModal} title="Create Project" footer={[
                     <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
                     <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}>Create</Button>
@@ -168,11 +175,22 @@ class DataManagerContent extends Component {
                     ) : (
                         <>
                             <Layout.Sider style={{background: "white"}} width={256}>
-                                <Menu style={{height: "100%"}} mode="inline"
-                                      onClick={item => this.props.selectProject(item.key)}
-                                      selectedKeys={this.props.selectedProject ? [this.props.selectedProject.id] : []}>
-                                    {projectMenuItems}
-                                </Menu>
+                                <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                                    <Menu style={{flex: 1, paddingTop: "8px"}} mode="inline"
+                                          onClick={item => this.props.selectProject(item.key)}
+                                          selectedKeys={this.props.selectedProject
+                                              ? [this.props.selectedProject.id]
+                                              : []}>
+                                        {projectMenuItems}
+                                    </Menu>
+                                    <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
+                                        <Button type="primary" style={{width: "100%"}}
+                                                onClick={() => this.props.toggleProjectCreationModal()}
+                                                icon="plus">
+                                            Create Project
+                                        </Button>
+                                    </div>
+                                </div>
                             </Layout.Sider>
                             <Layout.Content style={contentStyling}>
                                 {/* TODO: Fix project datasets */}
