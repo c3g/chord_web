@@ -29,6 +29,8 @@ import {
     toggleProjectDeletionModal
 } from "../../modules/manager/actions";
 
+import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
         this.handleCreateCancel = this.handleCreateCancel.bind(this);
@@ -96,12 +98,6 @@ class ManagerProjectDatasetContent extends Component {
             <Menu.Item key={project.id}>{project.name}</Menu.Item>
         ));
 
-        const contentStyling = {
-            background: "white",
-            padding: "24px",
-            position: "relative"
-        };
-
         return (
             <>
                 <Modal visible={this.props.showCreationModal} title="Create Project" footer={[
@@ -132,7 +128,7 @@ class ManagerProjectDatasetContent extends Component {
                 </Modal>
             <Layout>
                 {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
-                    <Layout.Content style={contentStyling}>
+                    <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false}>
                             <Typography.Title level={3}>No Projects</Typography.Title>
                             <Typography.Paragraph style={{
@@ -169,7 +165,7 @@ class ManagerProjectDatasetContent extends Component {
                                 </div>
                             </div>
                         </Layout.Sider>
-                        <Layout.Content style={contentStyling}>
+                        <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                             {/* TODO: Fix project datasets */}
                             {this.props.selectedProject ? (
                                 <Project value={this.props.selectedProject}
