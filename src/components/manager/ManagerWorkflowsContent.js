@@ -2,10 +2,12 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Layout, List, Typography} from "antd";
+import {Layout, List, Skeleton, Spin, Typography} from "antd";
 
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
+import "antd/es/skeleton/style/css";
+import "antd/es/spin/style/css";
 import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
@@ -21,7 +23,9 @@ class ManagerWorkflowsContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
-                    <List itemLayout="vertical">{workflows}</List>
+                    <Spin spinning={this.props.loading}>
+                        {this.props.loading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
+                    </Spin>
                 </Layout.Content>
             </Layout>
         );
@@ -29,13 +33,15 @@ class ManagerWorkflowsContent extends Component {
 }
 
 ManagerWorkflowsContent.propTypes = {
-    workflows: PropTypes.arrayOf(PropTypes.object)
+    workflows: PropTypes.arrayOf(PropTypes.object),
+    loading: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)
         .filter(([_, s]) => !s.isFetching)
-        .flatMap(([_, s]) => Object.entries(s.workflows.ingestion).map(w => w[1]))
+        .flatMap(([_, s]) => Object.entries(s.workflows.ingestion).map(w => w[1])),
+    loading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
 });
 
 export default connect(mapStateToProps)(ManagerWorkflowsContent);
