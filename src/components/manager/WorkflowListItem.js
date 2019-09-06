@@ -43,10 +43,9 @@ class WorkflowListItem extends Component {
         });
 
         const outputs = this.props.workflow.outputs.map(o => {
-            const inputIDs = o.matchAll(/{(.*)}/);
             let formattedOutput = o;
 
-            [...inputIDs].forEach(([_, id]) =>
+            [...o.matchAll(/{(.*)}/)].forEach(([_, id]) =>
                 formattedOutput = formattedOutput.replace(`{${id}}`, inputExtensions[id]));
 
             return (
