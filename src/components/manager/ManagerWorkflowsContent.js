@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Icon, Layout, List, Tag, Typography} from "antd";
 
@@ -8,60 +10,34 @@ import "antd/es/list/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
+import WorkflowListItem from "./WorkflowListItem";
+
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ManagerWorkflowsContent extends Component {
     render() {
+        const workflows = this.props.workflows.map(w => (
+            <List.Item key={w.name}><WorkflowListItem key={w.name} workflow={w} /></List.Item>
+        ));  // TODO: real key
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
-                    <List itemLayout="vertical">
-                        <List.Item>
-                            <List.Item.Meta
-                                title={<span><Tag>variant</Tag> VCF Compression and TBI Generation</span>}
-                                description={"Given a VCF file, this ingestion workflow will generate a .vcf.gz and " +
-                                    "a .tbi file for the data."} />
-
-                            <div style={{marginBottom: "12px"}}>
-                                <span style={{fontWeight: "bold", marginRight: "1em"}}>Inputs:</span>
-                                <Tag color="volcano"><Icon type="file" /> .vcf</Tag> {/* file */}
-                                <Tag color="blue"><Icon type="menu" /> assembly ID</Tag> {/* enum */}
-                                <Tag color="green"><Icon type="number" /> some number</Tag>
-                                <Tag color="purple"><Icon type="font-size" /> some text</Tag>
-                            </div>
-
-                            <div>
-                                <span style={{fontWeight: "bold", marginRight: "1em"}}>Outputs:</span>
-                                <Tag color="volcano"><Icon type="file" /> .vcf.gz</Tag>
-                                <Tag color="volcano"><Icon type="file" /> .tbi</Tag>
-                                <Tag color="blue"><Icon type="menu" /> assembly ID</Tag>
-                            </div>
-                        </List.Item>
-                        <List.Item>
-                            <List.Item.Meta
-                                title={<span><Tag>variant</Tag> TBI Generation</span>}
-                                description={"Given a bgzip-compressed VCF file, this ingestion workflow will " +
-                                "generate a .tbi file for the data."} />
-
-                            <div style={{marginBottom: "12px"}}>
-                                <span style={{fontWeight: "bold", marginRight: "1em"}}>Inputs:</span>
-                                <Tag color="volcano"><Icon type="file" /> .vcf.gz</Tag> {/* file */}
-                                <Tag color="blue"><Icon type="menu" /> assembly ID</Tag> {/* enum */}
-                            </div>
-
-                            <div>
-                                <span style={{fontWeight: "bold", marginRight: "1em"}}>Outputs:</span>
-                                <Tag color="volcano"><Icon type="file" /> .vcf.gz</Tag>
-                                <Tag color="volcano"><Icon type="file" /> .tbi</Tag>
-                                <Tag color="blue"><Icon type="menu" /> assembly ID</Tag>
-                            </div>
-                        </List.Item>
-                    </List>
+                    <List itemLayout="vertical">{workflows}</List>
                 </Layout.Content>
             </Layout>
         );
     }
 }
 
-export default ManagerWorkflowsContent;
+ManagerWorkflowsContent.propTypes = {
+    workflows: PropTypes.arrayOf(PropTypes.object)
+};
+
+const mapStateToProps = state => ({
+    workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)
+        .filter(([_, s]) => !s.isFetching)
+        .flatMap(([_, s]) => Object.entries(s.workflows.ingestion).map(w => w[1]))
+});
+
+export default connect(mapStateToProps)(ManagerWorkflowsContent);
