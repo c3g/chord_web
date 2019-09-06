@@ -2,12 +2,10 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Icon, Layout, List, Tag, Typography} from "antd";
+import {Layout, List, Typography} from "antd";
 
-import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
-import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
