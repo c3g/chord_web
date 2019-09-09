@@ -1,15 +1,17 @@
 import React, {Component} from "react";
 
-import {Form, Input, Select, TreeSelect} from "antd";
+import {Button, Form, Icon, Input, Select, TreeSelect} from "antd";
 
+import "antd/es/button/style/css";
 import "antd/es/form/style/css";
+import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 import "antd/es/tree-select/style/css";
 
 class IngestionInputForm extends Component {
     render() {
-        const formContents = this.props.workflow.inputs.map(i => {
+        let formContents = this.props.workflow.inputs.map(i => {
             let inputComponent = (<Input/>);
 
             switch (i.type) {
@@ -46,7 +48,21 @@ class IngestionInputForm extends Component {
             );
         });
 
-        return (<Form>{formContents}</Form>);
+        formContents.push(
+            <Form.Item key="_submit" wrapperCol={{
+                md: {span: 24},
+                lg: {offset: 4, span: 16},
+                xl: {offset: 8, span: 8}
+            }}>
+                <Button type="primary">
+                    Next
+                    <Icon type="right" />
+                </Button>
+            </Form.Item>
+        );
+
+        return (<Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 8}}}
+                      wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 8}}}>{formContents}</Form>);
     }
 }
 
