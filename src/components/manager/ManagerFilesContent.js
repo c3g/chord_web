@@ -11,7 +11,7 @@ import "antd/es/tree/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
-class ManagerFilesIngestionContent extends Component {
+class ManagerFilesContent extends Component {
     constructor(props) {
         super(props);
 
@@ -103,4 +103,4 @@ const mapStateToProps = state => ({
         .flatMap(s => Object.values(s.workflows.ingestion))
 });
 
-export default connect(mapStateToProps)(ManagerFilesIngestionContent);
+export default connect(mapStateToProps)(ManagerFilesContent);

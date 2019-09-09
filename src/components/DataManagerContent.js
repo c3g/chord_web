@@ -9,7 +9,8 @@ import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
 
 import ManagerProjectDatasetContent from "./manager/ManagerProjectDatasetContent";
-import ManagerFilesIngestionContent from "./manager/ManagerFilesIngestionContent";
+import ManagerFilesContent from "./manager/ManagerFilesContent";
+import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
 import ManagerRunsContent from "./manager/ManagerRunsContent";
 
@@ -34,7 +35,10 @@ const renderContent = Content => route => (
                                 <Link to="/data/manager/projects">Projects and Datasets</Link>
                             </Menu.Item>
                             <Menu.Item key="/data/manager/files">
-                                <Link to="/data/manager/files">Files and Ingestion</Link>
+                                <Link to="/data/manager/files">Files</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/data/manager/ingestion">
+                                <Link to="/data/manager/ingestion">Ingestion</Link>
                             </Menu.Item>
                             <Menu.Item key="/data/manager/workflows">
                                 <Link to="/data/manager/workflows">Workflows</Link>
@@ -63,7 +67,8 @@ class DataManagerContent extends Component {
         return (
             <Switch>
                 <Route exact path="/data/manager/projects" component={renderContent(ManagerProjectDatasetContent)} />
-                <Route exact path="/data/manager/files" component={renderContent(ManagerFilesIngestionContent)} />
+                <Route exact path="/data/manager/files" component={renderContent(ManagerFilesContent)} />
+                <Route exact path="/data/manager/ingestion" component={renderContent(ManagerIngestionContent)} />
                 <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsContent)} />
                 <Route exact path="/data/manager/runs" component={renderContent(ManagerRunsContent)} />
                 <Redirect from="/data/manager" to="/data/manager/projects" />
