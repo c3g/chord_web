@@ -29,6 +29,11 @@ const TYPE_TAG_DISPLAY = {
 };
 
 class WorkflowListItem extends Component {
+    constructor(props) {
+        super(props);
+        this.onClick = this.props.onClick || (() => {});
+    }
+
     render() {
         const typeTags = this.props.workflow.data_types.map(dt => <Tag key={dt}>{dt}</Tag>);
 
@@ -62,10 +67,12 @@ class WorkflowListItem extends Component {
         return (
             <>
                 <List.Item.Meta
-                    title={<span>
-                        {typeTags} {this.props.workflow.name}
-                        {this.props.selectable ? <Icon type="right" style={{marginLeft: "0.3rem"}} /> : null}
-                    </span>}
+                    title={
+                        this.props.selectable
+                            ? <a onClick={() => this.onClick()}>
+                                {typeTags} {this.props.workflow.name}
+                                <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
+                            : <span>{typeTags} {this.props.workflow.name}</span>}
                     description={this.props.workflow.description || ""} />
 
                 <div style={{marginBottom: "12px"}}>
@@ -84,7 +91,8 @@ class WorkflowListItem extends Component {
 
 WorkflowListItem.propTypes = {
     workflow: workflowPropTypesShape,
-    selectable: PropTypes.bool
+    selectable: PropTypes.bool,
+    onClick: PropTypes.func
 };
 
 export default WorkflowListItem;
