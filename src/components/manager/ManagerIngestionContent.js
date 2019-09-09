@@ -1,13 +1,17 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Layout, List, Skeleton, Spin, Steps} from "antd";
+import {Form, Input, Layout, List, Select, Skeleton, Spin, Steps, TreeSelect} from "antd";
 
+import "antd/es/form/style/css";
+import "antd/es/input/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
+import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
+import "antd/es/tree-select/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -20,6 +24,7 @@ import {
 } from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import IngestionInputForm from "./IngestionInputForm";
 
 class ManagerIngestionContent extends Component {
     constructor(props) {
@@ -35,7 +40,7 @@ class ManagerIngestionContent extends Component {
 
     handleClick(workflow) {
         this.setState({
-            selectedWorkflow: workflow.name,
+            selectedWorkflow: workflow,
             step: 1
         });
     }
@@ -66,7 +71,7 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case 1:
-                stepContents = (<div>step 2</div>);
+                stepContents = (<IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree} />);
                 break;
 
             case 2:
