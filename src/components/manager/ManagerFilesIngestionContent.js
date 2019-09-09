@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 
 import {Button, Dropdown, Icon, Layout, Menu, Tree} from "antd";
 
@@ -20,6 +21,8 @@ const menu = (
 
 class ManagerFilesIngestionContent extends Component {
     render() {
+        // TODO: support directories as well
+        const files = this.props.files.map(f => <Tree.TreeNode title={f} key={f} isLeaf={true} />);
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -31,11 +34,7 @@ class ManagerFilesIngestionContent extends Component {
                         <Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>
                     </div>
                     <Tree.DirectoryTree defaultExpandAll={true}>
-                        <Tree.TreeNode title="chord_drop_box" key="root">
-                            <Tree.TreeNode title="file 1" key="file_1" isLeaf={true} />
-                            <Tree.TreeNode title="file 2" key="file_2" isLeaf={true} />
-                            <Tree.TreeNode title="file 3" key="file_3" isLeaf={true} />
-                        </Tree.TreeNode>
+                        <Tree.TreeNode title="chord_drop_box" key="root">{files}</Tree.TreeNode>
                     </Tree.DirectoryTree>
                 </Layout.Content>
             </Layout>
@@ -43,4 +42,8 @@ class ManagerFilesIngestionContent extends Component {
     }
 }
 
-export default ManagerFilesIngestionContent;
+const mapStateToProps = state => ({
+    files: state.dropBox.tree
+});
+
+export default connect(mapStateToProps)(ManagerFilesIngestionContent);

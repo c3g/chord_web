@@ -135,6 +135,18 @@ export const terminateProjectSave = project => ({
 });
 
 
+export const REQUEST_DROP_BOX_TREE = "REQUEST_DROP_BOX_TREE";
+export const requestDropBoxTree = () => ({
+    type: REQUEST_DROP_BOX_TREE
+});
+
+export const RECEIVE_DROP_BOX_TREE = "RECEIVE_DROP_BOX_TREE";
+export const receiveDropBoxTree = tree => ({
+    type: RECEIVE_DROP_BOX_TREE,
+    tree
+});
+
+
 export const REQUEST_RUNS = "REQUEST_RUNS";
 export const requestRuns = () => ({
     type: REQUEST_RUNS
@@ -284,6 +296,30 @@ export const saveProject = project => async (dispatch, getState) => {
         // TODO: GUI error message
         console.error(e);
         await dispatch(terminateProjectSave());
+    }
+};
+
+
+// TODO: If needed
+export const fetchDropBoxTree = () => async dispatch => {
+    await dispatch(requestDropBoxTree());
+
+    try {
+        const response = await fetch(`/api/drop_box/tree`);
+        if (response.ok) {
+            const tree = await response.json();
+            await dispatch(receiveDropBoxTree(tree));
+        } else {
+            // TODO: GUI error message
+            // TODO: Don't "receive" anything...
+            console.error(response);
+            await dispatch(receiveDropBoxTree([]));
+        }
+    } catch (e) {
+        // TODO: GUI error message
+        // TODO: Don't "receive" anything...
+        console.error(e);
+        await dispatch(receiveDropBoxTree([]));
     }
 };
 

@@ -30,6 +30,9 @@ import {
     END_PROJECT_SAVE,
     TERMINATE_PROJECT_SAVE,
 
+    REQUEST_DROP_BOX_TREE,
+    RECEIVE_DROP_BOX_TREE,
+
     REQUEST_RUNS,
     RECEIVE_RUNS,
 
@@ -249,6 +252,30 @@ export const manager = (
         case END_PROJECT_EDITING:
             return Object.assign({}, state, {
                 editingProject: false
+            });
+
+        default:
+            return state;
+    }
+};
+
+export const dropBox = (
+    state = {
+        isFetching: true,
+        tree: []
+    },
+    action
+) => {
+    switch (action.type) {
+        case REQUEST_DROP_BOX_TREE:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+
+        case RECEIVE_DROP_BOX_TREE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                tree: action.tree
             });
 
         default:
