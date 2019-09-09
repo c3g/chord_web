@@ -1,13 +1,15 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Layout, List, Skeleton, Spin, Steps} from "antd";
+import {Button, Layout, List, Skeleton, Spin, Steps, Typography} from "antd";
 
+import "antd/es/button/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
+import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -84,7 +86,24 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case 2:
-                stepContents = (<div>step 3</div>);
+                stepContents = (
+                    <>
+                        <Typography.Title level={2}>Workflow</Typography.Title>
+                        <List itemLayout="vertical" style={{marginBottom: "14px"}}>
+                            <List.Item>
+                                <WorkflowListItem workflow={this.state.selectedWorkflow} />
+                            </List.Item>
+                        </List>
+                        <Typography.Title level={2}>Inputs</Typography.Title>
+                        <Typography.Paragraph>
+                            {this.state.selectedWorkflow.inputs.map(i => <div key={i.id}>
+                                <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{i.id}:</span>
+                                {this.state.inputs[i.id]}
+                            </div>)}
+                        </Typography.Paragraph>
+                        <Button type="primary" style={{marginTop: "16px"}}>Run Ingestion</Button>
+                    </>
+                );
                 break;
         }
 
