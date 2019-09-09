@@ -25,7 +25,7 @@ class ManagerWorkflowsContent extends Component {
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
                     <Spin spinning={this.props.workflowsLoading}>
-                        {this.props.loading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
+                        {this.props.workflowsLoading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
                     </Spin>
                 </Layout.Content>
             </Layout>
