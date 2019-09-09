@@ -62,7 +62,10 @@ class WorkflowListItem extends Component {
         return (
             <>
                 <List.Item.Meta
-                    title={<span>{typeTags} {this.props.workflow.name}</span>}
+                    title={<span>
+                        {typeTags} {this.props.workflow.name}
+                        {this.props.selectable ? <Icon type="right" style={{marginLeft: "0.3rem"}} /> : null}
+                    </span>}
                     description={this.props.workflow.description || ""} />
 
                 <div style={{marginBottom: "12px"}}>
@@ -80,7 +83,8 @@ class WorkflowListItem extends Component {
 }
 
 WorkflowListItem.propTypes = {
-    workflow: workflowPropTypesShape
+    workflow: workflowPropTypesShape,
+    selectable: PropTypes.bool
 };
 
 export default WorkflowListItem;
