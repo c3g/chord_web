@@ -38,9 +38,9 @@ ManagerWorkflowsContent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)
-        .filter(([_, s]) => !s.isFetching)
-        .flatMap(([_, s]) => Object.entries(s.workflows.ingestion).map(w => w[1])),
+    workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)
+        .filter(s => !s.isFetching)
+        .flatMap(s => Object.values(s.workflows.ingestion)),
     loading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
 });
 
