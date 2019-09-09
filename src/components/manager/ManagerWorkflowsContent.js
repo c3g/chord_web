@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
 
 import {Layout, List, Skeleton, Spin, Typography} from "antd";
 
@@ -12,7 +11,7 @@ import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
-import {workflowsByServiceIDToList} from "../../utils";
+import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
@@ -25,7 +24,7 @@ class ManagerWorkflowsContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
-                    <Spin spinning={this.props.loading}>
+                    <Spin spinning={this.props.workflowsLoading}>
                         {this.props.loading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
                     </Spin>
                 </Layout.Content>
@@ -34,14 +33,8 @@ class ManagerWorkflowsContent extends Component {
     }
 }
 
-ManagerWorkflowsContent.propTypes = {
-    workflows: PropTypes.arrayOf(PropTypes.object),
-    loading: PropTypes.bool
-};
+ManagerWorkflowsContent.propTypes = workflowsStateToPropsMixinPropTypes;
 
-const mapStateToProps = state => ({
-    workflows: workflowsByServiceIDToList(state.serviceWorkflows.workflowsByServiceID),
-    loading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
-});
+const mapStateToProps = state => ({...workflowsStateToPropsMixin(state)});
 
 export default connect(mapStateToProps)(ManagerWorkflowsContent);

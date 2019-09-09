@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Button, Dropdown, Icon, Layout, Menu, Tree} from "antd";
 
@@ -9,7 +10,7 @@ import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/tree/style/css";
 
-import {workflowsByServiceIDToList} from "../../utils";
+import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
@@ -98,9 +99,14 @@ class ManagerFilesContent extends Component {
     }
 }
 
+ManagerFilesContent.propTypes = {
+    files: PropTypes.arrayOf(PropTypes.string),  // TODO: This is going to change
+    ...workflowsStateToPropsMixinPropTypes
+};
+
 const mapStateToProps = state => ({
     files: state.dropBox.tree,
-    workflows: workflowsByServiceIDToList(state.serviceWorkflows.workflowsByServiceID)
+    ...workflowsStateToPropsMixin(state)
 });
 
 export default connect(mapStateToProps)(ManagerFilesContent);

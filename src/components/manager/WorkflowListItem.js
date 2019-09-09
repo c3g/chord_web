@@ -7,6 +7,8 @@ import "antd/es/icon/style/css";
 import "antd/es/list/style/css";
 import "antd/es/tag/style/css";
 
+import {workflowPropTypesShape} from "../../utils";
+
 const TYPE_TAG_DISPLAY = {
     file: {
         color: "volcano",
@@ -78,17 +80,7 @@ class WorkflowListItem extends Component {
 }
 
 WorkflowListItem.propTypes = {
-    workflow: PropTypes.shape({
-        name: PropTypes.string,
-        description: PropTypes.string,
-        data_types: PropTypes.arrayOf(PropTypes.string),
-        inputs: PropTypes.arrayOf(PropTypes.shape({
-            type: PropTypes.string,
-            id: PropTypes.string,
-            extensions: PropTypes.arrayOf(PropTypes.string)  // File type only
-        })),
-        outputs: PropTypes.arrayOf(PropTypes.string)  // TODO: This is going to change
-    })
+    workflow: workflowPropTypesShape
 };
 
 export default WorkflowListItem;

@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Layout, Steps} from "antd";
 
@@ -7,6 +8,7 @@ import "antd/es/layout/style/css";
 import "antd/es/steps/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {workflowsStateToPropsMixin} from "../../utils";
 
 class ManagerIngestionContent extends Component {
     render() {
@@ -26,4 +28,6 @@ class ManagerIngestionContent extends Component {
     }
 }
 
-export default ManagerIngestionContent;
+const mapStateToProps = state => ({...workflowsStateToPropsMixin(state)});
+
+export default connect(mapStateToProps)(ManagerIngestionContent);
