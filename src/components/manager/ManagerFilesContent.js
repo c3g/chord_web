@@ -10,7 +10,13 @@ import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/tree/style/css";
 
-import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../utils";
+import {
+    dropBoxTreeStateToPropsMixin,
+    dropBoxTreeStateToPropsMixinPropTypes,
+
+    workflowsStateToPropsMixin,
+    workflowsStateToPropsMixinPropTypes
+} from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
@@ -74,7 +80,7 @@ class ManagerFilesContent extends Component {
 
         // TODO: support directories as well
         // TODO: Loading for files...
-        const files = this.props.files.map(f => <Tree.TreeNode title={f} key={f} isLeaf={true} />);
+        const files = this.props.tree.map(f => <Tree.TreeNode title={f} key={f} isLeaf={true} />);
 
         return (
             <Layout>
@@ -100,12 +106,12 @@ class ManagerFilesContent extends Component {
 }
 
 ManagerFilesContent.propTypes = {
-    files: PropTypes.arrayOf(PropTypes.string),  // TODO: This is going to change
+    ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes
 };
 
 const mapStateToProps = state => ({
-    files: state.dropBox.tree,
+    ...dropBoxTreeStateToPropsMixin(state),
     ...workflowsStateToPropsMixin(state)
 });
 

@@ -1,5 +1,17 @@
 import PropTypes from "prop-types";
 
+// Gives components which include this in their state to props connection access to the drop box and loading status.
+export const dropBoxTreeStateToPropsMixin = state => ({
+    tree: state.dropBox.tree,
+    treeLoading: state.dropBox.isFetching
+});
+
+// Any components which include dropBoxTreeStateToPropsMixin should include this as well in their prop types.
+export const dropBoxTreeStateToPropsMixinPropTypes = {
+    tree: PropTypes.arrayOf(PropTypes.string),  // TODO: This is going to change
+    treeLoading: PropTypes.bool
+};
+
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({
     workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)

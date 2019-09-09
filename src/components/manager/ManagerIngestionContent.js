@@ -11,7 +11,13 @@ import "antd/es/steps/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
-import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../utils";
+import {
+    dropBoxTreeStateToPropsMixin,
+    dropBoxTreeStateToPropsMixinPropTypes,
+
+    workflowsStateToPropsMixin,
+    workflowsStateToPropsMixinPropTypes
+} from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
@@ -90,9 +96,13 @@ class ManagerIngestionContent extends Component {
 }
 
 ManagerIngestionContent.propTypes = {
+    ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes
 };
 
-const mapStateToProps = state => ({...workflowsStateToPropsMixin(state)});
+const mapStateToProps = state => ({
+    ...dropBoxTreeStateToPropsMixin(state),
+    ...workflowsStateToPropsMixin(state)
+});
 
 export default connect(mapStateToProps)(ManagerIngestionContent);
