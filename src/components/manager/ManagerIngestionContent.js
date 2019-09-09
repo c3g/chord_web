@@ -1,17 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Form, Input, Layout, List, Select, Skeleton, Spin, Steps, TreeSelect} from "antd";
+import {Layout, List, Skeleton, Spin, Steps} from "antd";
 
-import "antd/es/form/style/css";
-import "antd/es/input/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
 import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
-import "antd/es/steps/style/css";
-import "antd/es/tree-select/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
