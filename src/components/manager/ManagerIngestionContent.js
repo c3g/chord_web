@@ -5,9 +5,9 @@ import {Layout, List, Skeleton, Spin, Steps} from "antd";
 
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
-import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
+import "antd/es/steps/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -28,10 +28,17 @@ class ManagerIngestionContent extends Component {
 
         this.state = {
             step: 0,
-            selectedWorkflow: null
+            selectedWorkflow: null,
+            inputs: {}
         };
 
         this.handleStepChange = this.handleStepChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleInputSubmit = this.handleInputSubmit.bind(this);
+    }
+
+    handleStepChange(step) {
+        this.setState({step});
     }
 
     handleClick(workflow) {
@@ -41,8 +48,11 @@ class ManagerIngestionContent extends Component {
         });
     }
 
-    handleStepChange(step) {
-        this.setState({step});
+    handleInputSubmit(inputs) {
+        this.setState({
+            inputs,
+            step: 2
+        });
     }
 
     render() {
@@ -67,7 +77,10 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case 1:
-                stepContents = (<IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree} />);
+                stepContents = (
+                    <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
+                                        onSubmit={this.handleInputSubmit} />
+                    );
                 break;
 
             case 2:

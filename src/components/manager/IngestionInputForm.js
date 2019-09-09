@@ -10,6 +10,20 @@ import "antd/es/select/style/css";
 import "antd/es/tree-select/style/css";
 
 class IngestionInputForm extends Component {
+    constructor(props) {
+        super(props);
+        this.onSubmit = this.props.onSubmit || (() => {});
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            this.onSubmit(values);
+        })
+    }
+
     render() {
         let formContents = this.props.workflow.inputs.map(i => {
             let inputComponent = (<Input/>);
@@ -54,15 +68,20 @@ class IngestionInputForm extends Component {
                 lg: {offset: 4, span: 16},
                 xl: {offset: 8, span: 8}
             }}>
-                <Button type="primary">
+                <Button type="primary" htmlType="submit">
                     Next
                     <Icon type="right" />
                 </Button>
             </Form.Item>
         );
 
-        return (<Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 8}}}
-                      wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 8}}}>{formContents}</Form>);
+        return (
+            <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 8}}}
+                  wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 8}}}
+                  onSubmit={this.handleSubmit}>
+                {formContents}
+            </Form>
+        );
     }
 }
 
