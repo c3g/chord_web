@@ -16,19 +16,14 @@ class ManagerFilesIngestionContent extends Component {
         super(props);
 
         this.state = {
-            selectedFile: null
+            selectedFiles: []
         };
 
         this.handleSelect = this.handleSelect.bind(this);
     }
 
     handleSelect(keys) {
-        if (keys.includes("root")) {
-            this.setState({selectedFile: null});
-            return;
-        }
-
-        this.setState({selectedFile: keys[0] || null});
+        this.setState({selectedFiles: keys.filter(k => k !== "root")});
     }
 
     render() {
@@ -41,12 +36,27 @@ class ManagerFilesIngestionContent extends Component {
             <Menu>
                 {this.props.workflows.map(w => {
                     // TODO: Extend to multiple files by checking all file inputs are matched
+                    // TODO: Match greedily
 
-                    const workflowSupported = w.inputs
-                        .filter(i => i.type === "file")
-                        .filter(i => i.extensions
-                            .filter(e => this.state.selectedFile && this.state.selectedFile.endsWith(e)).length > 0)
-                        .length > 0;
+                    let workflowSupported = true;
+                    let files = [...this.state.selectedFiles];
+
+                    for (let i of w.inputs.filter(i => i.type === "file")) {
+                        // Find files where 1+ of the valid extensions (e.g. jpeg or jpg) match.
+                        const compatibleFiles = files.filter(f => !!i.extensions.find(e => f.endsWith(e)));
+                        if (compatibleFiles.length === 0) {
+                            workflowSupported = false;
+                            break;
+                        }
+
+                        files = files.filter(f => f !== compatibleFiles[0]);  // Steal the first compatible file
+                    }
+
+                    if (files.length > 0) {
+                        // If there are unclaimed files remaining at the end, the workflow is not compatible with the
+                        // total selection of files.
+                        workflowSupported = false;
+                    }
 
                     oneWorkflowSupported = oneWorkflowSupported || workflowSupported;
 
@@ -68,14 +78,16 @@ class ManagerFilesIngestionContent extends Component {
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <div style={{marginBottom: "1em"}}>
                         <Dropdown.Button overlay={workflowMenu} style={{marginRight: "10px"}}
-                                         disabled={!this.state.selectedFile || !oneWorkflowSupported}>
+                                         disabled={this.state.selectedFiles.length === 0 || !oneWorkflowSupported}>
                             <Icon type="import" /> Ingest
                         </Dropdown.Button>
-                        <Button type="danger" icon="delete" disabled={!this.state.selectedFile}>Delete</Button>
+                        <Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>
+                            Delete
+                        </Button>
                         <Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>
                     </div>
-                    <Tree.DirectoryTree defaultExpandAll={true} onSelect={this.handleSelect}
-                                        selectedKeys={this.state.selectedFile ? [this.state.selectedFile] : []}>
+                    <Tree.DirectoryTree defaultExpandAll={true} multiple={true} onSelect={this.handleSelect}
+                                        selectedKeys={this.state.selectedFiles}>
                         <Tree.TreeNode title="chord_drop_box" key="root">{files}</Tree.TreeNode>
                     </Tree.DirectoryTree>
                 </Layout.Content>
