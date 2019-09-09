@@ -12,6 +12,8 @@ import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
+import {workflowsByServiceIDToList} from "../../utils";
+
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ManagerWorkflowsContent extends Component {
@@ -38,9 +40,7 @@ ManagerWorkflowsContent.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)
-        .filter(s => !s.isFetching)
-        .flatMap(s => Object.values(s.workflows.ingestion)),
+    workflows: workflowsByServiceIDToList(state.serviceWorkflows.workflowsByServiceID),
     loading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
 });
 

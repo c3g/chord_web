@@ -9,6 +9,8 @@ import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/tree/style/css";
 
+import {workflowsByServiceIDToList} from "../../utils";
+
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ManagerFilesContent extends Component {
@@ -98,9 +100,7 @@ class ManagerFilesContent extends Component {
 
 const mapStateToProps = state => ({
     files: state.dropBox.tree,
-    workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)
-        .filter(s => !s.isFetching)
-        .flatMap(s => Object.values(s.workflows.ingestion))
+    workflows: workflowsByServiceIDToList(state.serviceWorkflows.workflowsByServiceID)
 });
 
 export default connect(mapStateToProps)(ManagerFilesContent);
