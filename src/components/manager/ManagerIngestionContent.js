@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Tag, Typography} from "antd";
 
