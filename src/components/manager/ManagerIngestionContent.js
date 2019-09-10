@@ -189,7 +189,9 @@ class ManagerIngestionContent extends Component {
 
 ManagerIngestionContent.propTypes = {
     ...dropBoxTreeStateToPropsMixinPropTypes,
-    ...workflowsStateToPropsMixinPropTypes
+    ...workflowsStateToPropsMixinPropTypes,
+    projects: PropTypes.array,
+    projectDatasets: PropTypes.object
 };
 
 const mapStateToProps = state => ({
