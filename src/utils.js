@@ -16,7 +16,7 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
 export const workflowsStateToPropsMixin = state => ({
     workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)
         .filter(s => !s.isFetching)
-        .flatMap(s => Object.values(s.workflows.ingestion)),
+        .flatMap(s => Object.entries(s.workflows.ingestion).map(([k, v]) => ({...v, id: k}))),
     workflowsLoading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
 });
 
