@@ -329,7 +329,7 @@ export const fetchRuns = () => async dispatch => {
     await dispatch(requestRuns());
 
     try {
-        const response = await fetch(`/api/wes/runs`);
+        const response = await fetch("/api/wes/runs");
         if (response.ok) {
             const runs = await response.json();
             await dispatch(receiveRuns(runs));
