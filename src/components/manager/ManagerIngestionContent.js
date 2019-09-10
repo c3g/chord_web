@@ -24,12 +24,16 @@ import {
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
 
+const STEP_WORKFLOW_SELECTION = 0;
+const STEP_INPUT = 1;
+const STEP_CONFIRM = 2;
+
 class ManagerIngestionContent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            step: 0,
+            step: STEP_WORKFLOW_SELECTION,
             selectedWorkflow: null,
             inputFormFields: {},
             inputs: {}
@@ -47,7 +51,7 @@ class ManagerIngestionContent extends Component {
 
     handleWorkflowClick(workflow) {
         this.setState({
-            step: 1,
+            step: STEP_INPUT,
             selectedWorkflow: workflow,
             inputFormFields: {},
             inputs: {}
@@ -57,7 +61,7 @@ class ManagerIngestionContent extends Component {
     handleInputSubmit(inputs) {
         this.setState({
             inputs,
-            step: 2
+            step: STEP_CONFIRM
         });
     }
 
@@ -68,7 +72,7 @@ class ManagerIngestionContent extends Component {
     render() {
         let stepContents = null;
         switch (this.state.step) {
-            case 0:
+            case STEP_WORKFLOW_SELECTION:
                 const workflows = this.props.workflows.map(w => (
                     <List.Item key={w.name}>
                         <WorkflowListItem key={w.name} workflow={w} selectable={true}
@@ -86,7 +90,7 @@ class ManagerIngestionContent extends Component {
 
                 break;
 
-            case 1:
+            case STEP_INPUT:
                 stepContents = (
                     <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
                                         formValues={this.state.inputFormFields}
@@ -96,7 +100,7 @@ class ManagerIngestionContent extends Component {
                     );
                 break;
 
-            case 2:
+            case STEP_CONFIRM:
                 stepContents = (
                     <>
                         <Typography.Title level={2}>Workflow</Typography.Title>
@@ -130,9 +134,10 @@ class ManagerIngestionContent extends Component {
                         </Steps.Step>
                         <Steps.Step title="Input"
                                     description="Select input data for the workflow."
-                                    disabled={this.state.step < 1 && Object.keys(this.state.inputs).length === 0} />
+                                    disabled={this.state.step < STEP_INPUT &&
+                                        Object.keys(this.state.inputs).length === 0} />
                         <Steps.Step title="Run" description="Confirm details and run the workflow."
-                                    disabled={this.state.step < 2 && (this.state.selectedWorkflow === null ||
+                                    disabled={this.state.step < STEP_CONFIRM && (this.state.selectedWorkflow === null ||
                                         Object.keys(this.state.inputs).length === 0)} />
                     </Steps>
                     <div style={{marginTop: "16px"}}>{stepContents}</div>
