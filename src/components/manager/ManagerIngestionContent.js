@@ -82,8 +82,6 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case 1:
-                // TODO: NEED TO SYNC VALUE WITH STATE HERE!!!
-
                 stepContents = (
                     <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
                                         formValues={this.state.inputFormFields}
