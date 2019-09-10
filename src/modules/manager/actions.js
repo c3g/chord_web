@@ -272,8 +272,6 @@ export const saveProject = project => async (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
     if (getState().projects.isSaving) return;
 
-    console.log(project);
-
     await dispatch(beginProjectSave(project.id));
 
     try {
