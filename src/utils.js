@@ -17,14 +17,22 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
 
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({
-    workflows: Object.values(state.serviceWorkflows.workflowsByServiceID)
-        .filter(s => !s.isFetching)
-        .flatMap(s => Object.entries(s.workflows.ingestion).map(([k, v]) => ({...v, id: k}))),
+    workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)
+        .filter(([_, s]) => !s.isFetching)
+        .flatMap(([serviceID, s]) => Object.entries(s.workflows.ingestion).map(([k, v]) => ({
+            ...v,
+            id: k,
+            serviceID
+        }))),
     workflowsLoading: state.services.isFetchingAll || state.serviceWorkflows.isFetchingAll
 });
 
 // Prop types object shape for a single workflow object.
 export const workflowPropTypesShape = PropTypes.shape({
+    id: PropTypes.string,
+    serviceID: PropTypes.string,
+
+    // "Real" properties
     name: PropTypes.string,
     description: PropTypes.string,
     data_types: PropTypes.arrayOf(PropTypes.string),
