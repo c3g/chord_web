@@ -31,6 +31,7 @@ class ManagerIngestionContent extends Component {
         this.state = {
             step: 0,
             selectedWorkflow: null,
+            inputFormFields: {},
             inputs: {}
         };
 
@@ -45,8 +46,10 @@ class ManagerIngestionContent extends Component {
 
     handleClick(workflow) {
         this.setState({
+            step: 1,
             selectedWorkflow: workflow,
-            step: 1
+            inputFormFields: {},
+            inputs: {}
         });
     }
 
@@ -79,9 +82,14 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case 1:
+                // TODO: NEED TO SYNC VALUE WITH STATE HERE!!!
+
                 stepContents = (
                     <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
-                                        onSubmit={this.handleInputSubmit} />
+                                        formValues={this.state.inputFormFields}
+                                        onChange={formValues => this.setState({inputFormFields: formValues})}
+                                        onSubmit={this.handleInputSubmit}
+                                        onBack={() => this.handleStepChange(0)} />
                     );
                 break;
 
@@ -117,9 +125,10 @@ class ManagerIngestionContent extends Component {
                         </Steps.Step>
                         <Steps.Step title="Input"
                                     description="Select input data for the workflow."
-                                    disabled={this.state.step < 1} />
+                                    disabled={this.state.step < 1 && Object.keys(this.state.inputs).length === 0} />
                         <Steps.Step title="Run" description="Confirm details and run the workflow."
-                                    disabled={this.state.step < 2} />
+                                    disabled={this.state.step < 2 && (this.state.selectedWorkflow === null ||
+                                        Object.keys(this.state.inputs).length === 0)} />
                     </Steps>
                     <div style={{marginTop: "16px"}}>{stepContents}</div>
                 </Layout.Content>

@@ -85,4 +85,16 @@ class IngestionInputForm extends Component {
     }
 }
 
-export default Form.create({name: "ingestion_input_form"})(IngestionInputForm);
+export default Form.create({
+    name: "ingestion_input_form",
+    mapPropsToFields: ({workflow, formValues}) => {
+        const fields = {};
+        workflow.inputs.forEach(i => {
+            fields[i.id] = Form.createFormField({...formValues[i.id]});
+        });
+        return fields;
+    },
+    onFieldsChange: ({onChange}, _, allFields) => {
+        onChange({...allFields});
+    }
+})(IngestionInputForm);
