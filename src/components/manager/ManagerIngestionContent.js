@@ -38,6 +38,7 @@ class ManagerIngestionContent extends Component {
         this.handleStepChange = this.handleStepChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleInputSubmit = this.handleInputSubmit.bind(this);
+        this.handleRunIngestion = this.handleRunIngestion.bind(this);
     }
 
     handleStepChange(step) {
@@ -58,6 +59,10 @@ class ManagerIngestionContent extends Component {
             inputs,
             step: 2
         });
+    }
+
+    handleRunIngestion() {
+
     }
 
     render() {
@@ -107,7 +112,9 @@ class ManagerIngestionContent extends Component {
                                 {this.state.inputs[i.id]}
                             </div>)}
                         </Typography.Paragraph>
-                        <Button type="primary" style={{marginTop: "16px"}}>Run Ingestion</Button>
+                        <Button type="primary" style={{marginTop: "16px"}} onClick={() => this.handleRunIngestion()}>
+                            Run Ingestion
+                        </Button>
                     </>
                 );
                 break;
