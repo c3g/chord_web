@@ -37,7 +37,10 @@ import {
     RECEIVE_RUNS,
 
     REQUEST_RUN_DETAILS,
-    RECEIVE_RUN_DETAILS
+    RECEIVE_RUN_DETAILS,
+
+    BEGIN_INGESTION_RUN_SUBMISSION,
+    END_INGESTION_RUN_SUBMISSION
 } from "./actions";
 
 const projectSort = (a, b) => a.name.localeCompare(b.name);
@@ -286,6 +289,7 @@ export const dropBox = (
 export const runs = (
     state = {
         isFetching: false,
+        isSubmittingIngestionRun: false,
         items: [],
         itemDetails: {}
     },
@@ -321,6 +325,16 @@ export const runs = (
                         details: action.details
                     }
                 }
+            });
+
+        case BEGIN_INGESTION_RUN_SUBMISSION:
+            return Object.assign({}, state, {
+                isSubmittingIngestionRun: true
+            });
+
+        case END_INGESTION_RUN_SUBMISSION:
+            return Object.assign({}, state, {
+                isSubmittingIngestionRun: false
             });
 
         default:

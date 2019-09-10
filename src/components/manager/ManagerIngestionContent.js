@@ -18,6 +18,8 @@ import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
+import {submitIngestionWorkflowRun} from "../../modules/manager/actions";
+
 import {
     dropBoxTreeStateToPropsMixin,
     dropBoxTreeStateToPropsMixinPropTypes,
@@ -72,7 +74,13 @@ class ManagerIngestionContent extends Component {
     }
 
     handleRunIngestion() {
+        if (!this.state.selectedDataset || !this.state.selectedWorkflow) {
+            // TODO: GUI error message
+            return;
+        }
 
+        this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, this.state.selectedDataset,
+            this.state.selectedWorkflow, this.state.inputs);
     }
 
     render() {
@@ -155,7 +163,8 @@ class ManagerIngestionContent extends Component {
                                 {this.state.inputs[i.id]}
                             </div>)}
                         </Typography.Paragraph>
-                        <Button type="primary" style={{marginTop: "16px"}} onClick={() => this.handleRunIngestion()}>
+                        <Button type="primary" style={{marginTop: "16px"}} loading={this.props.isSubmittingIngestionRun}
+                                onClick={() => this.handleRunIngestion()}>
                             Run Ingestion
                         </Button>
                     </>
@@ -192,14 +201,21 @@ ManagerIngestionContent.propTypes = {
     ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes,
     projects: PropTypes.array,
-    projectDatasets: PropTypes.object
+    projectDatasets: PropTypes.object,
+    isSubmittingIngestionRun: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
     ...dropBoxTreeStateToPropsMixin(state),
     ...workflowsStateToPropsMixin(state),
     projects: state.projects.items,
-    projectDatasets: state.projectDatasets.itemsByProjectID
+    projectDatasets: state.projectDatasets.itemsByProjectID,
+    isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun
 });
 
-export default connect(mapStateToProps)(ManagerIngestionContent);
+const mapDispatchToProps = dispatch => ({
+    submitIngestionWorkflowRun: (sID, dID, workflow, inputs) =>
+        dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ManagerIngestionContent);
