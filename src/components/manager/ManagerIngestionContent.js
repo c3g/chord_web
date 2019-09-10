@@ -36,7 +36,7 @@ class ManagerIngestionContent extends Component {
         };
 
         this.handleStepChange = this.handleStepChange.bind(this);
-        this.handleClick = this.handleClick.bind(this);
+        this.handleWorkflowClick = this.handleWorkflowClick.bind(this);
         this.handleInputSubmit = this.handleInputSubmit.bind(this);
         this.handleRunIngestion = this.handleRunIngestion.bind(this);
     }
@@ -45,7 +45,7 @@ class ManagerIngestionContent extends Component {
         this.setState({step});
     }
 
-    handleClick(workflow) {
+    handleWorkflowClick(workflow) {
         this.setState({
             step: 1,
             selectedWorkflow: workflow,
@@ -72,7 +72,7 @@ class ManagerIngestionContent extends Component {
                 const workflows = this.props.workflows.map(w => (
                     <List.Item key={w.name}>
                         <WorkflowListItem key={w.name} workflow={w} selectable={true}
-                                          onClick={() => this.handleClick(w)} />
+                                          onClick={() => this.handleWorkflowClick(w)} />
                     </List.Item>
                 ));  // TODO: real key
 
