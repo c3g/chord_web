@@ -70,7 +70,7 @@ class ManagerFilesContent extends Component {
                     oneWorkflowSupported = oneWorkflowSupported || workflowSupported;
 
                     return (
-                        <Menu.Item key={w.name} disabled={!workflowSupported}>
+                        <Menu.Item key={w.id} disabled={!workflowSupported}>
                             Ingest with Workflow "{w.name}"
                         </Menu.Item>
                     );
@@ -80,7 +80,7 @@ class ManagerFilesContent extends Component {
 
         // TODO: support directories as well
         // TODO: Loading for files...
-        const files = this.props.tree.map(f => <Tree.TreeNode title={f} key={f} isLeaf={true} />);
+        const files = this.props.tree.map(f => <Tree.TreeNode title={f.name} key={f.path} isLeaf={true} />);
 
         return (
             <Layout>

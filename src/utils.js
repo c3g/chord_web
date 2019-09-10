@@ -8,7 +8,10 @@ export const dropBoxTreeStateToPropsMixin = state => ({
 
 // Any components which include dropBoxTreeStateToPropsMixin should include this as well in their prop types.
 export const dropBoxTreeStateToPropsMixinPropTypes = {
-    tree: PropTypes.arrayOf(PropTypes.string),  // TODO: This is going to change
+    tree: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        path: PropTypes.string
+    })),  // TODO: This is going to change
     treeLoading: PropTypes.bool
 };
 

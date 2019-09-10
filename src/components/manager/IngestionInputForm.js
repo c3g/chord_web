@@ -32,8 +32,8 @@ class IngestionInputForm extends Component {
             switch (i.type) {
                 case "file":
                     const files = this.props.tree
-                        .filter(f => i.extensions.find(e => f.endsWith(e)))
-                        .map(f => <TreeSelect.TreeNode title={f} key={f} value={f} isLeaf={true}/>);
+                        .filter(f => i.extensions.find(e => f.name.endsWith(e)))
+                        .map(f => <TreeSelect.TreeNode title={f.name} key={f.path} value={f.path} isLeaf={true} />);
                     inputComponent = (
                         <TreeSelect showSearch={true} treeDefaultExpandAll={true}>
                             <TreeSelect.TreeNode title="chord_drop_box" key="root">{files}</TreeSelect.TreeNode>
