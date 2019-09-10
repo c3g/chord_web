@@ -16,7 +16,7 @@ import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
-import {fetchDropBoxTree, fetchRuns} from "../modules/manager/actions";
+import {fetchDropBoxTree, fetchProjectsWithDatasets, fetchRuns} from "../modules/manager/actions";
 
 const renderContent = Content => route => (
     <>
@@ -61,6 +61,8 @@ class DataManagerContent extends Component {
             this.props.fetchDropBoxTree(),
             this.props.fetchRuns()
         ]);
+
+        await this.props.fetchProjectsWithDatasets();  // TODO: If needed
     }
 
     render() {
@@ -80,6 +82,7 @@ class DataManagerContent extends Component {
 const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     fetchDropBoxTree: async () => await dispatch(fetchDropBoxTree()),
+    fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     fetchRuns: async () => await dispatch(fetchRuns())
 });
 

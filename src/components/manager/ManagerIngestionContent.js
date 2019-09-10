@@ -1,14 +1,18 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Button, Layout, List, Skeleton, Spin, Steps, Typography} from "antd";
+import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Tag, Typography} from "antd";
 
 import "antd/es/button/style/css";
+import "antd/es/empty/style/css";
+import "antd/es/form/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
+import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
+import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
@@ -34,6 +38,7 @@ class ManagerIngestionContent extends Component {
 
         this.state = {
             step: STEP_WORKFLOW_SELECTION,
+            selectedDataset: null,
             selectedWorkflow: null,
             inputFormFields: {},
             inputs: {}
@@ -73,19 +78,52 @@ class ManagerIngestionContent extends Component {
         let stepContents = null;
         switch (this.state.step) {
             case STEP_WORKFLOW_SELECTION:
-                const workflows = this.props.workflows.map(w => (
-                    <List.Item key={w.name}>
-                        <WorkflowListItem key={w.name} workflow={w} selectable={true}
-                                          onClick={() => this.handleWorkflowClick(w)} />
-                    </List.Item>
-                ));  // TODO: real key
+                // TODO: Loading projects
+
+                const datasetsByID = {};
+                this.props.projects.forEach(p =>
+                    (this.props.projectDatasets[p.id] || []).forEach(d => datasetsByID[d.dataset_id] = d));
+
+                const selectContents = this.props.projects.map(p => (
+                    <Select.OptGroup key={p.id} label={p.name}>
+                        {(this.props.projectDatasets[p.id] || []).map(d => (
+                            <Select.Option key={d.dataset_id} value={d.dataset_id}>
+                                <Tag style={{marginRight: "1em"}}>{d.data_type_id}</Tag>
+                                {d.dataset_id}
+                            </Select.Option>
+                        ))}
+                    </Select.OptGroup>
+                ));  // TODO: dataset name if available
+
+                const workflows = this.props.workflows
+                    .filter(w => w.data_types.includes(
+                        (datasetsByID[this.state.selectedDataset] || {data_type_id: null}).data_type_id))
+                    .map(w => (
+                        <List.Item key={w.id}>
+                            <WorkflowListItem key={w.id} workflow={w} selectable={true}
+                                              onClick={() => this.handleWorkflowClick(w)} />
+                        </List.Item>
+                    ));
 
                 stepContents = (
-                    <Spin spinning={this.props.workflowsLoading}>
-                        {this.props.workflowsLoading
-                            ? <Skeleton />
-                            : <List itemLayout="vertical">{workflows}</List>}
-                    </Spin>
+                    <>
+                        <Form.Item label="Dataset">
+                            <Select style={{minWidth: "388px"}}
+                                    onChange={dataset => this.setState({selectedDataset: dataset})}
+                                    value={this.state.selectedDataset}>{selectContents}</Select>
+                        </Form.Item>
+                        <Form.Item label="Workflows">
+                            {this.state.selectedDataset
+                                ? <Spin spinning={this.props.workflowsLoading}>
+                                    {this.props.workflowsLoading
+                                        ? <Skeleton/>
+                                        : <List itemLayout="vertical">{workflows}</List>}
+                                </Spin>
+                                : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                         description="Select a dataset to see available workflows" />
+                            }
+                        </Form.Item>
+                    </>
                 );
 
                 break;
@@ -128,8 +166,10 @@ class ManagerIngestionContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Steps current={this.state.step} onChange={this.handleStepChange}>
-                        <Steps.Step title="Workflow"
-                                    description={`Choose a relevant ingestion workflow.`}>
+                        <Steps.Step title="Dataset & Workflow"
+                                    description={<span style={{letterSpacing: "-0.1px"}}>
+                                        Choose a dataset and ingestion workflow.
+                                    </span>}>
 
                         </Steps.Step>
                         <Steps.Step title="Input"
@@ -154,7 +194,9 @@ ManagerIngestionContent.propTypes = {
 
 const mapStateToProps = state => ({
     ...dropBoxTreeStateToPropsMixin(state),
-    ...workflowsStateToPropsMixin(state)
+    ...workflowsStateToPropsMixin(state),
+    projects: state.projects.items,
+    projectDatasets: state.projectDatasets.itemsByProjectID
 });
 
 export default connect(mapStateToProps)(ManagerIngestionContent);
