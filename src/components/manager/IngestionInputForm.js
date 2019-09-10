@@ -13,6 +13,7 @@ class IngestionInputForm extends Component {
     constructor(props) {
         super(props);
         this.onSubmit = this.props.onSubmit || (() => {});
+        this.onBack = this.props.onBack || null;
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -68,7 +69,8 @@ class IngestionInputForm extends Component {
                 lg: {offset: 4, span: 16},
                 xl: {offset: 8, span: 8}
             }}>
-                <Button type="primary" htmlType="submit">
+                {this.onBack ? <Button icon="left" onClick={() => this.onBack()}>Back</Button> : null}
+                <Button type="primary" htmlType="submit" style={{float: "right"}}>
                     Next
                     <Icon type="right" />
                 </Button>
