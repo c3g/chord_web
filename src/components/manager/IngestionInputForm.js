@@ -67,7 +67,8 @@ class IngestionInputForm extends Component {
             <Form.Item key="_submit" wrapperCol={{
                 md: {span: 24},
                 lg: {offset: 4, span: 16},
-                xl: {offset: 8, span: 8}
+                xl: {offset: 6, span: 12},
+                xxl: {offset: 8, span: 8}
             }}>
                 {this.onBack ? <Button icon="left" onClick={() => this.onBack()}>Back</Button> : null}
                 <Button type="primary" htmlType="submit" style={{float: "right"}}>
@@ -78,8 +79,8 @@ class IngestionInputForm extends Component {
         );
 
         return (
-            <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 8}}}
-                  wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 8}}}
+            <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}}}
+                  wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}}}
                   onSubmit={this.handleSubmit}>
                 {formContents}
             </Form>
