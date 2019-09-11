@@ -309,9 +309,12 @@ export const runs = (
 
         case REQUEST_RUN_DETAILS:
             return Object.assign({}, state, {
-                [state.runID]: {
-                    isFetching: true,
-                    details: null
+                itemDetails: {
+                    ...state.itemDetails,
+                    [action.runID]: {
+                        isFetching: true,
+                        details: null
+                    }
                 }
             });
 
@@ -320,7 +323,7 @@ export const runs = (
                 isFetching: false,
                 itemDetails: {
                     ...state.itemDetails,
-                    [state.runID]: {
+                    [action.runID]: {
                         isFetching: false,
                         details: action.details
                     }
