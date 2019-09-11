@@ -8,6 +8,7 @@ import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {fetchRunDetailsIfNeeded} from "../../modules/manager/actions";
 
 const RUN_STATE_TAG_COLORS = {
     UNKNOWN: "",
@@ -23,6 +24,25 @@ const RUN_STATE_TAG_COLORS = {
 };
 
 class ManagerRunsContent extends Component {
+    constructor(props) {
+        super(props);
+        this.runRefreshTimeout = null;
+        this.refreshRuns = this.refreshRuns.bind(this);
+    }
+
+    componentDidMount() {
+        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), 200);
+    }
+
+    componentWillUnmount() {
+        if (this.runRefreshTimeout) clearTimeout(this.runRefreshTimeout);
+    }
+
+    async refreshRuns() {
+        await Promise.all(this.props.runs.map(r => this.props.fetchRunDetailsIfNeeded(r.run_id)));
+        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), 200);
+    }
+
     render() {
         return (
             <Layout>
@@ -56,4 +76,8 @@ const mapStateToProps = state => ({
     })
 });
 
-export default connect(mapStateToProps)(ManagerRunsContent);
+const mapDispatchToProps = dispatch => ({
+    fetchRunDetailsIfNeeded: async runID => await dispatch(fetchRunDetailsIfNeeded(runID))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ManagerRunsContent);
