@@ -11,7 +11,7 @@ import DatasetForm from "./DatasetForm";
 
 import {toggleProjectDatasetAdditionModal} from "../../modules/manager/actions";
 
-class ManagerDatasetCreationModal extends Component {
+class ManagerDatasetAdditionModal extends Component {
     render() {
         return (
             <Modal visible={this.props.showDatasetCreationModal}
@@ -22,14 +22,14 @@ class ManagerDatasetCreationModal extends Component {
         );
     }
 }
-ManagerDatasetCreationModal.propTypes = {
-    showDatasetCreationModal: PropTypes.bool,
+ManagerDatasetAdditionModal.propTypes = {
+    showDatasetAdditionModal: PropTypes.bool,
+    toggleProjectDatasetAdditionModal: PropTypes.func,
     selectedProjectName: PropTypes.string,
-    toggleProjectDatasetAdditionModal: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-    showDatasetCreationModal: state.manager.projectDatasetCreationModal,
+    showDatasetAdditionModal: state.manager.projectDatasetCreationModal,
     selectedProjectName: (state.projects.itemsByID[state.manager.selectedProjectID] || {name: ""}).name
 });
 
@@ -37,4 +37,4 @@ const mapDispatchToProps = dispatch => ({
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerDatasetCreationModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ManagerDatasetAdditionModal);
