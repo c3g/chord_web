@@ -14,12 +14,10 @@ import "antd/es/typography/style/css";
 
 import DatasetForm from "./DatasetForm";
 import Project from "./Project";
-import ProjectForm from "./ProjectForm";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../modules/services/actions";
 import {
     beginProjectEditing,
-    createProject,
     deleteProject,
     endProjectEditing,
     fetchProjectsWithDatasets, saveProject,
@@ -30,12 +28,10 @@ import {
 } from "../../modules/manager/actions";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
-        this.handleCreateCancel = this.handleCreateCancel.bind(this);
-        this.handleCreateSubmit = this.handleCreateSubmit.bind(this);
-
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
         this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
 
@@ -47,37 +43,6 @@ class ManagerProjectDatasetContent extends Component {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
             this.props.selectProject(this.props.projects[0].id);
         }
-    }
-
-    handleCreateCancel() {
-        this.props.toggleProjectCreationModal();
-    }
-
-    handleCreateSubmit() {
-        this.form.validateFields(async (err, values) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-
-            // TODO: Update after response from Adrian
-            // TODO: Don't hard-code data use
-            const project = {
-                ...values,
-                data_use: {
-                    consent_code: {
-                        primary_category: {code: "GRU"},
-                        secondary_categories: [{code: "NGMR"}]
-                    },
-                    data_use_requirements: [{code: "COL"}, {code: "US"}]
-                }
-            };
-
-            await this.props.createProject(project);
-
-            // TODO: Only close modal if submission was a success
-            this.props.toggleProjectCreationModal();
-        });
     }
 
     handleDeleteCancel() {
@@ -103,12 +68,7 @@ class ManagerProjectDatasetContent extends Component {
 
         return (
             <>
-                <Modal visible={this.props.showCreationModal} title="Create Project" footer={[
-                    <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
-                    <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}>Create</Button>
-                ]} onCancel={this.handleCreateCancel}>
-                    <ProjectForm ref={form => this.form = form}/>
-                </Modal>
+                <ManagerProjectCreationModal />
                 <Modal visible={this.props.showDeletionModal}
                        title={`Are you sure you want to delete the "${this.props.selectedProjectName}" project?`}
                        footer={[
@@ -227,7 +187,6 @@ ManagerProjectDatasetContent.propTypes = {
 
     fetchProjectsWithDatasets: PropTypes.func,
 
-    createProject: PropTypes.func,
     saveProject: PropTypes.func
 };
 
@@ -279,7 +238,6 @@ const mapDispatchToProps = dispatch => ({
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
-    createProject: async project => await dispatch(createProject(project)),
     deleteProject: async projectID => await dispatch(deleteProject(projectID)),
     saveProject: project => dispatch(saveProject(project))
 });
