@@ -28,7 +28,7 @@ class ManagerRunsContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Workflow Runs</Typography.Title>
-                    <Table bordered={true} dataSource={this.props.runs}>
+                    <Table bordered={true} dataSource={this.props.runs} rowKey="run_id">
                         <Table.Column title="Run ID" dataIndex="run_id" />
                         <Table.Column title="Purpose" dataIndex="purpose" width={120} />
                         <Table.Column title="Name" dataIndex="name" />
