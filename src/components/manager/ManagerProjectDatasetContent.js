@@ -240,7 +240,7 @@ const mapStateToProps = state => {
      * @type {ProjectDataset[]}
      */
     const projectDatasetRecords = state.manager.selectedProjectID !== null
-        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID]
+        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID] || []  // TODO: Try not to need ||
         : [];
 
     const datasetList = projectDatasetRecords
