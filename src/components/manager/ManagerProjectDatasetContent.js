@@ -12,10 +12,10 @@ import "antd/es/modal/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
-import DatasetForm from "./DatasetForm";
 import Project from "./Project";
 import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
+import ManagerDatasetCreationModal from "./ManagerDatasetCreationModal";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../modules/services/actions";
 import {
@@ -56,11 +56,7 @@ class ManagerProjectDatasetContent extends Component {
             <>
                 <ManagerProjectCreationModal />
                 <ManagerProjectDeletionModal />
-                <Modal visible={this.props.showDatasetCreationModal}
-                       title={`Add Dataset to "${this.props.selectedProjectName}"`}
-                       onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
-                    <DatasetForm /> {/* TODO */}
-                </Modal>
+                <ManagerDatasetCreationModal />
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
                         <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -133,14 +129,11 @@ class ManagerProjectDatasetContent extends Component {
 }
 
 ManagerProjectDatasetContent.propTypes = {
-    showDatasetCreationModal: PropTypes.bool,
-
     projects: PropTypes.arrayOf(PropTypes.object),
 
     loadingProjects: PropTypes.bool,
 
     selectedProject: PropTypes.object,
-    selectedProjectName: PropTypes.string,
 
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
@@ -182,17 +175,12 @@ const mapStateToProps = state => {
             .map(ds => ({...ds, dataTypeID: dataset.data_type_id})))
         .flat();
 
-    const selectedProject = state.projects.itemsByID[state.manager.selectedProjectID] || null;
-
     return {
-        showDatasetCreationModal: state.manager.projectDatasetCreationModal,
-
         editingProject: state.manager.editingProject,
         savingProject: state.projects.isSaving,
         projects: state.projects.items,
         loadingProjects: state.projects.isFetching,
-        selectedProject,
-        selectedProjectName: (selectedProject || {name: ""}).name,
+        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
         loadingDatasets: state.services.isFetchingAll || state.projectDatasets.isFetchingAll,
         datasets: datasetList
     };
