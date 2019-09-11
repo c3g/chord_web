@@ -44,13 +44,16 @@ class ManagerRunsContent extends Component {
 }
 
 const mapStateToProps = state => ({
-    runs: state.runs.items.map(r => ({
-        ...r,
-        purpose: "Ingestion",  // TODO: Not hard-coded, Ingestion or Analysis
-        name: (state.runs.itemDetails[r.run_log] || {run_log: {name: ""}}).name || "",
-        start_time: (state.runs.itemDetails[r.run_log] || {run_log: {start_time: ""}}).start_time || "",
-        end_time: (state.runs.itemDetails[r.run_log] || {run_log: {end_time: ""}}).end_time || ""
-    }))
+    runs: state.runs.items.map(r => {
+        const runDetails = (state.runs.itemDetails[r.run_id] || {details: null}).details;
+        return {
+            ...r,
+            purpose: "Ingestion",  // TODO: Not hard-coded, Ingestion or Analysis
+            name: (runDetails || {run_log: {name: ""}}).run_log.name || "",
+            start_time: (runDetails || {run_log: {start_time: ""}}).run_log.start_time || "",
+            end_time: (runDetails || {run_log: {end_time: ""}}).run_log.end_time || ""
+        };
+    })
 });
 
 export default connect(mapStateToProps)(ManagerRunsContent);
