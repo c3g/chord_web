@@ -313,7 +313,7 @@ export const runs = (
                     ...state.itemDetails,
                     [action.runID]: {
                         isFetching: true,
-                        details: null
+                        details: (state.itemDetails[action.runID] || {details: null}).details
                     }
                 }
             });
@@ -321,6 +321,7 @@ export const runs = (
         case RECEIVE_RUN_DETAILS:
             return Object.assign({}, state, {
                 isFetching: false,
+                items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.details.state} : i),
                 itemDetails: {
                     ...state.itemDetails,
                     [action.runID]: {
