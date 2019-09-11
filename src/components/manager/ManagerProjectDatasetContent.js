@@ -14,11 +14,12 @@ import "antd/es/typography/style/css";
 
 import DatasetForm from "./DatasetForm";
 import Project from "./Project";
+import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
+import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../modules/services/actions";
 import {
     beginProjectEditing,
-    deleteProject,
     endProjectEditing,
     fetchProjectsWithDatasets, saveProject,
     selectProjectIfItExists,
@@ -28,13 +29,9 @@ import {
 } from "../../modules/manager/actions";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
-import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
-        this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
-        this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
-
         await this.props.fetchServiceDataIfNeeded();
         await this.props.fetchProjectsWithDatasets();  // TODO: If needed
     }
@@ -43,17 +40,6 @@ class ManagerProjectDatasetContent extends Component {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
             this.props.selectProject(this.props.projects[0].id);
         }
-    }
-
-    handleDeleteCancel() {
-        this.props.toggleProjectDeletionModal();
-    }
-
-    async handleDeleteSubmit() {
-        await this.props.deleteProject(this.props.selectedProject.id);
-
-        // TODO: Only close modal if deletion was a success
-        this.props.toggleProjectDeletionModal();
     }
 
     handleProjectSave(project) {
@@ -69,20 +55,7 @@ class ManagerProjectDatasetContent extends Component {
         return (
             <>
                 <ManagerProjectCreationModal />
-                <Modal visible={this.props.showDeletionModal}
-                       title={`Are you sure you want to delete the "${this.props.selectedProjectName}" project?`}
-                       footer={[
-                           <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
-                           <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}>
-                               Delete
-                           </Button>
-                       ]}
-                       onCancel={this.handleDeleteCancel}>
-                    <Typography.Paragraph>
-                        Deleting this project means all data contained in the project will be deleted permanently, and
-                        datasets will no longer be available for discovery within the CHORD federation.
-                    </Typography.Paragraph>
-                </Modal>
+                <ManagerProjectDeletionModal />
                 <Modal visible={this.props.showDatasetCreationModal}
                        title={`Add Dataset to "${this.props.selectedProjectName}"`}
                        onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
@@ -160,8 +133,6 @@ class ManagerProjectDatasetContent extends Component {
 }
 
 ManagerProjectDatasetContent.propTypes = {
-    showCreationModal: PropTypes.bool,
-    showDeletionModal: PropTypes.bool,
     showDatasetCreationModal: PropTypes.bool,
 
     projects: PropTypes.arrayOf(PropTypes.object),
@@ -214,8 +185,6 @@ const mapStateToProps = state => {
     const selectedProject = state.projects.itemsByID[state.manager.selectedProjectID] || null;
 
     return {
-        showCreationModal: state.manager.projectCreationModal,
-        showDeletionModal: state.manager.projectDeletionModal,
         showDatasetCreationModal: state.manager.projectDatasetCreationModal,
 
         editingProject: state.manager.editingProject,
@@ -238,7 +207,6 @@ const mapDispatchToProps = dispatch => ({
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
-    deleteProject: async projectID => await dispatch(deleteProject(projectID)),
     saveProject: project => dispatch(saveProject(project))
 });
 
