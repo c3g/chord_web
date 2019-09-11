@@ -41,6 +41,9 @@ class ManagerProjectDatasetContent extends Component {
 
         await this.props.fetchServiceDataIfNeeded();
         await this.props.fetchProjectsWithDatasets();  // TODO: If needed
+    }
+
+    componentDidUpdate() {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
             this.props.selectProject(this.props.projects[0].id);
         }
