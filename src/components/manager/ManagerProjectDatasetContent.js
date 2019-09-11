@@ -127,7 +127,6 @@ class ManagerProjectDatasetContent extends Component {
                        title={`Add Dataset to "${this.props.selectedProjectName}"`}
                        onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
                     <DatasetForm /> {/* TODO */}
-                    TODO: Dataset file upload / pipeline selection? (or one pipeline per data type?)
                 </Modal>
             <Layout>
                 {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (

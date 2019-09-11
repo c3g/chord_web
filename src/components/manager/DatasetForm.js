@@ -34,7 +34,6 @@ class DatasetForm extends Component {
                         <Select style={{width: "100%"}}>{dataTypeOptions}</Select>
                     )}
                 </Form.Item>
-                TODO: File ingestion here?
             </Form>
         );
     }
