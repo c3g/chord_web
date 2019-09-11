@@ -61,72 +61,72 @@ class ManagerProjectDatasetContent extends Component {
                        onCancel={() => this.props.toggleProjectDatasetAdditionModal()}>
                     <DatasetForm /> {/* TODO */}
                 </Modal>
-            <Layout>
-                {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
-                    <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false}>
-                            <Typography.Title level={3}>No Projects</Typography.Title>
-                            <Typography.Paragraph style={{
-                                maxWidth: "600px",
-                                marginLeft: "auto",
-                                marginRight: "auto"
-                            }}>
-                                To create datasets and ingest data, you have to create a CHORD project
-                                first. CHORD projects have a name and description, and let you group related
-                                datasets together. You can then specify project-wide consent codes and data use
-                                restrictions to control data access.
-                            </Typography.Paragraph>
-                            <Button type="primary" icon="plus"
-                                    onClick={() => this.props.toggleProjectCreationModal()}>Create Project</Button>
-                        </Empty>
-                    </Layout.Content>
-                ) : (
-                    <>
-                        <Layout.Sider style={{background: "white"}} width={256}>
-                            <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
-                                <Menu style={{flex: 1, paddingTop: "8px"}} mode="inline"
-                                      onClick={item => this.props.selectProject(item.key)}
-                                      selectedKeys={this.props.selectedProject
-                                          ? [this.props.selectedProject.id]
-                                          : []}>
-                                    {projectMenuItems}
-                                </Menu>
-                                <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
-                                    <Button type="primary" style={{width: "100%"}}
-                                            onClick={() => this.props.toggleProjectCreationModal()}
-                                            icon="plus">
-                                        Create Project
-                                    </Button>
-                                </div>
-                            </div>
-                        </Layout.Sider>
+                <Layout>
+                    {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
                         <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                            {/* TODO: Fix project datasets */}
-                            {this.props.selectedProject ? (
-                                <Project value={this.props.selectedProject}
-                                         datasets={this.props.datasets}
-                                         loadingDatasets={this.props.loadingDatasets}
-                                         editing={this.props.editingProject}
-                                         saving={this.props.savingProject}
-                                         onDelete={() => this.props.toggleProjectDeletionModal()}
-                                         onEdit={() => this.props.beginProjectEditing()}
-                                         onCancelEdit={() => this.props.endProjectEditing()}
-                                         onSave={project => this.handleProjectSave(project)}
-                                         onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()} />
-                            ) : (
-                                this.props.loadingProjects ? (
-                                    <Skeleton title={{width: 300}}
-                                              paragraph={{rows: 4, width: [600, 580, 600, 480]}} />
-                                ) : (
-                                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                           description="Select a project from the menu on the left to manage it."
-                                    />
-                                )
-                            )}
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false}>
+                                <Typography.Title level={3}>No Projects</Typography.Title>
+                                <Typography.Paragraph style={{
+                                    maxWidth: "600px",
+                                    marginLeft: "auto",
+                                    marginRight: "auto"
+                                }}>
+                                    To create datasets and ingest data, you have to create a CHORD project
+                                    first. CHORD projects have a name and description, and let you group related
+                                    datasets together. You can then specify project-wide consent codes and data use
+                                    restrictions to control data access.
+                                </Typography.Paragraph>
+                                <Button type="primary" icon="plus"
+                                        onClick={() => this.props.toggleProjectCreationModal()}>Create Project</Button>
+                            </Empty>
                         </Layout.Content>
-                    </>
-                )}
-            </Layout>
+                    ) : (
+                        <>
+                            <Layout.Sider style={{background: "white"}} width={256}>
+                                <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                                    <Menu style={{flex: 1, paddingTop: "8px"}} mode="inline"
+                                          onClick={item => this.props.selectProject(item.key)}
+                                          selectedKeys={this.props.selectedProject
+                                              ? [this.props.selectedProject.id]
+                                              : []}>
+                                        {projectMenuItems}
+                                    </Menu>
+                                    <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
+                                        <Button type="primary" style={{width: "100%"}}
+                                                onClick={() => this.props.toggleProjectCreationModal()}
+                                                icon="plus">
+                                            Create Project
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Layout.Sider>
+                            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                                {/* TODO: Fix project datasets */}
+                                {this.props.selectedProject ? (
+                                    <Project value={this.props.selectedProject}
+                                             datasets={this.props.datasets}
+                                             loadingDatasets={this.props.loadingDatasets}
+                                             editing={this.props.editingProject}
+                                             saving={this.props.savingProject}
+                                             onDelete={() => this.props.toggleProjectDeletionModal()}
+                                             onEdit={() => this.props.beginProjectEditing()}
+                                             onCancelEdit={() => this.props.endProjectEditing()}
+                                             onSave={project => this.handleProjectSave(project)}
+                                             onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()} />
+                                ) : (
+                                    this.props.loadingProjects ? (
+                                        <Skeleton title={{width: 300}}
+                                                  paragraph={{rows: 4, width: [600, 580, 600, 480]}} />
+                                    ) : (
+                                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                               description="Select a project from the menu on the left to manage it."
+                                        />
+                                    )
+                                )}
+                            </Layout.Content>
+                        </>
+                    )}
+                </Layout>
             </>
         );
     }
