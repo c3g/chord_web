@@ -360,6 +360,41 @@ export const fetchRuns = () => async dispatch => {
 };
 
 
+export const fetchRunDetails = runID => async dispatch => {
+    await dispatch(requestRunDetails(runID));
+
+    try {
+        const response = await fetch(`/api/wes/runs/${runID}`);
+        if (response.ok) {
+            const runDetails = await response.json();
+            await dispatch(receiveRunDetails(runID, runDetails));
+        } else {
+            // TODO: GUI error message
+            // TODO: Don't "receive" anything...
+            console.error(response);
+            await dispatch(receiveRunDetails(runID, null));
+        }
+    } catch (e) {
+        // TODO: GUI error message
+        // TODO: Don't "receive" anything...
+        console.error(e);
+        await dispatch(receiveRunDetails(runID, null));
+    }
+};
+
+const RUN_DONE_STATES = ["COMPLETE", "EXECUTOR_ERROR", "SYSTEM_ERROR", "CANCELED"];
+
+export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
+    const state = getState();
+
+    const needsUpdate = !state.runs.itemDetails.hasOwnProperty(runID)
+        || (!state.runs.itemDetails[runID].isFetching && (!state.runs.itemDetails[runID].details
+            || !RUN_DONE_STATES.includes(state.runs.itemDetails[runID].details.state)));
+
+    if (needsUpdate) await dispatch(fetchRunDetails(runID));
+};
+
+
 export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, inputs, redirect, history) =>
     async (dispatch, getState) => {
         await dispatch(beginIngestionRunSubmission());

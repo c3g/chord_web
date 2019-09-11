@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 
@@ -16,7 +17,12 @@ import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
-import {fetchDropBoxTree, fetchProjectsWithDatasets, fetchRuns} from "../modules/manager/actions";
+import {
+    fetchDropBoxTree,
+    fetchProjectsWithDatasets,
+    fetchRunDetailsIfNeeded,
+    fetchRuns
+} from "../modules/manager/actions";
 
 const renderContent = Content => route => (
     <>
@@ -63,6 +69,8 @@ class DataManagerContent extends Component {
         ]);
 
         await this.props.fetchProjectsWithDatasets();  // TODO: If needed
+
+        await Promise.all(this.props.runs.map(r => this.props.fetchRunDetailsIfNeeded(r.run_id)));
     }
 
     render() {
@@ -79,11 +87,23 @@ class DataManagerContent extends Component {
     }
 }
 
+DataManagerContent.propTypes = {
+    runs: PropTypes.arrayOf(PropTypes.shape({
+        run_id: PropTypes.string,
+        state: PropTypes.string
+    }))
+};
+
+const mapStateToProps = state => ({
+    runs: state.runs.items
+});
+
 const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     fetchDropBoxTree: async () => await dispatch(fetchDropBoxTree()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
-    fetchRuns: async () => await dispatch(fetchRuns())
+    fetchRuns: async () => await dispatch(fetchRuns()),
+    fetchRunDetailsIfNeeded: async runID => await dispatch(fetchRunDetailsIfNeeded(runID))
 });
 
-export default connect(null, mapDispatchToProps)(DataManagerContent);
+export default connect(mapStateToProps, mapDispatchToProps)(DataManagerContent);
