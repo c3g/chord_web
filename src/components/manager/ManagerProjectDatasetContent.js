@@ -2,13 +2,12 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 
-import {Button, Empty, Layout, Menu, Modal, Skeleton, Typography} from "antd";
+import {Button, Empty, Layout, Menu, Skeleton, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
-import "antd/es/modal/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
