@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Tag, Typography} from "antd";
@@ -35,17 +36,21 @@ const STEP_WORKFLOW_SELECTION = 0;
 const STEP_INPUT = 1;
 const STEP_CONFIRM = 2;
 
+const deepCopySimple = o => JSON.parse(JSON.stringify(o));
+
 class ManagerIngestionContent extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.initialState = {
             step: STEP_WORKFLOW_SELECTION,
             selectedDataset: null,
             selectedWorkflow: null,
             inputFormFields: {},
             inputs: {}
         };
+
+        this.state = deepCopySimple(this.initialState);
 
         this.handleStepChange = this.handleStepChange.bind(this);
         this.handleWorkflowClick = this.handleWorkflowClick.bind(this);
@@ -73,14 +78,16 @@ class ManagerIngestionContent extends Component {
         });
     }
 
-    handleRunIngestion() {
+    async handleRunIngestion(history) {
         if (!this.state.selectedDataset || !this.state.selectedWorkflow) {
             // TODO: GUI error message
             return;
         }
 
-        this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, this.state.selectedDataset,
-            this.state.selectedWorkflow, this.state.inputs);
+        await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, this.state.selectedDataset,
+            this.state.selectedWorkflow, this.state.inputs, "/data/manager/runs", history);
+
+        this.setState(deepCopySimple(this.initialState));
     }
 
     render() {
@@ -164,7 +171,7 @@ class ManagerIngestionContent extends Component {
                             </div>)}
                         </Typography.Paragraph>
                         <Button type="primary" style={{marginTop: "16px"}} loading={this.props.isSubmittingIngestionRun}
-                                onClick={() => this.handleRunIngestion()}>
+                                onClick={() => this.handleRunIngestion(this.props.history)}>
                             Run Ingestion
                         </Button>
                     </>
@@ -214,8 +221,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    submitIngestionWorkflowRun: (sID, dID, workflow, inputs) =>
-        dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs))
+    submitIngestionWorkflowRun: async (sID, dID, workflow, inputs, redirect, history) =>
+        await dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs, redirect, history))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerIngestionContent);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerIngestionContent));

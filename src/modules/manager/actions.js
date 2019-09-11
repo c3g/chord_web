@@ -360,51 +360,56 @@ export const fetchRuns = () => async dispatch => {
 };
 
 
-export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, inputs) => async (dispatch, getState) => {
-    await dispatch(beginIngestionRunSubmission());
+export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, inputs, redirect, history) =>
+    async (dispatch, getState) => {
+        await dispatch(beginIngestionRunSubmission());
 
-    const serviceName = getState().services.itemsByID[serviceID].name;
-    let namespacedInputs = Object.fromEntries(Object.entries(inputs).map(([k, v]) => [`${workflow.id}.${k}`, v]));
+        const serviceName = getState().services.itemsByID[serviceID].name;
+        let namespacedInputs = Object.fromEntries(Object.entries(inputs).map(([k, v]) => [`${workflow.id}.${k}`, v]));
 
-    // TODO: Need to handle files properly for file inputs
+        // TODO: Need to handle files properly for file inputs
 
-    try {
-        const formData = new FormData();
+        try {
+            const formData = new FormData();
 
-        formData.append("workflow_params", JSON.stringify(namespacedInputs));
-        formData.append("workflow_type", "WDL");  // TODO: Should eventually not be hard-coded
-        formData.append("workflow_type_version", "1.0");  // TODO: "
-        formData.append("workflow_engine_parameters", JSON.stringify({}));  // TODO: Currently unused
-        formData.append("workflow_url",
-            `${window.location.origin}/api/${serviceName}/workflows/${workflow.id}.wdl`);
-        formData.append("tags", JSON.stringify({
-            workflow_id: workflow.id,
-            workflow_metadata: workflow,
-            ingestion_url: `${window.location.origin}/api/${serviceName}/ingest`,
-            dataset_id: datasetID  // TODO
-        }));
+            formData.append("workflow_params", JSON.stringify(namespacedInputs));
+            formData.append("workflow_type", "WDL");  // TODO: Should eventually not be hard-coded
+            formData.append("workflow_type_version", "1.0");  // TODO: "
+            formData.append("workflow_engine_parameters", JSON.stringify({}));  // TODO: Currently unused
+            formData.append("workflow_url",
+                `${window.location.origin}/api/${serviceName}/workflows/${workflow.id}.wdl`);
+            formData.append("tags", JSON.stringify({
+                workflow_id: workflow.id,
+                workflow_metadata: workflow,
+                ingestion_url: `${window.location.origin}/api/${serviceName}/ingest`,
+                dataset_id: datasetID  // TODO
+            }));
 
-        const response = await fetch("/api/wes/runs", {
-            method: "POST",
-            body: formData
-        });
+            const response = await fetch("/api/wes/runs", {
+                method: "POST",
+                body: formData
+            });
 
-        if (response.ok) {
-            const runID = (await response.json())["run_id"];
-            message.success(`Ingestion with run ID "${runID}" submitted!`);
+            if (response.ok) {
+                const runID = (await response.json())["run_id"];
+                message.success(`Ingestion with run ID "${runID}" submitted!`);
 
-            await dispatch(fetchRuns());  // TODO: Maybe just load delta?
-            // TODO: Navigate to workflow runs and scroll to the correct entry
-        } else {
+                await dispatch(fetchRuns());  // TODO: Maybe just load delta?
+                // TODO: Navigate to workflow runs and scroll to the correct entry
+
+                if (redirect) {
+                    history.push(redirect);
+                }
+            } else {
+                // TODO: GUI error message
+                console.error(response);
+            }
+        } catch (e) {
             // TODO: GUI error message
-            console.error(response);
+            console.error(e);
+            // TODO: Emit event
         }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        // TODO: Emit event
-    }
 
-    // TODO: Separate event for success/failure?
-    await dispatch(endIngestionRunSubmission());
-};
+        // TODO: Separate event for success/failure?
+        await dispatch(endIngestionRunSubmission());
+    };
