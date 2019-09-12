@@ -1,6 +1,7 @@
 import fetch from "cross-fetch";
 
 import {message} from "antd";
+import {beginAddingServiceDataset, endAddingServiceDataset, terminateAddingServiceDataset} from "../services/actions";
 
 export const REQUEST_PROJECTS = "REQUEST_PROJECTS";
 const requestProjects = () => ({
@@ -91,6 +92,24 @@ export const selectProjectIfItExists = projectID => async (dispatch, getState) =
     if (!getState().projects.itemsByID.hasOwnProperty(projectID)) return;
     await dispatch(selectProject(projectID));
 };
+
+
+export const BEGIN_PROJECT_DATASET_ADDITION = "BEGIN_PROJECT_DATASET_ADDITION";
+const beginProjectDatasetAddition = () => ({
+    type: BEGIN_PROJECT_DATASET_ADDITION
+});
+
+export const END_PROJECT_DATASET_ADDITION = "END_PROJECT_DATASET_ADDITION";
+const endProjectDatasetAddition = (projectID, dataset) => ({
+    type: END_PROJECT_DATASET_ADDITION,
+    projectID,
+    dataset
+});
+
+export const TERMINATE_PROJECT_DATASET_CREATION = "TERMINATE_PROJECT_DATASET_CREATION";
+const terminateProjectDatasetAddition = () => ({
+    type: TERMINATE_PROJECT_DATASET_CREATION
+});
 
 
 export const TOGGLE_PROJECT_CREATION_MODAL = "TOGGLE_PROJECT_CREATION_MODAL";
@@ -307,6 +326,61 @@ export const saveProject = project => async (dispatch, getState) => {
         // TODO: GUI error message
         console.error(e);
         await dispatch(terminateProjectSave());
+    }
+};
+
+
+export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName) => async (dispatch, getState) => {
+    if (getState().projectDatasets.isAdding) return;
+
+    await dispatch(beginProjectDatasetAddition());
+    await dispatch(beginAddingServiceDataset());
+
+    try {
+        const formData = new FormData();
+        formData.append("name", datasetName.trim());
+
+        const serviceResponse = await fetch(
+            `/api/${getState().services.itemsByID[serviceID].name}/datasets?data-type=${dataTypeID}`,
+            {method: "POST", body: formData});
+
+        if (serviceResponse.ok) {
+            const serviceDataset = await serviceResponse.json();
+
+            const projectResponse = await fetch(`/api/project/projects/${projectID}/datasets`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    dataset_id: serviceDataset.id,
+                    service_id: serviceID,
+                    data_type_id: dataTypeID
+                })
+            });
+
+            if (projectResponse.ok) {
+                // TODO: GUI success message
+                const projectDataset = await projectResponse.json();
+                await dispatch(endAddingServiceDataset(serviceID, dataTypeID, serviceDataset));
+                await dispatch(endProjectDatasetAddition(projectID, projectDataset));
+            } else {
+                // TODO: Delete previously-created dataset
+                // TODO: GUI error message
+                console.error(projectResponse);
+                await dispatch(terminateAddingServiceDataset());
+                await dispatch(terminateProjectDatasetAddition());
+            }
+        } else {
+            // TODO: GUI error message
+            console.error(serviceResponse);
+            await dispatch(terminateAddingServiceDataset());
+            await dispatch(terminateProjectDatasetAddition());
+        }
+    } catch (e) {
+        // TODO: Delete previously-created dataset if needed, or add another try-catch level
+        // TODO: GUI error message
+        console.error(e);
+        await dispatch(terminateAddingServiceDataset());
+        await dispatch(terminateProjectDatasetAddition());
     }
 };
 

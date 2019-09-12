@@ -17,7 +17,10 @@ import {
     BEGIN_FETCHING_SERVICE_WORKFLOWS,
     END_FETCHING_SERVICE_WORKFLOWS,
     REQUEST_SERVICE_WORKFLOWS,
-    RECEIVE_SERVICE_WORKFLOWS
+    RECEIVE_SERVICE_WORKFLOWS,
+    BEGIN_ADDING_SERVICE_DATASET,
+    END_ADDING_SERVICE_DATASET,
+    TERMINATE_ADDING_SERVICE_DATASET
 } from "./actions";
 
 export const services = (
@@ -116,6 +119,7 @@ export const serviceDataTypes = (
 export const serviceDatasets = (
     state = {
         isFetching: false,
+        isCreating: false,
         datasetsByServiceAndDataTypeID: {}
     },
     action
@@ -136,6 +140,31 @@ export const serviceDatasets = (
                         [action.dataTypeID]: action.datasets
                     }
                 }
+            });
+
+        case BEGIN_ADDING_SERVICE_DATASET:
+            return Object.assign({}, state, {
+                isCreating: true
+            });
+
+        case END_ADDING_SERVICE_DATASET:
+            return Object.assign({}, state, {
+                isCreating: false,
+                datasetsByServiceAndDataTypeID: {
+                    ...state.datasetsByServiceAndDataTypeID,
+                    [action.serviceID]: {
+                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: [
+                            ...(state.datasetsByServiceAndDataTypeID[action.serviceID][action.dataTypeID] || []),
+                            action.dataset
+                        ]
+                    }
+                }
+            });
+
+        case TERMINATE_ADDING_SERVICE_DATASET:
+            return Object.assign({}, state, {
+                isCreating: false
             });
 
         default:

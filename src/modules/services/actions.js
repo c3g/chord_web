@@ -212,7 +212,7 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => {
         if ((state.services.items.length === 0 ||
                 Object.keys(state.serviceMetadata.metadata).length === 0 ||
                 Object.keys(state.serviceDataTypes.dataTypes).length === 0) &&
-                !state.services.isLoadingAllData) {
+                !state.services.isFetchingAll) {
             await fetchServicesWithMetadataAndDataTypesAndDatasets();
         }
     }

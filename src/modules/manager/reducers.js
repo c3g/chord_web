@@ -19,6 +19,10 @@ import {
 
     SELECT_PROJECT,
 
+    BEGIN_PROJECT_DATASET_ADDITION,
+    END_PROJECT_DATASET_ADDITION,
+    TERMINATE_PROJECT_DATASET_CREATION,
+
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
     TOGGLE_PROJECT_DATASET_ADDITION_MODAL,
@@ -150,6 +154,7 @@ export const projectDatasets = (
     state = {
         isFetching: false,
         isFetchingAll: false,
+        isAdding: false,
         itemsByProjectID: {}
     },
     action
@@ -204,6 +209,26 @@ export const projectDatasets = (
         case HANDLE_PROJECT_DATASETS_ERROR:
             return Object.assign({}, state, {
                 isFetching: false
+            });
+
+        case BEGIN_PROJECT_DATASET_ADDITION:
+            return Object.assign({}, state, {
+                isAdding: true
+            });
+
+        case END_PROJECT_DATASET_ADDITION:
+            // TODO
+            return Object.assign({}, state, {
+                isAdding: false,
+                itemsByProjectID: {
+                    ...state.itemsByProjectID,
+                    [action.projectID]: [...(state.itemsByProjectID[action.projectID] || []), action.dataset]
+                }
+            });
+
+        case TERMINATE_PROJECT_DATASET_CREATION:
+            return Object.assign({}, state, {
+                isAdding: false
             });
 
         default:

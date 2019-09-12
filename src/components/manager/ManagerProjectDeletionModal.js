@@ -11,6 +11,11 @@ import "antd/es/typography/style/css";
 import {deleteProject, toggleProjectDeletionModal} from "../../modules/manager/actions";
 
 class ManagerProjectDeletionModal extends Component {
+    componentDidMount() {
+        this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
+        this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
+    }
+
     handleDeleteCancel() {
         this.props.toggleProjectDeletionModal();
     }

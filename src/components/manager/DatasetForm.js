@@ -44,4 +44,5 @@ const mapStateToProps = state => ({
         .flatMap(s => state.serviceDataTypes.dataTypes[s].map(dt => ({dt, s})))
 });
 
-export default connect(mapStateToProps)(Form.create({name: "dataset_form"})(DatasetForm));
+export default connect(mapStateToProps, null, null, {forwardRef: true})(
+    Form.create({name: "dataset_form"})(DatasetForm));
