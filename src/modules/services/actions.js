@@ -61,6 +61,26 @@ const receiveServiceDatasets = (serviceID, dataTypeID, datasets) => ({
     receivedAt: Date.now()
 });
 
+
+export const BEGIN_ADDING_SERVICE_DATASET = "BEGIN_ADDING_SERVICE_DATASET";
+export const beginAddingServiceDataset = () => ({
+    type: BEGIN_ADDING_SERVICE_DATASET
+});
+
+export const END_ADDING_SERVICE_DATASET = "END_ADDING_SERVICE_DATASET";
+export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
+    type: END_ADDING_SERVICE_DATASET,
+    serviceID,
+    dataTypeID,
+    dataset
+});
+
+export const TERMINATE_ADDING_SERVICE_DATASET = "TERMINATE_ADDING_SERVICE_DATASET";
+export const terminateAddingServiceDataset = () => ({
+    type: TERMINATE_ADDING_SERVICE_DATASET
+});
+
+
 export const BEGIN_FETCHING_SERVICE_WORKFLOWS = "BEGIN_FETCHING_SERVICE_WORKFLOWS";
 const beginFetchingServiceWorkflows = () => ({
     type: BEGIN_FETCHING_SERVICE_WORKFLOWS
