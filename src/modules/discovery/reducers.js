@@ -1,3 +1,5 @@
+import {simpleDeepCopy} from "../../utils";
+
 import {RECEIVE_SERVICE_DATA_TYPES} from "../services/actions";
 
 import {
@@ -102,7 +104,7 @@ export const discovery = (
                     ...state.searchFormsByServiceAndDataTypeID,
                     [action.serviceID]: {
                         ...state.searchFormsByServiceAndDataTypeID[action.serviceID],
-                        [action.dataTypeID]: JSON.parse(JSON.stringify(action.fields)) // TODO: Hack-y deep clone
+                        [action.dataTypeID]: simpleDeepCopy(action.fields) // TODO: Hack-y deep clone
                     }
                 }
             });

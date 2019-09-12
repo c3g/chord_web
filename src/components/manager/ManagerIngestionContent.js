@@ -19,6 +19,8 @@ import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
+import {simpleDeepCopy} from "../../utils";
+
 import {submitIngestionWorkflowRun} from "../../modules/manager/actions";
 
 import {
@@ -36,8 +38,6 @@ const STEP_WORKFLOW_SELECTION = 0;
 const STEP_INPUT = 1;
 const STEP_CONFIRM = 2;
 
-const deepCopySimple = o => JSON.parse(JSON.stringify(o));
-
 class ManagerIngestionContent extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +50,7 @@ class ManagerIngestionContent extends Component {
             inputs: {}
         };
 
-        this.state = deepCopySimple(this.initialState);
+        this.state = simpleDeepCopy(this.initialState);
 
         this.handleStepChange = this.handleStepChange.bind(this);
         this.handleWorkflowClick = this.handleWorkflowClick.bind(this);
@@ -87,7 +87,7 @@ class ManagerIngestionContent extends Component {
         await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, this.state.selectedDataset,
             this.state.selectedWorkflow, this.state.inputs, "/data/manager/runs", history);
 
-        this.setState(deepCopySimple(this.initialState));
+        this.setState(simpleDeepCopy(this.initialState));
     }
 
     render() {
