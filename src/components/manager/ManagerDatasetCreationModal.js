@@ -50,7 +50,7 @@ class ManagerDatasetAdditionModal extends Component {
                        <Button key="create" icon="plus" type="primary" onClick={this.handleSubmit}>Create</Button>
                    ]}
                    onCancel={this.handleCancel}>
-                <DatasetForm ref={form => this.form = form} /> {/* TODO */}
+                <DatasetForm ref={form => this.form = form} />
             </Modal>
         );
     }
