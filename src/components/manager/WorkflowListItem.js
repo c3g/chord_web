@@ -28,6 +28,12 @@ const TYPE_TAG_DISPLAY = {
     }
 };
 
+const ioTagWithType = (key, ioType, content) => (
+    <Tag key={key} color={TYPE_TAG_DISPLAY[ioType].color}>
+        <Icon type={TYPE_TAG_DISPLAY[ioType].icon} /> {content}
+    </Tag>
+);
+
 class WorkflowListItem extends Component {
     constructor(props) {
         super(props);
@@ -38,10 +44,7 @@ class WorkflowListItem extends Component {
         const typeTags = this.props.workflow.data_types.map(dt => <Tag key={dt}>{dt}</Tag>);
 
         const inputs = this.props.workflow.inputs.map(i =>
-            <Tag key={i.id} color={TYPE_TAG_DISPLAY[i.type].color}>
-                <Icon type={TYPE_TAG_DISPLAY[i.type].icon} /> {i.type === "file" ? i.extensions.join(" / ") : i.id}
-            </Tag>
-        );
+            ioTagWithType(i.id, i.type, i.type === "file" ? i.extensions.join(" / ") : i.id));
 
         const inputExtensions = {};
         this.props.workflow.inputs.forEach(i => {
@@ -50,19 +53,13 @@ class WorkflowListItem extends Component {
         });
 
         const outputs = this.props.workflow.outputs.map(o => {
-            let formattedOutput = o;
+            let formattedOutput = o.value;
 
-            [...o.matchAll(/{(.*)}/)].forEach(([_, id]) =>
+            [...o.value.matchAll(/{(.*)}/)].forEach(([_, id]) =>
                 formattedOutput = formattedOutput.replace(`{${id}}`, inputExtensions[id]));
 
-            return (
-                <Tag color="volcano" key={o}>
-                    <Icon type="file" /> {formattedOutput}
-                </Tag>
-            );
+            return ioTagWithType(o.id, o.type, formattedOutput);
         });
-
-        // TODO: Assembly ID should output too
 
         return (
             <>
