@@ -47,7 +47,10 @@ class ManagerDatasetAdditionModal extends Component {
                    title={`Add Dataset to "${this.props.selectedProjectName}"`}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
-                       <Button key="create" icon="plus" type="primary" onClick={this.handleSubmit}>Create</Button>
+                       <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
+                               loading={this.props.projectDatasetsAdding || this.props.projectDatasetsFetchingAll}>
+                           Add
+                       </Button>
                    ]}
                    onCancel={this.handleCancel}>
                 <DatasetForm ref={form => this.form = form} />
@@ -59,6 +62,9 @@ ManagerDatasetAdditionModal.propTypes = {
     showDatasetAdditionModal: PropTypes.bool,
     toggleProjectDatasetAdditionModal: PropTypes.func,
 
+    projectDatasetsAdding: PropTypes.bool,
+    projectDatasetsFetchingAll: PropTypes.bool,
+
     selectedProjectID: PropTypes.string,
     selectedProjectName: PropTypes.string,
 
@@ -67,6 +73,10 @@ ManagerDatasetAdditionModal.propTypes = {
 
 const mapStateToProps = state => ({
     showDatasetAdditionModal: state.manager.projectDatasetCreationModal,
+
+    projectDatasetsAdding: state.projectDatasets.isAdding,
+    projectDatasetsFetchingAll: state.projectDatasets.isFetchingAll,
+
     selectedProjectID: state.manager.selectedProjectID,
     selectedProjectName: (state.projects.itemsByID[state.manager.selectedProjectID] || {name: ""}).name
 });
