@@ -50,7 +50,12 @@ class ManagerIngestionContent extends Component {
             inputs: {}
         };
 
-        this.state = simpleDeepCopy(this.initialState);
+        // TODO: Move selectedDataset to redux?
+
+        this.state = {
+            ...simpleDeepCopy(this.initialState),
+            selectedDataset: (this.props.location.state || {}).selectedDataset || this.initialState.selectedDataset
+        };
 
         this.handleStepChange = this.handleStepChange.bind(this);
         this.handleWorkflowClick = this.handleWorkflowClick.bind(this);

@@ -1,6 +1,8 @@
 import React, {Component} from "react";
-import PropTypes from "prop-types";
+import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
+
+import PropTypes from "prop-types";
 
 import {Button, Empty, Layout, Menu, Skeleton, Typography} from "antd";
 
@@ -31,6 +33,8 @@ import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
+        this.ingestIntoDataset = this.ingestIntoDataset.bind(this);
+
         await this.props.fetchServiceDataIfNeeded();
         await this.props.fetchProjectsWithDatasets();  // TODO: If needed
     }
@@ -44,6 +48,10 @@ class ManagerProjectDatasetContent extends Component {
     handleProjectSave(project) {
         // TODO: Form validation for project
         this.props.saveProject(project);
+    }
+
+    ingestIntoDataset(d) {
+        this.props.history.push("/data/manager/ingestion", {selectedDataset: d.id});  // TODO: Redux for sD?
     }
 
     render() {
@@ -107,7 +115,8 @@ class ManagerProjectDatasetContent extends Component {
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
-                                             onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()} />
+                                             onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
+                                             onDatasetIngest={d => this.ingestIntoDataset(d)} />
                                 ) : (
                                     this.props.loadingProjects ? (
                                         <Skeleton title={{width: 300}}
@@ -197,4 +206,4 @@ const mapDispatchToProps = dispatch => ({
     saveProject: project => dispatch(saveProject(project))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));

@@ -39,6 +39,8 @@ class Project extends Component {
         this._onSave = props.onSave || (() => {});
         this.onAddDataset = props.onAddDataset || (() => {});
 
+        this.onDatasetIngest = props.onDatasetIngest || (() => {});
+
         this.editingForm = null;
 
         this.handleCancelEdit = this.handleCancelEdit.bind(this);
@@ -126,9 +128,12 @@ class Project extends Component {
                         <Table.Column dataIndex="id" title="ID" /> {/* TODO: Dataset name */}
                         <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
                         <Table.Column dataIndex="dataTypeID" title="Data Type" />
-                        <Table.Column key="actions" title="Actions" width={330} render={() => (
+                        <Table.Column key="actions" title="Actions" width={330} render={d => (
                             <Row gutter={10}>
-                                <Col span={8}><Button icon="import" style={{width: "100%"}}>Ingest</Button></Col>
+                                <Col span={8}>
+                                    <Button icon="import" style={{width: "100%"}}
+                                            onClick={() => this.onDatasetIngest(d)}>Ingest</Button>
+                                </Col>
                                 {/*<Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>*/}
                                 <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
                                 <Col span={8}><Button type="danger" icon="delete"
@@ -154,7 +159,9 @@ Project.propTypes = {
     onEdit: PropTypes.func,
     onCancelEdit: PropTypes.func,
     onSave: PropTypes.func,
-    onAddDataset: PropTypes.func
+    onAddDataset: PropTypes.func,
+
+    onDatasetIngest: PropTypes.func
 };
 
 export default Project;
