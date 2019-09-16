@@ -30,7 +30,7 @@
     "babel-polyfill": "^6.26.0",
     "css-loader": "^3.2.0",
     "style-loader": "^1.0.0",
-    "webpack": "^4.40.0",
+    "webpack": "^4.40.2",
     "webpack-cli": "^3.3.8"
   }
 }
