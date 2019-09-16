@@ -70,7 +70,7 @@ export const projects = (
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isFetching: false,
-                items: [...action.projects].sort(projectSort),
+                items: action.projects.sort(projectSort),
                 itemsByID: Object.assign({}, ...action.projects.map(p => ({[p.id]: p}))),
             });
 

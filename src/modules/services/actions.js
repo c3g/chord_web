@@ -1,14 +1,16 @@
 import fetch from "cross-fetch";
 import {message} from "antd";
 
+import {basicAction} from "../../utils";
+
 export const BEGIN_LOADING_ALL_SERVICE_DATA = "BEGIN_LOADING_ALL_SERVICE_DATA";
-const beginLoadingAllServiceData = () => ({type: BEGIN_LOADING_ALL_SERVICE_DATA});
+const beginLoadingAllServiceData = basicAction(BEGIN_LOADING_ALL_SERVICE_DATA);
 
 export const END_LOADING_ALL_SERVICE_DATA = "END_LOADING_ALL_SERVICE_DATA";
-const endLoadingAllServiceData = () => ({type: END_LOADING_ALL_SERVICE_DATA});
+const endLoadingAllServiceData = basicAction(END_LOADING_ALL_SERVICE_DATA);
 
 export const REQUEST_SERVICES = "REQUEST_SERVICES";
-const requestServices = () => ({type: REQUEST_SERVICES});
+const requestServices = basicAction(REQUEST_SERVICES);
 
 export const RECEIVE_SERVICES = "RECEIVE_SERVICES";
 const receiveServices = data => ({
@@ -28,20 +30,23 @@ export const REQUEST_SERVICE_METADATA = "REQUEST_SERVICE_METADATA";
 const requestServiceMetadata = () => ({type: REQUEST_SERVICE_METADATA});
 
 export const RECEIVE_SERVICE_METADATA = "RECEIVE_SERVICE_METADATA";
-const receiveServiceMetadata = data => ({
+const receiveServiceMetadata = metadata => ({
     type: RECEIVE_SERVICE_METADATA,
-    metadata: data,
+    metadata,
     receivedAt: Date.now()
 });
 
 export const REQUEST_SERVICE_DATA_TYPES = "REQUEST_SERVICE_DATA_TYPES";
-const requestServiceDataTypes = id => ({type: REQUEST_SERVICE_DATA_TYPES, service: id});
+const requestServiceDataTypes = serviceID => ({
+    type: REQUEST_SERVICE_DATA_TYPES,
+    serviceID
+});
 
 export const RECEIVE_SERVICE_DATA_TYPES = "RECEIVE_SERVICE_DATA_TYPES";
-const receiveServiceDataTypes = (id, data) => ({
+const receiveServiceDataTypes = (serviceID, dataTypes) => ({
     type: RECEIVE_SERVICE_DATA_TYPES,
-    service: id,
-    dataTypes: data,
+    serviceID,
+    dataTypes,
     receivedAt: Date.now()
 });
 
@@ -63,9 +68,7 @@ const receiveServiceDatasets = (serviceID, dataTypeID, datasets) => ({
 
 
 export const BEGIN_ADDING_SERVICE_DATASET = "BEGIN_ADDING_SERVICE_DATASET";
-export const beginAddingServiceDataset = () => ({
-    type: BEGIN_ADDING_SERVICE_DATASET
-});
+export const beginAddingServiceDataset = basicAction(BEGIN_ADDING_SERVICE_DATASET);
 
 export const END_ADDING_SERVICE_DATASET = "END_ADDING_SERVICE_DATASET";
 export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
@@ -76,20 +79,14 @@ export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
 });
 
 export const TERMINATE_ADDING_SERVICE_DATASET = "TERMINATE_ADDING_SERVICE_DATASET";
-export const terminateAddingServiceDataset = () => ({
-    type: TERMINATE_ADDING_SERVICE_DATASET
-});
+export const terminateAddingServiceDataset = basicAction(TERMINATE_ADDING_SERVICE_DATASET);
 
 
 export const BEGIN_FETCHING_SERVICE_WORKFLOWS = "BEGIN_FETCHING_SERVICE_WORKFLOWS";
-const beginFetchingServiceWorkflows = () => ({
-    type: BEGIN_FETCHING_SERVICE_WORKFLOWS
-});
+const beginFetchingServiceWorkflows = basicAction(BEGIN_FETCHING_SERVICE_WORKFLOWS);
 
 export const END_FETCHING_SERVICE_WORKFLOWS = "END_FETCHING_SERVICE_WORKFLOWS";
-const endFetchingServiceWorkflows = () => ({
-    type: END_FETCHING_SERVICE_WORKFLOWS
-});
+const endFetchingServiceWorkflows = basicAction(END_FETCHING_SERVICE_WORKFLOWS);
 
 export const REQUEST_SERVICE_WORKFLOWS = "REQUEST_SERVICE_WORKFLOWS";
 const requestServiceWorkflows = serviceID => ({
@@ -180,14 +177,15 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => {
                 try {
                     const params = new URLSearchParams();
                     params.set("data-type", dt.id);
+
                     const response = await fetch(`/api${s.url}/datasets?${params.toString()}`);
+
                     if (response.ok) {
                         const data = await response.json();
                         await dispatch(receiveServiceDatasets(s.id, dt.id, data));
                     } else {
                         console.error(response);
-                        message.error(
-                            `Error fetching datasets from service '${s.name}' (data type ${dt.id})`);
+                        message.error(`Error fetching datasets from service '${s.name}' (data type ${dt.id})`);
                     }
                 } catch (e) {
                     console.error(e);

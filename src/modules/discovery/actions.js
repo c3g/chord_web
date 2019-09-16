@@ -3,10 +3,10 @@ import fetch from "cross-fetch";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../services/actions";
 
+import {basicAction} from "../../utils";
+
 export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
-export const toggleDiscoverySchemaModal = () => ({
-    type: TOGGLE_DISCOVERY_SCHEMA_MODAL
-});
+export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MODAL);
 
 export const REQUEST_SEARCH = "REQUEST_SEARCH";
 const requestSearch = (serviceID, dataTypeID) => ({
@@ -80,9 +80,7 @@ export const selectDiscoveryServiceDataType = (serviceID, dataTypeID) => ({
 });
 
 export const CLEAR_DISCOVERY_SERVICE_DATA_TYPE = "CLEAR_DISCOVERY_SERVICE_DATA_TYPE";
-export const clearDiscoveryServiceDataType = () => ({
-    type: CLEAR_DISCOVERY_SERVICE_DATA_TYPE
-});
+export const clearDiscoveryServiceDataType = basicAction(CLEAR_DISCOVERY_SERVICE_DATA_TYPE);
 
 export const UPDATE_DISCOVERY_SEARCH_FORM = "UPDATE_DISCOVERY_SEARCH_FORM";
 export const updateDiscoverySearchForm = (serviceID, dataTypeID, fields) => ({

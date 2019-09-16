@@ -103,11 +103,11 @@ export const serviceDataTypes = (
                 isFetching: false,
                 dataTypes: {
                     ...state.dataTypes,
-                    [action.service]: action.dataTypes
+                    [action.serviceID]: action.dataTypes
                 },
                 dataTypesByServiceAndDataTypeID: {
                     ...state.dataTypesByServiceAndDataTypeID,
-                    [action.service]: Object.assign({}, ...action.dataTypes.map(d => ({[d.id]: d})))
+                    [action.serviceID]: Object.assign({}, ...action.dataTypes.map(d => ({[d.id]: d})))
                 },
                 lastUpdated: action.receivedAt
             });
