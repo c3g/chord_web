@@ -23,18 +23,13 @@ class DiscoverySearchForm extends Component {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
         if (this.props.form.getFieldValue("keys").length === 0) {
             const requiredFields = getFields(this.props.dataType.schema)
-                .filter(f => {
-                    const fs = getFieldSchema(this.props.dataType.schema, f);
-                    return fs.hasOwnProperty("search") && fs.search.hasOwnProperty("required")
-                        && fs.search.required;
-                });
+                .filter(f =>
+                    (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false);
 
             requiredFields.forEach(c => this.addCondition(c));
 
-            if (requiredFields.length === 0) {
-                // Add a single default condition
-                this.addCondition();
-            }
+            // Add a single default condition if necessary
+            if (requiredFields.length === 0) this.addCondition();
         }
     }
 
@@ -48,6 +43,8 @@ class DiscoverySearchForm extends Component {
         const newKey = this.props.form.getFieldValue("keys").length;
 
         let searchParameters = {...DEFAULT_SEARCH_PARAMETERS};
+
+        // TODO: What if operations is an empty list?
 
         if (field) {
             const fs = getFieldSchema(this.props.dataType.schema, field);

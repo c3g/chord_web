@@ -84,6 +84,10 @@ const TAG_LABEL_STYLING = {
     marginBottom: "4px"
 };
 
+const TAG_STYLING = {
+    fontFamily: "monospace"
+};
+
 
 class DataUseDisplay extends Component {
     render() {
@@ -98,65 +102,65 @@ class DataUseDisplay extends Component {
                     <Row gutter={10} type="flex">
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Primary</div>
-                            <Tag color="blue" style={{fontFamily: "monospace"}}>
+                            <Tag color="blue" style={TAG_STYLING}>
                                 {this.props.dataUse.consent_code.primary_category.code}
                             </Tag>
                         </Col>
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Secondary</div>
                             {this.props.dataUse.consent_code.secondary_categories.map(sc =>
-                                <Tag style={{fontFamily: "monospace"}} key={sc.code}>{sc.code}</Tag>)}
+                                <Tag style={TAG_STYLING} key={sc.code}>{sc.code}</Tag>)}
                         </Col>
                     </Row>
                 </div>
                 <div style={{marginTop: "20px"}}>
-                <Typography.Title level={4}>
-                    Restrictions and Conditions
-                </Typography.Title>
-                <Row gutter={10} type="flex">
-                    {DATA_USE_KEYS.map(u => {
-                        let internalIcon = (
-                            <Icon style={{
-                                fontSize: "24px",
-                                color: `rgba(0, 0, 0, ${uses.includes(u) ? 0.65 : 0.1})`
-                            }} type={DATA_USE_INFO[u].icon} />
-                        );
-
-                        if (u === "NPU") {
-                            // Special case for non-profit use; stack two icons (dollar + stop) to
-                            // create a custom synthetic icon.
-                            internalIcon = (
-                                <div style={{opacity: uses.includes(u) ? 0.65 : 0.1}}>
-                                    <Icon style={{
-                                        fontSize: "24px",
-                                        color: "black"
-                                    }} type={DATA_USE_INFO[u].icon} />
-                                    <Icon style={{
-                                        fontSize: "24px",
-                                        marginLeft: "-24px",
-                                        mixBlendMode: "overlay",
-                                        color: "black"
-                                    }} type="stop" />
-                                </div>
+                    <Typography.Title level={4}>
+                        Restrictions and Conditions
+                    </Typography.Title>
+                    <Row gutter={10} type="flex">
+                        {DATA_USE_KEYS.map(u => {
+                            let internalIcon = (
+                                <Icon style={{
+                                    fontSize: "24px",
+                                    color: `rgba(0, 0, 0, ${uses.includes(u) ? 0.65 : 0.1})`
+                                }} type={DATA_USE_INFO[u].icon} />
                             );
-                        }
 
-                        // noinspection HtmlDeprecatedAttribute
-                        return (
-                            <Col key={u}>
-                                {uses.includes(u) ? (
-                                    <Popover title={DATA_USE_INFO[u].title}
-                                             content={DATA_USE_INFO[u].content}
-                                             trigger="hover"
-                                             placement="topRight"
-                                             align={{offset: [10, 0]}}>
-                                        {internalIcon}
-                                    </Popover>
-                                ) : internalIcon}
-                            </Col>
-                        );
-                    })}
-                </Row>
+                            if (u === "NPU") {
+                                // Special case for non-profit use; stack two icons (dollar + stop) to
+                                // create a custom synthetic icon.
+                                internalIcon = (
+                                    <div style={{opacity: uses.includes(u) ? 0.65 : 0.1}}>
+                                        <Icon style={{
+                                            fontSize: "24px",
+                                            color: "black"
+                                        }} type={DATA_USE_INFO[u].icon} />
+                                        <Icon style={{
+                                            fontSize: "24px",
+                                            marginLeft: "-24px",
+                                            mixBlendMode: "overlay",
+                                            color: "black"
+                                        }} type="stop" />
+                                    </div>
+                                );
+                            }
+
+                            // noinspection HtmlDeprecatedAttribute
+                            return (
+                                <Col key={u}>
+                                    {uses.includes(u) ? (
+                                        <Popover title={DATA_USE_INFO[u].title}
+                                                 content={DATA_USE_INFO[u].content}
+                                                 trigger="hover"
+                                                 placement="topRight"
+                                                 align={{offset: [10, 0]}}>
+                                            {internalIcon}
+                                        </Popover>
+                                    ) : internalIcon}
+                                </Col>
+                            );
+                        })}
+                    </Row>
                 </div>
             </>
         );

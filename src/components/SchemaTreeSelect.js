@@ -16,10 +16,10 @@ class SchemaTreeSelect extends Component {
 
     constructor(props) {
         super(props);
-        const value = props.value ? props.value : {};
+        const value = props.value || {};
         this.state = {
-            selected: value.selected ? value.selected : undefined,
-            schema: value.schema ? value.schema : undefined
+            selected: value.selected || undefined,
+            schema: value.schema || undefined
         };
     }
 

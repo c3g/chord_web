@@ -206,7 +206,13 @@ DiscoverySearchContent.propTypes = {
     searches: PropTypes.array,
     selectedSearch: PropTypes.number,
     searchLoading: PropTypes.bool,
-    formValues: PropTypes.object
+    formValues: PropTypes.object,
+
+    selectDataType: PropTypes.func,
+    toggleSchemaModal: PropTypes.func,
+    updateSearchForm: PropTypes.func,
+    requestSearch: PropTypes.func,
+    selectSearch: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -225,30 +231,22 @@ const mapStateToProps = state => {
     return {
         services: state.services.items,
         dataTypes: state.serviceDataTypes.dataTypes,
-        service: dataTypeExists
-            ? state.services.itemsByID[sID]
-            : null,
-        dataType: dataTypeExists
-            ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID]
-            : null,
+        service: dataTypeExists ? state.services.itemsByID[sID] : null,
+        dataType: dataTypeExists ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID] : null,
 
         dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetching
             || Object.keys(state.serviceDataTypes.dataTypes).length === 0,
 
         schemaModalShown: state.discovery.schemaModalShown,
 
-        searches: dataTypeExists && searchesExist
-            ? state.discovery.searchesByServiceAndDataTypeID[sID][dID]
-            : [],
+        searches: dataTypeExists && searchesExist ? state.discovery.searchesByServiceAndDataTypeID[sID][dID] : [],
         selectedSearch: dataTypeExists && selectedSearchExists
             ? state.discovery.selectedSearchByServiceAndDataTypeID[sID][dID]
             : -1,
 
         searchLoading: state.discovery.isFetching,
 
-        formValues: dataTypeExists ?
-            state.discovery.searchFormsByServiceAndDataTypeID[sID][dID]
-            : null
+        formValues: dataTypeExists ? state.discovery.searchFormsByServiceAndDataTypeID[sID][dID] : null
     };
 };
 

@@ -14,16 +14,12 @@ class ProjectForm extends Component {
                     {this.props.form.getFieldDecorator("name", {
                         initialValue: (this.props.initialValue || {name: ""}).name || "",
                         rules: [{required: true}]
-                    })(
-                        <Input placeholder="My Health Data Project" size="large" />
-                    )}
+                    })(<Input placeholder="My Health Data Project" size="large" />)}
                 </Form.Item>
                 <Form.Item label="Description">
                     {this.props.form.getFieldDecorator("description", {
                         initialValue: (this.props.initialValue || {description: ""}).description || ""
-                    })(
-                        <Input.TextArea placeholder="Description" rows={3} />
-                    )}
+                    })(<Input.TextArea placeholder="Description" rows={3} />)}
                 </Form.Item>
                 <Form.Item label="Consent Code and Data Use Requirements">
                     TODO: Data use / consent code input

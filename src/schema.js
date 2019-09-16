@@ -33,11 +33,13 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
                     })
                     .map(p => generateSchemaTreeData(p[1], p[0], `${key}.`, excludedKeys))
             };
+
         case "array":
             return {
                 ...baseNode,
                 children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`, excludedKeys)]
             };
+
         default:
             return {
                 ...baseNode,

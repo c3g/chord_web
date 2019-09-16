@@ -67,9 +67,10 @@ export const projects = (
             });
 
         case RECEIVE_PROJECTS:
+            // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isFetching: false,
-                items: action.projects.sort(projectSort),
+                items: [...action.projects].sort(projectSort),
                 itemsByID: Object.assign({}, ...action.projects.map(p => ({[p.id]: p}))),
             });
 
@@ -85,6 +86,7 @@ export const projects = (
             });
 
         case END_PROJECT_CREATION:
+            // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isCreating: false,
                 items: [...state.items, action.project].sort(projectSort),
@@ -130,6 +132,7 @@ export const projects = (
             });
 
         case END_PROJECT_SAVE:
+            // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isSaving: false,
                 items: [...state.items.filter(p => p.id !== action.project.id), action.project].sort(projectSort),

@@ -13,6 +13,8 @@ import "antd/es/typography/style/css";
 import DataUseDisplay from "../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
+import {simpleDeepCopy} from "../../utils";
+
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
 
@@ -33,13 +35,15 @@ class Project extends Component {
     constructor(props) {
         super(props);
 
-        this.onDelete = props.onDelete || (() => {});
-        this.onEdit = props.onEdit || (() => {});
-        this._onCancelEdit = props.onCancelEdit || (() => {});
-        this._onSave = props.onSave || (() => {});
-        this.onAddDataset = props.onAddDataset || (() => {});
+        const nop = () => {};
 
-        this.onDatasetIngest = props.onDatasetIngest || (() => {});
+        this.onDelete = props.onDelete || nop;
+        this.onEdit = props.onEdit || nop;
+        this._onCancelEdit = props.onCancelEdit || nop;
+        this._onSave = props.onSave || nop;
+        this.onAddDataset = props.onAddDataset || nop;
+
+        this.onDatasetIngest = props.onDatasetIngest || nop;
 
         this.editingForm = null;
 
@@ -51,9 +55,9 @@ class Project extends Component {
             id: value.id || null,
             name: value.name || "",
             description: value.description || "",
-            dataUse: JSON.parse(JSON.stringify(value.data_use)) || {},  // TODO: Defaults that follow schema, deep clone
+            dataUse: simpleDeepCopy(value.data_use || {}),  // TODO: Defaults that follow schema
 
-            editedDataUse: JSON.parse(JSON.stringify(value.data_use)) || {}  // TODO: Defaults that follow schema, clone
+            editedDataUse: simpleDeepCopy(value.data_use || {})  // TODO: Defaults that follow schema
         }
     }
 
@@ -66,10 +70,8 @@ class Project extends Component {
 
             this._onSave({
                 id: this.state.id,
-                name: values.name || this.state.name,  // Name can't be blank, so false-y "" case can be ignored.
-                description: values.description === undefined
-                    ? this.state.description
-                    : values.description,
+                name: values.name || this.state.name,
+                description: values.description || this.state.description,
                 data_use: this.state.editedDataUse // TODO
             });
         })
@@ -130,10 +132,8 @@ class Project extends Component {
                         <Table.Column dataIndex="dataTypeID" title="Data Type" />
                         <Table.Column key="actions" title="Actions" width={330} render={d => (
                             <Row gutter={10}>
-                                <Col span={8}>
-                                    <Button icon="import" style={{width: "100%"}}
-                                            onClick={() => this.onDatasetIngest(d)}>Ingest</Button>
-                                </Col>
+                                <Col span={8}><Button icon="import" style={{width: "100%"}}
+                                                      onClick={() => this.onDatasetIngest(d)}>Ingest</Button></Col>
                                 {/*<Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>*/}
                                 <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
                                 <Col span={8}><Button type="danger" icon="delete"

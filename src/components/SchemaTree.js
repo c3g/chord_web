@@ -7,15 +7,13 @@ import "antd/es/tree/style/css";
 import {generateSchemaTreeData} from "../schema";
 
 const generateSchemaTree = schema => (
-    <Tree defaultExpandAll
+    <Tree defaultExpandAll={true}
           treeData={[generateSchemaTreeData(schema, "[dataset item]", "", [])]} />
 );
 
 class SchemaTree extends Component {
     render() {
-        return this.props.schema
-            ? (<div>{generateSchemaTree(this.props.schema)}</div>)
-            : (<div />);
+        return <div>{this.props.schema ? generateSchemaTree(this.props.schema) : null}</div>;
     }
 }
 

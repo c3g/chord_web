@@ -11,9 +11,7 @@ const columns = [
     {
         title: "ID",
         dataIndex: "id",
-        render: id => (
-            <Typography.Text code>{id}</Typography.Text>
-        )
+        render: id => <Typography.Text code>{id}</Typography.Text>
     },
     {
         title: "Name",
@@ -22,23 +20,17 @@ const columns = [
     {
         title: "Version",
         dataIndex: "version",
-        render: version => (
-            <Typography.Text>{version ? version : "-"}</Typography.Text>
-        )
+        render: version => <Typography.Text>{version ? version : "-"}</Typography.Text>
     },
     {
         title: "URL",
         dataIndex: "url",
-        render: url => (
-            <a href={`/api${url}`}>{`/api${url}`}</a>
-        )
+        render: url => <a href={`/api${url}`}>{`/api${url}`}</a>
     },
     {
         title: "Data Service?",
         dataIndex: "metadata.chordDataService",
-        render: dataService => (
-            <Icon type={dataService ? "check" : "close"} />
-        )
+        render: dataService => <Icon type={dataService ? "check" : "close"} />
     },
     {
         title: "Status",
@@ -62,9 +54,7 @@ const columns = [
                     break;
             }
 
-            return (
-                <Tag color={color}>{statusText}</Tag>
-            );
+            return <Tag color={color}>{statusText}</Tag>;
         }
     }
 ];
@@ -74,12 +64,8 @@ const ServiceList = connect(
     state => ({
         dataSource: state.services.items.map(service => ({
             ...service,
-            status: Object.keys(state.serviceMetadata.metadata).includes(service.id)
-                ? state.serviceMetadata.metadata[service.id]
-                : null,
-            version: Object.keys(state.serviceMetadata.metadata).includes(service.id)
-                ? state.serviceMetadata.metadata[service.id].version
-                : "-",
+            status: state.serviceMetadata.metadata[service.id] || null,
+            version: (state.serviceMetadata.metadata[service.id] || {version: "-"}).version
         })),
         columns,
         rowKey: "id",
