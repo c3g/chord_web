@@ -6,69 +6,74 @@ import {beginAddingServiceDataset, endAddingServiceDataset, terminateAddingServi
 import {basicAction} from "../../utils";
 
 export const REQUEST_PROJECTS = "REQUEST_PROJECTS";
-const requestProjects = basicAction(REQUEST_PROJECTS);
-
 export const RECEIVE_PROJECTS = "RECEIVE_PROJECTS";
-const receiveProjects = projects => ({
-    type: RECEIVE_PROJECTS,
-    projects
-});
-
 export const HANDLE_PROJECTS_ERROR = "HANDLE_PROJECTS_ERROR";
+
+export const BEGIN_FETCHING_PROJECT_DATASETS = "BEGIN_FETCHING_PROJECT_DATASETS";
+export const END_FETCHING_PROJECT_DATASETS = "END_FETCHING_PROJECT_DATASETS";
+export const REQUEST_PROJECT_DATASETS = "REQUEST_PROJECT_DATASETS";
+export const RECEIVE_PROJECT_DATASETS = "RECEIVE_PROJECT_DATASETS";
+export const HANDLE_PROJECT_DATASETS_ERROR = "HANDLE_PROJECT_DATASETS_ERROR";
+
+export const BEGIN_PROJECT_CREATION = "BEGIN_PROJECT_CREATION";
+export const END_PROJECT_CREATION = "END_PROJECT_CREATION";
+export const TERMINATE_PROJECT_CREATION = "TERMINATE_PROJECT_CREATION";
+
+export const BEGIN_PROJECT_DELETION = "BEGIN_PROJECT_DELETION";
+export const END_PROJECT_DELETION = "END_PROJECT_DELETION";
+export const TERMINATE_PROJECT_DELETION = "TERMINATE_PROJECT_DELETION";
+
+export const SELECT_PROJECT = "SELECT_PROJECT";
+
+export const BEGIN_PROJECT_DATASET_ADDITION = "BEGIN_PROJECT_DATASET_ADDITION";
+export const END_PROJECT_DATASET_ADDITION = "END_PROJECT_DATASET_ADDITION";
+export const TERMINATE_PROJECT_DATASET_CREATION = "TERMINATE_PROJECT_DATASET_CREATION";
+
+export const TOGGLE_PROJECT_CREATION_MODAL = "TOGGLE_PROJECT_CREATION_MODAL";
+export const TOGGLE_PROJECT_DELETION_MODAL = "TOGGLE_PROJECT_DELETION_MODAL";
+export const TOGGLE_PROJECT_DATASET_ADDITION_MODAL = "TOGGLE_PROJECT_DATASET_ADDITION_MODAL";
+export const BEGIN_PROJECT_EDITING = "BEGIN_PROJECT_EDITING";
+export const END_PROJECT_EDITING = "END_PROJECT_EDITING";
+export const BEGIN_PROJECT_SAVE = "BEGIN_PROJECT_SAVE";
+export const END_PROJECT_SAVE = "END_PROJECT_SAVE";
+export const TERMINATE_PROJECT_SAVE = "TERMINATE_PROJECT_SAVE";
+
+export const REQUEST_DROP_BOX_TREE = "REQUEST_DROP_BOX_TREE";
+export const RECEIVE_DROP_BOX_TREE = "RECEIVE_DROP_BOX_TREE";
+
+export const REQUEST_RUNS = "REQUEST_RUNS";
+export const RECEIVE_RUNS = "RECEIVE_RUNS";
+export const REQUEST_RUN_DETAILS = "REQUEST_RUN_DETAILS";
+export const RECEIVE_RUN_DETAILS = "RECEIVE_RUN_DETAILS";
+
+export const BEGIN_INGESTION_RUN_SUBMISSION = "BEGIN_INGESTION_RUN_SUBMISSION";
+export const END_INGESTION_RUN_SUBMISSION = "END_INGESTION_RUN_SUBMISSION";
+
+
+const requestProjects = basicAction(REQUEST_PROJECTS);
+const receiveProjects = projects => ({type: RECEIVE_PROJECTS, projects});
 const handleProjectsError = basicAction(HANDLE_PROJECTS_ERROR);
 
 
-export const BEGIN_FETCHING_PROJECT_DATASETS = "BEGIN_FETCHING_PROJECT_DATASETS";
 const beginFetchingProjectDatasets = basicAction(BEGIN_FETCHING_PROJECT_DATASETS);
-
-export const END_FETCHING_PROJECT_DATASETS = "END_FETCHING_PROJECT_DATASETS";
 const endFetchingProjectDatasets = basicAction(END_FETCHING_PROJECT_DATASETS);
 
-export const REQUEST_PROJECT_DATASETS = "REQUEST_PROJECT_DATASETS";
 const requestProjectDatasets = basicAction(REQUEST_PROJECT_DATASETS);
-
-export const RECEIVE_PROJECT_DATASETS = "RECEIVE_PROJECT_DATASETS";
-const receiveProjectDatasets = (projectID, datasets) => ({
-    type: RECEIVE_PROJECT_DATASETS,
-    projectID,
-    datasets
-});
-
-export const HANDLE_PROJECT_DATASETS_ERROR = "HANDLE_PROJECT_DATASETS_ERROR";
+const receiveProjectDatasets = (projectID, datasets) => ({type: RECEIVE_PROJECT_DATASETS, projectID, datasets});
 const handleProjectDatasetsError = basicAction(HANDLE_PROJECT_DATASETS_ERROR);
 
 
-export const BEGIN_PROJECT_CREATION = "BEGIN_PROJECT_CREATION";
 const beginProjectCreation = basicAction(BEGIN_PROJECT_CREATION);
-
-export const END_PROJECT_CREATION = "END_PROJECT_CREATION";
-const endProjectCreation = project => ({
-    type: END_PROJECT_CREATION,
-    project
-});
-
-export const TERMINATE_PROJECT_CREATION = "TERMINATE_PROJECT_CREATION";
+const endProjectCreation = project => ({type: END_PROJECT_CREATION, project});
 const terminateProjectCreation = basicAction(TERMINATE_PROJECT_CREATION);
 
 
-export const BEGIN_PROJECT_DELETION = "BEGIN_PROJECT_DELETION";
 const beginProjectDeletion = basicAction(BEGIN_PROJECT_DELETION);
-
-export const END_PROJECT_DELETION = "END_PROJECT_DELETION";
-const endProjectDeletion = projectID => ({
-    type: END_PROJECT_DELETION,
-    projectID
-});
-
-export const TERMINATE_PROJECT_DELETION = "TERMINATE_PROJECT_DELETION";
+const endProjectDeletion = projectID => ({type: END_PROJECT_DELETION, projectID});
 const terminateProjectDeletion = basicAction(TERMINATE_PROJECT_DELETION);
 
 
-export const SELECT_PROJECT = "SELECT_PROJECT";
-const selectProject = projectID => ({
-    type: SELECT_PROJECT,
-    projectID
-});
+const selectProject = projectID => ({type: SELECT_PROJECT, projectID});
 
 export const selectProjectIfItExists = projectID => async (dispatch, getState) => {
     if (!getState().projects.itemsByID.hasOwnProperty(projectID)) return;
@@ -76,91 +81,35 @@ export const selectProjectIfItExists = projectID => async (dispatch, getState) =
 };
 
 
-export const BEGIN_PROJECT_DATASET_ADDITION = "BEGIN_PROJECT_DATASET_ADDITION";
 const beginProjectDatasetAddition = basicAction(BEGIN_PROJECT_DATASET_ADDITION);
-
-export const END_PROJECT_DATASET_ADDITION = "END_PROJECT_DATASET_ADDITION";
-const endProjectDatasetAddition = (projectID, dataset) => ({
-    type: END_PROJECT_DATASET_ADDITION,
-    projectID,
-    dataset
-});
-
-export const TERMINATE_PROJECT_DATASET_CREATION = "TERMINATE_PROJECT_DATASET_CREATION";
+const endProjectDatasetAddition = (projectID, dataset) => ({type: END_PROJECT_DATASET_ADDITION, projectID, dataset});
 const terminateProjectDatasetAddition = basicAction(TERMINATE_PROJECT_DATASET_CREATION);
 
 
-export const TOGGLE_PROJECT_CREATION_MODAL = "TOGGLE_PROJECT_CREATION_MODAL";
 export const toggleProjectCreationModal = basicAction(TOGGLE_PROJECT_CREATION_MODAL);
-
-export const TOGGLE_PROJECT_DELETION_MODAL = "TOGGLE_PROJECT_DELETION_MODAL";
 export const toggleProjectDeletionModal = basicAction(TOGGLE_PROJECT_DELETION_MODAL);
-
-export const TOGGLE_PROJECT_DATASET_ADDITION_MODAL = "TOGGLE_PROJECT_DATASET_ADDITION_MODAL";
 export const toggleProjectDatasetAdditionModal = basicAction(TOGGLE_PROJECT_DATASET_ADDITION_MODAL);
 
-export const BEGIN_PROJECT_EDITING = "BEGIN_PROJECT_EDITING";
 export const beginProjectEditing = basicAction(BEGIN_PROJECT_EDITING);
-
-export const END_PROJECT_EDITING = "END_PROJECT_EDITING";
 export const endProjectEditing = basicAction(END_PROJECT_EDITING);
 
-export const BEGIN_PROJECT_SAVE = "BEGIN_PROJECT_SAVE";
-export const beginProjectSave = projectID => ({
-    type: BEGIN_PROJECT_SAVE,
-    projectID
-});
-
-export const END_PROJECT_SAVE = "END_PROJECT_SAVE";
-export const endProjectSave = project => ({
-    type: END_PROJECT_SAVE,
-    project
-});
-
-export const TERMINATE_PROJECT_SAVE = "TERMINATE_PROJECT_SAVE";
-export const terminateProjectSave = project => ({
-    type: TERMINATE_PROJECT_SAVE,
-    project
-});
+export const beginProjectSave = projectID => ({type: BEGIN_PROJECT_SAVE, projectID});
+export const endProjectSave = project => ({type: END_PROJECT_SAVE, project});
+export const terminateProjectSave = project => ({type: TERMINATE_PROJECT_SAVE, project});
 
 
-export const REQUEST_DROP_BOX_TREE = "REQUEST_DROP_BOX_TREE";
 export const requestDropBoxTree = basicAction(REQUEST_DROP_BOX_TREE);
-
-export const RECEIVE_DROP_BOX_TREE = "RECEIVE_DROP_BOX_TREE";
-export const receiveDropBoxTree = tree => ({
-    type: RECEIVE_DROP_BOX_TREE,
-    tree
-});
+export const receiveDropBoxTree = tree => ({type: RECEIVE_DROP_BOX_TREE, tree});
 
 
-export const REQUEST_RUNS = "REQUEST_RUNS";
 export const requestRuns = basicAction(REQUEST_RUNS);
+export const receiveRuns = runs => ({type: RECEIVE_RUNS, runs});
 
-export const RECEIVE_RUNS = "RECEIVE_RUNS";
-export const receiveRuns = runs => ({
-    type: RECEIVE_RUNS,
-    runs
-});
-
-export const REQUEST_RUN_DETAILS = "REQUEST_RUN_DETAILS";
-export const requestRunDetails = runID => ({
-    type: REQUEST_RUN_DETAILS,
-    runID
-});
-
-export const RECEIVE_RUN_DETAILS = "RECEIVE_RUN_DETAILS";
-export const receiveRunDetails = (runID, details) => ({
-    type: RECEIVE_RUN_DETAILS,
-    runID,
-    details
-});
+export const requestRunDetails = runID => ({type: REQUEST_RUN_DETAILS, runID});
+export const receiveRunDetails = (runID, details) => ({type: RECEIVE_RUN_DETAILS, runID, details});
 
 
-export const BEGIN_INGESTION_RUN_SUBMISSION = "BEGIN_INGESTION_RUN_SUBMISSION";
 export const beginIngestionRunSubmission = basicAction(BEGIN_INGESTION_RUN_SUBMISSION);
-
-export const END_INGESTION_RUN_SUBMISSION = "END_INGESTION_RUN_SUBMISSION";
 export const endIngestionRunSubmission = basicAction(END_INGESTION_RUN_SUBMISSION);
 
 
@@ -296,6 +245,11 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
     await dispatch(beginProjectDatasetAddition());
     await dispatch(beginAddingServiceDataset());
 
+    const terminate = async () => {
+        await dispatch(terminateAddingServiceDataset());
+        await dispatch(terminateProjectDatasetAddition());
+    };
+
     try {
         const formData = new FormData();
         formData.append("name", datasetName.trim());
@@ -326,21 +280,18 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
                 // TODO: Delete previously-created dataset
                 // TODO: GUI error message
                 console.error(projectResponse);
-                await dispatch(terminateAddingServiceDataset());
-                await dispatch(terminateProjectDatasetAddition());
+                await terminate();
             }
         } else {
             // TODO: GUI error message
             console.error(serviceResponse);
-            await dispatch(terminateAddingServiceDataset());
-            await dispatch(terminateProjectDatasetAddition());
+            await terminate();
         }
     } catch (e) {
         // TODO: Delete previously-created dataset if needed, or add another try-catch level
         // TODO: GUI error message
         console.error(e);
-        await dispatch(terminateAddingServiceDataset());
-        await dispatch(terminateProjectDatasetAddition());
+        await terminate();
     }
 };
 
@@ -466,9 +417,7 @@ export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, input
                 await dispatch(fetchRuns());  // TODO: Maybe just load delta?
                 // TODO: Navigate to workflow runs and scroll to the correct entry
 
-                if (redirect) {
-                    history.push(redirect);
-                }
+                if (redirect) history.push(redirect);
             } else {
                 // TODO: GUI error message
                 console.error(response);
