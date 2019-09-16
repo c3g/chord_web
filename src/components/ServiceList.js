@@ -64,7 +64,9 @@ const ServiceList = connect(
     state => ({
         dataSource: state.services.items.map(service => ({
             ...service,
-            status: state.serviceMetadata.metadata[service.id] || null,
+            status: state.serviceMetadata.metadata.hasOwnProperty(service.id)
+                ? state.serviceMetadata.metadata[service.id]
+                : null,
             version: (state.serviceMetadata.metadata[service.id] || {version: "-"}).version
         })),
         columns,
