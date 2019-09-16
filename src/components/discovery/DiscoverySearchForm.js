@@ -136,7 +136,7 @@ class DiscoverySearchForm extends Component {
                     xl: {span: 24},
                     xxl: {offset: 3, span: 18}
                 }}>
-                    <Button type="dashed" onClick={() => this.addCondition()} style={{ width: '100%' }}>
+                    <Button type="dashed" onClick={() => this.addCondition()} style={{width: "100%"}}>
                         <Icon type="plus" /> Add condition
                     </Button>
                 </Form.Item>

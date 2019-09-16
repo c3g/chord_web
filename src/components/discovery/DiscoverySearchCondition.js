@@ -1,9 +1,8 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Icon, Input, Select} from "antd";
+import {Button, Input, Select} from "antd";
 import "antd/es/button/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
@@ -75,7 +74,7 @@ class DiscoverySearchCondition extends Component {
             && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
 
         const operationOptions = this.state.fieldSchema.search.operations.map(o =>
-            (<Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>));
+            <Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>);
 
         // Subtract 1 from different elements' widths due to -1 margin-left
         const valueWidth = 224 + (canRemove ? 49 : 0)
@@ -112,9 +111,7 @@ class DiscoverySearchCondition extends Component {
                        onChange={this.handleSearchValue} value={this.state.searchValue} />
                 {canRemove ? (
                     <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
-                            onClick={this.onRemoveClick}>
-                        <Icon type="close" />
-                    </Button>
+                            onClick={this.onRemoveClick} icon="close" />
                 ) : null}
             </Input.Group>
         );

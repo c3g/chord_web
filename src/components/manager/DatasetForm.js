@@ -22,17 +22,13 @@ class DatasetForm extends Component {
                     {this.props.form.getFieldDecorator("name", {
                         initialValue: (this.props.initialValue || {name: ""}).name || "",
                         rules: [{required: true}]
-                    })(
-                        <Input placeholder="My Variant Dataset" size="large" />
-                    )}
+                    })(<Input placeholder="My Variant Dataset" size="large" />)}
                 </Form.Item>
                 <Form.Item label="Data Type">
                     {this.props.form.getFieldDecorator("dataType", {
                         initialValue: (this.props.initialValue || {dataType: null}).dataType || null,
                         rules: [{required: true}]
-                    })(
-                        <Select style={{width: "100%"}}>{dataTypeOptions}</Select>
-                    )}
+                    })(<Select style={{width: "100%"}}>{dataTypeOptions}</Select>)}
                 </Form.Item>
             </Form>
         );

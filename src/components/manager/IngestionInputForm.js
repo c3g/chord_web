@@ -27,7 +27,7 @@ class IngestionInputForm extends Component {
 
     render() {
         let formContents = this.props.workflow.inputs.map(i => {
-            let inputComponent = (<Input/>);
+            let inputComponent = <Input />;
 
             switch (i.type) {
                 case "file":
@@ -50,7 +50,7 @@ class IngestionInputForm extends Component {
                     break;
 
                 case "number":
-                    inputComponent = (<Input type="number"/>);
+                    inputComponent = <Input type="number"/>;
                     break;
             }
 
@@ -72,8 +72,7 @@ class IngestionInputForm extends Component {
             }}>
                 {this.onBack ? <Button icon="left" onClick={() => this.onBack()}>Back</Button> : null}
                 <Button type="primary" htmlType="submit" style={{float: "right"}}>
-                    Next
-                    <Icon type="right" />
+                    Next <Icon type="right" />
                 </Button>
             </Form.Item>
         );

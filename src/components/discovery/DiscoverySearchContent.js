@@ -89,7 +89,7 @@ class DiscoverySearchContent extends Component {
     }
 
     handleDataTypeChange(value) {
-        const [sID, dtID] = value.split("_");
+        const [sID, dtID] = value.split(":");
         this.props.selectDataType(sID, dtID);
     }
 
@@ -143,20 +143,20 @@ class DiscoverySearchContent extends Component {
     }
 
     render() {
+        const dtKey = (sID, dtID) => `${sID}:${dtID}`;
         return (
             <>
                 <Form layout="inline">
                     <Form.Item label="Data Type">
                         <Select size="large" showSearch placeholder="Data Type" style={{width: 200}}
                                 loading={this.props.dataTypesLoading}
-                                value={this.props.dataType ? `${this.props.service.id}_${this.props.dataType.id}`
+                                value={this.props.dataType ? dtKey(this.props.service.id, this.props.dataType.id)
                                     : undefined}
                                 onChange={this.handleDataTypeChange}>
                             {this.props.services.filter(s => this.props.dataTypes[s.id])
-                                .flatMap(s => this.props.dataTypes[s.id].map(dt =>  {
-                                    const key = `${s.id}_${dt.id}`;
-                                    return (<Select.Option key={key} value={key}>{dt.id}</Select.Option>);
-                                }))}
+                                .flatMap(s => this.props.dataTypes[s.id].map(dt =>
+                                    <Select.Option key={dtKey(s.id, dt.id)}>{dt.id}</Select.Option>
+                                ))}
                         </Select>
                     </Form.Item>
                     {this.props.dataType ? (<Button size="large" onClick={this.handleSchemaToggle}>Schema</Button>)
