@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import {Layout, PageHeader} from "antd";
 import "antd/es/layout/style/css";
@@ -56,9 +57,15 @@ class DataDiscoveryContent extends Component {
     }
 }
 
+DataDiscoveryContent.propTypes = {
+    selectedServiceID: PropTypes.string,
+    selectedDataTypeID: PropTypes.string,
+
+    selectDataType: PropTypes.func,
+    clearSelectedDataType: PropTypes.func
+};
+
 const mapStateToProps = state => ({
-    services: state.services.items,
-    dataTypes: state.serviceDataTypes.dataTypes,
     selectedServiceID: state.discovery.selectedServiceID,
     selectedDataTypeID: state.discovery.selectedDataTypeID
 });

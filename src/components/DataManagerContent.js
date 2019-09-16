@@ -91,7 +91,13 @@ DataManagerContent.propTypes = {
     runs: PropTypes.arrayOf(PropTypes.shape({
         run_id: PropTypes.string,
         state: PropTypes.string
-    }))
+    })),
+
+    fetchServiceDataIfNeeded: PropTypes.func,
+    fetchDropBoxTree: PropTypes.func,
+    fetchProjectsWithDatasets: PropTypes.func,
+    fetchRuns: PropTypes.func,
+    fetchRunDetailsIfNeeded: PropTypes.func
 };
 
 const mapStateToProps = state => ({

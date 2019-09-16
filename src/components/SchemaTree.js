@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Tree} from "antd";
 import "antd/es/tree/style/css";
@@ -17,5 +18,9 @@ class SchemaTree extends Component {
             : (<div />);
     }
 }
+
+SchemaTree.propTypes = {
+    schema: PropTypes.object
+};
 
 export default SchemaTree;
