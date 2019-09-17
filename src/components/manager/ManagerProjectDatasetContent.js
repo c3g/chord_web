@@ -22,8 +22,11 @@ import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../mo
 import {
     beginProjectEditing,
     endProjectEditing,
-    fetchProjectsWithDatasets, saveProject,
+
+    fetchProjectsWithDatasets,
+    saveProject,
     selectProjectIfItExists,
+
     toggleProjectCreationModal,
     toggleProjectDatasetAdditionModal,
     toggleProjectDeletionModal
@@ -123,8 +126,7 @@ class ManagerProjectDatasetContent extends Component {
                                                   paragraph={{rows: 4, width: [600, 580, 600, 480]}} />
                                     ) : (
                                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                               description="Select a project from the menu on the left to manage it."
-                                        />
+                                               description="Select a project from the menu on the left to manage it." />
                                     )
                                 )}
                             </Layout.Content>
