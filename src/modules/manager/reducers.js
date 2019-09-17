@@ -1,42 +1,29 @@
 import {
     FETCH_PROJECTS,
 
-    BEGIN_FETCHING_PROJECT_DATASETS,
-    END_FETCHING_PROJECT_DATASETS,
+    FETCHING_PROJECT_DATASETS,
     FETCH_PROJECT_DATASETS,
 
-    BEGIN_PROJECT_CREATION,
-    END_PROJECT_CREATION,
-    TERMINATE_PROJECT_CREATION,
-
-    BEGIN_PROJECT_DELETION,
-    END_PROJECT_DELETION,
-    TERMINATE_PROJECT_DELETION,
+    PROJECT_CREATION,
+    DELETE_PROJECT,
 
     SELECT_PROJECT,
 
-    BEGIN_PROJECT_DATASET_ADDITION,
-    END_PROJECT_DATASET_ADDITION,
-    TERMINATE_PROJECT_DATASET_CREATION,
+    PROJECT_DATASET_ADDITION,
 
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
     TOGGLE_PROJECT_DATASET_ADDITION_MODAL,
 
-    BEGIN_PROJECT_EDITING,
-    END_PROJECT_EDITING,
-
-    BEGIN_PROJECT_SAVE,
-    END_PROJECT_SAVE,
-    TERMINATE_PROJECT_SAVE,
+    PROJECT_EDITING,
+    SAVE_PROJECT,
 
     FETCH_DROP_BOX_TREE,
 
     FETCH_RUNS,
     FETCH_RUN_DETAILS,
 
-    BEGIN_INGESTION_RUN_SUBMISSION,
-    END_INGESTION_RUN_SUBMISSION,
+    INGESTION_RUN_SUBMISSION,
 } from "./actions";
 
 const projectSort = (a, b) => a.name.localeCompare(b.name);
@@ -72,12 +59,12 @@ export const projects = (
             });
 
 
-        case BEGIN_PROJECT_CREATION:
+        case PROJECT_CREATION.BEGIN:
             return Object.assign({}, state, {
                 isCreating: true
             });
 
-        case END_PROJECT_CREATION:
+        case PROJECT_CREATION.END:
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isCreating: false,
@@ -88,18 +75,18 @@ export const projects = (
                 }
             });
 
-        case TERMINATE_PROJECT_CREATION:
+        case PROJECT_CREATION.TERMINATE:
             return Object.assign({}, state, {
                 isCreating: false
             });
 
 
-        case BEGIN_PROJECT_DELETION:
+        case DELETE_PROJECT.REQUEST:
             return Object.assign({}, state, {
                 isDeleting: true
             });
 
-        case END_PROJECT_DELETION:
+        case DELETE_PROJECT.RECEIVE:
             let newState = Object.assign({}, state, {
                 isDeleting: false,
                 items: state.items.filter(p => p.id !== action.projectID),
@@ -112,29 +99,29 @@ export const projects = (
 
             return newState;
 
-        case TERMINATE_PROJECT_DELETION:
+        case DELETE_PROJECT.ERROR:
             return Object.assign({}, state, {
                 isDeleting: false
             });
 
 
-        case BEGIN_PROJECT_SAVE:
+        case SAVE_PROJECT.REQUEST:
             return Object.assign({}, state, {
                 isSaving: true
             });
 
-        case END_PROJECT_SAVE:
+        case SAVE_PROJECT.RECEIVE:
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isSaving: false,
-                items: [...state.items.filter(p => p.id !== action.project.id), action.project].sort(projectSort),
+                items: [...state.items.filter(p => p.id !== action.data.id), action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.project.id]: action.project
+                    [action.data.id]: action.data
                 }
             });
 
-        case TERMINATE_PROJECT_SAVE:
+        case SAVE_PROJECT.ERROR:
             return Object.assign({}, state, {
                 isSaving: false
             });
@@ -155,7 +142,7 @@ export const projectDatasets = (
     action
 ) => {
     switch (action.type) {
-        case END_PROJECT_CREATION:
+        case PROJECT_CREATION.END:
             // TODO: Might want to re-fetch upon project creation instead...
             return Object.assign({}, state, {
                 itemsByProjectID: {
@@ -164,9 +151,8 @@ export const projectDatasets = (
                 }
             });
 
-        case END_PROJECT_DELETION:
+        case DELETE_PROJECT.RECEIVE:
             let newState = Object.assign({}, state, {
-                isDeleting: false,
                 itemsByProjectID: {...state.itemsByProjectID}
             });
 
@@ -176,12 +162,12 @@ export const projectDatasets = (
 
             return newState;
 
-        case BEGIN_FETCHING_PROJECT_DATASETS:
+        case FETCHING_PROJECT_DATASETS.BEGIN:
             return Object.assign({}, state, {
                 isFetchingAll: true
             });
 
-        case END_FETCHING_PROJECT_DATASETS:
+        case FETCHING_PROJECT_DATASETS.END:
             return Object.assign({}, state, {
                 isFetching: false,
                 isFetchingAll: false
@@ -206,12 +192,12 @@ export const projectDatasets = (
                 isFetching: false
             });
 
-        case BEGIN_PROJECT_DATASET_ADDITION:
+        case PROJECT_DATASET_ADDITION.BEGIN:
             return Object.assign({}, state, {
                 isAdding: true
             });
 
-        case END_PROJECT_DATASET_ADDITION:
+        case PROJECT_DATASET_ADDITION.END:
             // TODO
             return Object.assign({}, state, {
                 isAdding: false,
@@ -221,7 +207,7 @@ export const projectDatasets = (
                 }
             });
 
-        case TERMINATE_PROJECT_DATASET_CREATION:
+        case PROJECT_DATASET_ADDITION.TERMINATE:
             return Object.assign({}, state, {
                 isAdding: false
             });
@@ -247,7 +233,7 @@ export const manager = (
                 selectedProjectID: action.projectID
             });
 
-        case END_PROJECT_DELETION:
+        case DELETE_PROJECT.RECEIVE:
             return Object.assign({}, state, {
                 selectedProjectID: state.selectedProjectID === action.projectID ? null : state.selectedProjectID
             });
@@ -267,12 +253,12 @@ export const manager = (
                 projectDatasetCreationModal: !state.projectDatasetCreationModal
             });
 
-        case BEGIN_PROJECT_EDITING:
+        case PROJECT_EDITING.BEGIN:
             return Object.assign({}, state, {
                 editingProject: true
             });
 
-        case END_PROJECT_EDITING:
+        case PROJECT_EDITING.END:
             return Object.assign({}, state, {
                 editingProject: false
             });
@@ -372,12 +358,12 @@ export const runs = (
                 }
             });
 
-        case BEGIN_INGESTION_RUN_SUBMISSION:
+        case INGESTION_RUN_SUBMISSION.BEGIN:
             return Object.assign({}, state, {
                 isSubmittingIngestionRun: true
             });
 
-        case END_INGESTION_RUN_SUBMISSION:
+        case INGESTION_RUN_SUBMISSION.END:
             return Object.assign({}, state, {
                 isSubmittingIngestionRun: false
             });

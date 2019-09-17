@@ -8,7 +8,7 @@ import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
 
-import {deleteProject, toggleProjectDeletionModal} from "../../modules/manager/actions";
+import {deleteProjectIfPossible, toggleProjectDeletionModal} from "../../modules/manager/actions";
 
 class ManagerProjectDeletionModal extends Component {
     componentDidMount() {
@@ -70,7 +70,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    deleteProject: async projectID => await dispatch(deleteProject(projectID)),
+    deleteProject: async projectID => await dispatch(deleteProjectIfPossible(projectID)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDeletionModal);

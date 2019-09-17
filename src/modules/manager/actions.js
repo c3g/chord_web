@@ -3,58 +3,46 @@ import {message} from "antd";
 
 import {beginAddingServiceDataset, endAddingServiceDataset, terminateAddingServiceDataset} from "../services/actions";
 
-import {basicAction, createNetworkActionTypes, networkAction} from "../../utils";
+import {
+    basicAction,
+    createNetworkActionTypes,
+    createFlowActionTypes,
+    networkAction,
+
+    beginFlow,
+    endFlow,
+    terminateFlow
+} from "../../utils";
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 
-export const BEGIN_FETCHING_PROJECT_DATASETS = "BEGIN_FETCHING_PROJECT_DATASETS";
-export const END_FETCHING_PROJECT_DATASETS = "END_FETCHING_PROJECT_DATASETS";
+export const FETCHING_PROJECT_DATASETS = createFlowActionTypes("FETCHING_PROJECT_DATASETS");
 export const FETCH_PROJECT_DATASETS = createNetworkActionTypes("FETCH_PROJECT_DATASETS");
 
-export const BEGIN_PROJECT_CREATION = "BEGIN_PROJECT_CREATION";
-export const END_PROJECT_CREATION = "END_PROJECT_CREATION";
-export const TERMINATE_PROJECT_CREATION = "TERMINATE_PROJECT_CREATION";
-
-export const BEGIN_PROJECT_DELETION = "BEGIN_PROJECT_DELETION";
-export const END_PROJECT_DELETION = "END_PROJECT_DELETION";
-export const TERMINATE_PROJECT_DELETION = "TERMINATE_PROJECT_DELETION";
+export const PROJECT_CREATION = createFlowActionTypes("PROJECT_CREATION");
+export const DELETE_PROJECT = createNetworkActionTypes("DELETE_PROJECT");
 
 export const SELECT_PROJECT = "SELECT_PROJECT";
 
-export const BEGIN_PROJECT_DATASET_ADDITION = "BEGIN_PROJECT_DATASET_ADDITION";
-export const END_PROJECT_DATASET_ADDITION = "END_PROJECT_DATASET_ADDITION";
-export const TERMINATE_PROJECT_DATASET_CREATION = "TERMINATE_PROJECT_DATASET_CREATION";
+export const PROJECT_DATASET_ADDITION = createFlowActionTypes("CREATE_DATASET_ADDITION");
 
 export const TOGGLE_PROJECT_CREATION_MODAL = "TOGGLE_PROJECT_CREATION_MODAL";
 export const TOGGLE_PROJECT_DELETION_MODAL = "TOGGLE_PROJECT_DELETION_MODAL";
 export const TOGGLE_PROJECT_DATASET_ADDITION_MODAL = "TOGGLE_PROJECT_DATASET_ADDITION_MODAL";
-export const BEGIN_PROJECT_EDITING = "BEGIN_PROJECT_EDITING";
-export const END_PROJECT_EDITING = "END_PROJECT_EDITING";
-export const BEGIN_PROJECT_SAVE = "BEGIN_PROJECT_SAVE";
-export const END_PROJECT_SAVE = "END_PROJECT_SAVE";
-export const TERMINATE_PROJECT_SAVE = "TERMINATE_PROJECT_SAVE";
+
+export const PROJECT_EDITING = createFlowActionTypes("PROJECT_EDITING");
+export const SAVE_PROJECT = createNetworkActionTypes("SAVE_PROJECT");
 
 export const FETCH_DROP_BOX_TREE = createNetworkActionTypes("FETCH_DROP_BOX_TREE");
 
 export const FETCH_RUNS = createNetworkActionTypes("FETCH_RUNS");
 export const FETCH_RUN_DETAILS = createNetworkActionTypes("FETCH_RUN_DETAILS");
 
-export const BEGIN_INGESTION_RUN_SUBMISSION = "BEGIN_INGESTION_RUN_SUBMISSION";
-export const END_INGESTION_RUN_SUBMISSION = "END_INGESTION_RUN_SUBMISSION";
+export const INGESTION_RUN_SUBMISSION = createFlowActionTypes("INGESTION_RUN_SUBMISSION");
 
 
-const beginFetchingProjectDatasets = basicAction(BEGIN_FETCHING_PROJECT_DATASETS);
-const endFetchingProjectDatasets = basicAction(END_FETCHING_PROJECT_DATASETS);
-
-
-const beginProjectCreation = basicAction(BEGIN_PROJECT_CREATION);
-const endProjectCreation = project => ({type: END_PROJECT_CREATION, project});
-const terminateProjectCreation = basicAction(TERMINATE_PROJECT_CREATION);
-
-
-const beginProjectDeletion = basicAction(BEGIN_PROJECT_DELETION);
-const endProjectDeletion = projectID => ({type: END_PROJECT_DELETION, projectID});
-const terminateProjectDeletion = basicAction(TERMINATE_PROJECT_DELETION);
+const endProjectCreation = project => ({type: PROJECT_CREATION.END, project});
+const endProjectDatasetAddition = (projectID, dataset) => ({type: PROJECT_DATASET_ADDITION.END, projectID, dataset});
 
 
 const selectProject = projectID => ({type: SELECT_PROJECT, projectID});
@@ -65,26 +53,12 @@ export const selectProjectIfItExists = projectID => async (dispatch, getState) =
 };
 
 
-const beginProjectDatasetAddition = basicAction(BEGIN_PROJECT_DATASET_ADDITION);
-const endProjectDatasetAddition = (projectID, dataset) => ({type: END_PROJECT_DATASET_ADDITION, projectID, dataset});
-const terminateProjectDatasetAddition = basicAction(TERMINATE_PROJECT_DATASET_CREATION);
-
-
 export const toggleProjectCreationModal = basicAction(TOGGLE_PROJECT_CREATION_MODAL);
 export const toggleProjectDeletionModal = basicAction(TOGGLE_PROJECT_DELETION_MODAL);
 export const toggleProjectDatasetAdditionModal = basicAction(TOGGLE_PROJECT_DATASET_ADDITION_MODAL);
 
-export const beginProjectEditing = basicAction(BEGIN_PROJECT_EDITING);
-export const endProjectEditing = basicAction(END_PROJECT_EDITING);
-
-export const beginProjectSave = projectID => ({type: BEGIN_PROJECT_SAVE, projectID});
-export const endProjectSave = project => ({type: END_PROJECT_SAVE, project});
-export const terminateProjectSave = project => ({type: TERMINATE_PROJECT_SAVE, project});
-
-
-export const beginIngestionRunSubmission = basicAction(BEGIN_INGESTION_RUN_SUBMISSION);
-export const endIngestionRunSubmission = basicAction(END_INGESTION_RUN_SUBMISSION);
-
+export const beginProjectEditing = basicAction(PROJECT_EDITING.BEGIN);
+export const endProjectEditing = basicAction(PROJECT_EDITING.END);
 
 export const fetchProjects = networkAction(() => ({
     types: FETCH_PROJECTS,
@@ -104,9 +78,9 @@ export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
     if (getState().projects.isFetching || getState().projects.isCreating || getState().projects.isDeleting) return;
 
     await dispatch(fetchProjects());
-    await dispatch(beginFetchingProjectDatasets());
+    await dispatch(beginFlow(FETCHING_PROJECT_DATASETS));
     await Promise.all(getState().projects.items.map(project => dispatch(fetchProjectDatasets(project))));
-    await dispatch(endFetchingProjectDatasets());
+    await dispatch(endFlow(FETCHING_PROJECT_DATASETS));
 };
 
 export const createProject = project => async (dispatch, getState) => {
@@ -114,7 +88,7 @@ export const createProject = project => async (dispatch, getState) => {
 
     if (getState().projects.isCreating) return;
 
-    await dispatch(beginProjectCreation());
+    await dispatch(beginFlow(PROJECT_CREATION));
 
     try {
         const response = await fetch("/api/project/projects", {
@@ -131,76 +105,59 @@ export const createProject = project => async (dispatch, getState) => {
         } else {
             // TODO: GUI error message
             console.error(response);
-            await dispatch(terminateProjectCreation());
+            await dispatch(terminateFlow(PROJECT_CREATION));
         }
     } catch (e) {
         // TODO: GUI error message
         console.error(e);
-        await dispatch(terminateProjectCreation());
+        await dispatch(terminateFlow(PROJECT_CREATION));
     }
 };
 
-export const deleteProject = projectID => async (dispatch, getState) => {
+export const deleteProject = networkAction(projectID => ({
+    types: DELETE_PROJECT,
+    params: {projectID},
+    url: `/api/project/projects/${projectID}`,
+    req: {method: "DELETE"},
+    err: `Error deleting project '${projectID}'`  // TODO: More user-friendly error
+}));  // TODO: Fix project selection afterwards
+
+export const deleteProjectIfPossible = projectID => async (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
+    await dispatch(deleteProject(projectID));
 
-    await dispatch(beginProjectDeletion());
-
-    try {
-        const response = await fetch(`/api/project/projects/${projectID}`, {method: "DELETE"});
-        if (response.ok) {
-            await dispatch(endProjectDeletion(projectID));
-            // TODO: Fix project selection
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(terminateProjectDeletion());
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(terminateProjectDeletion());
-    }
+    // TODO: Do we need to delete project datasets as well? What to do here??
 };
 
-export const saveProject = project => async (dispatch, getState) => {
+const saveProject = networkAction(project => ({
+    types: SAVE_PROJECT,
+    params: {projectID: project.id},
+    url: `/api/project/projects/${project.id}`,
+    req: {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(project)
+    },
+    err: `Error saving project '${project.id}'`,  // TODO: More user-friendly error
+    afterAction: () => async dispatch => dispatch(endProjectEditing())
+}));
+
+export const saveProjectIfPossible = project => async (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
     if (getState().projects.isSaving) return;
-
-    await dispatch(beginProjectSave(project.id));
-
-    try {
-        const response = await fetch(`/api/project/projects/${project.id}`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(project)
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(endProjectEditing());
-            await dispatch(endProjectSave(data));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(terminateProjectSave());
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(terminateProjectSave());
-    }
+    await dispatch(saveProject(project));
 };
 
 
 export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName) => async (dispatch, getState) => {
     if (getState().projectDatasets.isAdding) return;
 
-    await dispatch(beginProjectDatasetAddition());
+    await dispatch(beginFlow(PROJECT_DATASET_ADDITION));
     await dispatch(beginAddingServiceDataset());
 
     const terminate = async () => {
         await dispatch(terminateAddingServiceDataset());
-        await dispatch(terminateProjectDatasetAddition());
+        await dispatch(terminateFlow(PROJECT_DATASET_ADDITION));
     };
 
     try {
@@ -287,7 +244,7 @@ export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
 
 export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, inputs, redirect, history) =>
     async (dispatch, getState) => {
-        await dispatch(beginIngestionRunSubmission());
+        await dispatch(beginFlow(INGESTION_RUN_SUBMISSION));
 
         const serviceName = getState().services.itemsByID[serviceID].name;
         let namespacedInputs = Object.fromEntries(Object.entries(inputs).map(([k, v]) => [`${workflow.id}.${k}`, v]));
@@ -334,5 +291,5 @@ export const submitIngestionWorkflowRun = (serviceID, datasetID, workflow, input
         }
 
         // TODO: Separate event for success/failure?
-        await dispatch(endIngestionRunSubmission());
+        await dispatch(endFlow(INGESTION_RUN_SUBMISSION));
     };

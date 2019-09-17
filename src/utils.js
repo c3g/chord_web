@@ -11,6 +11,13 @@ export const createNetworkActionTypes = name => ({
     ERROR: `${name}.ERROR`
 });
 
+export const createFlowActionTypes = name => ({
+    BEGIN: `${name}.BEGIN`,
+    END: `${name}.END`,
+    TERMINATE: `${name}.TERMINATE`
+});
+
+
 const _networkAction = (types, params, url, req = {}, err = null, aa = null) => async dispatch => {
     await dispatch({type: types.REQUEST, ...params});
     try {
@@ -41,6 +48,11 @@ export const networkAction = fn => (...args) => {
     return _networkAction(types, params || {}, url, req || {}, err || null,
         afterAction || null);
 };
+
+
+export const beginFlow = types => async dispatch => await dispatch({type: types.BEGIN});
+export const endFlow = types => async dispatch => await dispatch({type: types.END});
+export const terminateFlow = types => async dispatch => await dispatch({type: types.TERMINATE});
 
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));

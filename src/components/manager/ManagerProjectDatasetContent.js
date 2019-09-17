@@ -24,7 +24,7 @@ import {
     endProjectEditing,
 
     fetchProjectsWithDatasets,
-    saveProject,
+    saveProjectIfPossible,
     selectProjectIfItExists,
 
     toggleProjectCreationModal,
@@ -205,7 +205,7 @@ const mapDispatchToProps = dispatch => ({
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
-    saveProject: project => dispatch(saveProject(project))
+    saveProject: project => dispatch(saveProjectIfPossible(project))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));
