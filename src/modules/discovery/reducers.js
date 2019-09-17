@@ -5,10 +5,8 @@ import {FETCH_SERVICE_DATA_TYPES} from "../services/actions";
 import {
     TOGGLE_DISCOVERY_SCHEMA_MODAL,
 
-    REQUEST_SEARCH,
-    RECEIVE_SEARCH,
+    FETCH_SEARCH,
     SELECT_SEARCH,
-    HANDLE_SEARCH_ERROR,
 
     SELECT_DISCOVERY_SERVICE_DATA_TYPE,
     CLEAR_DISCOVERY_SERVICE_DATA_TYPE,
@@ -46,12 +44,12 @@ export const discovery = (
                 schemaModalShown: !state.schemaModalShown
             });
 
-        case REQUEST_SEARCH:
+        case FETCH_SEARCH.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true
             });
 
-        case RECEIVE_SEARCH:
+        case FETCH_SEARCH.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 searches: [...state.searches, action.results], // Add search to search history
@@ -69,6 +67,11 @@ export const discovery = (
                 lastUpdated: action.receivedAt
             });
 
+        case FETCH_SEARCH.ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
+
         case SELECT_SEARCH:
             return Object.assign({}, state, {
                 selectedSearchByServiceAndDataTypeID: {
@@ -78,12 +81,6 @@ export const discovery = (
                         [action.dataTypeID]: action.searchIndex
                     }
                 }
-            });
-
-        case HANDLE_SEARCH_ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-                // TODO: Error message
             });
 
         case SELECT_DISCOVERY_SERVICE_DATA_TYPE:

@@ -1,13 +1,9 @@
 import {
-    RECEIVE_PROJECTS,
-    REQUEST_PROJECTS,
-    HANDLE_PROJECTS_ERROR,
+    FETCH_PROJECTS,
 
     BEGIN_FETCHING_PROJECT_DATASETS,
     END_FETCHING_PROJECT_DATASETS,
-    REQUEST_PROJECT_DATASETS,
-    RECEIVE_PROJECT_DATASETS,
-    HANDLE_PROJECT_DATASETS_ERROR,
+    FETCH_PROJECT_DATASETS,
 
     BEGIN_PROJECT_CREATION,
     END_PROJECT_CREATION,
@@ -34,17 +30,13 @@ import {
     END_PROJECT_SAVE,
     TERMINATE_PROJECT_SAVE,
 
-    REQUEST_DROP_BOX_TREE,
-    RECEIVE_DROP_BOX_TREE,
+    FETCH_DROP_BOX_TREE,
 
-    REQUEST_RUNS,
-    RECEIVE_RUNS,
-
-    REQUEST_RUN_DETAILS,
-    RECEIVE_RUN_DETAILS,
+    FETCH_RUNS,
+    FETCH_RUN_DETAILS,
 
     BEGIN_INGESTION_RUN_SUBMISSION,
-    END_INGESTION_RUN_SUBMISSION
+    END_INGESTION_RUN_SUBMISSION,
 } from "./actions";
 
 const projectSort = (a, b) => a.name.localeCompare(b.name);
@@ -61,12 +53,12 @@ export const projects = (
     action
 ) => {
     switch (action.type) {
-        case REQUEST_PROJECTS:
+        case FETCH_PROJECTS.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true
             });
 
-        case RECEIVE_PROJECTS:
+        case FETCH_PROJECTS.RECEIVE:
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isFetching: false,
@@ -74,7 +66,7 @@ export const projects = (
                 itemsByID: Object.assign({}, ...action.projects.map(p => ({[p.id]: p}))),
             });
 
-        case HANDLE_PROJECTS_ERROR:
+        case FETCH_PROJECTS.ERROR:
             return Object.assign({}, state, {
                 isFetching: false
             });
@@ -195,12 +187,12 @@ export const projectDatasets = (
                 isFetchingAll: false
             });
 
-        case REQUEST_PROJECT_DATASETS:
+        case FETCH_PROJECT_DATASETS.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true
             });
 
-        case RECEIVE_PROJECT_DATASETS:
+        case FETCH_PROJECT_DATASETS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 itemsByProjectID: {
@@ -209,7 +201,7 @@ export const projectDatasets = (
                 }
             });
 
-        case HANDLE_PROJECT_DATASETS_ERROR:
+        case FETCH_PROJECT_DATASETS.ERROR:
             return Object.assign({}, state, {
                 isFetching: false
             });
@@ -298,15 +290,20 @@ export const dropBox = (
     action
 ) => {
     switch (action.type) {
-        case REQUEST_DROP_BOX_TREE:
+        case FETCH_DROP_BOX_TREE.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true
             });
 
-        case RECEIVE_DROP_BOX_TREE:
+        case FETCH_DROP_BOX_TREE.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 tree: action.tree
+            });
+
+        case FETCH_DROP_BOX_TREE.ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
             });
 
         default:
@@ -324,18 +321,23 @@ export const runs = (
     action
 ) => {
     switch (action.type) {
-        case REQUEST_RUNS:
+        case FETCH_RUNS.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true,
             });
 
-        case RECEIVE_RUNS:
+        case FETCH_RUNS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 items: action.runs
             });
 
-        case REQUEST_RUN_DETAILS:
+        case FETCH_RUNS.ERROR:
+            return Object.assign({}, state, {
+                isFetching: false,
+            });
+
+        case FETCH_RUN_DETAILS.REQUEST:
             return Object.assign({}, state, {
                 itemDetails: {
                     ...state.itemDetails,
@@ -346,7 +348,7 @@ export const runs = (
                 }
             });
 
-        case RECEIVE_RUN_DETAILS:
+        case FETCH_RUN_DETAILS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.details.state} : i),
@@ -355,6 +357,17 @@ export const runs = (
                     [action.runID]: {
                         isFetching: false,
                         details: action.details
+                    }
+                }
+            });
+
+        case FETCH_RUN_DETAILS.ERROR:
+            return Object.assign({}, state, {
+                itemDetails: {
+                    ...state.itemDetails,
+                    [action.runID]: {
+                        isFetching: false,
+                        details: (state.itemDetails[action.runID] || {details: null}).details
                     }
                 }
             });

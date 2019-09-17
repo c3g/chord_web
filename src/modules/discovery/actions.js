@@ -3,14 +3,12 @@ import fetch from "cross-fetch";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../services/actions";
 
-import {basicAction} from "../../utils"
+import {basicAction, createNetworkActionTypes} from "../../utils"
 
 export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
 
-export const REQUEST_SEARCH = "REQUEST_SEARCH";
-export const RECEIVE_SEARCH = "RECEIVE_SEARCH";
+export const FETCH_SEARCH = createNetworkActionTypes("FETCH_SEARCH");
 export const SELECT_SEARCH = "SELECT_SEARCH";
-export const HANDLE_SEARCH_ERROR = "HANDLE_SEARCH_ERROR";
 
 export const SELECT_DISCOVERY_SERVICE_DATA_TYPE = "SELECT_DISCOVERY_SERVICE_DATA_TYPE";
 export const CLEAR_DISCOVERY_SERVICE_DATA_TYPE = "CLEAR_DISCOVERY_SERVICE_DATA_TYPE";
@@ -21,18 +19,23 @@ export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MO
 
 
 const requestSearch = (serviceID, dataTypeID) => ({
-    type: REQUEST_SEARCH,
+    type: FETCH_SEARCH.REQUEST,
     serviceID,
     dataTypeID
 });
 
 const receiveSearch = (serviceID, dataTypeID, results) => ({
-    type: RECEIVE_SEARCH,
+    type: FETCH_SEARCH.RECEIVE,
     serviceID,
     dataTypeID,
     results,
     receivedAt: Date.now()
 });
+
+export const handleSearchError = err => {
+    message.error(err);
+    return {type: FETCH_SEARCH.ERROR};
+};
 
 export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
     type: SELECT_SEARCH,
@@ -40,11 +43,6 @@ export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
     dataTypeID,
     searchIndex
 });
-
-export const handleSearchError = err => {
-    message.error(err);
-    return {type: HANDLE_SEARCH_ERROR};
-};
 
 
 export const performSearch = (serviceID, dataTypeID, conditions) => async (dispatch, getState) => {
