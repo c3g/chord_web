@@ -1,6 +1,6 @@
 import {simpleDeepCopy} from "../../utils";
 
-import {RECEIVE_SERVICE_DATA_TYPES} from "../services/actions";
+import {FETCH_SERVICE_DATA_TYPES} from "../services/actions";
 
 import {
     TOGGLE_DISCOVERY_SCHEMA_MODAL,
@@ -29,13 +29,13 @@ export const discovery = (
     action
 ) => {
     switch (action.type) {
-        case RECEIVE_SERVICE_DATA_TYPES:
+        case FETCH_SERVICE_DATA_TYPES.RECEIVE:
             return Object.assign({}, state, {
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
-                    [action.service]: {
+                    [action.serviceID]: {
                         ...Object.assign({}, ...action.dataTypes.map(d => ({
-                            [d.id]: (state.searchFormsByServiceAndDataTypeID[action.service] || {})[d.id] || {}
+                            [d.id]: (state.searchFormsByServiceAndDataTypeID[action.serviceID] || {})[d.id] || {}
                         })))
                     }
                 }

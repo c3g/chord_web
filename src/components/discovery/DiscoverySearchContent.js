@@ -153,8 +153,8 @@ class DiscoverySearchContent extends Component {
                                 value={this.props.dataType ? dtKey(this.props.service.id, this.props.dataType.id)
                                     : undefined}
                                 onChange={this.handleDataTypeChange}>
-                            {this.props.services.filter(s => this.props.dataTypes[s.id])
-                                .flatMap(s => this.props.dataTypes[s.id].map(dt =>
+                            {this.props.services.filter(s => (this.props.dataTypes[s.id] || {items: null}).items)
+                                .flatMap(s => this.props.dataTypes[s.id].items.map(dt =>
                                     <Select.Option key={dtKey(s.id, dt.id)}>{dt.id}</Select.Option>
                                 ))}
                         </Select>
@@ -219,8 +219,8 @@ const mapStateToProps = state => {
     const sID = state.discovery.selectedServiceID;
     const dID = state.discovery.selectedDataTypeID;
 
-    const dataTypeExists = sID && dID && sID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID
-        && dID in state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID];
+    const dataTypeExists = sID && dID && sID in state.serviceDataTypes.dataTypesByServiceID
+        && dID in state.serviceDataTypes.dataTypesByServiceID[sID].itemsByID;
 
     const searchesExist = state.discovery.searchesByServiceAndDataTypeID[sID] !== undefined
         && state.discovery.searchesByServiceAndDataTypeID[sID][dID] !== undefined;
@@ -230,12 +230,12 @@ const mapStateToProps = state => {
 
     return {
         services: state.services.items,
-        dataTypes: state.serviceDataTypes.dataTypes,
+        dataTypes: state.serviceDataTypes.dataTypesByServiceID,
         service: dataTypeExists ? state.services.itemsByID[sID] : null,
-        dataType: dataTypeExists ? state.serviceDataTypes.dataTypesByServiceAndDataTypeID[sID][dID] : null,
+        dataType: dataTypeExists ? state.serviceDataTypes.dataTypesByServiceID[sID].itemsByID[dID] : null,
 
         dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetching
-            || Object.keys(state.serviceDataTypes.dataTypes).length === 0,
+            || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
 
         schemaModalShown: state.discovery.schemaModalShown,
 

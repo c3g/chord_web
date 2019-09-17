@@ -36,8 +36,8 @@ class DatasetForm extends Component {
 }
 
 const mapStateToProps = state => ({
-    dataTypes: Object.keys(state.serviceDataTypes.dataTypes)
-        .flatMap(s => state.serviceDataTypes.dataTypes[s].map(dt => ({dt, s})))
+    dataTypes: Object.entries(state.serviceDataTypes.dataTypesByServiceID)
+        .flatMap(([s, dts]) => dts.items.map(dt => ({dt, s})))
 });
 
 export default connect(mapStateToProps, null, null, {forwardRef: true})(

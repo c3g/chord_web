@@ -180,7 +180,7 @@ const mapStateToProps = state => {
 
     const datasetList = projectDatasetRecords
         .filter(dataset => datasets.hasOwnProperty(dataset.service_id))
-        .map(dataset => datasets[dataset.service_id][dataset.data_type_id]
+        .map(dataset => (datasets[dataset.service_id][dataset.data_type_id].datasets || [])
             .filter(ds => ds.id === dataset.dataset_id)
             .map(ds => ({...ds, dataTypeID: dataset.data_type_id})))
         .flat();

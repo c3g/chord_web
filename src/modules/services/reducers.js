@@ -2,17 +2,13 @@ import {
     BEGIN_LOADING_ALL_SERVICE_DATA,
     END_LOADING_ALL_SERVICE_DATA,
 
-    REQUEST_SERVICES,
-    RECEIVE_SERVICES,
+    FETCH_SERVICES,
 
     REQUEST_SERVICE_METADATA,
     RECEIVE_SERVICE_METADATA,
 
-    REQUEST_SERVICE_DATA_TYPES,
-    RECEIVE_SERVICE_DATA_TYPES,
-
-    REQUEST_SERVICE_DATASETS,
-    RECEIVE_SERVICE_DATASETS,
+    FETCH_SERVICE_DATA_TYPES,
+    FETCH_SERVICE_DATASETS,
 
     BEGIN_ADDING_SERVICE_DATASET,
     END_ADDING_SERVICE_DATASET,
@@ -20,8 +16,7 @@ import {
 
     BEGIN_FETCHING_SERVICE_WORKFLOWS,
     END_FETCHING_SERVICE_WORKFLOWS,
-    REQUEST_SERVICE_WORKFLOWS,
-    RECEIVE_SERVICE_WORKFLOWS,
+    FETCH_SERVICE_WORKFLOWS
 } from "./actions";
 
 export const services = (
@@ -40,17 +35,22 @@ export const services = (
         case END_LOADING_ALL_SERVICE_DATA:
             return Object.assign({}, state, {isFetchingAll: false});
 
-        case REQUEST_SERVICES:
+        case FETCH_SERVICES.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true,
             });
 
-        case RECEIVE_SERVICES:
+        case FETCH_SERVICES.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 items: action.services,
                 itemsByID: Object.assign({}, state.itemsByID, ...action.services.map(s => ({[s.id]: s}))),
                 lastUpdated: action.receivedAt
+            });
+
+        case FETCH_SERVICES.ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
             });
 
         default:
@@ -75,7 +75,7 @@ export const serviceMetadata = (
         case RECEIVE_SERVICE_METADATA:
             return Object.assign({}, state, {
                 isFetching: false,
-                metadata: {...action.metadata},
+                metadata: action.metadata,
                 lastUpdated: action.receivedAt
             });
 
@@ -86,30 +86,45 @@ export const serviceMetadata = (
 
 export const serviceDataTypes = (
     state = {
-        isFetching: false,
-        dataTypes: {},
-        dataTypesByServiceAndDataTypeID: {}
+        isFetching: false,  // TODO: Network epic
+        dataTypesByServiceID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case REQUEST_SERVICE_DATA_TYPES:
+        case FETCH_SERVICE_DATA_TYPES.REQUEST:
             return Object.assign({}, state, {
-                isFetching: true,
+                dataTypesByServiceID: {
+                    ...state.dataTypesByServiceID,
+                    [action.serviceID]: {
+                        ...(state.dataTypesByServiceID[action.serviceID] || {items: null, itemsByID: null}),
+                        isFetching: true
+                    }
+                }
             });
 
-        case RECEIVE_SERVICE_DATA_TYPES:
+        case FETCH_SERVICE_DATA_TYPES.RECEIVE:
             return Object.assign({}, state, {
-                isFetching: false,
-                dataTypes: {
-                    ...state.dataTypes,
-                    [action.serviceID]: action.dataTypes
-                },
-                dataTypesByServiceAndDataTypeID: {
-                    ...state.dataTypesByServiceAndDataTypeID,
-                    [action.serviceID]: Object.assign({}, ...action.dataTypes.map(d => ({[d.id]: d})))
+                dataTypesByServiceID: {
+                    ...state.dataTypesByServiceID,
+                    [action.serviceID]: {
+                        items: action.dataTypes,
+                        itemsByID: Object.fromEntries(action.dataTypes.map(d => [d.id, d])),
+                        isFetching: false
+                    }
                 },
                 lastUpdated: action.receivedAt
+            });
+
+        case FETCH_SERVICE_DATA_TYPES.ERROR:
+            return Object.assign({}, state, {
+                dataTypesByServiceID: {
+                    ...state.dataTypesByServiceID,
+                    [action.serviceID]: {
+                        ...(state.dataTypesByServiceID[action.serviceID] || {items: null, itemsByID: null}),
+                        isFetching: false
+                    }
+                }
             });
 
         default:
@@ -119,26 +134,51 @@ export const serviceDataTypes = (
 
 export const serviceDatasets = (
     state = {
-        isFetching: false,
+        isFetching: false,  // TODO: Begin/end
         isCreating: false,
         datasetsByServiceAndDataTypeID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case REQUEST_SERVICE_DATASETS:
+        case FETCH_SERVICE_DATASETS.REQUEST:
             return Object.assign({}, state, {
-                isFetching: true
-            });
-
-        case RECEIVE_SERVICE_DATASETS:
-            return Object.assign({}, state, {
-                isFetching: false,
                 datasetsByServiceAndDataTypeID: {
                     ...state.datasetsByServiceAndDataTypeID,
                     [action.serviceID]: {
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
-                        [action.dataTypeID]: action.datasets
+                        [action.dataTypeID]: {
+                            ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {datasets: null}),
+                            isFetching: true
+                        }
+                    }
+                }
+            });
+
+        case FETCH_SERVICE_DATASETS.RECEIVE:
+            return Object.assign({}, state, {
+                datasetsByServiceAndDataTypeID: {
+                    ...state.datasetsByServiceAndDataTypeID,
+                    [action.serviceID]: {
+                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: {
+                            datasets: action.datasets,
+                            isFetching: false
+                        }
+                    }
+                }
+            });
+
+        case FETCH_SERVICE_DATASETS.ERROR:
+            return Object.assign({}, state, {
+                ...state.datasetsByServiceAndDataTypeID,
+                [action.serviceID]: {
+                    ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                    [action.dataTypeID]: {
+                        ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                            || {datasets: null}),
+                        isFetching: false
                     }
                 }
             });
@@ -191,18 +231,18 @@ export const serviceWorkflows = (
                 isFetchingAll: false
             });
 
-        case REQUEST_SERVICE_WORKFLOWS:
+        case FETCH_SERVICE_WORKFLOWS.REQUEST:
             return Object.assign({}, state, {
                 workflowsByServiceID: {
                     ...state.workflowsByServiceID,
                     [action.serviceID]: {
                         isFetching: true,
-                        ...(state.workflowsByServiceID[action.serviceID] || {})
+                        ...(state.workflowsByServiceID[action.serviceID] || {workflows: null})
                     }
                 }
             });
 
-        case RECEIVE_SERVICE_WORKFLOWS:
+        case FETCH_SERVICE_WORKFLOWS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
                 workflowsByServiceID: {
@@ -212,6 +252,11 @@ export const serviceWorkflows = (
                         workflows: action.workflows
                     }
                 }
+            });
+
+        case FETCH_SERVICE_WORKFLOWS.ERROR:
+            return Object.assign({}, state, {
+                isFetching: false
             });
 
         default:
