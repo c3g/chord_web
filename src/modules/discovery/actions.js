@@ -39,14 +39,10 @@ export const fetchSearch = networkAction((service, dataTypeID, conditions) => ({
 }));
 
 
-export const performSearch = (serviceID, dataTypeID, conditions) => async (dispatch, getState) => {
-    // TODO: ONLY FETCH PREVIOUS STUFF IF NEEDED
+// TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
+export const performSearch = (service, dataTypeID, conditions) => async dispatch => {
     await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded());
-
-    // Perform search
-    // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
-
-    await dispatch(fetchSearch(getState().services.itemsByID[serviceID], dataTypeID, conditions));
+    await dispatch(fetchSearch(service, dataTypeID, conditions));
 };
 
 export const selectDiscoveryServiceDataType = (serviceID, dataTypeID) => ({

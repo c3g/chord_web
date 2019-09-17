@@ -68,7 +68,7 @@ class DiscoverySearchContent extends Component {
 
     handleSubmit(conditions) {
         if (this.props.dataType === null) return;
-        this.props.requestSearch(this.props.service.id, this.props.dataType.id, conditions);
+        this.props.requestSearch(this.props.service, this.props.dataType.id, conditions);
     }
 
     handleSearchSelect(searchIndex) {
@@ -255,7 +255,7 @@ const mapDispatchToProps = dispatch => ({
     toggleSchemaModal: () => dispatch(toggleDiscoverySchemaModal()),
     updateSearchForm: (serviceID, dataTypeID, fields) =>
         dispatch(updateDiscoverySearchForm(serviceID, dataTypeID, fields)),
-    requestSearch: (serviceID, dataTypeID, conditions) => dispatch(performSearch(serviceID, dataTypeID, conditions)),
+    requestSearch: (service, dataTypeID, conditions) => dispatch(performSearch(service, dataTypeID, conditions)),
     selectSearch: (serviceID, dataTypeID, searchIndex) => dispatch(selectSearch(serviceID, dataTypeID, searchIndex)),
 });
 
