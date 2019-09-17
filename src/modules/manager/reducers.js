@@ -62,8 +62,8 @@ export const projects = (
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isFetching: false,
-                items: action.projects.sort(projectSort),
-                itemsByID: Object.assign({}, ...action.projects.map(p => ({[p.id]: p}))),
+                items: action.data.sort(projectSort),
+                itemsByID: Object.fromEntries(action.data.map(p => [p.id, p])),
             });
 
         case FETCH_PROJECTS.ERROR:
@@ -81,10 +81,10 @@ export const projects = (
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isCreating: false,
-                items: [...state.items, action.project].sort(projectSort),
+                items: [...state.items, action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.project.id]: action.project
+                    [action.data.id]: action.data
                 }
             });
 
@@ -197,7 +197,7 @@ export const projectDatasets = (
                 isFetching: false,
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
-                    [action.projectID]: action.datasets
+                    [action.projectID]: action.data
                 }
             });
 
@@ -329,7 +329,7 @@ export const runs = (
         case FETCH_RUNS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                items: action.runs
+                items: action.data
             });
 
         case FETCH_RUNS.ERROR:
@@ -351,12 +351,12 @@ export const runs = (
         case FETCH_RUN_DETAILS.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.details.state} : i),
+                items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.data.state} : i),
                 itemDetails: {
                     ...state.itemDetails,
                     [action.runID]: {
                         isFetching: false,
-                        details: action.details
+                        details: action.data
                     }
                 }
             });

@@ -32,7 +32,7 @@ export const discovery = (
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...Object.assign({}, ...action.dataTypes.map(d => ({
+                        ...Object.assign({}, ...action.data.map(d => ({
                             [d.id]: (state.searchFormsByServiceAndDataTypeID[action.serviceID] || {})[d.id] || {}
                         })))
                     }
@@ -52,7 +52,7 @@ export const discovery = (
         case FETCH_SEARCH.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                searches: [...state.searches, action.results], // Add search to search history
+                searches: [...state.searches, action.data], // Add search to search history
                 searchesByServiceAndDataTypeID: {
                     ...state.searchesByServiceAndDataTypeID,
                     [action.serviceID]: {
@@ -60,7 +60,7 @@ export const discovery = (
                         [action.dataTypeID]: [
                             ...((state.searchesByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
                                 || []),
-                            action.results
+                            action.data
                         ]
                     }
                 },

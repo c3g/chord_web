@@ -40,8 +40,8 @@ export const services = (
         case FETCH_SERVICES.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                items: action.services,
-                itemsByID: Object.assign({}, state.itemsByID, ...action.services.map(s => ({[s.id]: s}))),
+                items: action.data,
+                itemsByID: Object.assign({}, state.itemsByID, ...action.data.map(s => ({[s.id]: s}))),
                 lastUpdated: action.receivedAt
             });
 
@@ -82,7 +82,7 @@ export const serviceMetadata = (
                 metadata: {
                     ...state.metadata,
                     [action.serviceID]: {
-                        metadata: action.metadata,
+                        metadata: action.data,
                         isFetching: false
                     }
                 },
@@ -130,8 +130,8 @@ export const serviceDataTypes = (
                 dataTypesByServiceID: {
                     ...state.dataTypesByServiceID,
                     [action.serviceID]: {
-                        items: action.dataTypes,
-                        itemsByID: Object.fromEntries(action.dataTypes.map(d => [d.id, d])),
+                        items: action.data,
+                        itemsByID: Object.fromEntries(action.data.map(d => [d.id, d])),
                         isFetching: false
                     }
                 },
@@ -185,7 +185,7 @@ export const serviceDatasets = (
                     [action.serviceID]: {
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
-                            datasets: action.datasets,
+                            datasets: action.data,
                             isFetching: false
                         }
                     }
@@ -271,7 +271,7 @@ export const serviceWorkflows = (
                     ...state.workflowsByServiceID,
                     [action.serviceID]: {
                         isFetching: false,
-                        workflows: action.workflows
+                        workflows: action.data
                     }
                 }
             });

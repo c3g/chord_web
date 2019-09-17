@@ -1,5 +1,8 @@
 import PropTypes from "prop-types";
 
+import fetch from "cross-fetch";
+import {message} from "antd";
+
 export const basicAction = t => () => ({type: t});
 
 export const createNetworkActionTypes = name => ({
@@ -7,6 +10,37 @@ export const createNetworkActionTypes = name => ({
     RECEIVE: `${name}.RECEIVE`,
     ERROR: `${name}.ERROR`
 });
+
+const _networkAction = (types, params, url, req = {}, err = null, aa = null) => async dispatch => {
+    await dispatch({type: types.REQUEST, ...params});
+    try {
+        const response = await fetch(url, req);
+
+        if (response.ok) {
+            const data = await response.json();
+            await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
+            if (aa) await dispatch(aa());
+        } else {
+            if (err) {
+                console.error(response, err);
+                message.error(err);
+            }
+            await dispatch({type: types.ERROR, ...params});
+        }
+    } catch (e) {
+        if (err) {
+            console.error(e, err);
+            message.error(err);
+        }
+        await dispatch({type: types.ERROR, ...params});
+    }
+};
+
+export const networkAction = fn => (...args) => {
+    const {types, params, url, req, err, afterAction} = fn(...args);
+    return _networkAction(types, params || {}, url, req || {}, err || null,
+        afterAction || null);
+};
 
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));

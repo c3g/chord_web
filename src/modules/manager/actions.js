@@ -3,7 +3,7 @@ import {message} from "antd";
 
 import {beginAddingServiceDataset, endAddingServiceDataset, terminateAddingServiceDataset} from "../services/actions";
 
-import {basicAction, createNetworkActionTypes} from "../../utils";
+import {basicAction, createNetworkActionTypes, networkAction} from "../../utils";
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 
@@ -43,17 +43,8 @@ export const BEGIN_INGESTION_RUN_SUBMISSION = "BEGIN_INGESTION_RUN_SUBMISSION";
 export const END_INGESTION_RUN_SUBMISSION = "END_INGESTION_RUN_SUBMISSION";
 
 
-const requestProjects = basicAction(FETCH_PROJECTS.REQUEST);
-const receiveProjects = projects => ({type: FETCH_PROJECTS.RECEIVE, projects});
-const handleProjectsError = basicAction(FETCH_PROJECTS.ERROR);
-
-
 const beginFetchingProjectDatasets = basicAction(BEGIN_FETCHING_PROJECT_DATASETS);
 const endFetchingProjectDatasets = basicAction(END_FETCHING_PROJECT_DATASETS);
-
-const requestProjectDatasets = projectID => ({type: FETCH_PROJECT_DATASETS.REQUEST, projectID});
-const receiveProjectDatasets = (projectID, datasets) => ({type: FETCH_PROJECT_DATASETS.RECEIVE, projectID, datasets});
-const handleProjectDatasetsError = projectID => ({type: FETCH_PROJECT_DATASETS.ERROR, projectID});
 
 
 const beginProjectCreation = basicAction(BEGIN_PROJECT_CREATION);
@@ -91,65 +82,22 @@ export const endProjectSave = project => ({type: END_PROJECT_SAVE, project});
 export const terminateProjectSave = project => ({type: TERMINATE_PROJECT_SAVE, project});
 
 
-const requestDropBoxTree = basicAction(FETCH_DROP_BOX_TREE.REQUEST);
-const receiveDropBoxTree = tree => ({type: FETCH_DROP_BOX_TREE.RECEIVE, tree});
-const handleDropBoxTreeError = basicAction(FETCH_DROP_BOX_TREE.ERROR);
-
-
-export const requestRuns = basicAction(FETCH_RUNS.REQUEST);
-export const receiveRuns = runs => ({type: FETCH_RUNS.RECEIVE, runs});
-export const handleRunsError = basicAction(FETCH_RUNS.ERROR);
-
-export const requestRunDetails = runID => ({type: FETCH_RUN_DETAILS.REQUEST, runID});
-export const receiveRunDetails = (runID, details) => ({type: FETCH_RUN_DETAILS.RECEIVE, runID, details});
-export const handleRunDetailsError = runID => ({type: FETCH_RUN_DETAILS.ERROR, runID});
-
-
 export const beginIngestionRunSubmission = basicAction(BEGIN_INGESTION_RUN_SUBMISSION);
 export const endIngestionRunSubmission = basicAction(END_INGESTION_RUN_SUBMISSION);
 
 
-export const fetchProjects = () => async dispatch => {
-    await dispatch(requestProjects());
+export const fetchProjects = networkAction(() => ({
+    types: FETCH_PROJECTS,
+    url: "/api/project/projects",
+    err: "Error fetching projects"
+}));
 
-    try {
-        const response = await fetch("/api/project/projects");
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveProjects(data));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(handleProjectsError());
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(handleProjectsError());
-    }
-};
-
-
-export const fetchProjectDatasets = project => async dispatch => {
-    await dispatch(requestProjectDatasets(project.id));
-
-    try {
-        const dsResponse = await fetch(`/api/project/projects/${project.id}/datasets`);
-        if (dsResponse.ok) {
-            const datasets = await dsResponse.json();
-            await dispatch(receiveProjectDatasets(project.id, datasets));
-        } else {
-            // TODO: GUI Error message
-            console.error(dsResponse);
-            await dispatch(handleProjectDatasetsError(project.id));
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(handleProjectDatasetsError(project.id));
-    }
-};
-
+export const fetchProjectDatasets = networkAction(project => ({
+    types: FETCH_PROJECT_DATASETS,
+    params: {projectID: project.id},
+    url: `/api/project/projects/${project.id}/datasets`,
+    err: `Error fetching datasets for project '${project.id}'`  // TODO: Use project name
+}));
 
 // TODO: if needed fetching + invalidation
 export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
@@ -302,68 +250,27 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
 
 
 // TODO: If needed
-export const fetchDropBoxTree = () => async dispatch => {
-    await dispatch(requestDropBoxTree());
-
-    try {
-        const response = await fetch(`/api/drop_box/tree`);
-        if (response.ok) {
-            const tree = await response.json();
-            await dispatch(receiveDropBoxTree(tree));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(handleDropBoxTreeError());
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(handleDropBoxTreeError());
-    }
-};
+export const fetchDropBoxTree = networkAction(() => ({
+    types: FETCH_DROP_BOX_TREE,
+    url: "/api/drop_box/tree",
+    err: "Error fetching drop box tree"  // TODO: More user-friendly error
+}));
 
 
 // TODO: If needed
-export const fetchRuns = () => async dispatch => {
-    await dispatch(requestRuns());
+export const fetchRuns = networkAction(() => ({
+    types: FETCH_RUNS,
+    url: "/api/wes/runs",
+    err: "Error fetching WES runs"
+}));
 
-    try {
-        const response = await fetch("/api/wes/runs");
-        if (response.ok) {
-            const runs = await response.json();
-            await dispatch(receiveRuns(runs));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(handleRunsError());
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(handleRunsError());
-    }
-};
+export const fetchRunDetails = networkAction(runID => ({
+    types: FETCH_RUN_DETAILS,
+    params: {runID},
+    url: `/api/wes/runs/${runID}`,
+    err: `Error fetching run details for run ${runID}`
+}));
 
-
-export const fetchRunDetails = runID => async dispatch => {
-    await dispatch(requestRunDetails(runID));
-
-    try {
-        const response = await fetch(`/api/wes/runs/${runID}`);
-        if (response.ok) {
-            const runDetails = await response.json();
-            await dispatch(receiveRunDetails(runID, runDetails));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(handleRunDetailsError(runID));
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(handleRunDetailsError(runID));
-    }
-};
 
 const RUN_DONE_STATES = ["COMPLETE", "EXECUTOR_ERROR", "SYSTEM_ERROR", "CANCELED"];
 

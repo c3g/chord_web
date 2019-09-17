@@ -1,7 +1,4 @@
-import fetch from "cross-fetch";
-import {message} from "antd";
-
-import {basicAction, createNetworkActionTypes} from "../../utils";
+import {basicAction, createNetworkActionTypes, networkAction} from "../../utils";
 
 export const BEGIN_LOADING_ALL_SERVICE_DATA = "BEGIN_LOADING_ALL_SERVICE_DATA";
 export const END_LOADING_ALL_SERVICE_DATA = "END_LOADING_ALL_SERVICE_DATA";
@@ -20,49 +17,9 @@ export const END_FETCHING_SERVICE_WORKFLOWS = "END_FETCHING_SERVICE_WORKFLOWS";
 
 export const FETCH_SERVICE_WORKFLOWS = createNetworkActionTypes("FETCH_SERVICE_WORKFLOWS");
 
+
 const beginLoadingAllServiceData = basicAction(BEGIN_LOADING_ALL_SERVICE_DATA);
 const endLoadingAllServiceData = basicAction(END_LOADING_ALL_SERVICE_DATA);
-
-const requestServices = basicAction(FETCH_SERVICES.REQUEST);
-const receiveServices = data => ({type: FETCH_SERVICES.RECEIVE, services: data, receivedAt: Date.now()});
-const handleServicesError = basicAction(FETCH_SERVICES.ERROR);
-
-const requestServiceMetadata = serviceID => ({type: FETCH_SERVICE_METADATA.REQUEST, serviceID});
-const receiveServiceMetadata = (serviceID, metadata) => ({
-    type: FETCH_SERVICE_METADATA.RECEIVE,
-    serviceID,
-    metadata,
-    receivedAt: Date.now()
-});
-const handleServiceMetadataError = serviceID => ({type: FETCH_SERVICE_METADATA.ERROR, serviceID});
-
-const requestServiceDataTypes = serviceID => ({type: FETCH_SERVICE_DATA_TYPES.REQUEST, serviceID});
-const receiveServiceDataTypes = (serviceID, dataTypes) => ({
-    type: FETCH_SERVICE_DATA_TYPES.RECEIVE,
-    serviceID,
-    dataTypes,
-    receivedAt: Date.now()
-});
-const handleServiceDataTypesError = serviceID => ({type: FETCH_SERVICE_DATA_TYPES.ERROR, serviceID});
-
-const requestServiceDatasets = (serviceID, dataTypeID) => ({
-    type: FETCH_SERVICE_DATASETS.RECEIVE,
-    serviceID,
-    dataTypeID
-});
-const receiveServiceDatasets = (serviceID, dataTypeID, datasets) => ({
-    type: FETCH_SERVICE_DATASETS.RECEIVE,
-    serviceID,
-    dataTypeID,
-    datasets,
-    receivedAt: Date.now()
-});
-const handleServiceDatasetsError = (serviceID, dataTypeID) => ({
-    type: FETCH_SERVICE_DATASETS.ERROR,
-    serviceID,
-    dataTypeID
-});
-
 
 export const beginAddingServiceDataset = basicAction(BEGIN_ADDING_SERVICE_DATASET);
 export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
@@ -73,124 +30,46 @@ export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
 });
 export const terminateAddingServiceDataset = basicAction(TERMINATE_ADDING_SERVICE_DATASET);
 
-
 const beginFetchingServiceWorkflows = basicAction(BEGIN_FETCHING_SERVICE_WORKFLOWS);
 const endFetchingServiceWorkflows = basicAction(END_FETCHING_SERVICE_WORKFLOWS);
 
-const requestServiceWorkflows = serviceID => ({type: FETCH_SERVICE_WORKFLOWS.REQUEST, serviceID});
-const receiveServiceWorkflows = (serviceID, workflows) => ({
-    type: FETCH_SERVICE_WORKFLOWS.RECEIVE,
-    serviceID,
-    workflows
+
+export const fetchServices = networkAction(() => ({
+    types: FETCH_SERVICES,
+    url: "/api/service_registry/services",
+    err: "Error fetching services"
+}));
+
+export const fetchServiceMetadata = networkAction(service => ({
+    types: FETCH_SERVICE_METADATA,
+    params: {serviceID: service.id},
+    url: `/api${service.url}/service-info`,
+    err: `Error contacting service '${service.name}'`
+}));
+
+export const fetchDataServiceDataTypes = networkAction(service => ({
+    types: FETCH_SERVICE_DATA_TYPES,
+    params: {serviceID: service.id},
+    url: `/api${service.url}/data-types`,
+    err: `Error fetching data types from service '${service.name}'`
+}));
+
+export const fetchDataServiceDataTypeDatasets = networkAction((service, dataType) => {
+    const params = new URLSearchParams();
+    params.set("data-type", dataType.id);
+    return {
+        types: FETCH_SERVICE_DATASETS,
+        params: {serviceID: service.id, dataTypeID: dataType.id},
+        url: `/api${service.url}/datasets?${params.toString()}`,
+        err: `Error fetching datasets from service '${service.name}' (data type ${dataType.id})`
+    };
 });
-const handleServiceWorkflowsError = serviceID => ({type: FETCH_SERVICE_WORKFLOWS.ERROR, serviceID});
 
-
-export const fetchServices = () => async dispatch => {
-    await dispatch(requestServices());
-    try {
-        const response = await fetch("/api/service_registry/services");
-
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveServices(data));
-        } else {
-            console.error(response);
-            message.error("Error fetching services");
-            await dispatch(handleServicesError());
-        }
-    } catch (e) {
-        console.error(e);
-        message.error("Error fetching services");
-        await dispatch(handleServicesError());
-    }
-};
-
-
-export const fetchServiceMetadata = service => async dispatch => {
-    await dispatch(requestServiceMetadata(service.id));
-    try {
-        const response = await fetch(`/api${service.url}/service-info`);
-
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveServiceMetadata(service.id, data));
-        } else {
-            console.error(response);
-            message.error(`Error contacting service '${service.name}'`);
-            await dispatch(handleServiceMetadataError(service.id));
-        }
-    } catch (e) {
-        console.error(e);
-        message.error(`Error contacting service '${service.name}'`);
-        await dispatch(handleServiceMetadataError(service.id));
-    }
-};
-
-
-export const fetchDataServiceDataTypes = service => async dispatch => {
-    await dispatch(requestServiceDataTypes(service.id));
-    try {
-        const response = await fetch(`/api${service.url}/data-types`);
-
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveServiceDataTypes(service.id, data));
-        } else {
-            console.error(response);
-            message.error(`Error fetching data types from service '${service.name}'`);
-            await dispatch(handleServiceDataTypesError(service.id));
-        }
-    } catch (e) {
-        console.error(e);
-        message.error(e);
-        await dispatch(handleServiceDataTypesError(service.id));
-    }
-};
-
-
-export const fetchDataServiceDataTypeDatasets = (service, dataType) => async dispatch => {
-    await dispatch(requestServiceDatasets(service.id, dataType.id));
-    try {
-        const params = new URLSearchParams();
-        params.set("data-type", dataType.id);
-
-        const response = await fetch(`/api${service.url}/datasets?${params.toString()}`);
-
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch(receiveServiceDatasets(service.id, dataType.id, data));
-        } else {
-            console.error(response);
-            message.error(`Error fetching datasets from service '${service.name}' (data type ${dataType.id})`);
-            await dispatch(handleServiceDatasetsError(service.id, dataType.id));
-        }
-    } catch (e) {
-        console.error(e);
-        message.error(e);
-        await dispatch(handleServiceDatasetsError(service.id, dataType.id));
-    }
-};
-
-
-export const fetchDataServiceWorkflows = service => async dispatch => {
-    await dispatch(requestServiceWorkflows(service.id));
-    try {
-        const response = await fetch(`/api${service.url}/workflows`);
-
-        if (response.ok) {
-            const workflows = await response.json();
-            await dispatch(receiveServiceWorkflows(service.id, workflows));
-        } else {
-            // Don't error; service may not have any workflows - TODO: yet another action?
-            await dispatch(handleServiceWorkflowsError(service.id));
-        }
-    } catch (e) {
-        console.error(e);
-        message.error(e);
-        await dispatch(handleServiceWorkflowsError(service.id));
-    }
-};
+export const fetchDataServiceWorkflows = networkAction(service => ({
+    types: FETCH_SERVICE_WORKFLOWS,
+    params: {serviceID: service.id},
+    url: `/api${service.url}/workflows`
+}));
 
 
 export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dispatch, getState) => {
