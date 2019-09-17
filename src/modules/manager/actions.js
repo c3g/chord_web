@@ -19,7 +19,7 @@ export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 export const FETCHING_PROJECT_DATASETS = createFlowActionTypes("FETCHING_PROJECT_DATASETS");
 export const FETCH_PROJECT_DATASETS = createNetworkActionTypes("FETCH_PROJECT_DATASETS");
 
-export const PROJECT_CREATION = createFlowActionTypes("PROJECT_CREATION");
+export const CREATE_PROJECT = createNetworkActionTypes("CREATE_PROJECT");
 export const DELETE_PROJECT = createNetworkActionTypes("DELETE_PROJECT");
 
 export const SELECT_PROJECT = "SELECT_PROJECT";
@@ -41,7 +41,6 @@ export const FETCH_RUN_DETAILS = createNetworkActionTypes("FETCH_RUN_DETAILS");
 export const INGESTION_RUN_SUBMISSION = createFlowActionTypes("INGESTION_RUN_SUBMISSION");
 
 
-const endProjectCreation = project => ({type: PROJECT_CREATION.END, project});
 const endProjectDatasetAddition = (projectID, dataset) => ({type: PROJECT_DATASET_ADDITION.END, projectID, dataset});
 
 
@@ -83,35 +82,23 @@ export const fetchProjectsWithDatasets = () => async (dispatch, getState) => {
     await dispatch(endFlow(FETCHING_PROJECT_DATASETS));
 };
 
-export const createProject = project => async (dispatch, getState) => {
-    // TODO: Need object response from POST
 
+const createProject = networkAction(project => ({
+    types: CREATE_PROJECT,
+    url: "/api/project/projects",
+    req: {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(project)
+    },
+    err: "Error creating project",
+    afterAction: data => async dispatch => await dispatch(selectProject(data.id))
+}));
+
+export const createProjectIfPossible = project => async (dispatch, getState) => {
+    // TODO: Need object response from POST (is this done??)
     if (getState().projects.isCreating) return;
-
-    await dispatch(beginFlow(PROJECT_CREATION));
-
-    try {
-        const response = await fetch("/api/project/projects", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(project)
-        });
-
-        if (response.ok) {
-            // Created
-            const data = await response.json();
-            await dispatch(endProjectCreation(data));
-            await dispatch(selectProject(data.id));
-        } else {
-            // TODO: GUI error message
-            console.error(response);
-            await dispatch(terminateFlow(PROJECT_CREATION));
-        }
-    } catch (e) {
-        // TODO: GUI error message
-        console.error(e);
-        await dispatch(terminateFlow(PROJECT_CREATION));
-    }
+    await dispatch(createProject(project));
 };
 
 export const deleteProject = networkAction(projectID => ({

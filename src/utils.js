@@ -26,7 +26,7 @@ const _networkAction = (types, params, url, req = {}, err = null, aa = null) => 
         if (response.ok) {
             const data = await response.json();
             await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
-            if (aa) await dispatch(aa());
+            if (aa) await dispatch(aa(data));
         } else {
             if (err) {
                 console.error(response, err);

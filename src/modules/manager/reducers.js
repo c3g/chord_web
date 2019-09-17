@@ -4,7 +4,7 @@ import {
     FETCHING_PROJECT_DATASETS,
     FETCH_PROJECT_DATASETS,
 
-    PROJECT_CREATION,
+    CREATE_PROJECT,
     DELETE_PROJECT,
 
     SELECT_PROJECT,
@@ -59,12 +59,12 @@ export const projects = (
             });
 
 
-        case PROJECT_CREATION.BEGIN:
+        case CREATE_PROJECT.REQUEST:
             return Object.assign({}, state, {
                 isCreating: true
             });
 
-        case PROJECT_CREATION.END:
+        case CREATE_PROJECT.RECEIVE:
             // noinspection JSCheckFunctionSignatures
             return Object.assign({}, state, {
                 isCreating: false,
@@ -75,7 +75,7 @@ export const projects = (
                 }
             });
 
-        case PROJECT_CREATION.TERMINATE:
+        case CREATE_PROJECT.ERROR:
             return Object.assign({}, state, {
                 isCreating: false
             });
@@ -142,12 +142,12 @@ export const projectDatasets = (
     action
 ) => {
     switch (action.type) {
-        case PROJECT_CREATION.END:
+        case CREATE_PROJECT.RECEIVE:
             // TODO: Might want to re-fetch upon project creation instead...
             return Object.assign({}, state, {
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
-                    [action.project.id]: []
+                    [action.data.id]: []
                 }
             });
 

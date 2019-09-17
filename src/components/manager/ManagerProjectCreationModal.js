@@ -9,7 +9,7 @@ import "antd/es/modal/style/css";
 
 import ProjectForm from "./ProjectForm";
 
-import {createProject, toggleProjectCreationModal} from "../../modules/manager/actions";
+import {createProjectIfPossible, toggleProjectCreationModal} from "../../modules/manager/actions";
 
 class ManagerProjectCreationModal extends Component {
     async componentDidMount() {
@@ -72,7 +72,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-    createProject: async project => await dispatch(createProject(project)),
+    createProject: async project => await dispatch(createProjectIfPossible(project)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManagerProjectCreationModal);
