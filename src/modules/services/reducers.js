@@ -3,10 +3,7 @@ import {
     END_LOADING_ALL_SERVICE_DATA,
 
     FETCH_SERVICES,
-
-    REQUEST_SERVICE_METADATA,
-    RECEIVE_SERVICE_METADATA,
-
+    FETCH_SERVICE_METADATA,
     FETCH_SERVICE_DATA_TYPES,
     FETCH_SERVICE_DATASETS,
 
@@ -60,23 +57,48 @@ export const services = (
 
 export const serviceMetadata = (
     state = {
-        isFetching: false,
+        isFetching: false,  // TODO: Network epic
         didInvalidate: false,
         metadata: {}
     },
     action
 ) => {
     switch (action.type) {
-        case REQUEST_SERVICE_METADATA:
+        case FETCH_SERVICE_METADATA.REQUEST:
             return Object.assign({}, state, {
                 isFetching: true,
+                metadata: {
+                    ...state.metadata,
+                    [action.serviceID]: {
+                        ...(state.metadata[action.serviceID] || {metadata: null}),
+                        isFetching: true
+                    }
+                }
             });
 
-        case RECEIVE_SERVICE_METADATA:
+        case FETCH_SERVICE_METADATA.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                metadata: action.metadata,
+                metadata: {
+                    ...state.metadata,
+                    [action.serviceID]: {
+                        metadata: action.metadata,
+                        isFetching: false
+                    }
+                },
                 lastUpdated: action.receivedAt
+            });
+
+        case FETCH_SERVICE_METADATA.ERROR:
+            return Object.assign({}, state, {
+                isFetching: true,
+                metadata: {
+                    ...state.metadata,
+                    [action.serviceID]: {
+                        ...(state.metadata[action.serviceID] || {metadata: null}),
+                        isFetching: false
+                    }
+                }
             });
 
         default:

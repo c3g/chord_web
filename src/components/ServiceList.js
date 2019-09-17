@@ -36,24 +36,8 @@ const columns = [
         title: "Status",
         dataIndex: "status",
         render: status => {
-            let statusText = "";
-            let color = "";
-            // TODO: ACCOUNT FOR LOADING?
-            switch (status) {
-                case false: // error returned
-                    statusText = "ERROR";
-                    color = "red";
-                    break;
-                case null:  // unknown, not in record
-                    statusText = "UNREACHABLE";
-                    color = "orange";
-                    break;
-                default: // reachable
-                    statusText = "HEALTHY";
-                    color = "green";
-                    break;
-            }
-
+            const statusText = status ? "HEALTHY" : "ERROR";
+            const color = status ? "green" : "red";
             return <Tag color={color}>{statusText}</Tag>;
         }
     }
@@ -64,9 +48,7 @@ const ServiceList = connect(
     state => ({
         dataSource: state.services.items.map(service => ({
             ...service,
-            status: state.serviceMetadata.metadata.hasOwnProperty(service.id)
-                ? state.serviceMetadata.metadata[service.id]
-                : null,
+            status: (state.serviceMetadata.metadata[service.id] || {metadata: null}).metadata || null,
             version: (state.serviceMetadata.metadata[service.id] || {version: "-"}).version
         })),
         columns,

@@ -7,10 +7,7 @@ export const BEGIN_LOADING_ALL_SERVICE_DATA = "BEGIN_LOADING_ALL_SERVICE_DATA";
 export const END_LOADING_ALL_SERVICE_DATA = "END_LOADING_ALL_SERVICE_DATA";
 
 export const FETCH_SERVICES = createNetworkActionTypes("FETCH_SERVICES");
-
-export const REQUEST_SERVICE_METADATA = "REQUEST_SERVICE_METADATA";
-export const RECEIVE_SERVICE_METADATA = "RECEIVE_SERVICE_METADATA";
-
+export const FETCH_SERVICE_METADATA = createNetworkActionTypes("FETCH_SERVICE_METADATA");
 export const FETCH_SERVICE_DATA_TYPES = createNetworkActionTypes("FETCH_SERVICE_DATA_TYPES");
 export const FETCH_SERVICE_DATASETS = createNetworkActionTypes("FETCH_SERVICE_DATASETS");
 
@@ -30,8 +27,14 @@ const requestServices = basicAction(FETCH_SERVICES.REQUEST);
 const receiveServices = data => ({type: FETCH_SERVICES.RECEIVE, services: data, receivedAt: Date.now()});
 const handleServicesError = basicAction(FETCH_SERVICES.ERROR);
 
-const requestServiceMetadata = () => ({type: REQUEST_SERVICE_METADATA});
-const receiveServiceMetadata = metadata => ({type: RECEIVE_SERVICE_METADATA, metadata, receivedAt: Date.now()});
+const requestServiceMetadata = serviceID => ({type: FETCH_SERVICE_METADATA.REQUEST, serviceID});
+const receiveServiceMetadata = (serviceID, metadata) => ({
+    type: FETCH_SERVICE_METADATA.RECEIVE,
+    serviceID,
+    metadata,
+    receivedAt: Date.now()
+});
+const handleServiceMetadataError = serviceID => ({type: FETCH_SERVICE_METADATA.ERROR, serviceID});
 
 const requestServiceDataTypes = serviceID => ({type: FETCH_SERVICE_DATA_TYPES.REQUEST, serviceID});
 const receiveServiceDataTypes = (serviceID, dataTypes) => ({
@@ -92,36 +95,36 @@ export const fetchServices = () => async dispatch => {
             const data = await response.json();
             await dispatch(receiveServices(data));
         } else {
-            message.error("Error fetching services");
             console.error(response);
+            message.error("Error fetching services");
             await dispatch(handleServicesError());
         }
     } catch (e) {
-        message.error("Error fetching services");
         console.error(e);
+        message.error("Error fetching services");
         await dispatch(handleServicesError());
     }
 };
 
 
-export const fetchServiceMetadata = () => async (dispatch, getState) => {
-    // TODO: This request/receive format doesn't make sense; there are multiple requests being made
+export const fetchServiceMetadata = service => async dispatch => {
+    await dispatch(requestServiceMetadata(service.id));
+    try {
+        const response = await fetch(`/api${service.url}/service-info`);
 
-    await dispatch(requestServiceMetadata());
-
-    const responses = await Promise.all(getState().services.items.map(service => (async () => {
-        try {
-            const r = await fetch(`/api${service.url}/service-info`);
-            return r.ok ? (await r.json()) : false;
-        } catch (e) {
-            console.error(e);
-            return null;  // Invalid or no response from service
+        if (response.ok) {
+            const data = await response.json();
+            await dispatch(receiveServiceMetadata(service.id, data));
+        } else {
+            console.error(response);
+            message.error(`Error contacting service '${service.name}'`);
+            await dispatch(handleServiceMetadataError(service.id));
         }
-    })()));
-
-    const serviceMetadata = Object.fromEntries(getState().services.items.map((s, i) => [s.id, responses[i]]));
-
-    await dispatch(receiveServiceMetadata(serviceMetadata));
+    } catch (e) {
+        console.error(e);
+        message.error(`Error contacting service '${service.name}'`);
+        await dispatch(handleServiceMetadataError(service.id));
+    }
 };
 
 
@@ -204,7 +207,7 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dis
     }
 
     // Fetch Service Metadata
-    await dispatch(fetchServiceMetadata());
+    await Promise.all(getState().services.items.map(s => dispatch(fetchServiceMetadata(s))));
 
     // Fetch other data (need metadata first):
 
