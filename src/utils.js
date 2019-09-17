@@ -45,7 +45,10 @@ export const workflowPropTypesShape = PropTypes.shape({
         id: PropTypes.string,
         extensions: PropTypes.arrayOf(PropTypes.string)  // File type only
     })),
-    outputs: PropTypes.arrayOf(PropTypes.string)  // TODO: This is going to change
+    outputs: PropTypes.arrayOf(PropTypes.shape({
+        type: PropTypes.string,
+        value: PropTypes.string
+    }))
 });
 
 // Any components which include workflowStateToPropsMixin should include this as well in their prop types.
