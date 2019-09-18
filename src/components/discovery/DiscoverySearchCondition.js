@@ -60,7 +60,7 @@ class DiscoverySearchCondition extends Component {
 
     triggerChange(change) {
         if (this.props.onChange) {
-            this.props.onChange(Object.assign({}, this.state, change));
+            this.props.onChange({...this.state, ...change});
         }
     }
 

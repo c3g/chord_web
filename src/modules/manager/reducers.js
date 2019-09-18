@@ -41,57 +41,48 @@ export const projects = (
 ) => {
     switch (action.type) {
         case FETCH_PROJECTS.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true
-            });
+            return {...state, isFetching: true};
 
         case FETCH_PROJECTS.RECEIVE:
-            // noinspection JSCheckFunctionSignatures
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 items: action.data.sort(projectSort),
                 itemsByID: Object.fromEntries(action.data.map(p => [p.id, p])),
-            });
+            };
 
         case FETCH_PROJECTS.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
 
         case CREATE_PROJECT.REQUEST:
-            return Object.assign({}, state, {
-                isCreating: true
-            });
+            return {...state, isCreating: true};
 
         case CREATE_PROJECT.RECEIVE:
-            // noinspection JSCheckFunctionSignatures
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isCreating: false,
                 items: [...state.items, action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.data.id]: action.data
                 }
-            });
+            };
 
         case CREATE_PROJECT.ERROR:
-            return Object.assign({}, state, {
-                isCreating: false
-            });
+            return {...state, isCreating: false};
 
 
         case DELETE_PROJECT.REQUEST:
-            return Object.assign({}, state, {
-                isDeleting: true
-            });
+            return {...state, isDeleting: true};
 
         case DELETE_PROJECT.RECEIVE:
-            let newState = Object.assign({}, state, {
+            let newState = {
+                ...state,
                 isDeleting: false,
                 items: state.items.filter(p => p.id !== action.projectID),
                 itemsByID: {...state.itemsByID}
-            });
+            };
 
             if (newState.itemsByID.hasOwnProperty(action.projectID)) {
                 delete newState.itemsByID[action.projectID];
@@ -100,31 +91,25 @@ export const projects = (
             return newState;
 
         case DELETE_PROJECT.ERROR:
-            return Object.assign({}, state, {
-                isDeleting: false
-            });
+            return {...state, isDeleting: false};
 
 
         case SAVE_PROJECT.REQUEST:
-            return Object.assign({}, state, {
-                isSaving: true
-            });
+            return {...state, isSaving: true};
 
         case SAVE_PROJECT.RECEIVE:
-            // noinspection JSCheckFunctionSignatures
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isSaving: false,
                 items: [...state.items.filter(p => p.id !== action.data.id), action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.data.id]: action.data
                 }
-            });
+            };
 
         case SAVE_PROJECT.ERROR:
-            return Object.assign({}, state, {
-                isSaving: false
-            });
+            return {...state, isSaving: false};
 
 
         default:
@@ -144,17 +129,19 @@ export const projectDatasets = (
     switch (action.type) {
         case CREATE_PROJECT.RECEIVE:
             // TODO: Might want to re-fetch upon project creation instead...
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
                     [action.data.id]: []
                 }
-            });
+            };
 
         case DELETE_PROJECT.RECEIVE:
-            let newState = Object.assign({}, state, {
-                itemsByProjectID: {...state.itemsByProjectID}
-            });
+            let newState = {
+                ...state,
+                itemsByProjectID: {...state.itemsByProjectID}  // One layer deeper with the copy to avoid mutation
+            };
 
             if (newState.itemsByProjectID.hasOwnProperty(action.projectID)) {
                 delete newState.itemsByProjectID[action.projectID];
@@ -163,54 +150,47 @@ export const projectDatasets = (
             return newState;
 
         case FETCHING_PROJECT_DATASETS.BEGIN:
-            return Object.assign({}, state, {
-                isFetchingAll: true
-            });
+            return {...state, isFetchingAll: true};
 
         case FETCHING_PROJECT_DATASETS.END:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 isFetchingAll: false
-            });
+            };
 
         case FETCH_PROJECT_DATASETS.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true
-            });
+            return {...state, isFetching: true};
 
         case FETCH_PROJECT_DATASETS.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
                     [action.projectID]: action.data
                 }
-            });
+            };
 
         case FETCH_PROJECT_DATASETS.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
         case PROJECT_DATASET_ADDITION.BEGIN:
-            return Object.assign({}, state, {
-                isAdding: true
-            });
+            return {...state, isAdding: true};
 
         case PROJECT_DATASET_ADDITION.END:
             // TODO
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isAdding: false,
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
                     [action.projectID]: [...(state.itemsByProjectID[action.projectID] || []), action.dataset]
                 }
-            });
+            };
 
         case PROJECT_DATASET_ADDITION.TERMINATE:
-            return Object.assign({}, state, {
-                isAdding: false
-            });
+            return {...state, isAdding: false};
 
         default:
             return state;
@@ -229,39 +209,28 @@ export const manager = (
 ) => {
     switch (action.type) {
         case SELECT_PROJECT:
-            return Object.assign({}, state, {
-                selectedProjectID: action.projectID
-            });
+            return {...state, selectedProjectID: action.projectID};
 
         case DELETE_PROJECT.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 selectedProjectID: state.selectedProjectID === action.projectID ? null : state.selectedProjectID
-            });
+            };
 
         case TOGGLE_PROJECT_CREATION_MODAL:
-            return Object.assign({}, state, {
-                projectCreationModal: !state.projectCreationModal
-            });
+            return {...state, projectCreationModal: !state.projectCreationModal};
 
         case TOGGLE_PROJECT_DELETION_MODAL:
-            return Object.assign({}, state, {
-                projectDeletionModal: !state.projectDeletionModal
-            });
+            return {...state, projectDeletionModal: !state.projectDeletionModal};
 
         case TOGGLE_PROJECT_DATASET_ADDITION_MODAL:
-            return Object.assign({}, state, {
-                projectDatasetCreationModal: !state.projectDatasetCreationModal
-            });
+            return {...state, projectDatasetCreationModal: !state.projectDatasetCreationModal};
 
         case PROJECT_EDITING.BEGIN:
-            return Object.assign({}, state, {
-                editingProject: true
-            });
+            return {...state, editingProject: true};
 
         case PROJECT_EDITING.END:
-            return Object.assign({}, state, {
-                editingProject: false
-            });
+            return {...state, editingProject: false};
 
         default:
             return state;
@@ -277,20 +246,17 @@ export const dropBox = (
 ) => {
     switch (action.type) {
         case FETCH_DROP_BOX_TREE.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true
-            });
+            return {...state, isFetching: true};
 
         case FETCH_DROP_BOX_TREE.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 tree: action.data
-            });
+            };
 
         case FETCH_DROP_BOX_TREE.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
         default:
             return state;
@@ -308,23 +274,21 @@ export const runs = (
 ) => {
     switch (action.type) {
         case FETCH_RUNS.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true,
-            });
+            return {...state, isFetching: true};
 
         case FETCH_RUNS.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 items: action.data
-            });
+            };
 
         case FETCH_RUNS.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false,
-            });
+            return {...state, isFetching: false};
 
         case FETCH_RUN_DETAILS.REQUEST:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 itemDetails: {
                     ...state.itemDetails,
                     [action.runID]: {
@@ -332,10 +296,11 @@ export const runs = (
                         details: (state.itemDetails[action.runID] || {details: null}).details
                     }
                 }
-            });
+            };
 
         case FETCH_RUN_DETAILS.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.data.state} : i),
                 itemDetails: {
@@ -345,10 +310,11 @@ export const runs = (
                         details: action.data
                     }
                 }
-            });
+            };
 
         case FETCH_RUN_DETAILS.ERROR:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 itemDetails: {
                     ...state.itemDetails,
                     [action.runID]: {
@@ -356,18 +322,14 @@ export const runs = (
                         details: (state.itemDetails[action.runID] || {details: null}).details
                     }
                 }
-            });
+            };
 
         case SUBMIT_INGESTION_RUN.REQUEST:
-            return Object.assign({}, state, {
-                isSubmittingIngestionRun: true
-            });
+            return {...state, isSubmittingIngestionRun: true};
 
         case SUBMIT_INGESTION_RUN.RECEIVE:  // TODO: Do something here
         case SUBMIT_INGESTION_RUN.ERROR:
-            return Object.assign({}, state, {
-                isSubmittingIngestionRun: false
-            });
+            return {...state, isSubmittingIngestionRun: false};
 
         default:
             return state;

@@ -31,8 +31,7 @@ class SchemaTreeSelect extends Component {
 
         // Update the change handler bound to the component
         if (this.props.onChange) {
-            this.props.onChange(Object.assign({}, this.state,
-                {selected, schema: getFieldSchema(this.props.schema, selected)}));
+            this.props.onChange({...this.state, selected, schema: getFieldSchema(this.props.schema, selected)});
         }
     }
 

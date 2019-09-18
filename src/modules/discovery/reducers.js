@@ -28,29 +28,24 @@ export const discovery = (
 ) => {
     switch (action.type) {
         case FETCH_SERVICE_DATA_TYPES.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
-                    [action.serviceID]: {
-                        ...Object.assign({}, ...action.data.map(d => ({
-                            [d.id]: (state.searchFormsByServiceAndDataTypeID[action.serviceID] || {})[d.id] || {}
-                        })))
-                    }
+                    [action.serviceID]: Object.fromEntries(action.data.map(d =>
+                        [d.id, (state.searchFormsByServiceAndDataTypeID[action.serviceID] || {})[d.id] || {}]))
                 }
-            });
+            };
 
         case TOGGLE_DISCOVERY_SCHEMA_MODAL:
-            return Object.assign({}, state, {
-                schemaModalShown: !state.schemaModalShown
-            });
+            return {...state, schemaModalShown: !state.schemaModalShown};
 
         case FETCH_SEARCH.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true
-            });
+            return {...state, isFetching: true};
 
         case FETCH_SEARCH.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 searches: [...state.searches, action.data], // Add search to search history
                 searchesByServiceAndDataTypeID: {
@@ -65,15 +60,14 @@ export const discovery = (
                     }
                 },
                 lastUpdated: action.receivedAt
-            });
+            };
 
         case FETCH_SEARCH.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
         case SELECT_SEARCH:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 selectedSearchByServiceAndDataTypeID: {
                     ...state.selectedSearchByServiceAndDataTypeID,
                     [action.serviceID]: {
@@ -81,22 +75,25 @@ export const discovery = (
                         [action.dataTypeID]: action.searchIndex
                     }
                 }
-            });
+            };
 
         case SELECT_DISCOVERY_SERVICE_DATA_TYPE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 selectedServiceID: action.serviceID,
                 selectedDataTypeID: action.dataTypeID
-            });
+            };
 
         case CLEAR_DISCOVERY_SERVICE_DATA_TYPE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 selectedServiceID: null,
                 selectedDataTypeID: null
-            });
+            };
 
         case UPDATE_DISCOVERY_SEARCH_FORM:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
                     [action.serviceID]: {
@@ -104,7 +101,7 @@ export const discovery = (
                         [action.dataTypeID]: simpleDeepCopy(action.fields) // TODO: Hack-y deep clone
                     }
                 }
-            });
+            };
 
         default:
             return state;

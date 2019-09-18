@@ -23,29 +23,26 @@ export const services = (
 ) => {
     switch (action.type) {
         case LOADING_ALL_SERVICE_DATA.BEGIN:
-            return Object.assign({}, state, {isFetchingAll: true});
+            return {...state, isFetchingAll: true};
 
         case LOADING_ALL_SERVICE_DATA.END:
         case LOADING_ALL_SERVICE_DATA.TERMINATE:
-            return Object.assign({}, state, {isFetchingAll: false});
+            return {...state, isFetchingAll: false};
 
         case FETCH_SERVICES.REQUEST:
-            return Object.assign({}, state, {
-                isFetching: true,
-            });
+            return {...state, isFetching: true};
 
         case FETCH_SERVICES.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 items: action.data,
                 itemsByID: Object.fromEntries(action.data.map(s => [s.id, s])),
                 lastUpdated: action.receivedAt
-            });
+            };
 
         case FETCH_SERVICES.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
         default:
             return state;
@@ -62,7 +59,8 @@ export const serviceMetadata = (
 ) => {
     switch (action.type) {
         case FETCH_SERVICE_METADATA.REQUEST:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: true,
                 metadata: {
                     ...state.metadata,
@@ -71,10 +69,11 @@ export const serviceMetadata = (
                         isFetching: true
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_METADATA.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 metadata: {
                     ...state.metadata,
@@ -84,10 +83,11 @@ export const serviceMetadata = (
                     }
                 },
                 lastUpdated: action.receivedAt
-            });
+            };
 
         case FETCH_SERVICE_METADATA.ERROR:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: true,
                 metadata: {
                     ...state.metadata,
@@ -96,7 +96,7 @@ export const serviceMetadata = (
                         isFetching: false
                     }
                 }
-            });
+            };
 
         default:
             return state;
@@ -112,7 +112,8 @@ export const serviceDataTypes = (
 ) => {
     switch (action.type) {
         case FETCH_SERVICE_DATA_TYPES.REQUEST:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 dataTypesByServiceID: {
                     ...state.dataTypesByServiceID,
                     [action.serviceID]: {
@@ -120,10 +121,11 @@ export const serviceDataTypes = (
                         isFetching: true
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_DATA_TYPES.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 dataTypesByServiceID: {
                     ...state.dataTypesByServiceID,
                     [action.serviceID]: {
@@ -133,10 +135,11 @@ export const serviceDataTypes = (
                     }
                 },
                 lastUpdated: action.receivedAt
-            });
+            };
 
         case FETCH_SERVICE_DATA_TYPES.ERROR:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 dataTypesByServiceID: {
                     ...state.dataTypesByServiceID,
                     [action.serviceID]: {
@@ -144,7 +147,7 @@ export const serviceDataTypes = (
                         isFetching: false
                     }
                 }
-            });
+            };
 
         default:
             return state;
@@ -161,7 +164,8 @@ export const serviceDatasets = (
 ) => {
     switch (action.type) {
         case FETCH_SERVICE_DATASETS.REQUEST:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 datasetsByServiceAndDataTypeID: {
                     ...state.datasetsByServiceAndDataTypeID,
                     [action.serviceID]: {
@@ -173,10 +177,11 @@ export const serviceDatasets = (
                         }
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_DATASETS.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 datasetsByServiceAndDataTypeID: {
                     ...state.datasetsByServiceAndDataTypeID,
                     [action.serviceID]: {
@@ -187,28 +192,30 @@ export const serviceDatasets = (
                         }
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_DATASETS.ERROR:
-            return Object.assign({}, state, {
-                ...state.datasetsByServiceAndDataTypeID,
-                [action.serviceID]: {
-                    ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
-                    [action.dataTypeID]: {
-                        ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                            || {datasets: null}),
-                        isFetching: false
+            return {
+                ...state,
+                datasetsByServiceAndDataTypeID: {
+                    ...state.datasetsByServiceAndDataTypeID,
+                    [action.serviceID]: {
+                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: {
+                            ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {datasets: null}),
+                            isFetching: false
+                        }
                     }
                 }
-            });
+            };
 
         case ADDING_SERVICE_DATASET.BEGIN:
-            return Object.assign({}, state, {
-                isCreating: true
-            });
+            return {...state, isCreating: true};
 
         case ADDING_SERVICE_DATASET.END:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isCreating: false,
                 datasetsByServiceAndDataTypeID: {
                     ...state.datasetsByServiceAndDataTypeID,
@@ -220,12 +227,10 @@ export const serviceDatasets = (
                         ]
                     }
                 }
-            });
+            };
 
         case ADDING_SERVICE_DATASET.TERMINATE:
-            return Object.assign({}, state, {
-                isCreating: false
-            });
+            return {...state, isCreating: false};
 
         default:
             return state;
@@ -241,18 +246,15 @@ export const serviceWorkflows = (
 ) => {
     switch (action.type) {
         case FETCHING_SERVICE_WORKFLOWS.BEGIN:
-            return Object.assign({}, state, {
-                isFetchingAll: true
-            });
+            return {...state, isFetchingAll: true};
 
         case FETCHING_SERVICE_WORKFLOWS.END:
         case FETCHING_SERVICE_WORKFLOWS.TERMINATE:
-            return Object.assign({}, state, {
-                isFetchingAll: false
-            });
+            return {...state, isFetchingAll: false};
 
         case FETCH_SERVICE_WORKFLOWS.REQUEST:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 workflowsByServiceID: {
                     ...state.workflowsByServiceID,
                     [action.serviceID]: {
@@ -260,10 +262,11 @@ export const serviceWorkflows = (
                         ...(state.workflowsByServiceID[action.serviceID] || {workflows: null})
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_WORKFLOWS.RECEIVE:
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 isFetching: false,
                 workflowsByServiceID: {
                     ...state.workflowsByServiceID,
@@ -272,12 +275,10 @@ export const serviceWorkflows = (
                         workflows: action.data
                     }
                 }
-            });
+            };
 
         case FETCH_SERVICE_WORKFLOWS.ERROR:
-            return Object.assign({}, state, {
-                isFetching: false
-            });
+            return {...state, isFetching: false};
 
         default:
             return state;
