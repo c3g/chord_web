@@ -18,41 +18,59 @@ export const createFlowActionTypes = name => ({
 });
 
 
-const _networkAction = (types, params, url, req = {}, err = null, aa = null) => async dispatch => {
-    await dispatch({type: types.REQUEST, ...params});
-    try {
-        const response = await fetch(url, req);
+const _networkAction = (fn, ...args) =>
+    async (dispatch, getState) => {
+        let fnResult = fn(...args);
+        if (typeof fnResult === "function") {
+            // Needs dispatch / getState, resolve those.
+            fnResult = fnResult(dispatch, getState);
+        }
 
-        if (response.ok) {
-            const data = await response.json();
-            await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
-            if (aa) await dispatch(aa(data));
-        } else {
+        const {types, params, url, req, err, afterAction, onSuccess} = fnResult;
+
+        await dispatch({type: types.REQUEST, ...params});
+        try {
+            const response = await fetch(url, req);
+
+            if (response.ok) {
+                const data = await response.json();
+                await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
+                if (afterAction) await dispatch(afterAction(data));
+                if (onSuccess) onSuccess(data);
+            } else {
+                if (err) {
+                    console.error(response, err);
+                    message.error(err);
+                }
+                await dispatch({type: types.ERROR, ...params});
+            }
+        } catch (e) {
             if (err) {
-                console.error(response, err);
+                console.error(e, err);
                 message.error(err);
             }
             await dispatch({type: types.ERROR, ...params});
         }
-    } catch (e) {
-        if (err) {
-            console.error(e, err);
-            message.error(err);
-        }
-        await dispatch({type: types.ERROR, ...params});
-    }
-};
+    };
 
-export const networkAction = fn => (...args) => {
-    const {types, params, url, req, err, afterAction} = fn(...args);
-    return _networkAction(types, params || {}, url, req || {}, err || null,
-        afterAction || null);
-};
+// Curried version
+export const networkAction = fn => (...args) => _networkAction(fn, ...args);
 
 
 export const beginFlow = types => async dispatch => await dispatch({type: types.BEGIN});
 export const endFlow = types => async dispatch => await dispatch({type: types.END});
 export const terminateFlow = types => async dispatch => await dispatch({type: types.TERMINATE});
+
+
+const SERIALIZED_TYPES = ["object", "array"];
+
+export const createFormData = obj => {
+    const formData = new FormData();
+    Object.entries(obj).forEach(([k, v]) => {
+        formData.append(k, (SERIALIZED_TYPES.includes(typeof v)) ? JSON.stringify(v) : v);
+    });
+    return formData;
+};
 
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));

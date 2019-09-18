@@ -23,7 +23,7 @@ import {
     FETCH_RUNS,
     FETCH_RUN_DETAILS,
 
-    INGESTION_RUN_SUBMISSION,
+    SUBMIT_INGESTION_RUN,
 } from "./actions";
 
 const projectSort = (a, b) => a.name.localeCompare(b.name);
@@ -358,12 +358,13 @@ export const runs = (
                 }
             });
 
-        case INGESTION_RUN_SUBMISSION.BEGIN:
+        case SUBMIT_INGESTION_RUN.REQUEST:
             return Object.assign({}, state, {
                 isSubmittingIngestionRun: true
             });
 
-        case INGESTION_RUN_SUBMISSION.END:
+        case SUBMIT_INGESTION_RUN.RECEIVE:  // TODO: Do something here
+        case SUBMIT_INGESTION_RUN.ERROR:
             return Object.assign({}, state, {
                 isSubmittingIngestionRun: false
             });
