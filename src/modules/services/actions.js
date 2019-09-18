@@ -1,3 +1,5 @@
+import {createURLSearchParams} from "../../utils";
+
 import {
     createNetworkActionTypes,
     createFlowActionTypes,
@@ -5,10 +7,9 @@ import {
 
     beginFlow,
     endFlow,
-    terminateFlow,
+    terminateFlow
+} from "../../utils/actions";
 
-    createURLSearchParams
-} from "../../utils";
 
 export const LOADING_ALL_SERVICE_DATA = createFlowActionTypes("LOADING_ALL_SERVICE_DATA");
 

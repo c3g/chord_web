@@ -1,4 +1,4 @@
-import {createNetworkActionTypes, networkAction} from "../../utils";
+import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 
 export const FETCH_RUNS = createNetworkActionTypes("FETCH_RUNS");
 export const FETCH_RUN_DETAILS = createNetworkActionTypes("FETCH_RUN_DETAILS");

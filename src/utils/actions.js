@@ -1,0 +1,63 @@
+import fetch from "cross-fetch";
+import {message} from "antd";
+
+import "antd/es/message/style/css";
+
+
+export const basicAction = t => () => ({type: t});
+
+export const createNetworkActionTypes = name => ({
+    REQUEST: `${name}.REQUEST`,
+    RECEIVE: `${name}.RECEIVE`,
+    ERROR: `${name}.ERROR`
+});
+
+export const createFlowActionTypes = name => ({
+    BEGIN: `${name}.BEGIN`,
+    END: `${name}.END`,
+    TERMINATE: `${name}.TERMINATE`
+});
+
+
+const _networkAction = (fn, ...args) =>
+    async (dispatch, getState) => {
+        let fnResult = fn(...args);
+        if (typeof fnResult === "function") {
+            // Needs dispatch / getState, resolve those.
+            fnResult = fnResult(dispatch, getState);
+        }
+
+        const {types, params, url, req, err, afterAction, onSuccess} = fnResult;
+
+        await dispatch({type: types.REQUEST, ...params});
+        try {
+            const response = await fetch(url, req);
+
+            if (response.ok) {
+                const data = await response.json();
+                await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
+                if (afterAction) await dispatch(afterAction(data));
+                if (onSuccess) onSuccess(data);
+            } else {
+                if (err) {
+                    console.error(response, err);
+                    message.error(err);
+                }
+                await dispatch({type: types.ERROR, ...params});
+            }
+        } catch (e) {
+            if (err) {
+                console.error(e, err);
+                message.error(err);
+            }
+            await dispatch({type: types.ERROR, ...params});
+        }
+    };
+
+// Curried version
+export const networkAction = fn => (...args) => _networkAction(fn, ...args);
+
+
+export const beginFlow = types => async dispatch => await dispatch({type: types.BEGIN});
+export const endFlow = types => async dispatch => await dispatch({type: types.END});
+export const terminateFlow = types => async dispatch => await dispatch({type: types.TERMINATE});

@@ -3,6 +3,8 @@ import {message} from "antd";
 
 import {ADDING_SERVICE_DATASET, endAddingServiceDataset} from "../services/actions";
 
+import {createFormData} from "../../utils";
+
 import {
     basicAction,
     createNetworkActionTypes,
@@ -12,9 +14,8 @@ import {
     beginFlow,
     endFlow,
     terminateFlow,
+} from "../../utils/actions"
 
-    createFormData
-} from "../../utils";
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 

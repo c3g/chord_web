@@ -1,6 +1,7 @@
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../services/actions";
 
-import {basicAction, createNetworkActionTypes, networkAction} from "../../utils"
+import {basicAction, createNetworkActionTypes, networkAction} from "../../utils/actions"
+
 
 export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
 
