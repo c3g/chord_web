@@ -17,12 +17,8 @@ import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
-import {
-    fetchDropBoxTree,
-    fetchProjectsWithDatasets,
-    fetchRunDetailsIfNeeded,
-    fetchRuns
-} from "../modules/manager/actions";
+import {fetchProjectsWithDatasets, fetchDropBoxTree} from "../modules/manager/actions";
+import {fetchRuns, fetchRunDetailsIfNeeded} from "../modules/wes/actions";
 
 const renderContent = Content => route => (
     <>

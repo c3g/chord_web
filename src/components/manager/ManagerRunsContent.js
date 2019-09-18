@@ -8,7 +8,7 @@ import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
-import {fetchRunDetailsIfNeeded} from "../../modules/manager/actions";
+import {fetchRunDetailsIfNeeded} from "../../modules/wes/actions";
 
 const RUN_STATE_TAG_COLORS = {
     UNKNOWN: "",

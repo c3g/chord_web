@@ -21,7 +21,7 @@ import WorkflowListItem from "./WorkflowListItem";
 
 import {simpleDeepCopy} from "../../utils";
 
-import {submitIngestionWorkflowRun} from "../../modules/manager/actions";
+import {submitIngestionWorkflowRun} from "../../modules/wes/actions";
 
 import {
     dropBoxTreeStateToPropsMixin,
