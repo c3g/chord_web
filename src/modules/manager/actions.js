@@ -160,35 +160,42 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
         if (serviceResponse.ok) {
             const serviceDataset = await serviceResponse.json();
 
-            const projectResponse = await fetch(`/api/project/projects/${projectID}/datasets`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    dataset_id: serviceDataset.id,
-                    service_id: serviceID,
-                    data_type_id: dataTypeID
-                })
-            });
+            try {
+                const projectResponse = await fetch(`/api/project/projects/${projectID}/datasets`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        dataset_id: serviceDataset.id,
+                        service_id: serviceID,
+                        data_type_id: dataTypeID
+                    })
+                });
 
-            if (projectResponse.ok) {
-                // TODO: GUI success message
-                const projectDataset = await projectResponse.json();
-                await dispatch(endAddingServiceDataset(serviceID, dataTypeID, serviceDataset));
-                await dispatch(endProjectDatasetAddition(projectID, projectDataset));
-            } else {
-                // TODO: Delete previously-created dataset
-                // TODO: GUI error message
-                console.error(projectResponse);
+                if (projectResponse.ok) {
+                    // TODO: GUI success message
+                    message.success("Dataset added!");
+                    const projectDataset = await projectResponse.json();
+                    await dispatch(endAddingServiceDataset(serviceID, dataTypeID, serviceDataset));
+                    await dispatch(endProjectDatasetAddition(projectID, projectDataset));
+                } else {
+                    // TODO: Delete previously-created service dataset
+                    message.error(`Error adding new dataset '${datasetName}'`);
+                    console.error(projectResponse);
+                    await terminate();
+                }
+            } catch (e) {
+                // TODO: Delete previously-created service dataset
+                message.error(`Error adding new dataset '${datasetName}'`);
+                console.error(e);
                 await terminate();
             }
         } else {
-            // TODO: GUI error message
+            message.error(`Error adding new dataset '${datasetName}'`);
             console.error(serviceResponse);
             await terminate();
         }
     } catch (e) {
-        // TODO: Delete previously-created dataset if needed, or add another try-catch level
-        // TODO: GUI error message
+        message.error(`Error adding new dataset '${datasetName}'`);
         console.error(e);
         await terminate();
     }
