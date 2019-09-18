@@ -284,7 +284,7 @@ export const dropBox = (
         case FETCH_DROP_BOX_TREE.RECEIVE:
             return Object.assign({}, state, {
                 isFetching: false,
-                tree: action.tree
+                tree: action.data
             });
 
         case FETCH_DROP_BOX_TREE.ERROR:
