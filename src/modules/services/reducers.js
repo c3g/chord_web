@@ -1,18 +1,14 @@
 import {
-    BEGIN_LOADING_ALL_SERVICE_DATA,
-    END_LOADING_ALL_SERVICE_DATA,
+    LOADING_ALL_SERVICE_DATA,
 
     FETCH_SERVICES,
     FETCH_SERVICE_METADATA,
     FETCH_SERVICE_DATA_TYPES,
     FETCH_SERVICE_DATASETS,
 
-    BEGIN_ADDING_SERVICE_DATASET,
-    END_ADDING_SERVICE_DATASET,
-    TERMINATE_ADDING_SERVICE_DATASET,
+    ADDING_SERVICE_DATASET,
 
-    BEGIN_FETCHING_SERVICE_WORKFLOWS,
-    END_FETCHING_SERVICE_WORKFLOWS,
+    FETCHING_SERVICE_WORKFLOWS,
     FETCH_SERVICE_WORKFLOWS
 } from "./actions";
 
@@ -26,10 +22,11 @@ export const services = (
     action
 ) => {
     switch (action.type) {
-        case BEGIN_LOADING_ALL_SERVICE_DATA:
+        case LOADING_ALL_SERVICE_DATA.BEGIN:
             return Object.assign({}, state, {isFetchingAll: true});
 
-        case END_LOADING_ALL_SERVICE_DATA:
+        case LOADING_ALL_SERVICE_DATA.END:
+        case LOADING_ALL_SERVICE_DATA.TERMINATE:
             return Object.assign({}, state, {isFetchingAll: false});
 
         case FETCH_SERVICES.REQUEST:
@@ -41,7 +38,7 @@ export const services = (
             return Object.assign({}, state, {
                 isFetching: false,
                 items: action.data,
-                itemsByID: Object.assign({}, state.itemsByID, ...action.data.map(s => ({[s.id]: s}))),
+                itemsByID: Object.fromEntries(action.data.map(s => [s.id, s])),
                 lastUpdated: action.receivedAt
             });
 
@@ -205,12 +202,12 @@ export const serviceDatasets = (
                 }
             });
 
-        case BEGIN_ADDING_SERVICE_DATASET:
+        case ADDING_SERVICE_DATASET.BEGIN:
             return Object.assign({}, state, {
                 isCreating: true
             });
 
-        case END_ADDING_SERVICE_DATASET:
+        case ADDING_SERVICE_DATASET.END:
             return Object.assign({}, state, {
                 isCreating: false,
                 datasetsByServiceAndDataTypeID: {
@@ -225,7 +222,7 @@ export const serviceDatasets = (
                 }
             });
 
-        case TERMINATE_ADDING_SERVICE_DATASET:
+        case ADDING_SERVICE_DATASET.TERMINATE:
             return Object.assign({}, state, {
                 isCreating: false
             });
@@ -243,12 +240,13 @@ export const serviceWorkflows = (
     action
 ) => {
     switch (action.type) {
-        case BEGIN_FETCHING_SERVICE_WORKFLOWS:
+        case FETCHING_SERVICE_WORKFLOWS.BEGIN:
             return Object.assign({}, state, {
                 isFetchingAll: true
             });
 
-        case END_FETCHING_SERVICE_WORKFLOWS:
+        case FETCHING_SERVICE_WORKFLOWS.END:
+        case FETCHING_SERVICE_WORKFLOWS.TERMINATE:
             return Object.assign({}, state, {
                 isFetchingAll: false
             });

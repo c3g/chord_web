@@ -1,7 +1,7 @@
 import fetch from "cross-fetch";
 import {message} from "antd";
 
-import {beginAddingServiceDataset, endAddingServiceDataset, terminateAddingServiceDataset} from "../services/actions";
+import {ADDING_SERVICE_DATASET, endAddingServiceDataset} from "../services/actions";
 
 import {
     basicAction,
@@ -145,10 +145,10 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
     if (getState().projectDatasets.isAdding) return;
 
     await dispatch(beginFlow(PROJECT_DATASET_ADDITION));
-    await dispatch(beginAddingServiceDataset());
+    await dispatch(beginFlow(ADDING_SERVICE_DATASET));
 
     const terminate = async () => {
-        await dispatch(terminateAddingServiceDataset());
+        await dispatch(terminateFlow(ADDING_SERVICE_DATASET));
         await dispatch(terminateFlow(PROJECT_DATASET_ADDITION));
     };
 
