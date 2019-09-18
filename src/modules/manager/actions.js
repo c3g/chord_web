@@ -45,7 +45,6 @@ export const SUBMIT_INGESTION_RUN = createNetworkActionTypes("SUBMIT_INGESTION_R
 
 const endProjectDatasetAddition = (projectID, dataset) => ({type: PROJECT_DATASET_ADDITION.END, projectID, dataset});
 
-
 const selectProject = projectID => ({type: SELECT_PROJECT, projectID});
 
 export const selectProjectIfItExists = projectID => async (dispatch, getState) => {
@@ -60,6 +59,7 @@ export const toggleProjectDatasetAdditionModal = basicAction(TOGGLE_PROJECT_DATA
 
 export const beginProjectEditing = basicAction(PROJECT_EDITING.BEGIN);
 export const endProjectEditing = basicAction(PROJECT_EDITING.END);
+
 
 export const fetchProjects = networkAction(() => ({
     types: FETCH_PROJECTS,
@@ -153,12 +153,9 @@ export const addProjectDataset = (projectID, serviceID, dataTypeID, datasetName)
     };
 
     try {
-        const formData = new FormData();
-        formData.append("name", datasetName.trim());
-
         const serviceResponse = await fetch(
             `/api/${getState().services.itemsByID[serviceID].name}/datasets?data-type=${dataTypeID}`,
-            {method: "POST", body: formData});
+            {method: "POST", body: createFormData({name: datasetName.trim()})});
 
         if (serviceResponse.ok) {
             const serviceDataset = await serviceResponse.json();
