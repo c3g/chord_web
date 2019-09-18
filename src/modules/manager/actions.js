@@ -94,7 +94,8 @@ const createProject = networkAction(project => ({
         body: JSON.stringify(project)
     },
     err: "Error creating project",
-    afterAction: data => async dispatch => await dispatch(selectProject(data.id))
+    afterAction: data => async dispatch => await dispatch(selectProject(data.id)),
+    onSuccess: data => message.success(`Project '${data.name}' created!`)
 }));
 
 export const createProjectIfPossible = project => async (dispatch, getState) => {
@@ -108,7 +109,8 @@ export const deleteProject = networkAction(projectID => ({
     params: {projectID},
     url: `/api/project/projects/${projectID}`,
     req: {method: "DELETE"},
-    err: `Error deleting project '${projectID}'`  // TODO: More user-friendly error
+    err: `Error deleting project '${projectID}'`,  // TODO: More user-friendly error
+    onSuccess: () => message.success("Project deleted!")  // TODO: More user-friendly error
 }));  // TODO: Fix project selection afterwards
 
 export const deleteProjectIfPossible = projectID => async (dispatch, getState) => {
@@ -127,8 +129,9 @@ const saveProject = networkAction(project => ({
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(project)
     },
-    err: `Error saving project '${project.id}'`,  // TODO: More user-friendly error
-    afterAction: () => async dispatch => dispatch(endProjectEditing())
+    err: `Error saving project '${project.name}'`,  // TODO: More user-friendly error
+    afterAction: () => async dispatch => dispatch(endProjectEditing()),
+    onSuccess: () => message.success(`Project '${project.name}' saved!`)
 }));
 
 export const saveProjectIfPossible = project => async (dispatch, getState) => {
