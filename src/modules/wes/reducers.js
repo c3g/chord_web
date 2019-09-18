@@ -1,8 +1,4 @@
-import {
-    FETCH_RUN_DETAILS,
-    FETCH_RUNS,
-    SUBMIT_INGESTION_RUN
-} from "./actions";
+import {FETCH_RUN_DETAILS, FETCH_RUNS, SUBMIT_INGESTION_RUN} from "./actions";
 
 export const runs = (
     state = {
