@@ -30,7 +30,7 @@ export const fetchSearch = networkAction((service, dataTypeID, conditions) => ({
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},  // TODO: Real GA4GH headers
-        body: JSON.stringify({dataTypeID, conditions: [...conditions]})
+        body: JSON.stringify({dataTypeID, conditions})
     },
     err: "Search returned an error",  // TODO: Better search errors
     afterAction: () => async (dispatch, getState) =>
