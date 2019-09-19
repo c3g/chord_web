@@ -15,6 +15,7 @@ import DataManagerContent from "./DataManagerContent";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasets} from "../modules/services/actions";
 
+// noinspection HtmlUnknownTarget
 const renderContent = Content => route => (
     <Layout style={{minHeight: "100vh"}}>
         <Layout.Header>
@@ -48,8 +49,11 @@ const renderContent = Content => route => (
                 <Content />
             </Layout.Content>
             <Layout.Footer style={{textAlign: "center"}}>
-                CHORD <br />
-                Copyright &copy; 2019 the Canadian Centre for Computational Genomics
+                Copyright &copy; 2019
+                the <a href="http://computationalgenomics.ca">Canadian Centre for Computational Genomics</a>. <br />
+                <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
+                the <a href="/LICENSE.txt">LGPLv3</a>. The source code is
+                available <a href="https://bitbucket.org/genap/chord_web">on BitBucket</a>.
             </Layout.Footer>
         </Layout>
     </Layout>

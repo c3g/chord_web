@@ -10,7 +10,7 @@
     "build-dev": "npx webpack --mode development"
   },
   "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
-  "license": "MIT",
+  "license": "LGPLv3",
   "dependencies": {
     "antd": "^3.23.3",
     "cross-fetch": "^3.0.4",
