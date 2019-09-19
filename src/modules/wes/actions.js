@@ -1,3 +1,7 @@
+import {message} from "antd";
+
+import "antd/es/message/style/css";
+
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 import {createFormData} from "../../utils/requests";
 

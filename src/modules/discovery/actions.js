@@ -23,7 +23,6 @@ export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
 });
 
 
-// noinspection JSUnusedGlobalSymbols
 export const fetchSearch = networkAction((service, dataTypeID, conditions) => ({
     types: FETCH_SEARCH,
     params: {serviceID: service.id, dataTypeID},

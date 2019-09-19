@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));
 
+
 // Gives components which include this in their state to props connection access to the drop box and loading status.
 export const dropBoxTreeStateToPropsMixin = state => ({
     tree: state.dropBox.tree,
@@ -17,6 +18,7 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
     })),  // TODO: This is going to change
     treeLoading: PropTypes.bool
 };
+
 
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({

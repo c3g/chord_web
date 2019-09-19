@@ -100,6 +100,7 @@ export const createProjectIfPossible = project => async (dispatch, getState) => 
     await dispatch(createProject(project));
 };
 
+
 export const deleteProject = networkAction(projectID => ({
     types: DELETE_PROJECT,
     params: {projectID},
@@ -115,6 +116,7 @@ export const deleteProjectIfPossible = projectID => async (dispatch, getState) =
 
     // TODO: Do we need to delete project datasets as well? What to do here??
 };
+
 
 const saveProject = networkAction(project => ({
     types: SAVE_PROJECT,
