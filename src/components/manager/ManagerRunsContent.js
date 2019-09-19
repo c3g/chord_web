@@ -44,6 +44,7 @@ class ManagerRunsContent extends Component {
     }
 
     render() {
+        const renderDate = date => date === "" ? "" : new Date(Date.parse(date)).toLocaleString("en-CA");
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -52,9 +53,9 @@ class ManagerRunsContent extends Component {
                         <Table.Column title="Run ID" dataIndex="run_id" />
                         <Table.Column title="Purpose" dataIndex="purpose" width={120} />
                         <Table.Column title="Name" dataIndex="name" />
-                        <Table.Column title="Started" dataIndex="start_time" />
-                        <Table.Column title="Ended" dataIndex="end_time" />
-                        <Table.Column title="State" dataIndex="state" width={160}
+                        <Table.Column title="Started" dataIndex="start_time" width={205} render={renderDate}/>
+                        <Table.Column title="Ended" dataIndex="end_time" width={205} render={renderDate} />
+                        <Table.Column title="State" dataIndex="state" width={150}
                                       render={state => <Tag color={RUN_STATE_TAG_COLORS[state]}>{state}</Tag>} />
                     </Table>
                 </Layout.Content>
