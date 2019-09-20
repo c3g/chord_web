@@ -31,21 +31,18 @@ import {
     workflowsStateToPropsMixinPropTypes
 } from "../../utils";
 
+import {
+    FORM_LABEL_COL,
+    FORM_WRAPPER_COL,
+    FORM_BUTTON_COL
+} from "./ingestion";
+
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
 
 const STEP_WORKFLOW_SELECTION = 0;
 const STEP_INPUT = 1;
 const STEP_CONFIRM = 2;
-
-const FORM_LABEL_COL = {md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}};
-const FORM_WRAPPER_COL = {md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}};
-const FORM_BUTTON_COL = {
-    md: {span: 24},
-    lg: {offset: 4, span: 16},
-    xl: {offset: 6, span: 12},
-    xxl: {offset: 8, span: 8}
-};
 
 class ManagerIngestionContent extends Component {
     constructor(props) {

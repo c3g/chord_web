@@ -9,6 +9,13 @@ import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 import "antd/es/tree-select/style/css";
 
+import {
+    FORM_LABEL_COL,
+    FORM_WRAPPER_COL,
+    FORM_BUTTON_COL
+} from "./ingestion";
+
+
 const generateFileTree = (directory, valid) => directory.map(entry =>
     <TreeSelect.TreeNode title={entry.name} key={entry.path} value={entry.path} disabled={!valid(entry)}
                          isLeaf={!entry.hasOwnProperty("contents")}
@@ -69,9 +76,7 @@ class IngestionInputForm extends Component {
 
     render() {
         return (
-            <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}}}
-                  wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}}}
-                  onSubmit={this.handleSubmit}>
+            <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL} onSubmit={this.handleSubmit}>
                 {[
                     ...this.props.workflow.inputs.map(i => (
                         <Form.Item label={i.id} key={i.id}>
@@ -81,12 +86,7 @@ class IngestionInputForm extends Component {
                         </Form.Item>
                     )),
 
-                    <Form.Item key="_submit" wrapperCol={{
-                        md: {span: 24},
-                        lg: {offset: 4, span: 16},
-                        xl: {offset: 6, span: 12},
-                        xxl: {offset: 8, span: 8}
-                    }}>
+                    <Form.Item key="_submit" wrapperCol={FORM_BUTTON_COL}>
                         {this.onBack ? <Button icon="left" onClick={() => this.onBack()}>Back</Button> : null}
                         <Button type="primary" htmlType="submit" style={{float: "right"}}>
                             Next <Icon type="right" />
@@ -100,13 +100,8 @@ class IngestionInputForm extends Component {
 
 export default Form.create({
     name: "ingestion_input_form",
-    mapPropsToFields: ({workflow, formValues}) => {
-        const fields = {};
-        workflow.inputs.forEach(i => {
-            fields[i.id] = Form.createFormField({...formValues[i.id]});
-        });
-        return fields;
-    },
+    mapPropsToFields: ({workflow, formValues}) =>
+        Object.fromEntries(workflow.inputs.map(i => [i.id, Form.createFormField({...formValues[i.id]})])),
     onFieldsChange: ({onChange}, _, allFields) => {
         onChange({...allFields});
     }
