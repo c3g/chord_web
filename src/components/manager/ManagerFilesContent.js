@@ -20,6 +20,11 @@ import {
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
+const generateFileTree = directory => directory.map(entry =>
+    <Tree.TreeNode title={entry.name} key={entry.path} isLeaf={!entry.hasOwnProperty("contents")}>
+        {(entry || {contents: []}).contents ? generateFileTree(entry.contents) : null}
+    </Tree.TreeNode>);
+
 class ManagerFilesContent extends Component {
     constructor(props) {
         super(props);
@@ -80,7 +85,7 @@ class ManagerFilesContent extends Component {
 
         // TODO: support directories as well
         // TODO: Loading for files...
-        const files = this.props.tree.map(f => <Tree.TreeNode title={f.name} key={f.path} isLeaf={true} />);
+        const files = generateFileTree(this.props.tree);
 
         return (
             <Layout>
