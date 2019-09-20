@@ -116,7 +116,9 @@ class ManagerIngestionContent extends Component {
                         {(this.props.projectDatasets[p.id] || []).map(d => (
                             <Select.Option key={d.dataset_id} value={d.dataset_id}>
                                 <Tag style={{marginRight: "1em"}}>{d.data_type_id}</Tag>
-                                {d.dataset_id} {/* TODO: Dataset name if available */}
+                                {`${((((this.props.datasetsByServiceAndDataTypeID[d.service_id] || {})[d.data_type_id]
+                                    || {}).datasetsByID || {})[d.dataset_id] || {}).name} (${d.dataset_id})`
+                                || d.dataset_id}
                             </Select.Option>
                         ))}
                     </Select.OptGroup>
@@ -232,6 +234,7 @@ const mapStateToProps = state => ({
     ...workflowsStateToPropsMixin(state),
     projects: state.projects.items,
     projectDatasets: state.projectDatasets.itemsByProjectID,
+    datasetsByServiceAndDataTypeID: state.serviceDatasets.datasetsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun
 });
 
