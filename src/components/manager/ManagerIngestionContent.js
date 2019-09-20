@@ -110,11 +110,11 @@ class ManagerIngestionContent extends Component {
                         {(this.props.projectDatasets[p.id] || []).map(d => (
                             <Select.Option key={d.dataset_id} value={d.dataset_id}>
                                 <Tag style={{marginRight: "1em"}}>{d.data_type_id}</Tag>
-                                {d.dataset_id}
+                                {d.dataset_id} {/* TODO: Dataset name if available */}
                             </Select.Option>
                         ))}
                     </Select.OptGroup>
-                ));  // TODO: dataset name if available
+                ));
 
                 const workflows = this.props.workflows
                     .filter(w => w.data_types.includes(
@@ -127,10 +127,10 @@ class ManagerIngestionContent extends Component {
                     ));
 
                 stepContents = (
-                    <>
+                    <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}}}
+                          wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}}}>
                         <Form.Item label="Dataset">
-                            <Select style={{minWidth: "388px"}}
-                                    onChange={dataset => this.setState({selectedDataset: dataset})}
+                            <Select onChange={dataset => this.setState({selectedDataset: dataset})}
                                     value={this.state.selectedDataset}>{selectContents}</Select>
                         </Form.Item>
                         <Form.Item label="Workflows">
@@ -144,7 +144,7 @@ class ManagerIngestionContent extends Component {
                                          description="Select a dataset to see available workflows" />
                             }
                         </Form.Item>
-                    </>
+                    </Form>
                 );
 
                 break;
