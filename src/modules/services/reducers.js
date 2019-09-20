@@ -172,7 +172,7 @@ export const serviceDatasets = (
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {datasets: null}),
+                                || {datasets: null, datasetsByID: null}),
                             isFetching: true
                         }
                     }
@@ -188,6 +188,7 @@ export const serviceDatasets = (
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             datasets: action.data,
+                            datasetsByID: Object.fromEntries(action.data.map(d => [d.id, d])),
                             isFetching: false
                         }
                     }
@@ -203,7 +204,7 @@ export const serviceDatasets = (
                         ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {datasets: null}),
+                                || {datasets: null, datasetsByID: null}),
                             isFetching: false
                         }
                     }
