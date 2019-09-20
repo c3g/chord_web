@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Tag, Typography} from "antd";
+import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Table, Tag} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
@@ -14,8 +14,8 @@ import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
+import "antd/es/table/style/css";
 import "antd/es/tag/style/css";
-import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -37,6 +37,9 @@ import IngestionInputForm from "./IngestionInputForm";
 const STEP_WORKFLOW_SELECTION = 0;
 const STEP_INPUT = 1;
 const STEP_CONFIRM = 2;
+
+const FORM_LABEL_COL = {md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}};
+const FORM_WRAPPER_COL = {md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}};
 
 class ManagerIngestionContent extends Component {
     constructor(props) {
@@ -127,8 +130,7 @@ class ManagerIngestionContent extends Component {
                     ));
 
                 stepContents = (
-                    <Form labelCol={{md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}}}
-                          wrapperCol={{md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}}}>
+                    <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Dataset">
                             <Select onChange={dataset => this.setState({selectedDataset: dataset})}
                                     value={this.state.selectedDataset}>{selectContents}</Select>
@@ -161,25 +163,35 @@ class ManagerIngestionContent extends Component {
 
             case STEP_CONFIRM:
                 stepContents = (
-                    <>
-                        <Typography.Title level={2}>Workflow</Typography.Title>
-                        <List itemLayout="vertical" style={{marginBottom: "14px"}}>
-                            <List.Item>
-                                <WorkflowListItem workflow={this.state.selectedWorkflow} />
-                            </List.Item>
-                        </List>
-                        <Typography.Title level={2}>Inputs</Typography.Title>
-                        <Typography.Paragraph>
-                            {this.state.selectedWorkflow.inputs.map(i => <div key={i.id}>
-                                <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{i.id}:</span>
-                                {this.state.inputs[i.id]}
-                            </div>)}
-                        </Typography.Paragraph>
-                        <Button type="primary" style={{marginTop: "16px"}} loading={this.props.isSubmittingIngestionRun}
-                                onClick={() => this.handleRunIngestion(this.props.history)}>
-                            Run Ingestion
-                        </Button>
-                    </>
+                    <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
+                        <Form.Item label="Workflow">
+                            <List itemLayout="vertical" style={{marginBottom: "14px"}}>
+                                <List.Item>
+                                    <WorkflowListItem workflow={this.state.selectedWorkflow} />
+                                </List.Item>
+                            </List>
+                        </Form.Item>
+                        <Form.Item label="Inputs">
+                            <Table size="small" bordered={true} showHeader={false} pagination={false} columns={[
+                                {title: "ID", dataIndex: "id", render: iID =>
+                                        <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>},
+                                {title: "Value", dataIndex: "value"}
+                            ]} dataSource={this.state.selectedWorkflow.inputs.map(i =>
+                                ({id: i.id, value: this.state.inputs[i.id]}))} />
+                        </Form.Item>
+                        <Form.Item wrapperCol={{
+                            md: {span: 24},
+                            lg: {offset: 4, span: 16},
+                            xl: {offset: 6, span: 12},
+                            xxl: {offset: 8, span: 8}
+                        }}>
+                            <Button type="primary" style={{marginTop: "16px"}}
+                                    loading={this.props.isSubmittingIngestionRun}
+                                    onClick={() => this.handleRunIngestion(this.props.history)}>
+                                Run Ingestion
+                            </Button>
+                        </Form.Item>
+                    </Form>
                 );
                 break;
         }
