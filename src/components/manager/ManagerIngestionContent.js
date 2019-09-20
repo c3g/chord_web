@@ -40,6 +40,12 @@ const STEP_CONFIRM = 2;
 
 const FORM_LABEL_COL = {md: {span: 24}, lg: {span: 4}, xl: {span: 6}, xxl: {span: 8}};
 const FORM_WRAPPER_COL = {md: {span: 24}, lg: {span: 16}, xl: {span: 12}, xxl: {span: 8}};
+const FORM_BUTTON_COL = {
+    md: {span: 24},
+    lg: {offset: 4, span: 16},
+    xl: {offset: 6, span: 12},
+    xxl: {offset: 8, span: 8}
+};
 
 class ManagerIngestionContent extends Component {
     constructor(props) {
@@ -179,12 +185,7 @@ class ManagerIngestionContent extends Component {
                             ]} dataSource={this.state.selectedWorkflow.inputs.map(i =>
                                 ({id: i.id, value: this.state.inputs[i.id]}))} />
                         </Form.Item>
-                        <Form.Item wrapperCol={{
-                            md: {span: 24},
-                            lg: {offset: 4, span: 16},
-                            xl: {offset: 6, span: 12},
-                            xxl: {offset: 8, span: 8}
-                        }}>
+                        <Form.Item wrapperCol={FORM_BUTTON_COL}>
                             <Button type="primary" style={{marginTop: "16px"}}
                                     loading={this.props.isSubmittingIngestionRun}
                                     onClick={() => this.handleRunIngestion(this.props.history)}>
