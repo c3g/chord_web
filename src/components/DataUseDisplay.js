@@ -42,8 +42,10 @@ class DataUseDisplay extends Component {
                         </Col>
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Secondary</div>
-                            {this.props.dataUse.consent_code.secondary_categories.map(sc =>
-                                <Tag style={TAG_STYLING} key={sc.code}>{sc.code}</Tag>)}
+                            {this.props.dataUse.consent_code.secondary_categories.length > 0
+                                ? this.props.dataUse.consent_code.secondary_categories.map(sc =>
+                                    <Tag style={TAG_STYLING} key={sc.code}>{sc.code}</Tag>)
+                                : <Tag style={{...TAG_STYLING, background: "white", borderStyle: "dashed"}}>N/A</Tag>}
                         </Col>
                     </Row>
                 </div>
