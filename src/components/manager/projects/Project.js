@@ -104,7 +104,11 @@ class Project extends Component {
                 </div>
                 {this.props.editing ? (
                     <ProjectForm style={{maxWidth: "600px"}}
-                                 initialValue={{name: this.state.name, description: this.state.description}}
+                                 initialValue={{
+                                     name: this.state.name,
+                                     description: this.state.description,
+                                     data_use: this.state.dataUse
+                                 }}
                                  ref={form => this.editingForm = form} />
                 ) : (
                     <>
