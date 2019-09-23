@@ -59,9 +59,11 @@ class DataUseDisplay extends Component {
                                       u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
                                           // Special case for non-profit use; stack two icons (dollar + stop) to
                                           // create a custom synthetic icon.
-                                          <div>
-                                              <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
-                                              <Icon style={{fontSize: "24px", marginLeft: "-24px"}} type="stop" />
+                                          <div style={{opacity: 0.65}}>
+                                              <Icon style={{fontSize: "24px", color: "black"}}
+                                                    type={DATA_USE_INFO[u].icon} />
+                                              <Icon style={{fontSize: "24px", marginLeft: "-24px", color: "black"}}
+                                                    type="stop" />
                                           </div>
                                       ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
                                   } title={DATA_USE_INFO[u].title} description={DATA_USE_INFO[u].content} />
