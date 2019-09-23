@@ -28,19 +28,22 @@ const renderContent = Content => route => (
             <Menu theme="dark" mode="horizontal" selectedKeys={[route.match.path]}
                   style={{lineHeight: "64px"}}>
                 <Menu.Item key="/services">
-                    <Icon type="cloud-server" />
-                    <span className="nav-text">Services</span>
-                    <Link to="/services" />
+                    <Link to="/services">
+                        <Icon type="cloud-server" />
+                        <span className="nav-text">Services</span>
+                    </Link>
                 </Menu.Item>
                 <Menu.Item key="/data/discovery">
-                    <Icon type="file-search" />
-                    <span className="nav-text">Data Discovery</span>
-                    <Link to="/data/discovery" />
+                    <Link to="/data/discovery">
+                        <Icon type="file-search" />
+                        <span className="nav-text">Data Discovery</span>
+                    </Link>
                 </Menu.Item>
                 <Menu.Item key="/data/manager">
-                    <Icon type="folder-open" />
-                    <span className="nav-text">Data Manager</span>
-                    <Link to="/data/manager" />
+                    <Link to="/data/manager">
+                        <Icon type="folder-open" />
+                        <span className="nav-text">Data Manager</span>
+                    </Link>
                 </Menu.Item>
             </Menu>
         </Layout.Header>
