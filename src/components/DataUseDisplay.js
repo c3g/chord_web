@@ -53,6 +53,7 @@ class DataUseDisplay extends Component {
                     <Typography.Title level={4}>
                         Restrictions and Conditions
                     </Typography.Title>
+                    {/* TODO: Empty display when no restrictions present */}
                     <List itemLayout="horizontal" style={{maxWidth: "600px"}}
                           dataSource={DATA_USE_KEYS.filter(u => uses.includes(u))}
                           renderItem={u => (
