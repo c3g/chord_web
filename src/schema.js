@@ -49,8 +49,10 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
 };
 
 /**
- * @param {object} schema
- * @param {string} fieldString
+ * Resolves a particular field's schema from the overall object schema and a dot-notation field string.
+ * @param {object} schema - The overall schema for the data type.
+ * @param {string} fieldString - String with dot notation representing the desired field.
+ * @return {object} - Schema for the field.
  */
 export const getFieldSchema = (schema, fieldString) => {
     const components = fieldString.split(".");
