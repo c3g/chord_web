@@ -20,7 +20,68 @@ import {
     DUO_NOT_FOR_PROFIT_USE_ONLY
 } from "../duo";
 
+const sortSCC = (a, b) => SECONDARY_CONSENT_CODE_KEYS.indexOf(a.code) - SECONDARY_CONSENT_CODE_KEYS.indexOf(b.code);
+const sortDUR = (a, b) => DATA_USE_KEYS.indexOf(a.code) - DATA_USE_KEYS.indexOf(b.code);
+
 export default class DataUseInput extends Component {
+    static getDerivedStateFromProps(nextProps) {
+        return "value" in nextProps
+            ? {...(nextProps.value || {})}
+            : null;
+    }
+
+    constructor(props) {
+        super(props);
+
+        const value = this.props.value || {};
+        this.state = {
+            consent_code: {
+                primary_category: (value.consent_code || {}).primary_category || null,
+                secondary_categories: [...((value.consent_code || {}).secondary_categories || [])]
+            },
+            data_use_requirements: [...(value.data_use_requirements || [])]
+        };
+
+        this.triggerChange = this.triggerChange.bind(this);
+        this.handleSCCChange = this.handleSCCChange.bind(this);
+        this.handleDURChange = this.handleDURChange.bind(this);
+    }
+
+    triggerChange(change) {
+        if (!("value" in this.props)) this.setState(change);
+        if (this.props.onChange) {
+            this.props.onChange({...this.state, ...change});
+        }
+    }
+
+    handlePCCChange(code) {
+        this.triggerChange({
+            consent_code: {
+                ...this.state.consent_code,
+                primary_category: {code}
+            }
+        });
+    }
+
+    handleSCCChange(event, code) {
+        this.triggerChange({
+            consent_code: {
+                ...this.state.consent_code,
+                secondary_categories: event.target.checked
+                    ? [...this.state.consent_code.secondary_categories, {code}].sort(sortSCC)
+                    : this.state.consent_code.secondary_categories.filter(c => c.code !== code)
+            }
+        });
+    }
+
+    handleDURChange(event, code) {
+        this.triggerChange({
+            data_use_requirements: event.target.checked
+                ? [...this.state.data_use_requirements, {code}].sort(sortDUR)
+                : this.state.data_use_requirements.filter(c => c.code !== code)
+        });
+    }
+
     render() {
         return (
             <>
@@ -30,10 +91,12 @@ export default class DataUseInput extends Component {
                     </Typography.Title>
 
                     <div style={{fontWeight: "bold", marginBottom: "4px"}}>Primary</div>
-                    <Radio.Group name="primary_consent_code">
+                    <Radio.Group name="primary_consent_code"
+                                 value={(this.state.consent_code.primary_category || {code: null}).code}
+                                 onChange={e => this.handlePCCChange(e.target.value)}>
                         <List itemLayout="horizontal" style={{maxWidth: "600px"}}>
                         {PRIMARY_CONSENT_CODE_KEYS.map(pcc =>
-                            <Radio value={pcc} style={{display: "block"}}>
+                            <Radio key={pcc} value={pcc} style={{display: "block"}}>
                                 <List.Item style={{
                                     display: "inline-block",
                                     verticalAlign: "top",
@@ -50,16 +113,22 @@ export default class DataUseInput extends Component {
 
                     <div style={{fontWeight: "bold"}}>Secondary</div>
                     <List itemLayout="horizontal" style={{maxWidth: "600px"}}>
-                        {SECONDARY_CONSENT_CODE_KEYS.map(pcc =>
-                            <List.Item>
-                                <List.Item.Meta title={<Checkbox>{SECONDARY_CONSENT_CODE_INFO[pcc].title}</Checkbox>}
-                                                description={<div style={{marginLeft: "24px"}}>
-                                                    {SECONDARY_CONSENT_CODE_INFO[pcc].content}
-                                                </div>} />
+                        {SECONDARY_CONSENT_CODE_KEYS.map(scc =>
+                            <List.Item key={scc}>
+                                <List.Item.Meta title={
+                                    <Checkbox checked={
+                                        this.state.consent_code.secondary_categories
+                                            .map(c => c.code)
+                                            .includes(scc)
+                                    } onChange={e => this.handleSCCChange(e, scc)}>
+                                        {SECONDARY_CONSENT_CODE_INFO[scc].title}
+                                    </Checkbox>
+                                } description={<div style={{marginLeft: "24px"}}>
+                                    {SECONDARY_CONSENT_CODE_INFO[scc].content}
+                                </div>} />
                             </List.Item>
                         )}
                     </List>
-                    {/* TODO */}
                 </div>
                 <div style={{marginTop: "20px"}}>
                     <Typography.Title level={4}>
@@ -81,7 +150,10 @@ export default class DataUseInput extends Component {
                                           </div>
                                       ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
                                   } title={
-                                      <Checkbox>{DATA_USE_INFO[u].title}</Checkbox>
+                                      <Checkbox checked={this.state.data_use_requirements.map(c => c.code).includes(u)}
+                                                onChange={e => this.handleDURChange(e, u)}>
+                                          {DATA_USE_INFO[u].title}
+                                      </Checkbox>
                                   } description={DATA_USE_INFO[u].content} />
                               </List.Item>
                           )} />
