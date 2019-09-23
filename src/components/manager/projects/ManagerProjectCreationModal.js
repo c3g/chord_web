@@ -28,20 +28,7 @@ class ManagerProjectCreationModal extends Component {
                 return;
             }
 
-            // TODO: Update after response from Adrian
-            // TODO: Don't hard-code data use
-            const project = {
-                ...values,
-                data_use: {
-                    consent_code: {
-                        primary_category: {code: "GRU"},
-                        secondary_categories: [{code: "NGMR"}]
-                    },
-                    data_use_requirements: [{code: "COL"}, {code: "US"}]
-                }
-            };
-
-            await this.props.createProject(project);
+            await this.props.createProject(values);
 
             // TODO: Only close modal if submission was a success
             this.props.toggleProjectCreationModal();

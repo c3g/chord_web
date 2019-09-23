@@ -5,6 +5,8 @@ import {Input, Form} from "antd";
 import "antd/es/input/style/css";
 import "antd/es/form/style/css";
 
+import DataUseInput from "../../DataUseInput";
+
 class ProjectForm extends Component {
     // TODO: Unique name check
     render() {
@@ -22,7 +24,22 @@ class ProjectForm extends Component {
                     })(<Input.TextArea placeholder="Description" rows={3} />)}
                 </Form.Item>
                 <Form.Item label="Consent Code and Data Use Requirements">
-                    TODO: Data use / consent code input
+                    {this.props.form.getFieldDecorator("data_use", {
+                        initialValue: (this.props.initialValue || {
+                            consent_code: {
+                                primary_category: null,
+                                secondary_categories: []
+                            },
+                            data_use_requirements: []
+                        }).name || "",
+                        rules: [{required: true}, (rule, value, callback) => {
+                            if (!(value.consent_code || {}).primary_category) {
+                                callback(["Please specify one primary consent code"]);
+                                return;
+                            }
+                            callback([]);
+                        }]
+                    })(<DataUseInput />)}
                 </Form.Item>
             </Form>
         );
