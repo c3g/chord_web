@@ -13,7 +13,7 @@ import {
     addProjectDataset,
     fetchProjectsWithDatasets,
     toggleProjectDatasetAdditionModal
-} from "../../modules/manager/actions";
+} from "../../../modules/manager/actions";
 
 class ManagerDatasetAdditionModal extends Component {
     componentDidMount() {

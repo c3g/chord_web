@@ -10,10 +10,10 @@ import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import DataUseDisplay from "../DataUseDisplay";
+import DataUseDisplay from "../../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
-import {simpleDeepCopy} from "../../utils";
+import {simpleDeepCopy} from "../../../utils";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);

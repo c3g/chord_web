@@ -9,7 +9,7 @@ import {Menu, PageHeader} from "antd";
 import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
 
-import ManagerProjectDatasetContent from "./manager/ManagerProjectDatasetContent";
+import ManagerProjectDatasetContent from "./manager/projects/ManagerProjectDatasetContent";
 import ManagerFilesContent from "./manager/ManagerFilesContent";
 import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";

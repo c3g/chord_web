@@ -18,7 +18,7 @@ import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
 import ManagerDatasetCreationModal from "./ManagerDatasetCreationModal";
 
-import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../modules/services/actions";
+import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../../modules/services/actions";
 import {
     beginProjectEditing,
     endProjectEditing,
@@ -30,9 +30,9 @@ import {
     toggleProjectCreationModal,
     toggleProjectDatasetAdditionModal,
     toggleProjectDeletionModal
-} from "../../modules/manager/actions";
+} from "../../../modules/manager/actions";
 
-import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
