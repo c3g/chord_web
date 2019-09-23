@@ -22,7 +22,10 @@ class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
         // TODO: Want to warn the user if the description has changed and they're editing...
         if ("value" in nextProps) {
-            return {...(nextProps.value || {})};
+            return {
+                ...(nextProps.value || {}),
+                dataUse: simpleDeepCopy((nextProps.value || {}).data_use || {})
+            };
         }
         return null;
     }
