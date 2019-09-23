@@ -190,3 +190,12 @@ export const DATA_USE_PROP_TYPE_SHAPE = PropTypes.shape({
     }),
     data_use_requirements: PropTypes.arrayOf(DATA_USE_CODE_ITEM_SHAPE)
 });
+
+
+export const INITIAL_DATA_USE_VALUE = {
+    consent_code: {
+        primary_category: null,
+        secondary_categories: []
+    },
+    data_use_requirements: []
+};

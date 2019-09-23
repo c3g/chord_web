@@ -13,6 +13,7 @@ import "antd/es/typography/style/css";
 import DataUseDisplay from "../../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
+import {INITIAL_DATA_USE_VALUE} from "../../../duo";
 import {simpleDeepCopy} from "../../../utils";
 
 
@@ -24,7 +25,7 @@ class Project extends Component {
         if ("value" in nextProps) {
             return {
                 ...(nextProps.value || {}),
-                dataUse: simpleDeepCopy((nextProps.value || {}).data_use || {})
+                data_use: simpleDeepCopy((nextProps.value || {}).data_use || INITIAL_DATA_USE_VALUE)
             };
         }
         return null;
@@ -32,7 +33,6 @@ class Project extends Component {
 
     handleCancelEdit() {
         this._onCancelEdit();
-        this.setState({editedName: this.state.name, editedDescription: this.state.description});
     }
 
     constructor(props) {
@@ -58,9 +58,7 @@ class Project extends Component {
             id: value.id || null,
             name: value.name || "",
             description: value.description || "",
-            dataUse: simpleDeepCopy(value.data_use || {}),  // TODO: Defaults that follow schema
-
-            editedDataUse: simpleDeepCopy(value.data_use || {})  // TODO: Defaults that follow schema
+            data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE)
         }
     }
 
@@ -75,7 +73,7 @@ class Project extends Component {
                 id: this.state.id,
                 name: values.name || this.state.name,
                 description: values.description || this.state.description,
-                data_use: this.state.editedDataUse // TODO
+                data_use: values.data_use || this.state.data_use
             });
         })
     }
@@ -107,7 +105,7 @@ class Project extends Component {
                                  initialValue={{
                                      name: this.state.name,
                                      description: this.state.description,
-                                     data_use: this.state.dataUse
+                                     data_use: this.state.data_use
                                  }}
                                  ref={form => this.editingForm = form} />
                 ) : (
@@ -119,7 +117,7 @@ class Project extends Component {
                             {this.state.description}
                         </Typography.Paragraph>
                         <Typography.Title level={3}>Data Use</Typography.Title>
-                        <DataUseDisplay dataUse={this.state.dataUse} />
+                        <DataUseDisplay dataUse={this.state.data_use} />
                     </>
                 )}
 
