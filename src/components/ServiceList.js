@@ -35,11 +35,9 @@ const columns = [
     {
         title: "Status",
         dataIndex: "status",
-        render: status => {
-            const statusText = status ? "HEALTHY" : "ERROR";
-            const color = status ? "green" : "red";
-            return <Tag color={color}>{statusText}</Tag>;
-        }
+        render: (status, service) => service.loading
+            ? <Tag>LOADING</Tag>
+            : <Tag color={status ? "green" : "red"}>{status ? "HEALTHY" : "ERROR"}</Tag>
     }
 ];
 
@@ -50,7 +48,8 @@ const ServiceList = connect(
             ...service,
             status: (state.serviceMetadata.metadata[service.id] || {metadata: null}).metadata || null,
             version: ((state.serviceMetadata.metadata[service.id] || {metadata: {version: "-"}}).metadata ||
-                {version: "-"}).version
+                {version: "-"}).version,
+            loading: ((state.serviceMetadata.metadata[service.id] || {isFetching: false}).isFetching || false)
         })),
         columns,
         rowKey: "id",
