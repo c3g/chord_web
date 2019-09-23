@@ -19,6 +19,7 @@ class DiscoverySearchCondition extends Component {
 
     constructor(props) {
         super(props);
+
         const value = this.props.value || {};
         this.state = {
             field: value.field || undefined,
@@ -29,6 +30,7 @@ class DiscoverySearchCondition extends Component {
             operation: value.operation || OP_EQUALS,
             searchValue: value.searchValue || ""
         };
+
         this.onRemoveClick = this.props.onRemoveClick || (() => {});
 
         this.handleField = this.handleField.bind(this);
