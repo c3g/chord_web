@@ -54,7 +54,7 @@ const ServiceList = connect(
         columns,
         rowKey: "id",
         bordered: true,
-        loading: state.services.isFetching,
+        loading: state.services.isFetching || state.serviceMetadata.isFetchingAll,
         size: "middle"
     })
 )(Table);

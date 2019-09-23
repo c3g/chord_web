@@ -2,20 +2,26 @@ import {
     LOADING_ALL_SERVICE_DATA,
 
     FETCH_SERVICES,
+
     FETCH_SERVICE_METADATA,
+    LOADING_SERVICE_METADATA,
+
     FETCH_SERVICE_DATA_TYPES,
+    LOADING_SERVICE_DATA_TYPES,
+
     FETCH_SERVICE_DATASETS,
+    LOADING_SERVICE_DATASETS,
 
     ADDING_SERVICE_DATASET,
 
-    FETCHING_SERVICE_WORKFLOWS,
-    FETCH_SERVICE_WORKFLOWS
+    FETCH_SERVICE_WORKFLOWS,
+    LOADING_SERVICE_WORKFLOWS
 } from "./actions";
 
 export const services = (
     state = {
         isFetching: false,
-        isFetchingAll: false,
+        isFetchingAll: false,  // TODO: Rename this, since it means more "all data including other stuff"
         items: [],
         itemsByID: {}
     },
@@ -51,17 +57,23 @@ export const services = (
 
 export const serviceMetadata = (
     state = {
-        isFetching: false,  // TODO: Network epic
+        isFetchingAll: false,
         didInvalidate: false,
         metadata: {}
     },
     action
 ) => {
     switch (action.type) {
+        case LOADING_SERVICE_METADATA.BEGIN:
+            return {...state, isFetchingAll: true};
+
+        case LOADING_SERVICE_METADATA.END:
+        case LOADING_SERVICE_METADATA.TERMINATE:
+            return {...state, isFetchingAll: false};
+
         case FETCH_SERVICE_METADATA.REQUEST:
             return {
                 ...state,
-                isFetching: true,
                 metadata: {
                     ...state.metadata,
                     [action.serviceID]: {
@@ -74,7 +86,6 @@ export const serviceMetadata = (
         case FETCH_SERVICE_METADATA.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 metadata: {
                     ...state.metadata,
                     [action.serviceID]: {
@@ -88,7 +99,6 @@ export const serviceMetadata = (
         case FETCH_SERVICE_METADATA.ERROR:
             return {
                 ...state,
-                isFetching: true,
                 metadata: {
                     ...state.metadata,
                     [action.serviceID]: {
@@ -105,12 +115,19 @@ export const serviceMetadata = (
 
 export const serviceDataTypes = (
     state = {
-        isFetching: false,  // TODO: Network epic
+        isFetchingAll: false,
         dataTypesByServiceID: {}
     },
     action
 ) => {
     switch (action.type) {
+        case LOADING_SERVICE_DATA_TYPES.BEGIN:
+            return {...state, isFetchingAll: true};
+
+        case LOADING_SERVICE_DATA_TYPES.END:
+        case LOADING_SERVICE_DATA_TYPES.TERMINATE:
+            return {...state, isFetchingAll: false};
+
         case FETCH_SERVICE_DATA_TYPES.REQUEST:
             return {
                 ...state,
@@ -156,13 +173,20 @@ export const serviceDataTypes = (
 
 export const serviceDatasets = (
     state = {
-        isFetching: false,  // TODO: Begin/end
+        isFetchingAll: false,
         isCreating: false,
         datasetsByServiceAndDataTypeID: {}
     },
     action
 ) => {
     switch (action.type) {
+        case LOADING_SERVICE_DATASETS.BEGIN:
+            return {...state, isFetchingAll: true};
+
+        case LOADING_SERVICE_DATASETS.END:
+        case LOADING_SERVICE_DATASETS.TERMINATE:
+            return {...state, isFetchingAll: false};
+
         case FETCH_SERVICE_DATASETS.REQUEST:
             return {
                 ...state,
@@ -246,11 +270,11 @@ export const serviceWorkflows = (
     action
 ) => {
     switch (action.type) {
-        case FETCHING_SERVICE_WORKFLOWS.BEGIN:
+        case LOADING_SERVICE_WORKFLOWS.BEGIN:
             return {...state, isFetchingAll: true};
 
-        case FETCHING_SERVICE_WORKFLOWS.END:
-        case FETCHING_SERVICE_WORKFLOWS.TERMINATE:
+        case LOADING_SERVICE_WORKFLOWS.END:
+        case LOADING_SERVICE_WORKFLOWS.TERMINATE:
             return {...state, isFetchingAll: false};
 
         case FETCH_SERVICE_WORKFLOWS.REQUEST:

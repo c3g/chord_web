@@ -234,7 +234,7 @@ const mapStateToProps = state => {
         service: dataTypeExists ? state.services.itemsByID[sID] : null,
         dataType: dataTypeExists ? state.serviceDataTypes.dataTypesByServiceID[sID].itemsByID[dID] : null,
 
-        dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetching
+        dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetchingAll
             || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
 
         schemaModalShown: state.discovery.schemaModalShown,

@@ -14,14 +14,20 @@ import {createURLSearchParams} from "../../utils/requests";
 export const LOADING_ALL_SERVICE_DATA = createFlowActionTypes("LOADING_ALL_SERVICE_DATA");
 
 export const FETCH_SERVICES = createNetworkActionTypes("FETCH_SERVICES");
+
 export const FETCH_SERVICE_METADATA = createNetworkActionTypes("FETCH_SERVICE_METADATA");
+export const LOADING_SERVICE_METADATA = createFlowActionTypes("LOADING_SERVICE_METADATA");
+
 export const FETCH_SERVICE_DATA_TYPES = createNetworkActionTypes("FETCH_SERVICE_DATA_TYPES");
+export const LOADING_SERVICE_DATA_TYPES = createFlowActionTypes("LOADING_SERVICE_DATA_TYPES");
+
 export const FETCH_SERVICE_DATASETS = createNetworkActionTypes("FETCH_SERVICE_DATASETS");
+export const LOADING_SERVICE_DATASETS = createFlowActionTypes("LOADING_SERVICE_DATASETS");
 
 export const ADDING_SERVICE_DATASET = createFlowActionTypes("ADDING_SERVICE_DATASET");
 
-export const FETCHING_SERVICE_WORKFLOWS = createFlowActionTypes("FETCHING_SERVICE_WORKFLOWS");
 export const FETCH_SERVICE_WORKFLOWS = createNetworkActionTypes("FETCH_SERVICE_WORKFLOWS");
+export const LOADING_SERVICE_WORKFLOWS = createFlowActionTypes("LOADING_SERVICE_WORKFLOWS");
 
 
 export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
@@ -80,7 +86,9 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dis
     }
 
     // Fetch Service Metadata
+    await dispatch(beginFlow(LOADING_SERVICE_METADATA));
     await Promise.all(getState().services.items.map(s => dispatch(fetchServiceMetadata(s))));
+    await dispatch(endFlow(LOADING_SERVICE_METADATA));
 
     // Fetch other data (need metadata first):
 
@@ -89,19 +97,25 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dis
 
     // - Fetch Data Service Data Types and Workflows
     await Promise.all([
-        ...dataServices.map(s => dispatch(fetchDataServiceDataTypes(s))),
         (async () => {
-            await dispatch(beginFlow(FETCHING_SERVICE_WORKFLOWS));
+            await dispatch(beginFlow(LOADING_SERVICE_DATA_TYPES));
+            await Promise.all(dataServices.map(s => dispatch(fetchDataServiceDataTypes(s))));
+            await dispatch(endFlow(LOADING_SERVICE_DATA_TYPES));
+        })(),
+        (async () => {
+            await dispatch(beginFlow(LOADING_SERVICE_WORKFLOWS));
             await Promise.all(dataServices.map(s => dispatch(fetchDataServiceWorkflows(s))));
-            await dispatch(endFlow(FETCHING_SERVICE_WORKFLOWS));
+            await dispatch(endFlow(LOADING_SERVICE_WORKFLOWS));
         })()
     ]);
 
     // Fetch Data Service Local Datasets
     // - skip services that don't provide data or don't have data types
+    await dispatch(beginFlow(LOADING_SERVICE_DATASETS));
     await Promise.all(dataServices.flatMap(s =>
         ((getState().serviceDataTypes.dataTypesByServiceID[s.id] || {items: []}).items || [])
             .map(dt => dispatch(fetchDataServiceDataTypeDatasets(s, dt)))));
+    await dispatch(endFlow(LOADING_SERVICE_DATASETS));
 
     await dispatch(endFlow(LOADING_ALL_SERVICE_DATA));
 };
