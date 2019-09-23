@@ -20,7 +20,7 @@ const columns = [
     {
         title: "Version",
         dataIndex: "version",
-        render: version => <Typography.Text>{version ? version : "-"}</Typography.Text>
+        render: version => <Typography.Text>{version || "-"}</Typography.Text>
     },
     {
         title: "URL",
@@ -49,7 +49,8 @@ const ServiceList = connect(
         dataSource: state.services.items.map(service => ({
             ...service,
             status: (state.serviceMetadata.metadata[service.id] || {metadata: null}).metadata || null,
-            version: (state.serviceMetadata.metadata[service.id] || {version: "-"}).version
+            version: ((state.serviceMetadata.metadata[service.id] || {metadata: {version: "-"}}).metadata ||
+                {version: "-"}).version
         })),
         columns,
         rowKey: "id",
