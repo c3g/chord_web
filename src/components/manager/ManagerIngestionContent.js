@@ -95,30 +95,35 @@ class ManagerIngestionContent extends Component {
             return;
         }
 
-        await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, this.state.selectedDataset,
+        const datasetID = this.state.selectedDataset.split(":")[1];
+
+        await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, datasetID,
             this.state.selectedWorkflow, this.state.inputs, "/data/manager/runs", history);
 
         this.setState(simpleDeepCopy(this.initialState));
     }
 
     render() {
+        const getDatasetName = (serviceID, dataTypeID, datasetID) =>
+            ((((this.props.datasetsByServiceAndDataTypeID[serviceID] || {})[dataTypeID]
+                || {}).datasetsByID || {})[datasetID] || {}).name;
+
         let stepContents = null;
         switch (this.state.step) {
             case STEP_WORKFLOW_SELECTION:
                 // TODO: Loading projects
 
-                const datasetsByID = {};
-                this.props.projects.forEach(p =>
-                    (this.props.projectDatasets[p.id] || []).forEach(d => datasetsByID[d.dataset_id] = d));
+                const datasetsByID = Object.fromEntries(this.props.projects.flatMap(p =>
+                    (this.props.projectDatasets[p.id] || []).map(d => [d.dataset_id, d])));
 
                 const selectContents = this.props.projects.map(p => (
                     <Select.OptGroup key={p.id} label={p.name}>
                         {(this.props.projectDatasets[p.id] || []).map(d => (
-                            <Select.Option key={d.dataset_id} value={d.dataset_id}>
+                            <Select.Option key={`${p.id}:${d.dataset_id}`} value={`${p.id}:${d.dataset_id}`}>
                                 <Tag style={{marginRight: "1em"}}>{d.data_type_id}</Tag>
-                                {`${((((this.props.datasetsByServiceAndDataTypeID[d.service_id] || {})[d.data_type_id]
-                                    || {}).datasetsByID || {})[d.dataset_id] || {}).name} (${d.dataset_id})`
-                                || d.dataset_id}
+                                {getDatasetName(d.service_id, d.data_type_id, d.dataset_id)
+                                    ? `${getDatasetName(d.service_id, d.data_type_id, d.dataset_id)} (${d.dataset_id})`
+                                    : d.dataset_id}
                             </Select.Option>
                         ))}
                     </Select.OptGroup>
@@ -126,7 +131,8 @@ class ManagerIngestionContent extends Component {
 
                 const workflows = this.props.workflows
                     .filter(w => w.data_types.includes(
-                        (datasetsByID[this.state.selectedDataset] || {data_type_id: null}).data_type_id))
+                        (datasetsByID[this.state.selectedDataset ? this.state.selectedDataset.split(":")[1] : null]
+                            || {data_type_id: null}).data_type_id))
                     .map(w => (
                         <List.Item key={w.id}>
                             <WorkflowListItem key={w.id} workflow={w} selectable={true}
@@ -167,8 +173,18 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case STEP_CONFIRM:
+                const [projectID, datasetID] = this.state.selectedDataset.split(":");
+                const projectName = (this.props.projectsByID[projectID] || {name: null}).name || null;
+                const datasetName = getDatasetName(this.state.selectedWorkflow.serviceID,
+                    this.state.selectedWorkflow.data_types[0], datasetID);
                 stepContents = (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
+                        <Form.Item label="Project">
+                            {projectName ? `${projectName} (${projectID})` : projectID}
+                        </Form.Item>
+                        <Form.Item label="Dataset">
+                            {datasetName ? `${datasetName} (${datasetID})` : datasetID}
+                        </Form.Item>
                         <Form.Item label="Workflow">
                             <List itemLayout="vertical" style={{marginBottom: "14px"}}>
                                 <List.Item>
@@ -181,11 +197,12 @@ class ManagerIngestionContent extends Component {
                                 {title: "ID", dataIndex: "id", render: iID =>
                                         <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>},
                                 {title: "Value", dataIndex: "value"}
-                            ]} dataSource={this.state.selectedWorkflow.inputs.map(i =>
+                            ]} rowKey="id" dataSource={this.state.selectedWorkflow.inputs.map(i =>
                                 ({id: i.id, value: this.state.inputs[i.id]}))} />
                         </Form.Item>
                         <Form.Item wrapperCol={FORM_BUTTON_COL}>
-                            <Button type="primary" style={{marginTop: "16px"}}
+                            {/* TODO: Back button like the last one */}
+                            <Button type="primary" style={{marginTop: "16px", float: "right"}}
                                     loading={this.props.isSubmittingIngestionRun}
                                     onClick={() => this.handleRunIngestion(this.props.history)}>
                                 Run Ingestion
@@ -225,7 +242,8 @@ ManagerIngestionContent.propTypes = {
     ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes,
     projects: PropTypes.array,
-    projectDatasets: PropTypes.object,
+    projectsByID: PropTypes.object,  // TODO: Shape
+    projectDatasets: PropTypes.object,  // TODO: Shape
     isSubmittingIngestionRun: PropTypes.bool
 };
 
@@ -233,6 +251,7 @@ const mapStateToProps = state => ({
     ...dropBoxTreeStateToPropsMixin(state),
     ...workflowsStateToPropsMixin(state),
     projects: state.projects.items,
+    projectsByID: state.projects.itemsByID,
     projectDatasets: state.projectDatasets.itemsByProjectID,
     datasetsByServiceAndDataTypeID: state.serviceDatasets.datasetsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun
