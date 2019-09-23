@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const DUO_COLLABORATION_REQUIRED = "COL";
 const DUO_ETHICS_APPROVAL_REQUIRED = "IRB";
 const DUO_GEOGRAPHICAL_RESTRICTION = "GS";
@@ -86,3 +88,17 @@ export const DATA_USE_INFO = {
         content: "This requirement indicates that use is limited to use by approved users."
     }
 };
+
+
+const DATA_USE_CODE_ITEM_SHAPE = PropTypes.shape({
+    code: PropTypes.string,
+    data: PropTypes.object  // TODO
+});
+
+export const DATA_USE_PROP_TYPE_SHAPE = PropTypes.shape({
+    consent_code: PropTypes.shape({
+        primary_category: DATA_USE_CODE_ITEM_SHAPE,
+        secondary_categories: PropTypes.arrayOf(DATA_USE_CODE_ITEM_SHAPE)
+    }),
+    data_use_requirements: PropTypes.arrayOf(DATA_USE_CODE_ITEM_SHAPE)
+});

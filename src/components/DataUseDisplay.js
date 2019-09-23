@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import PropTypes from "prop-types";
 
 import {Col, List, Icon, Row, Tag, Typography} from "antd";
 
@@ -9,7 +8,7 @@ import "antd/es/row/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
-import {DUO_NOT_FOR_PROFIT_USE_ONLY, DATA_USE_KEYS, DATA_USE_INFO} from "../duo";
+import {DUO_NOT_FOR_PROFIT_USE_ONLY, DATA_USE_KEYS, DATA_USE_INFO, DATA_USE_PROP_TYPE_SHAPE} from "../duo";
 
 
 const TAG_LABEL_STYLING = {
@@ -75,7 +74,7 @@ class DataUseDisplay extends Component {
 }
 
 DataUseDisplay.propTypes = {
-    dataUse: PropTypes.object  // TODO: Shape
+    dataUse: DATA_USE_PROP_TYPE_SHAPE
 };
 
 export default DataUseDisplay;
