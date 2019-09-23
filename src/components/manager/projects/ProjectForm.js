@@ -7,6 +7,16 @@ import "antd/es/form/style/css";
 
 import DataUseInput from "../../DataUseInput";
 
+import {simpleDeepCopy} from "../../../utils";
+
+const INITIAL_DATA_USE = {
+    consent_code: {
+        primary_category: null,
+        secondary_categories: []
+    },
+    data_use_requirements: []
+};
+
 class ProjectForm extends Component {
     // TODO: Unique name check
     render() {
@@ -25,13 +35,8 @@ class ProjectForm extends Component {
                 </Form.Item>
                 <Form.Item label="Consent Code and Data Use Requirements">
                     {this.props.form.getFieldDecorator("data_use", {
-                        initialValue: (this.props.initialValue || {
-                            consent_code: {
-                                primary_category: null,
-                                secondary_categories: []
-                            },
-                            data_use_requirements: []
-                        }).name || "",
+                        initialValue: ((this.props.initialValue ||
+                            {data_use: simpleDeepCopy(INITIAL_DATA_USE)}).data_use || simpleDeepCopy(INITIAL_DATA_USE)),
                         rules: [{required: true}, (rule, value, callback) => {
                             if (!(value.consent_code || {}).primary_category) {
                                 callback(["Please specify one primary consent code"]);
