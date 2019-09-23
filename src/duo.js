@@ -1,5 +1,17 @@
 import PropTypes from "prop-types";
 
+const DUO_PCC_GENERAL_RESEARCH_USE = "GRU";
+const DUO_PCC_GENERAL_RESEARCH_USE_AND_CLINICAL_CARE = "GRU-CC";
+const DUO_PCC_HEALTH_MEDICAL_BIOMEDICAL_RESEARCH = "HMB";
+const DUO_PCC_DISEASE_SPECIFIC_RESEARCH = "DS";
+const DUO_PCC_POPULATION_ORIGINS_OR_ANCESTRY_RESEARCH = "POA";
+const DUO_PCC_NO_RESTRICTION = "NRES";
+
+const DUO_SCC_GENETIC_STUDIES_ONLY = "GSO";
+const DUO_SCC_NO_GENERAL_METHODS_RESEARCH = "NGMR";
+const DUO_SCC_RESEARCH_SPECIFIC_RESTRICTIONS = "RS";
+const DUO_SCC_RESEARCH_USE_ONLY = "RU";
+
 const DUO_COLLABORATION_REQUIRED = "COL";
 const DUO_ETHICS_APPROVAL_REQUIRED = "IRB";
 const DUO_GEOGRAPHICAL_RESTRICTION = "GS";
@@ -11,6 +23,82 @@ const DUO_PUBLICATION_REQUIRED = "PUB";
 const DUO_RETURN_TO_DATABASE_OR_RESOURCE = "RTN";
 const DUO_TIME_LIMIT_ON_USE = "TS";
 const DUO_USER_SPECIFIC_RESTRICTION = "US";
+
+
+export const PRIMARY_CONSENT_CODE_KEYS = [
+    DUO_PCC_GENERAL_RESEARCH_USE,
+    DUO_PCC_GENERAL_RESEARCH_USE_AND_CLINICAL_CARE,
+    DUO_PCC_HEALTH_MEDICAL_BIOMEDICAL_RESEARCH,
+    DUO_PCC_DISEASE_SPECIFIC_RESEARCH,
+    DUO_PCC_POPULATION_ORIGINS_OR_ANCESTRY_RESEARCH,
+    DUO_PCC_NO_RESTRICTION
+];
+
+export const PRIMARY_CONSENT_CODE_INFO = {
+    [DUO_PCC_GENERAL_RESEARCH_USE]: {
+        title: "General Research Use",
+        content: "This primary category consent code indicates that use is allowed for general research use for any " +
+            "research purpose. This includes but is not limited to: health/medical/biomedical purposes, fundamental " +
+            "biology research, the study of population origins or ancestry, statistical methods and algorithms " +
+            "development, and social-sciences research."
+    },
+    [DUO_PCC_GENERAL_RESEARCH_USE_AND_CLINICAL_CARE]: {
+        title: "General Research Use + Clinical Care",
+        content: "This primary category consent code indicates that use is allowed for health/medical/biomedical " +
+            "purposes and other biological research, including the study of population origins or ancestry."
+    },
+    [DUO_PCC_HEALTH_MEDICAL_BIOMEDICAL_RESEARCH]: {
+        title: "Health/Medical/Biomedical Research",
+        content: "This primary category consent code indicates that use is allowed for health/medical/biomedical " +
+            "purposes; does not include the study of population origins or ancestry."
+    },
+    [DUO_PCC_DISEASE_SPECIFIC_RESEARCH]: {
+        title: "Disease-Specific Research",
+        content: "This primary category consent code indicates that use is allowed provided it is related to the " +
+            "specified disease."
+    },
+    [DUO_PCC_POPULATION_ORIGINS_OR_ANCESTRY_RESEARCH]: {
+        title: "Population Origins or Ancestry Research",
+        content: " primary category consent code indicates that use of the data is limited to the study of " +
+            "population origins or ancestry."
+    },
+    [DUO_PCC_NO_RESTRICTION]: {
+        title: "No Restriction",
+        content: "This consent code primary category indicates there is no restriction on use."
+    }
+};
+
+
+export const SECONDARY_CONSENT_CODE_KEYS = [
+    DUO_SCC_GENETIC_STUDIES_ONLY,
+    DUO_SCC_NO_GENERAL_METHODS_RESEARCH,
+    DUO_SCC_RESEARCH_SPECIFIC_RESTRICTIONS,
+    DUO_SCC_RESEARCH_USE_ONLY
+];
+
+export const SECONDARY_CONSENT_CODE_INFO = {
+    [DUO_SCC_GENETIC_STUDIES_ONLY]: {
+        title: "Genetic Studies Only",
+        content: "This secondary category consent code indicates that use is limited to genetic studies only " +
+            "(i.e., no phenotype-only research)"
+    },
+    [DUO_SCC_NO_GENERAL_METHODS_RESEARCH]: {
+        title: "No General Methods Research",
+        content: "This secondary category consent code indicates that use includes methods development research " +
+            "(e.g., development of software or algorithms) only within the bounds of other use limitations."
+    },
+    [DUO_SCC_RESEARCH_SPECIFIC_RESTRICTIONS]: {
+        title: "Research-Specific Restrictions",
+        content: "This secondary category consent code indicates that use is limited to studies of a certain " +
+            "research type."
+    },
+    [DUO_SCC_RESEARCH_USE_ONLY]: {
+        title: "Research Use Only",
+        content: "This secondary category consent code indicates that use is limited to research purposes " +
+            "(e.g., does not include its use in clinical care)."
+    }
+};
+
 
 export const DATA_USE_KEYS = [
     DUO_COLLABORATION_REQUIRED,
