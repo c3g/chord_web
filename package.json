@@ -10,7 +10,8 @@
     "build-dev": "npx webpack --mode development"
   },
   "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
-  "license": "LGPLv3",
+  "license": "LGPL-3.0-only",
+  "repository": "https://github.com/c3g/chord_web",
   "dependencies": {
     "antd": "^3.23.5",
     "cross-fetch": "^3.0.4",
