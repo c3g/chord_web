@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Col, Row, Spin, Table, Typography} from "antd";
+import {Button, Card, Col, Row, Spin, Table, Typography} from "antd";
 
 import "antd/es/button/style/css";
+import "antd/es/card/style/css";
 import "antd/es/col/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
@@ -130,22 +131,41 @@ class Project extends Component {
                     </div>
                 </Typography.Title>
                 <Spin spinning={this.props.loadingDatasets}>
-                    <Table bordered dataSource={this.props.datasets.map(d => ({...d, name: d.name || null}))}
-                           rowKey="id" expandedRowRender={() => (<span>TODO: List of files</span>)}>
-                        <Table.Column dataIndex="id" title="ID" /> {/* TODO: Dataset name */}
-                        <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
-                        <Table.Column dataIndex="dataTypeID" title="Data Type" />
-                        <Table.Column key="actions" title="Actions" width={330} render={d => (
-                            <Row gutter={10}>
-                                <Col span={8}><Button icon="import" style={{width: "100%"}}
-                                                      onClick={() => this.onDatasetIngest(d)}>Ingest</Button></Col>
-                                {/*<Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>*/}
-                                <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                                <Col span={8}><Button type="danger" icon="delete"
-                                                      style={{width: "100%"}}>Delete</Button></Col>
-                            </Row>
-                        )} />
-                    </Table>
+                    <Card title="TODO DATASET" extra={<>
+                        <Button icon="import" style={{marginRight: "24px"}}>
+                            Ingest Metadata
+                        </Button>
+                        <Button icon="edit" style={{marginRight: "10px"}}>Edit</Button>
+                        <Button type="danger" icon="delete">Delete</Button>
+                    </>}>
+                        <Typography.Title level={4}>Individuals and Samples</Typography.Title>
+                        TODO
+
+                        <Typography.Title level={4}>
+                            Tables
+                            <div style={{float: "right"}}>
+                                <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onAddDataset()}>
+                                    Add Table
+                                </Button>
+                            </div>
+                        </Typography.Title>
+                        <Table bordered dataSource={this.props.datasets.map(d => ({...d, name: d.name || null}))}
+                               rowKey="id" expandedRowRender={() => (<span>TODO: List of files</span>)}>
+                            <Table.Column dataIndex="id" title="ID" /> {/* TODO: Dataset name */}
+                            <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
+                            <Table.Column dataIndex="dataTypeID" title="Data Type" />
+                            <Table.Column key="actions" title="Actions" width={330} render={d => (
+                                <Row gutter={10}>
+                                    <Col span={8}><Button icon="import" style={{width: "100%"}}
+                                                          onClick={() => this.onDatasetIngest(d)}>Ingest</Button></Col>
+                                    {/*<Col span={8}><Button icon="team" style={{width: "100%"}}>Share</Button></Col>*/}
+                                    <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                                    <Col span={8}><Button type="danger" icon="delete"
+                                                          style={{width: "100%"}}>Delete</Button></Col>
+                                </Row>
+                            )} />
+                        </Table>
+                    </Card>
                 </Spin>
             </div>
         )
