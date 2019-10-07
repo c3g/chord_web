@@ -10,6 +10,12 @@ import "antd/es/typography/style/css";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import {fetchRunDetailsIfNeeded} from "../../modules/wes/actions";
 
+const renderDate = date => date === "" ? "" : new Date(Date.parse(date)).toLocaleString("en-CA");
+
+const sortDate = (a, b, dateProperty) =>
+    (new Date(Date.parse(a[dateProperty])).getTime() || Infinity) -
+    (new Date(Date.parse(b[dateProperty])).getTime() || Infinity);
+
 const RUN_STATE_TAG_COLORS = {
     UNKNOWN: "",
     QUEUED: "blue",
@@ -22,6 +28,47 @@ const RUN_STATE_TAG_COLORS = {
     CANCELED: "magenta",
     CANCELING: "purple"
 };
+
+const RUN_TABLE_COLUMNS = [
+    {
+        title: "Run ID",
+        dataIndex: "run_id",
+        sorter: (a, b) => a.run_id.localeCompare(b.run_id)
+    },
+    {
+        title: "Purpose",
+        dataIndex: "purpose",
+        width: 120,
+        sorter: (a, b) => a.purpose.localeCompare(b.purpose)
+    },
+    {
+        title: "Name",
+        dataIndex: "name",
+        sorter: (a, b) => a.name.localeCompare(b.name)
+    },
+    {
+        title: "Started",
+        dataIndex: "start_time",
+        width: 205,
+        render: renderDate,
+        sorter: (a, b) => sortDate(a, b, "start_time")
+    },
+    {
+        title: "Ended",
+        dataIndex: "end_time",
+        width: 205,
+        render: renderDate,
+        sorter: (a, b) => sortDate(a, b, "end_time"),
+        defaultSortOrder: "descend"
+    },
+    {
+        title: "State",
+        dataIndex: "state",
+        width: 150,
+        render: state => <Tag color={RUN_STATE_TAG_COLORS[state]}>{state}</Tag>,
+        sorter: (a, b) => a.state.localeCompare(b.state)
+    }
+];
 
 class ManagerRunsContent extends Component {
     constructor(props) {
@@ -44,20 +91,11 @@ class ManagerRunsContent extends Component {
     }
 
     render() {
-        const renderDate = date => date === "" ? "" : new Date(Date.parse(date)).toLocaleString("en-CA");
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Typography.Title level={2}>Workflow Runs</Typography.Title>
-                    <Table bordered={true} dataSource={this.props.runs} rowKey="run_id">
-                        <Table.Column title="Run ID" dataIndex="run_id" />
-                        <Table.Column title="Purpose" dataIndex="purpose" width={120} />
-                        <Table.Column title="Name" dataIndex="name" />
-                        <Table.Column title="Started" dataIndex="start_time" width={205} render={renderDate}/>
-                        <Table.Column title="Ended" dataIndex="end_time" width={205} render={renderDate} />
-                        <Table.Column title="State" dataIndex="state" width={150}
-                                      render={state => <Tag color={RUN_STATE_TAG_COLORS[state]}>{state}</Tag>} />
-                    </Table>
+                    <Table bordered={true} dataSource={this.props.runs} rowKey="run_id" columns={RUN_TABLE_COLUMNS} />
                 </Layout.Content>
             </Layout>
         );
