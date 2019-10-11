@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import {Button, Form, Icon, Input, Select, Tree, TreeSelect} from "antd";
+import {Button, Form, Icon, Input, Select, TreeSelect} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
