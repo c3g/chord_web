@@ -13,7 +13,7 @@ import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 
-import {fetchServicesWithMetadataAndDataTypesAndDatasets} from "../modules/services/actions";
+import {fetchServicesWithMetadataAndDataTypesAndTables} from "../modules/services/actions";
 
 // noinspection HtmlUnknownTarget
 const renderContent = Content => route => (
@@ -77,7 +77,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndDatasets());
+        this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTables());
     }
 }
 

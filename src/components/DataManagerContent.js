@@ -17,7 +17,8 @@ import ManagerRunsContent from "./manager/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
-import {fetchProjectsWithDatasets, fetchDropBoxTree} from "../modules/manager/actions";
+import {fetchDropBoxTree} from "../modules/manager/actions";
+import {fetchProjectsWithDatasetsAndTables} from "../modules/metadata/actions";
 import {fetchRuns, fetchRunDetailsIfNeeded} from "../modules/wes/actions";
 
 const renderContent = Content => route => (
@@ -64,7 +65,7 @@ class DataManagerContent extends Component {
             this.props.fetchRuns()
         ]);
 
-        await this.props.fetchProjectsWithDatasets();  // TODO: If needed
+        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
 
         await Promise.all(this.props.runs.map(r => this.props.fetchRunDetailsIfNeeded(r.run_id)));
     }
@@ -91,7 +92,7 @@ DataManagerContent.propTypes = {
 
     fetchServiceDataIfNeeded: PropTypes.func,
     fetchDropBoxTree: PropTypes.func,
-    fetchProjectsWithDatasets: PropTypes.func,
+    fetchProjectsWithDatasetsAndTables: PropTypes.func,
     fetchRuns: PropTypes.func,
     fetchRunDetailsIfNeeded: PropTypes.func
 };
@@ -103,7 +104,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     fetchDropBoxTree: async () => await dispatch(fetchDropBoxTree()),
-    fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
+    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
     fetchRuns: async () => await dispatch(fetchRuns()),
     fetchRunDetailsIfNeeded: async runID => await dispatch(fetchRunDetailsIfNeeded(runID))
 });

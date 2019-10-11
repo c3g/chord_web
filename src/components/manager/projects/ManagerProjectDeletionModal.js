@@ -8,7 +8,9 @@ import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
 
-import {deleteProjectIfPossible, toggleProjectDeletionModal} from "../../../modules/manager/actions";
+import {toggleProjectDeletionModal} from "../../../modules/manager/actions";
+import {deleteProjectIfPossible} from "../../../modules/metadata/actions";
+
 
 class ManagerProjectDeletionModal extends Component {
     componentDidMount() {

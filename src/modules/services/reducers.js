@@ -9,10 +9,10 @@ import {
     FETCH_SERVICE_DATA_TYPES,
     LOADING_SERVICE_DATA_TYPES,
 
-    FETCH_SERVICE_DATASETS,
-    LOADING_SERVICE_DATASETS,
+    FETCH_SERVICE_TABLES,
+    LOADING_SERVICE_TABLES,
 
-    ADDING_SERVICE_DATASET,
+    ADDING_SERVICE_TABLE,
 
     FETCH_SERVICE_WORKFLOWS,
     LOADING_SERVICE_WORKFLOWS
@@ -171,90 +171,97 @@ export const serviceDataTypes = (
     }
 };
 
-export const serviceDatasets = (
+export const serviceTables = (
     state = {
         isFetchingAll: false,
         isCreating: false,
-        datasetsByServiceAndDataTypeID: {}
+        itemsByServiceAndDataTypeID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case LOADING_SERVICE_DATASETS.BEGIN:
+        case LOADING_SERVICE_TABLES.BEGIN:
             return {...state, isFetchingAll: true};
 
-        case LOADING_SERVICE_DATASETS.END:
-        case LOADING_SERVICE_DATASETS.TERMINATE:
+        case LOADING_SERVICE_TABLES.END:
+        case LOADING_SERVICE_TABLES.TERMINATE:
             return {...state, isFetchingAll: false};
 
-        case FETCH_SERVICE_DATASETS.REQUEST:
+        case FETCH_SERVICE_TABLES.REQUEST:
             return {
                 ...state,
-                datasetsByServiceAndDataTypeID: {
-                    ...state.datasetsByServiceAndDataTypeID,
+                itemsByServiceAndDataTypeID: {
+                    ...state.itemsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
-                            ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {datasets: null, datasetsByID: null}),
+                            ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: null, tablesByID: null}),
                             isFetching: true
                         }
                     }
                 }
             };
 
-        case FETCH_SERVICE_DATASETS.RECEIVE:
+        case FETCH_SERVICE_TABLES.RECEIVE:
             return {
                 ...state,
-                datasetsByServiceAndDataTypeID: {
-                    ...state.datasetsByServiceAndDataTypeID,
+                itemsByServiceAndDataTypeID: {
+                    ...state.itemsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
-                            datasets: action.data,
-                            datasetsByID: Object.fromEntries(action.data.map(d => [d.id, d])),
+                            tables: action.data,
+                            tablesByID: Object.fromEntries(action.data.map(t => [t.id, t])),
                             isFetching: false
                         }
                     }
                 }
             };
 
-        case FETCH_SERVICE_DATASETS.ERROR:
+        case FETCH_SERVICE_TABLES.ERROR:
             return {
                 ...state,
-                datasetsByServiceAndDataTypeID: {
-                    ...state.datasetsByServiceAndDataTypeID,
+                itemsByServiceAndDataTypeID: {
+                    ...state.itemsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
+                        ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
-                            ...((state.datasetsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {datasets: null, datasetsByID: null}),
+                            ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: null, tablesByID: null}),
                             isFetching: false
                         }
                     }
                 }
             };
 
-        case ADDING_SERVICE_DATASET.BEGIN:
+        case ADDING_SERVICE_TABLE.BEGIN:
             return {...state, isCreating: true};
 
-        case ADDING_SERVICE_DATASET.END:
+        case ADDING_SERVICE_TABLE.END:
             return {
                 ...state,
                 isCreating: false,
-                datasetsByServiceAndDataTypeID: {
-                    ...state.datasetsByServiceAndDataTypeID,
+                itemsByServiceAndDataTypeID: {
+                    ...state.itemsByServiceAndDataTypeID,
                     [action.serviceID]: {
-                        ...(state.datasetsByServiceAndDataTypeID[action.serviceID] || {}),
-                        [action.dataTypeID]: [
-                            ...(state.datasetsByServiceAndDataTypeID[action.serviceID][action.dataTypeID] || []),
-                            action.dataset
-                        ]
+                        ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: {
+                            ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: null, tablesByID: null}),
+                            tables: [...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: null, tablesByID: null}).tables, action.table],
+                            tablesByID: {
+                                ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                    || {tables: null, tablesByID: null}).tablesByID,
+                                [action.table.id]: action.table
+                            }
+                        }
                     }
                 }
             };
 
-        case ADDING_SERVICE_DATASET.TERMINATE:
+        case ADDING_SERVICE_TABLE.TERMINATE:
             return {...state, isCreating: false};
 
         default:

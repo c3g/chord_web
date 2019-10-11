@@ -16,35 +16,43 @@ import "antd/es/typography/style/css";
 import Project from "./Project";
 import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
-import ManagerDatasetCreationModal from "./ManagerDatasetCreationModal";
+import ManagerDatasetAdditionModal from "./ManagerDatasetAdditionModal";
+import ManagerTableAdditionModal from "./ManagerTableAdditionModal";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../../modules/services/actions";
+
 import {
     beginProjectEditing,
     endProjectEditing,
 
-    fetchProjectsWithDatasets,
-    saveProjectIfPossible,
     selectProjectIfItExists,
 
     toggleProjectCreationModal,
+    toggleProjectDeletionModal,
     toggleProjectDatasetAdditionModal,
-    toggleProjectDeletionModal
+    toggleProjectTableAdditionModal
 } from "../../../modules/manager/actions";
 
+import {
+    fetchProjectsWithDatasetsAndTables,
+    saveProjectIfPossible
+} from "../../../modules/metadata/actions";
+
+
 import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
+
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
         this.ingestIntoDataset = this.ingestIntoDataset.bind(this);
 
         await this.props.fetchServiceDataIfNeeded();
-        await this.props.fetchProjectsWithDatasets();  // TODO: If needed
+        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
     }
 
     componentDidUpdate() {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
-            this.props.selectProject(this.props.projects[0].id);
+            this.props.selectProject(this.props.projects[0].project_id);
         }
     }
 
@@ -54,19 +62,21 @@ class ManagerProjectDatasetContent extends Component {
     }
 
     ingestIntoDataset(d) {
-        this.props.history.push("/data/manager/ingestion", {selectedDataset: d.id});  // TODO: Redux for sD?
+        this.props.history.push("/data/manager/ingestion", {selectedTable: d.id});  // TODO: Redux for sD?
     }
 
     render() {
         const projectMenuItems = this.props.projects.map(project => (
-            <Menu.Item key={project.id}>{project.name}</Menu.Item>
+            <Menu.Item key={project.project_id}>{project.name}</Menu.Item>
         ));
 
         return (
             <>
                 <ManagerProjectCreationModal />
                 <ManagerProjectDeletionModal />
-                <ManagerDatasetCreationModal />
+                <ManagerDatasetAdditionModal />
+                <ManagerTableAdditionModal />
+
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
                         <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -93,7 +103,7 @@ class ManagerProjectDatasetContent extends Component {
                                     <Menu style={{flex: 1, paddingTop: "8px"}} mode="inline"
                                           onClick={item => this.props.selectProject(item.key)}
                                           selectedKeys={this.props.selectedProject
-                                              ? [this.props.selectedProject.id]
+                                              ? [this.props.selectedProject.project_id]
                                               : []}>
                                         {projectMenuItems}
                                     </Menu>
@@ -111,7 +121,9 @@ class ManagerProjectDatasetContent extends Component {
                                 {this.props.selectedProject ? (
                                     <Project value={this.props.selectedProject}
                                              datasets={this.props.datasets}
+                                             tables={this.props.tables}
                                              loadingDatasets={this.props.loadingDatasets}
+                                             loadingTables={this.props.loadingTables}
                                              editing={this.props.editingProject}
                                              saving={this.props.savingProject}
                                              onDelete={() => this.props.toggleProjectDeletionModal()}
@@ -119,6 +131,7 @@ class ManagerProjectDatasetContent extends Component {
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
                                              onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
+                                             onAddTable={() => this.props.toggleProjectTableAdditionModal()}
                                              onDatasetIngest={d => this.ingestIntoDataset(d)} />
                                 ) : (
                                     this.props.loadingProjects ? (
@@ -139,60 +152,81 @@ class ManagerProjectDatasetContent extends Component {
 }
 
 ManagerProjectDatasetContent.propTypes = {
-    projects: PropTypes.arrayOf(PropTypes.object),
+    projects: PropTypes.arrayOf(PropTypes.shape({
+        project_id: PropTypes.string,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        data_use: PropTypes.object,
+        created: PropTypes.string,
+        updated: PropTypes.string
+    })),
 
     loadingProjects: PropTypes.bool,
+    loadingDatasets: PropTypes.bool,
+    loadingTables: PropTypes.bool,
 
     selectedProject: PropTypes.object,
 
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
 
-    loadingDatasets: PropTypes.bool,
     datasets: PropTypes.arrayOf(PropTypes.object),
+    tables: PropTypes.arrayOf(PropTypes.object),
 
     fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
     toggleProjectDatasetAdditionModal: PropTypes.func,
+    toggleProjectTableAdditionModal: PropTypes.func,
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
 
-    fetchProjectsWithDatasets: PropTypes.func,
+    fetchProjectsWithDatasetsAndTables: PropTypes.func,
 
     saveProject: PropTypes.func
 };
 
 const mapStateToProps = state => {
-    const datasets = state.serviceDatasets.datasetsByServiceAndDataTypeID;
-
-    /**
-     * @typedef {Object} ProjectDataset
-     * @property {string} dataset_id
-     * @property {string} service_id
-     * @property {string} data_type_id
-     * @type {ProjectDataset[]}
-     */
-    const projectDatasetRecords = state.manager.selectedProjectID !== null
-        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID] || []  // TODO: Try not to need ||
+    const datasets = state.manager.selectedProjectID !== null
+        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID] || []
         : [];
 
-    const datasetList = projectDatasetRecords
-        .filter(dataset => datasets.hasOwnProperty(dataset.service_id))
-        .map(dataset => (datasets[dataset.service_id][dataset.data_type_id].datasets || [])
-            .filter(ds => ds.id === dataset.dataset_id)
-            .map(ds => ({...ds, dataTypeID: dataset.data_type_id})))
+    const tables = state.serviceTables.itemsByServiceAndDataTypeID;
+
+    /**
+     * @typedef {Object} ProjectTable
+     * @property {string} table_id
+     * @property {string} service_id
+     * @property {string} dataset
+     * @property {string} data_type
+     * @property {string} sample
+     * @type {ProjectTable[]}
+     */
+    const projectTableRecords = state.manager.selectedProjectID !== null
+        ? state.projectTables.itemsByProjectID[state.manager.selectedProjectID] || []  // TODO: Try not to need ||
+        : [];
+
+    const tableList = projectTableRecords
+        .filter(table =>  tables.hasOwnProperty(table.service_id))
+        .map(table => (tables[table.service_id][table.data_type].tables || [])
+            .filter(tb => tb.id === table.table_id)
+            .map(tb => ({...tb, ...table})))
         .flat();
 
     return {
         editingProject: state.manager.editingProject,
         savingProject: state.projects.isSaving,
+
         projects: state.projects.items,
+        datasets,
+        tables: tableList,
+
         loadingProjects: state.projects.isFetching,
-        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
-        loadingDatasets: state.services.isFetchingAll || state.projectDatasets.isFetchingAll,
-        datasets: datasetList
+        loadingDatasets: state.projectDatasets.isFetching || state.projectDatasets.isAdding,
+        loadingTables: state.services.isFetchingAll || state.projectTables.isFetchingAll,
+
+        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null
     };
 };
 
@@ -201,9 +235,10 @@ const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
+    toggleProjectTableAdditionModal: () => dispatch(toggleProjectTableAdditionModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
-    fetchProjectsWithDatasets: async () => await dispatch(fetchProjectsWithDatasets()),
+    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     saveProject: project => dispatch(saveProjectIfPossible(project))
 });

@@ -9,7 +9,9 @@ import "antd/es/modal/style/css";
 
 import ProjectForm from "./ProjectForm";
 
-import {createProjectIfPossible, toggleProjectCreationModal} from "../../../modules/manager/actions";
+import {toggleProjectCreationModal} from "../../../modules/manager/actions";
+import {createProjectIfPossible} from "../../../modules/metadata/actions";
+
 
 class ManagerProjectCreationModal extends Component {
     async componentDidMount() {

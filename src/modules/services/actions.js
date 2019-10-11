@@ -21,17 +21,17 @@ export const LOADING_SERVICE_METADATA = createFlowActionTypes("LOADING_SERVICE_M
 export const FETCH_SERVICE_DATA_TYPES = createNetworkActionTypes("FETCH_SERVICE_DATA_TYPES");
 export const LOADING_SERVICE_DATA_TYPES = createFlowActionTypes("LOADING_SERVICE_DATA_TYPES");
 
-export const FETCH_SERVICE_DATASETS = createNetworkActionTypes("FETCH_SERVICE_DATASETS");
-export const LOADING_SERVICE_DATASETS = createFlowActionTypes("LOADING_SERVICE_DATASETS");
+export const FETCH_SERVICE_TABLES = createNetworkActionTypes("FETCH_SERVICE_TABLES");
+export const LOADING_SERVICE_TABLES = createFlowActionTypes("LOADING_SERVICE_TABLES");
 
-export const ADDING_SERVICE_DATASET = createFlowActionTypes("ADDING_SERVICE_DATASET");
+export const ADDING_SERVICE_TABLE = createFlowActionTypes("ADDING_SERVICE_TABLE");
 
 export const FETCH_SERVICE_WORKFLOWS = createNetworkActionTypes("FETCH_SERVICE_WORKFLOWS");
 export const LOADING_SERVICE_WORKFLOWS = createFlowActionTypes("LOADING_SERVICE_WORKFLOWS");
 
 
-export const endAddingServiceDataset = (serviceID, dataTypeID, dataset) => ({
-    type: ADDING_SERVICE_DATASET.END,
+export const endAddingServiceTable = (serviceID, dataTypeID, dataset) => ({
+    type: ADDING_SERVICE_TABLE.END,
     serviceID,
     dataTypeID,
     dataset
@@ -58,11 +58,11 @@ export const fetchDataServiceDataTypes = networkAction(service => ({
     err: `Error fetching data types from service '${service.name}'`
 }));
 
-export const fetchDataServiceDataTypeDatasets = networkAction((service, dataType) => ({
-    types: FETCH_SERVICE_DATASETS,
+export const fetchDataServiceDataTypeTables = networkAction((service, dataType) => ({
+    types: FETCH_SERVICE_TABLES,
     params: {serviceID: service.id, dataTypeID: dataType.id},
     url: `/api${service.url}/datasets?${createURLSearchParams({"data-type": dataType.id}).toString()}`,
-    err: `Error fetching datasets from service '${service.name}' (data type ${dataType.id})`
+    err: `Error fetching tables from service '${service.name}' (data type ${dataType.id})`
 }));
 
 export const fetchDataServiceWorkflows = networkAction(service => ({
@@ -72,7 +72,7 @@ export const fetchDataServiceWorkflows = networkAction(service => ({
 }));
 
 
-export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dispatch, getState) => {
+export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispatch, getState) => {
     if (getState().services.isFetchingAll) return;
 
     await dispatch(beginFlow(LOADING_ALL_SERVICE_DATA));
@@ -109,13 +109,13 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasets = () => async (dis
         })()
     ]);
 
-    // Fetch Data Service Local Datasets
+    // Fetch Data Service Local Tables
     // - skip services that don't provide data or don't have data types
-    await dispatch(beginFlow(LOADING_SERVICE_DATASETS));
+    await dispatch(beginFlow(LOADING_SERVICE_TABLES));
     await Promise.all(dataServices.flatMap(s =>
         ((getState().serviceDataTypes.dataTypesByServiceID[s.id] || {items: []}).items || [])
-            .map(dt => dispatch(fetchDataServiceDataTypeDatasets(s, dt)))));
-    await dispatch(endFlow(LOADING_SERVICE_DATASETS));
+            .map(dt => dispatch(fetchDataServiceDataTypeTables(s, dt)))));
+    await dispatch(endFlow(LOADING_SERVICE_TABLES));
 
     await dispatch(endFlow(LOADING_ALL_SERVICE_DATA));
 };
@@ -126,6 +126,6 @@ export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => as
             Object.keys(state.serviceMetadata.metadata).length === 0 ||
             Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0) &&
             !state.services.isFetchingAll) {
-        await fetchServicesWithMetadataAndDataTypesAndDatasets();
+        await fetchServicesWithMetadataAndDataTypesAndTables();
     }
 };
