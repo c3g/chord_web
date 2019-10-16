@@ -23,7 +23,7 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
         case "object":
             return {
                 ...baseNode,
-                children: Object.entries(node.properties)
+                children: Object.entries(node.properties || {})
                     .sort((a, b) => {
                         if (a[1].hasOwnProperty("search") && b[1].hasOwnProperty("search")
                                 && a[1].search.hasOwnProperty("order") && b[1].search.hasOwnProperty("order")) {
