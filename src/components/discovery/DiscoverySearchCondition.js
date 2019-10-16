@@ -37,6 +37,7 @@ class DiscoverySearchCondition extends Component {
         this.handleNegation = this.handleNegation.bind(this);
         this.handleOperation = this.handleOperation.bind(this);
         this.handleSearchValue = this.handleSearchValue.bind(this);
+        this.handleSearchSelectValue = this.handleSearchSelectValue.bind(this);
         this.triggerChange = this.triggerChange.bind(this);
     }
 
@@ -58,6 +59,11 @@ class DiscoverySearchCondition extends Component {
     handleSearchValue(e) {
         if (!("value" in this.props)) this.setState({searchValue: e.target.value});
         this.triggerChange({searchValue: e.target.value});
+    }
+
+    handleSearchSelectValue(searchValue) {
+        if (!("value" in this.props)) this.setState({searchValue});
+        this.triggerChange({searchValue});
     }
 
     triggerChange(change) {
@@ -112,10 +118,10 @@ class DiscoverySearchCondition extends Component {
                     </Select>
                 )}
                 {this.state.fieldSchema.hasOwnProperty("enum") ? (
-                    <Select style={getInputStyle()} onChange={this.handleSearchValue} value={this.state.searchValue}
-                            filterOption={(i, o) =>
+                    <Select style={getInputStyle()} onChange={this.handleSearchSelectValue}
+                            value={this.state.searchValue} showSearch filterOption={(i, o) =>
                                 o.props.children.toLocaleLowerCase().includes(i.toLocaleLowerCase())}>
-                        {this.state.fieldSchema.enum.map(v => <Select.Option key={v}>v</Select.Option>)}
+                        {this.state.fieldSchema.enum.map(v => <Select.Option key={v}>{v}</Select.Option>)}
                     </Select>
                 ) : (
                     <Input style={getInputStyle()} placeholder="value" onChange={this.handleSearchValue}
