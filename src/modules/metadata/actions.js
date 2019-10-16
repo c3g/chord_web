@@ -31,6 +31,8 @@ export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 
+export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
+
 
 const endProjectTableAddition = (projectID, dataset) => ({type: PROJECT_TABLE_ADDITION.END, projectID, dataset});
 
@@ -205,3 +207,10 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
         await terminate();
     }
 };
+
+
+export const fetchPhenopackets = networkAction(() => ({
+    types: FETCH_PHENOPACKETS,
+    url: `/api/metadata/api/phenopackets/`,
+    err: "Error fetching phenopackets"
+}));

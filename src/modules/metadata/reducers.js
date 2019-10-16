@@ -11,7 +11,9 @@ import {
     SAVE_PROJECT,
 
     ADD_PROJECT_DATASET,
-    PROJECT_TABLE_ADDITION
+    PROJECT_TABLE_ADDITION,
+
+    FETCH_PHENOPACKETS
 } from "./actions";
 
 
@@ -264,6 +266,32 @@ export const projectTables = (
 
         case PROJECT_TABLE_ADDITION.TERMINATE:
             return {...state, isAdding: false};
+
+        default:
+            return state;
+    }
+};
+
+
+export const phenopackets = (
+    state = {
+        isFetching: false,
+        items: [],
+        itemsByDatasetID: {}
+    },
+    action
+) => {
+    switch (action) {
+        case FETCH_PHENOPACKETS.REQUEST:
+            return {...state, isFetching: true};
+
+        case FETCH_PHENOPACKETS.RECEIVE:
+            return {
+                ...state,
+                isFetching: false,
+                items: [...action.data.results],
+                itemsByDatasetID: Object.fromEntries(Object.entries(action))
+            };
 
         default:
             return state;
