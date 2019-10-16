@@ -42,26 +42,21 @@ class DiscoverySearchForm extends Component {
     addCondition(field = undefined) {
         const newKey = this.props.form.getFieldValue("keys").length;
 
-        let searchParameters = {...DEFAULT_SEARCH_PARAMETERS};
-
         // TODO: What if operations is an empty list?
 
-        if (field) {
-            const fs = getFieldSchema(this.props.dataType.schema, field);
-            if (fs.hasOwnProperty("search")) {
-                if (fs.search.hasOwnProperty("operations")) searchParameters.operations = fs.search.operations;
-                if (fs.search.hasOwnProperty("canNegate")) searchParameters.canNegate = fs.search.canNegate;
-                if (fs.search.hasOwnProperty("required")) searchParameters.required = fs.search.required;
-                if (fs.search.hasOwnProperty("type")) searchParameters.type = fs.search.type;
+        const fs = field ? getFieldSchema(this.props.dataType.schema, field) : {};
+        const fieldSchema = {
+            ...fs,
+            search: {
+                ...DEFAULT_SEARCH_PARAMETERS,
+                ...(fs.search || {})
             }
-        }
+        };
 
         // Initialize new condition, otherwise the state won't get it
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
             field,
-            fieldSchema: { // TODO: Deduplicate this default object
-                search: {...searchParameters}
-            },
+            fieldSchema,
             negated: false,
             operation: OP_EQUALS,
             searchValue: ""
