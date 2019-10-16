@@ -82,6 +82,8 @@ class DiscoverySearchCondition extends Component {
         const valueWidth = 224 + (canRemove ? 49 : 0)
             + (this.state.fieldSchema.search.canNegate ? 87 : 0) + (this.equalsOnly() ? 0 : 115);
 
+        const getInputStyle = () => ({width: `calc(100% - ${valueWidth}px)`});
+
         return (
             <Input.Group compact>
                 <SchemaTreeSelect
@@ -109,8 +111,16 @@ class DiscoverySearchCondition extends Component {
                         {operationOptions}
                     </Select>
                 )}
-                <Input style={{width: `calc(100% - ${valueWidth}px)`}} placeholder="value"
-                       onChange={this.handleSearchValue} value={this.state.searchValue} />
+                {this.state.fieldSchema.hasOwnProperty("enum") ? (
+                    <Select style={getInputStyle()} onChange={this.handleSearchValue} value={this.state.searchValue}
+                            filterOption={(i, o) =>
+                                o.props.children.toLocaleLowerCase().includes(i.toLocaleLowerCase())}>
+                        {this.state.fieldSchema.enum.map(v => <Select.Option key={v}>v</Select.Option>)}
+                    </Select>
+                ) : (
+                    <Input style={getInputStyle()} placeholder="value" onChange={this.handleSearchValue}
+                           value={this.state.searchValue} />
+                )}
                 {canRemove ? (
                     <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
                             onClick={this.onRemoveClick} icon="close" />
