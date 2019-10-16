@@ -91,7 +91,7 @@ class Project extends Component {
                 <Button type="danger" icon="delete">Delete</Button>
                 {/* TODO: Share button */}
             </>}>
-                <Typography.Title level={4}>Individuals and Samples</Typography.Title>
+                <Typography.Title level={4}>Individuals and Pools</Typography.Title>
                 TODO
 
                 <Typography.Title level={4}>
