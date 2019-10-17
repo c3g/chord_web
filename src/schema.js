@@ -5,6 +5,7 @@ import "antd/es/typography/style/css";
 
 
 export const ROOT_SCHEMA_ID = "[dataset item]";
+const ARRAY_ITEM_ID = "[array item]";
 
 
 /**
@@ -75,7 +76,7 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
         case "array":
             return {
                 ...baseNode,
-                children: searchFragment(node.items, "[array item]", `${key}.`, excludedKeys)
+                children: searchFragment(node.items, ARRAY_ITEM_ID, `${key}.`, excludedKeys)
             };
 
         default:
@@ -111,7 +112,7 @@ export const getFieldSchema = (schema, fieldString) => {
 
             case "array":
                 currentComponent++;
-                if (!currentSchema.hasOwnProperty("items") || components[currentComponent] !== "[array item]") {
+                if (!currentSchema.hasOwnProperty("items") || components[currentComponent] !== ARRAY_ITEM_ID) {
                     throw new Error("Invalid field specified in field string.");
                 }
                 currentSchema = currentSchema.items;
