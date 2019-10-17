@@ -10,6 +10,8 @@ import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search
 
 import SchemaTreeSelect from "../SchemaTreeSelect";
 
+// TODO: On change dropdown, clear the value if it's incompatible!
+
 class DiscoverySearchCondition extends Component {
     static getDerivedStateFromProps(nextProps) {
         return "value" in nextProps

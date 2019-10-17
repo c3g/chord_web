@@ -3,52 +3,83 @@ import React from "react";
 import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
-// TODO: Remove objects/arrays with exclusively unsearchable children, option to remove unsearchable children
 
 export const ROOT_SCHEMA_ID = "[dataset item]";
 
 
+/**
+ * Generates schema tree data and uses it to decide whether to include the current node in a searchable list fragment.
+ * @param {object} node - The schema node to check.
+ * @param {string} name - The node's ID (key fragment).
+ * @param {string} prefix - The node's key prefix.
+ * @param {string[]} excludedKeys - An array of keys to be disabled.
+ * @returns {object} - A tree node for use in Ant Design components.
+ */
+const searchFragment = (node, name, prefix, excludedKeys) => {
+    const result = generateSchemaTreeData(node, name, prefix, excludedKeys);
+    return (node.hasOwnProperty("search") || node.type === "object" && result.children.length > 0 ||
+        node.type === "array" && result.children.length > 0) ? [result] : [];
+};
+
+/**
+ * Sorts two object entries representing schema nodes.
+ * @param {array} a - The first schema node entry.
+ * @param {array} b - The second schema node entry.
+ * @returns {number}
+ */
+const sortSchemaEntries = (a, b) => {
+    if (a[1].hasOwnProperty("search") && b[1].hasOwnProperty("search")
+        && a[1].search.hasOwnProperty("order") && b[1].search.hasOwnProperty("order")) {
+        return a[1].search.order - b[1].search.order;
+    }
+    return a[0].localeCompare(b[0]);
+};
+
+/**
+ * Generates a schema tree for Ant Design components by recursively descending into schema nodes.
+ * @param {object} node - Current schema node.
+ * @param {string} name - The node's ID (key fragment).
+ * @param {string} prefix - The node's key prefix.
+ * @param {string[]} excludedKeys - An array of keys to be disabled.
+ * @returns {{children, selectable, disabled, titleSelected, title, value, key}} - Ant tree node for the schema node.
+ */
 export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
     const key = `${prefix}${name}`;
-    const value = key;
-    const title = (<span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>);
-
     const baseNode = {
         key,
-        value,
-        title,
+        value: key,
+        title: <span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>,
+        titleSelected: <Typography.Text style={{
+            float: "right",
+            fontFamily: "monospace",
+            fontSize: "0.7rem",
+            marginRight: "0.4rem"
+        }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
         selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
             && node.search.operations.length > 0 && !excludedKeys.includes(key),
         disabled: excludedKeys.includes(key)
     };
 
+    // Only include fields that are searchable, objects that have all searchable properties, and arrays that have items
+    // that are searchable in some way. This is done using searchFragment, which returns [] if a node and all its
+    // children are not searchable.
     switch (node.type) {
-        // Want to filter here, but upon filtering children ant stops rendering them correctly
         case "object":
             return {
                 ...baseNode,
                 children: Object.entries(node.properties || {})
-                    .sort((a, b) => {
-                        if (a[1].hasOwnProperty("search") && b[1].hasOwnProperty("search")
-                                && a[1].search.hasOwnProperty("order") && b[1].search.hasOwnProperty("order")) {
-                            return a[1].search.order - b[1].search.order;
-                        }
-                        return a[0].localeCompare(b[0]);
-                    })
-                    .map(p => generateSchemaTreeData(p[1], p[0], `${key}.`, excludedKeys))
+                    .sort(sortSchemaEntries)
+                    .flatMap(([name, node]) => searchFragment(node, name, `${key}.`, excludedKeys))
             };
 
         case "array":
             return {
                 ...baseNode,
-                children: [generateSchemaTreeData(node.items, "[array item]", `${key}.`, excludedKeys)]
+                children: searchFragment(node.items, "[array item]", `${key}.`, excludedKeys)
             };
 
         default:
-            return {
-                ...baseNode,
-                children: []
-            };
+            return {...baseNode, children: []};
     }
 };
 
@@ -94,6 +125,11 @@ export const getFieldSchema = (schema, fieldString) => {
     return currentSchema;
 };
 
+/**
+ * Gets all fields (in their dot-delimited key representation) from a schema.
+ * @param {object} schema - The schema to extract keys from.
+ * @returns {string[]} - An array of fields in dot-delimited key representation.
+ */
 export const getFields = schema => {
     // TODO: Deduplicate with tree select
     if (!schema) return [];
