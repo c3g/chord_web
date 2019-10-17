@@ -39,21 +39,21 @@ const endProjectTableAddition = (projectID, dataset) => ({type: PROJECT_TABLE_AD
 
 export const fetchProjects = networkAction(() => ({
     types: FETCH_PROJECTS,
-    url: "/api/metadata/api/projects/",
+    url: "/api/metadata/api/projects",
     err: "Error fetching projects"
 }));
 
 
 export const fetchProjectDatasets = networkAction(() => ({
     types: FETCH_PROJECT_DATASETS,
-    url: "/api/metadata/api/datasets/",
+    url: "/api/metadata/api/datasets",
     err: "Error fetching tables"
 }));
 
 export const fetchProjectTables = networkAction(projectDatasets => ({
     types: FETCH_PROJECT_TABLES,
     params: {projectDatasets},
-    url: "/api/metadata/api/table_ownership/",
+    url: "/api/metadata/api/table_ownership",
     err: "Error fetching tables"
 }));
 
@@ -70,7 +70,7 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
 
 const createProject = networkAction(project => ({
     types: CREATE_PROJECT,
-    url: "/api/metadata/api/projects/",
+    url: "/api/metadata/api/projects",
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -91,7 +91,7 @@ export const createProjectIfPossible = project => async (dispatch, getState) => 
 export const deleteProject = networkAction(projectID => ({
     types: DELETE_PROJECT,
     params: {projectID},
-    url: `/api/metadata/api/projects/${projectID}/`,
+    url: `/api/metadata/api/projects/${projectID}`,
     req: {method: "DELETE"},
     err: `Error deleting project '${projectID}'`,  // TODO: More user-friendly error
     onSuccess: () => message.success("Project deleted!")  // TODO: More user-friendly error
@@ -108,7 +108,7 @@ export const deleteProjectIfPossible = projectID => async (dispatch, getState) =
 const saveProject = networkAction(project => ({
     types: SAVE_PROJECT,
     params: {projectID: project.project_id},
-    url: `/api/metadata/api/projects/${project.project_id}/`,
+    url: `/api/metadata/api/projects/${project.project_id}`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -129,7 +129,7 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 export const addProjectDataset = networkAction((project, name, description) => ({
     types: ADD_PROJECT_DATASET,
     params: {projectID: project.project_id},
-    url: `/api/metadata/api/datasets/`,
+    url: `/api/metadata/api/datasets`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -211,6 +211,6 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
 
 export const fetchPhenopackets = networkAction(() => ({
     types: FETCH_PHENOPACKETS,
-    url: `/api/metadata/api/phenopackets/`,
+    url: `/api/metadata/api/phenopackets`,
     err: "Error fetching phenopackets"
 }));
