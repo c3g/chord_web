@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {TreeSelect} from "antd";
 import "antd/es/tree-select/style/css";
 
-import {generateSchemaTreeData, getFieldSchema} from "../schema";
+import {ROOT_SCHEMA_ID, generateSchemaTreeData, getFieldSchema} from "../schema";
 import PropTypes from "prop-types";
 
 class SchemaTreeSelect extends Component {
@@ -38,7 +38,7 @@ class SchemaTreeSelect extends Component {
     render() {
         return this.props.schema
             ? (<TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
-                           treeData={[generateSchemaTreeData(this.props.schema, "[dataset item]", "",
+                           treeData={[generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID, "",
                                this.props.excludedKeys)]}
                            value={this.state.selected} onChange={this.onChange.bind(this)} />)
             : (<div style={this.props.style} />);

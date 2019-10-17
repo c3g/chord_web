@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 import {Tree} from "antd";
 import "antd/es/tree/style/css";
 
-import {generateSchemaTreeData} from "../schema";
+import {ROOT_SCHEMA_ID, generateSchemaTreeData} from "../schema";
 
 const generateSchemaTree = schema => (
     <Tree defaultExpandAll={true}
-          treeData={[generateSchemaTreeData(schema, "[dataset item]", "", [])]} />
+          treeData={[generateSchemaTreeData(schema, ROOT_SCHEMA_ID, "", [])]} />
 );
 
 class SchemaTree extends Component {

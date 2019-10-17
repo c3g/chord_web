@@ -4,6 +4,10 @@ import {Typography} from "antd";
 import "antd/es/typography/style/css";
 
 // TODO: Remove objects/arrays with exclusively unsearchable children, option to remove unsearchable children
+
+export const ROOT_SCHEMA_ID = "[dataset item]";
+
+
 export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
     const key = `${prefix}${name}`;
     const value = key;
@@ -56,7 +60,7 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
  */
 export const getFieldSchema = (schema, fieldString) => {
     const components = fieldString.split(".");
-    if (components.length === 0 || components[0] !== "[dataset item]") {
+    if (components.length === 0 || components[0] !== ROOT_SCHEMA_ID) {
         // Field string doesn't correspond to the format mandated by the CHORD front end.
         throw new Error("Invalid format for field string.");
     }
@@ -93,7 +97,7 @@ export const getFieldSchema = (schema, fieldString) => {
 export const getFields = schema => {
     // TODO: Deduplicate with tree select
     if (!schema) return [];
-    const treeData = generateSchemaTreeData(schema, "[dataset item]", "", []);
+    const treeData = generateSchemaTreeData(schema, ROOT_SCHEMA_ID, "", []);
     const getFieldsFromTreeData = (node, acc) => {
         acc.push(node.key);
         node.children.map(c => getFieldsFromTreeData(c, acc));
