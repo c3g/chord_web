@@ -159,14 +159,14 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
     try {
         const serviceResponse = await fetch(
             `/api/${getState().services.itemsByID[serviceID].name}/datasets?data-type=${dataType}`,
-            {method: "POST", body: createFormData({name: tableName.trim()})});
+            {method: "POST", body: createFormData({name: tableName.trim(), metadata: JSON.stringify({})})});
 
         if (serviceResponse.ok) {
             const serviceTable = await serviceResponse.json();
 
             // TODO: Rename dataset, add actual dataset adding endpoint
             try {
-                const projectResponse = await fetch(`/api/metadata/api/table_ownership/`, {
+                const projectResponse = await fetch(`/api/metadata/api/table_ownership`, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({

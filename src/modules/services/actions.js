@@ -30,11 +30,11 @@ export const FETCH_SERVICE_WORKFLOWS = createNetworkActionTypes("FETCH_SERVICE_W
 export const LOADING_SERVICE_WORKFLOWS = createFlowActionTypes("LOADING_SERVICE_WORKFLOWS");
 
 
-export const endAddingServiceTable = (serviceID, dataTypeID, dataset) => ({
+export const endAddingServiceTable = (serviceID, dataTypeID, table) => ({
     type: ADDING_SERVICE_TABLE.END,
     serviceID,
     dataTypeID,
-    dataset
+    table
 });
 
 

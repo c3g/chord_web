@@ -13,7 +13,7 @@ import DataUseDisplay from "../../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy} from "../../../utils";
+import {simpleDeepCopy, projectPropTypesShape} from "../../../utils";
 
 
 class Project extends Component {
@@ -129,7 +129,7 @@ class Project extends Component {
                 </Typography.Title>
                 <Spin spinning={this.props.loadingDatasets}>
                     {(this.props.datasets || []).length > 0
-                        ? this.props.datasets.map(d => <Dataset value={{
+                        ? this.props.datasets.map(d => <Dataset key={d.dataset_id} project={this.props.value} value={{
                             ...d,
                             tables: this.props.tables,  // TODO: Filter / transform?
                             loadingTables: this.props.loadingTables
@@ -146,7 +146,7 @@ class Project extends Component {
 }
 
 Project.propTypes = {
-    value: PropTypes.object,
+    value: projectPropTypesShape,
     datasets: PropTypes.arrayOf(PropTypes.object),
     tables: PropTypes.arrayOf(PropTypes.object),
 

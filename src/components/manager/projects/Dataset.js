@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Card, Col, Row, Table, Typography} from "antd";
@@ -9,6 +10,12 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import ManagerTableAdditionModal from "./ManagerTableAdditionModal";
+
+import {addProjectTable, fetchProjectsWithDatasetsAndTables} from "../../../modules/metadata/actions";
+
+import {projectPropTypesShape} from "../../../utils";
+
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
 
@@ -17,7 +24,7 @@ class Dataset extends Component {
 
     static getDerivedStateFromProps(nextProps) {
         if ("value" in nextProps) {
-            return {...(nextProps.value || {})};
+            return {...(nextProps.value || {})};  // TODO: For editing
         }
         return null;
     }
@@ -29,12 +36,36 @@ class Dataset extends Component {
         this.onDatasetIngest = props.onDatasetIngest || (() => {});
 
         const value = props.value || {};
-        this.state = {
+        this.state = {  // TODO: For editing
             dataset_id: value.dataset_id || null,
             name: value.name || "",
             tables: value.tables || [],
-            loadingTables: value.loadingTables || false
+            loadingTables: value.loadingTables || false,
+
+            additionModalVisible: false
         };
+
+        this.handleAdditionClick = this.handleAdditionClick.bind(this);
+        this.handleAdditionCancel = this.handleAdditionCancel.bind(this);
+        this.handleAdditionSubmit = this.handleAdditionSubmit.bind(this);
+    }
+
+    handleAdditionClick() {
+        this.setState({additionModalVisible: true});
+    }
+
+    handleAdditionCancel() {
+        this.setState({additionModalVisible: false});
+    }
+
+    async handleAdditionSubmit(values) {
+        const [serviceID, dataTypeID] = values.dataType.split(":");
+        await this.props.addProjectTable(this.props.project.project_id, this.state.dataset_id, serviceID, dataTypeID,
+            values.name);
+
+        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
+
+        this.setState({additionModalVisible: false});
     }
 
     render() {
@@ -47,13 +78,19 @@ class Dataset extends Component {
                 <Button type="danger" icon="delete">Delete</Button>
                 {/* TODO: Share button */}
             </>}>
+                <ManagerTableAdditionModal visible={this.state.additionModalVisible}
+                                           project={this.props.project}
+                                           dataset={this.state}
+                                           onSubmit={vs => this.handleAdditionSubmit(vs)}
+                                           onCancel={() => this.handleAdditionCancel()} />
+
                 <Typography.Title level={4}>Individuals and Pools</Typography.Title>
                 TODO
 
                 <Typography.Title level={4}>
                     Tables
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onAddTable()}>
+                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.handleAdditionClick()}>
                             Add Table
                         </Button>
                     </div>
@@ -80,6 +117,8 @@ class Dataset extends Component {
 }
 
 Dataset.propTypes = {
+    project: projectPropTypesShape,
+
     value: PropTypes.shape({
         dataset_id: PropTypes.string,
         name: PropTypes.string,
@@ -91,4 +130,10 @@ Dataset.propTypes = {
     onDatasetIngest: PropTypes.func
 };
 
-export default Dataset;
+const mapDispatchToProps = dispatch => ({
+    addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, datasetName) =>
+        await dispatch(addProjectTable(projectID, datasetID, serviceID, dataTypeID, datasetName)),
+    fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
+});
+
+export default connect(null, mapDispatchToProps)(Dataset);

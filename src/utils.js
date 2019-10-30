@@ -20,6 +20,17 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
 };
 
 
+// Prop types object shape for a single project object.
+export const projectPropTypesShape = PropTypes.shape({
+    project_id: PropTypes.string,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    data_use: PropTypes.object,  // TODO: Shape
+    created: PropTypes.string,
+    updated: PropTypes.string
+});
+
+
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({
     workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)

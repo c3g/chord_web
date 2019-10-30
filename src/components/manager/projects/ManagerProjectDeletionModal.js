@@ -11,6 +11,8 @@ import "antd/es/typography/style/css";
 import {toggleProjectDeletionModal} from "../../../modules/manager/actions";
 import {deleteProjectIfPossible} from "../../../modules/metadata/actions";
 
+import {projectPropTypesShape} from "../../../utils";
+
 
 class ManagerProjectDeletionModal extends Component {
     componentDidMount() {
@@ -23,7 +25,7 @@ class ManagerProjectDeletionModal extends Component {
     }
 
     async handleDeleteSubmit() {
-        await this.props.deleteProject(this.props.selectedProject.id);
+        await this.props.deleteProject(this.props.selectedProject.project_id);
 
         // TODO: Only close modal if deletion was a success
         this.props.toggleProjectDeletionModal();
@@ -53,7 +55,7 @@ class ManagerProjectDeletionModal extends Component {
 ManagerProjectDeletionModal.propTypes = {
     showDeletionModal: PropTypes.bool,
 
-    selectedProject: PropTypes.object,
+    selectedProject: projectPropTypesShape,
     selectedProjectName: PropTypes.string,
 
     toggleProjectDeletionModal: PropTypes.func,

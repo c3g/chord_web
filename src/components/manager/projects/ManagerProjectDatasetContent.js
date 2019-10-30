@@ -17,7 +17,6 @@ import Project from "./Project";
 import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
 import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
 import ManagerDatasetAdditionModal from "./ManagerDatasetAdditionModal";
-import ManagerTableAdditionModal from "./ManagerTableAdditionModal";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../../modules/services/actions";
 
@@ -30,13 +29,14 @@ import {
     toggleProjectCreationModal,
     toggleProjectDeletionModal,
     toggleProjectDatasetAdditionModal,
-    toggleProjectTableAdditionModal
 } from "../../../modules/manager/actions";
 
 import {
     fetchProjectsWithDatasetsAndTables,
     saveProjectIfPossible
 } from "../../../modules/metadata/actions";
+
+import {projectPropTypesShape} from "../../../utils";
 
 
 import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
@@ -75,7 +75,6 @@ class ManagerProjectDatasetContent extends Component {
                 <ManagerProjectCreationModal />
                 <ManagerProjectDeletionModal />
                 <ManagerDatasetAdditionModal />
-                <ManagerTableAdditionModal />
 
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
@@ -131,7 +130,6 @@ class ManagerProjectDatasetContent extends Component {
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
                                              onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
-                                             onAddTable={() => this.props.toggleProjectTableAdditionModal()}
                                              onDatasetIngest={d => this.ingestIntoDataset(d)} />
                                 ) : (
                                     this.props.loadingProjects ? (
@@ -152,20 +150,13 @@ class ManagerProjectDatasetContent extends Component {
 }
 
 ManagerProjectDatasetContent.propTypes = {
-    projects: PropTypes.arrayOf(PropTypes.shape({
-        project_id: PropTypes.string,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        data_use: PropTypes.object,
-        created: PropTypes.string,
-        updated: PropTypes.string
-    })),
+    projects: PropTypes.arrayOf(projectPropTypesShape),
 
     loadingProjects: PropTypes.bool,
     loadingDatasets: PropTypes.bool,
     loadingTables: PropTypes.bool,
 
-    selectedProject: PropTypes.object,
+    selectedProject: projectPropTypesShape,
 
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
@@ -177,7 +168,6 @@ ManagerProjectDatasetContent.propTypes = {
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
     toggleProjectDatasetAdditionModal: PropTypes.func,
-    toggleProjectTableAdditionModal: PropTypes.func,
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
@@ -235,7 +225,6 @@ const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
-    toggleProjectTableAdditionModal: () => dispatch(toggleProjectTableAdditionModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
