@@ -152,6 +152,7 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
     await dispatch(beginFlow(ADDING_SERVICE_TABLE));
 
     const terminate = async () => {
+        message.error(`Error adding new table '${tableName}'`);
         await dispatch(terminateFlow(ADDING_SERVICE_TABLE));
         await dispatch(terminateFlow(PROJECT_TABLE_ADDITION));
     };
@@ -186,23 +187,19 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
                     await dispatch(endProjectTableAddition(projectID, projectTable));  // TODO: Check params here
                 } else {
                     // TODO: Delete previously-created service dataset
-                    message.error(`Error adding new table '${tableName}'`);
                     console.error(projectResponse);
                     await terminate();
                 }
             } catch (e) {
                 // TODO: Delete previously-created service dataset
-                message.error(`Error adding new table '${tableName}'`);
                 console.error(e);
                 await terminate();
             }
         } else {
-            message.error(`Error adding new table '${tableName}'`);
             console.error(serviceResponse);
             await terminate();
         }
     } catch (e) {
-        message.error(`Error adding new table '${tableName}'`);
         console.error(e);
         await terminate();
     }
