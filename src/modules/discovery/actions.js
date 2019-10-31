@@ -23,14 +23,22 @@ export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
 });
 
 
-export const fetchSearch = networkAction((service, dataTypeID, conditions) => ({
+export const fetchSearch = networkAction((service, dataTypeID, conditions, query) => ({
     types: FETCH_SEARCH,
     params: {serviceID: service.id, dataTypeID},
     url: `/api/federation/search-aggregate${service.url}/search`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},  // TODO: Real GA4GH headers
-        body: JSON.stringify({dataTypeID, conditions})
+        body: JSON.stringify({
+            // OLD FORMAT
+            dataTypeID,
+            conditions,
+
+            // NEW FORMAT
+            data_type: dataTypeID,
+            query
+        })
     },
     err: "Search returned an error",  // TODO: Better search errors
     afterAction: () => async (dispatch, getState) =>
@@ -42,7 +50,15 @@ export const fetchSearch = networkAction((service, dataTypeID, conditions) => ({
 // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
 export const performSearch = (service, dataTypeID, conditions) => async dispatch => {
     await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded());
-    await dispatch(fetchSearch(service, dataTypeID, conditions));
+
+    // Compile conditions into new search format
+    const query = conditions.map(c => {
+        let exp = [`#${c.operation}`, ["#resolve", ...c.field.split(".").slice(1)], c.searchValue];
+        if (c.negated) exp = ["#not", exp];
+        return exp;
+    }).reduce((se, v) => ["#and", se, v]);
+
+    await dispatch(fetchSearch(service, dataTypeID, conditions, query));
 };
 
 export const selectDiscoveryServiceDataType = (serviceID, dataTypeID) => ({
