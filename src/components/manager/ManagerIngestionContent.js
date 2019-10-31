@@ -120,8 +120,7 @@ class ManagerIngestionContent extends Component {
                 const selectContents = this.props.projects.map(p => (
                     <Select.OptGroup key={p.project_id} label={p.name}>
                         {(this.props.projectTables[p.project_id] || []).map(t => (
-                            <Select.Option key={`${p.project_id}:${t.table_id}`}
-                                           value={`${p.project_id}:${t.table_id}`}>
+                            <Select.Option key={`${p.project_id}:${t.table_id}`}>
                                 <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
                                 {getTableName(t.service_id, t.data_type, t.table_id)
                                     ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
