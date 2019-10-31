@@ -44,7 +44,7 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
-        this.ingestIntoDataset = this.ingestIntoDataset.bind(this);
+        this.ingestIntoTable = this.ingestIntoTable.bind(this);
 
         await this.props.fetchServiceDataIfNeeded();
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
@@ -61,8 +61,8 @@ class ManagerProjectDatasetContent extends Component {
         this.props.saveProject(project);
     }
 
-    ingestIntoDataset(d) {
-        this.props.history.push("/data/manager/ingestion", {selectedTable: d.id});  // TODO: Redux for sD?
+    ingestIntoTable(p, t) {
+        this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.project_id}:${t.id}`});
     }
 
     render() {
@@ -130,7 +130,7 @@ class ManagerProjectDatasetContent extends Component {
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
                                              onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
-                                             onDatasetIngest={d => this.ingestIntoDataset(d)} />
+                                             onTableIngest={(p, d) => this.ingestIntoTable(p, d)} />
                                 ) : (
                                     this.props.loadingProjects ? (
                                         <Skeleton title={{width: 300}}

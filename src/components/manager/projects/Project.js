@@ -42,9 +42,8 @@ class Project extends Component {
         this._onCancelEdit = props.onCancelEdit || nop;
         this._onSave = props.onSave || nop;
         this.onAddDataset = props.onAddDataset || nop;
-        this.onAddTable = props.onAddTable || nop;
 
-        this.onDatasetIngest = props.onDatasetIngest || nop;
+        this.onTableIngest = props.onTableIngest || nop;
 
         this.editingForm = null;
 
@@ -133,7 +132,7 @@ class Project extends Component {
                             ...d,
                             tables: this.props.tables,  // TODO: Filter / transform?
                             loadingTables: this.props.loadingTables
-                        }} onAddTable={this.onAddTable} onDatasetIngest={this.onDatasetIngest} />)
+                        }} onTableIngest={this.onTableIngest} />)
                         : (
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
                                 <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
@@ -162,7 +161,7 @@ Project.propTypes = {
     onSave: PropTypes.func,
     onAddDataset: PropTypes.func,
 
-    onDatasetIngest: PropTypes.func
+    onTableIngest: PropTypes.func
 };
 
 export default Project;

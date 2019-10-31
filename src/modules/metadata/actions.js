@@ -34,7 +34,7 @@ export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDIT
 export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
 
 
-const endProjectTableAddition = (projectID, dataset) => ({type: PROJECT_TABLE_ADDITION.END, projectID, dataset});
+const endProjectTableAddition = (projectID, table) => ({type: PROJECT_TABLE_ADDITION.END, projectID, table});
 
 
 export const fetchProjects = networkAction(() => ({

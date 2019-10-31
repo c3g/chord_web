@@ -32,8 +32,7 @@ class Dataset extends Component {
     constructor(props) {
         super(props);
 
-        this.onAddTable = props.onAddTable || (() => {});
-        this.onDatasetIngest = props.onDatasetIngest || (() => {});
+        this.onTableIngest = props.onTableIngest || (() => {});
 
         const value = props.value || {};
         this.state = {  // TODO: For editing
@@ -103,8 +102,10 @@ class Dataset extends Component {
                     <Table.Column dataIndex="data_type" title="Data Type" />
                     <Table.Column key="actions" title="Actions" width={330} render={d => (
                         <Row gutter={10}>
-                            <Col span={8}><Button icon="import" style={{width: "100%"}}
-                                                  onClick={() => this.onDatasetIngest(d)}>Ingest</Button></Col>
+                            <Col span={8}>
+                                <Button icon="import" style={{width: "100%"}}
+                                        onClick={() => this.onTableIngest(this.props.project, d)}>Ingest</Button>
+                            </Col>
                             <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
                             <Col span={8}><Button type="danger" icon="delete"
                                                   style={{width: "100%"}}>Delete</Button></Col>
@@ -126,8 +127,7 @@ Dataset.propTypes = {
         loadingTables: PropTypes.bool
     }),
 
-    onAddTable: PropTypes.func,
-    onDatasetIngest: PropTypes.func
+    onTableIngest: PropTypes.func
 };
 
 const mapDispatchToProps = dispatch => ({
