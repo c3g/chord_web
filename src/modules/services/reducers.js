@@ -196,7 +196,7 @@ export const serviceTables = (
                         ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {tables: null, tablesByID: null}),
+                                || {tables: [], tablesByID: {}}),
                             isFetching: true
                         }
                     }
@@ -228,7 +228,7 @@ export const serviceTables = (
                         ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {tables: null, tablesByID: null}),
+                                || {tables: [], tablesByID: {}}),
                             isFetching: false
                         }
                     }
@@ -248,12 +248,12 @@ export const serviceTables = (
                         ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {tables: null, tablesByID: null}),
+                                || {tables: [], tablesByID: {}}),
                             tables: [...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                || {tables: null, tablesByID: null}).tables, action.table],
+                                || {tables: [], tablesByID: {}}).tables, action.table],
                             tablesByID: {
                                 ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                    || {tables: null, tablesByID: null}).tablesByID,
+                                    || {tables: [], tablesByID: {}}).tablesByID,
                                 [action.table.id]: action.table
                             }
                         }
