@@ -38,6 +38,7 @@ class Dataset extends Component {
         this.state = {  // TODO: For editing
             dataset_id: value.dataset_id || null,
             name: value.name || "",
+            description: value.description || "",
             tables: value.tables || [],
             loadingTables: value.loadingTables || false,
 
@@ -82,6 +83,10 @@ class Dataset extends Component {
                                            dataset={this.state}
                                            onSubmit={vs => this.handleAdditionSubmit(vs)}
                                            onCancel={() => this.handleAdditionCancel()} />
+
+                {this.state.description.length > 0 ? (
+                    <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
+                ) : null}
 
                 <Typography.Title level={4}>Individuals and Pools</Typography.Title>
                 TODO
