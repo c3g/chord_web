@@ -60,7 +60,11 @@ export const fetchProjectTables = networkAction(projectDatasets => ({
 
 // TODO: if needed fetching + invalidation
 export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getState) => {
-    if (getState().projects.isFetching || getState().projects.isCreating || getState().projects.isDeleting) return;
+    const state = getState();
+    if (state.projects.isFetching ||
+        state.projects.isCreating ||
+        state.projects.isDeleting ||
+        state.projects.isSaving) return;
 
     await dispatch(fetchProjects());
     await dispatch(fetchProjectDatasets());
