@@ -11,6 +11,7 @@ import {discovery} from "./modules/discovery/reducers";
 import {projects, projectDatasets, projectTables} from "./modules/metadata/reducers";
 import {manager, dropBox} from "./modules/manager/reducers";
 import {runs} from "./modules/wes/reducers";
+import {peers} from "./modules/peers/reducers";
 
 const rootReducer = combineReducers({
     services,
@@ -27,7 +28,9 @@ const rootReducer = combineReducers({
 
     manager,
     dropBox,
-    runs
+    runs,
+
+    peers
 });
 
 export default rootReducer;

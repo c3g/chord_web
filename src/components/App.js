@@ -3,17 +3,19 @@ import {connect} from "react-redux";
 
 import {Link, Redirect, Route, Switch} from "react-router-dom";
 
-import {Layout, Menu, Icon} from "antd";
-import "antd/es/typography/style/css";
-import "antd/es/icon/style/css";
+import {Layout, Icon, Menu} from "antd";
+
 import "antd/es/layout/style/css";
+import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
 
 import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
+import PeersContent from "./PeersContent";
 
 import {fetchServicesWithMetadataAndDataTypesAndTables} from "../modules/services/actions";
+import {fetchPeers} from "../modules/peers/actions";
 
 // noinspection HtmlUnknownTarget
 const renderContent = Content => route => (
@@ -45,6 +47,12 @@ const renderContent = Content => route => (
                         <span className="nav-text">Data Manager</span>
                     </Link>
                 </Menu.Item>
+                <Menu.Item key="/peers">
+                    <Link to="/peers">
+                        <Icon type="apartment" />
+                        <span className="nav-text">Peers</span>
+                    </Link>
+                </Menu.Item>
             </Menu>
         </Layout.Header>
         <Layout>
@@ -70,6 +78,7 @@ class App extends Component {
                     <Route path="/services" component={renderContent(ServicesContent)} />
                     <Route path="/data/discovery" component={renderContent(DataDiscoveryContent)} />
                     <Route path="/data/manager" component={renderContent(DataManagerContent)} />
+                    <Route path="/peers" component={renderContent(PeersContent)} />
                     <Redirect from="/" to="/services" />
                 </Switch>
             </main>
@@ -77,6 +86,7 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this.props.dispatch(fetchPeers());
         this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTables());
     }
 }
