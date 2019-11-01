@@ -107,11 +107,13 @@ class ManagerProjectDatasetContent extends Component {
                                         {projectMenuItems}
                                     </Menu>
                                     <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
-                                        <Button type="primary" style={{width: "100%"}}
-                                                onClick={() => this.props.toggleProjectCreationModal()}
-                                                icon="plus">
-                                            Create Project
-                                        </Button>
+                                        {this.props.loadingProjects ? null : (
+                                            <Button type="primary" style={{width: "100%"}}
+                                                    onClick={() => this.props.toggleProjectCreationModal()}
+                                                    icon="plus">
+                                                Create Project
+                                            </Button>
+                                        )}
                                     </div>
                                 </div>
                             </Layout.Sider>
