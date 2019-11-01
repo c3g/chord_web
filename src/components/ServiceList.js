@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 
 import {Table, Typography, Icon, Tag} from "antd";
 
+import "antd/es/table/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
