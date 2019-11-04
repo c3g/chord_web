@@ -37,6 +37,7 @@ class TableForm extends Component {
 
 const mapStateToProps = state => ({
     dataTypes: Object.entries(state.serviceDataTypes.dataTypesByServiceID)
+        .filter(([s, _]) => ((state.services.itemsByID[s] || {}).metadata || {}).chordManageableTables)
         .flatMap(([s, dts]) => (dts.items || []).map(dt => ({dt, s})))
 });
 
