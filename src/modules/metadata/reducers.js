@@ -192,6 +192,7 @@ export const projectTables = (
         isFetchingAll: false,
         isAdding: false,
         isDeleting: false,
+        items: [],
         itemsByProjectID: {}
     },
     action
@@ -210,6 +211,7 @@ export const projectTables = (
         case DELETE_PROJECT.RECEIVE:
             return {
                 ...state,
+                items: state.items.filter(t => t.project_id !== action.projectID),
                 itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
             };
 
@@ -230,6 +232,17 @@ export const projectTables = (
             return {
                 ...state,
                 isFetching: false,
+                items: [
+                    ...state.items,
+                    ...action.data.results
+                        .map(t => ({
+                            ...t,
+                            project_id: (Object.entries(action.projectDatasets)
+                                .filter(([_, datasets]) => datasets.map(d => d.dataset_id)
+                                    .includes(t.dataset))[0] || [])[0] || null
+                        }))
+                        .filter(t => t.project_id !== null && !state.items.map(t => t.table_id).includes(t.table_id))
+                ],
                 itemsByProjectID: {  // TODO: Improve performance by maybe returning project ID on server side?
                     ...state.itemsByProjectID,
                     ...Object.fromEntries(Object.entries(action.projectDatasets).map(([projectID, datasets]) =>
@@ -250,6 +263,7 @@ export const projectTables = (
             return {
                 ...state,
                 isAdding: false,
+                items: [...state.items, action.table],
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
                     [action.projectID]: [...(state.itemsByProjectID[action.projectID] || []), action.table]
@@ -266,6 +280,7 @@ export const projectTables = (
             return {
                 ...state,
                 isDeleting: false,
+                items: state.items.filter(t => t.table_id !== action.tableID),
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
                     [action.projectID]: (state.itemsByProjectID[action.projectID] || [])

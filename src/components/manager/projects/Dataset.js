@@ -128,7 +128,13 @@ class Dataset extends Component {
                 <Typography.Title level={4}>
                     Tables
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.handleAdditionClick()}>
+                        {(this.props.strayTables || []).length > 0 ? (
+                            <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
+                                Adopt Stray Tables ({this.props.strayTables.length})
+                            </Button>
+                        ) : null}
+                        <Button icon="plus" style={{verticalAlign: "top"}} type="primary"
+                                onClick={() => this.handleAdditionClick()}>
                             Add Table
                         </Button>
                     </div>
@@ -159,6 +165,7 @@ class Dataset extends Component {
 
 Dataset.propTypes = {
     project: projectPropTypesShape,
+    strayTables: PropTypes.arrayOf(PropTypes.object),
 
     value: PropTypes.shape({
         dataset_id: PropTypes.string,

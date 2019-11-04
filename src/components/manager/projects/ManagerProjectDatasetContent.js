@@ -123,6 +123,7 @@ class ManagerProjectDatasetContent extends Component {
                                     <Project value={this.props.selectedProject}
                                              datasets={this.props.datasets}
                                              tables={this.props.tables}
+                                             strayTables={this.props.strayTables}
                                              loadingDatasets={this.props.loadingDatasets}
                                              loadingTables={this.props.loadingTables}
                                              editing={this.props.editingProject}
@@ -186,6 +187,11 @@ const mapStateToProps = state => {
 
     const tables = state.serviceTables.itemsByServiceAndDataTypeID;
 
+    const manageableDataTypes = state.services.items
+        .filter(s => (s.metadata || {chordManageableTables: false}).chordManageableTables)
+        .filter(s => (state.serviceDataTypes.dataTypesByServiceID[s.id] || {}).items)
+        .flatMap(s => state.serviceDataTypes.dataTypesByServiceID[s.id].items.map(dt => dt.id));
+
     /**
      * @typedef {Object} ProjectTable
      * @property {string} table_id
@@ -206,6 +212,14 @@ const mapStateToProps = state => {
             .map(tb => ({...tb, ...table})))
         .flat();
 
+    // TODO: Inconsistent schemas
+    const strayTables = [
+        ...state.serviceTables.items.filter(t2 =>
+            !state.projectTables.items.map(t => t.table_id).includes(t2.id) &&
+            manageableDataTypes.includes(t2.data_type)).map(t => ({...t, table_id: t.id})),
+        ...state.projectTables.items.filter(t => !Object.keys(state.services.itemsByID).includes(t.service_id))
+    ];
+
     return {
         editingProject: state.manager.editingProject,
         savingProject: state.projects.isSaving,
@@ -213,6 +227,7 @@ const mapStateToProps = state => {
         projects: state.projects.items,
         datasets,
         tables: tableList,
+        strayTables,
 
         loadingProjects: state.projects.isFetching,
         loadingDatasets: state.projectDatasets.isFetching || state.projectDatasets.isAdding,

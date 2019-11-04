@@ -132,7 +132,7 @@ class Project extends Component {
                             ...d,
                             tables: this.props.tables,  // TODO: Filter / transform?
                             loadingTables: this.props.loadingTables
-                        }} onTableIngest={this.onTableIngest} />)
+                        }} strayTables={this.props.strayTables} onTableIngest={this.onTableIngest} />)
                         : (
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
                                 <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
@@ -148,6 +148,7 @@ Project.propTypes = {
     value: projectPropTypesShape,
     datasets: PropTypes.arrayOf(PropTypes.object),
     tables: PropTypes.arrayOf(PropTypes.object),
+    strayTables: PropTypes.arrayOf(PropTypes.object),
 
     loadingDatasets: PropTypes.bool,
     loadingTables: PropTypes.bool,

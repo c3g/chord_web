@@ -179,6 +179,7 @@ export const serviceTables = (
         isFetchingAll: false,
         isCreating: false,
         isDeleting: false,
+        items: [],
         itemsByServiceAndDataTypeID: {}
     },
     action
@@ -210,13 +211,22 @@ export const serviceTables = (
         case FETCH_SERVICE_TABLES.RECEIVE:
             return {
                 ...state,
+                items: [...state.items, ...action.data.map(t => ({
+                    ...t,
+                    service_id: action.serviceID,
+                    data_type: action.dataTypeID
+                }))],
                 itemsByServiceAndDataTypeID: {
                     ...state.itemsByServiceAndDataTypeID,
                     [action.serviceID]: {
                         ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
                         [action.dataTypeID]: {
                             tables: action.data,
-                            tablesByID: Object.fromEntries(action.data.map(t => [t.id, t])),
+                            tablesByID: Object.fromEntries(action.data.map(t => [t.id, {
+                                ...t,
+                                service_id: action.serviceID,
+                                data_type: action.dataTypeID
+                            }])),
                             isFetching: false
                         }
                     }
