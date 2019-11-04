@@ -13,6 +13,7 @@ import {
     LOADING_SERVICE_TABLES,
 
     ADDING_SERVICE_TABLE,
+    DELETING_SERVICE_TABLE,
 
     FETCH_SERVICE_WORKFLOWS,
     LOADING_SERVICE_WORKFLOWS
@@ -175,6 +176,7 @@ export const serviceTables = (
     state = {
         isFetchingAll: false,
         isCreating: false,
+        isDeleting: false,
         itemsByServiceAndDataTypeID: {}
     },
     action
@@ -263,6 +265,33 @@ export const serviceTables = (
 
         case ADDING_SERVICE_TABLE.TERMINATE:
             return {...state, isCreating: false};
+
+        case DELETING_SERVICE_TABLE.BEGIN:
+            return {...state, isDeleting: true};
+
+        case DELETING_SERVICE_TABLE.END:
+            return {
+                ...state,
+                itemsByServiceAndDataTypeID: {
+                    ...state.itemsByServiceAndDataTypeID,
+                    [action.serviceID]: {
+                        ...(state.itemsByServiceAndDataTypeID[action.serviceID] || {}),
+                        [action.dataTypeID]: {
+                            ...((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: [], tablesByID: {}}),
+                            tables: (((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                || {tables: [], tablesByID: {}}).tables || []).filter(t => t.id !== action.tableID),
+                            tablesByID: Object.fromEntries(Object.entries(
+                                ((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                                    || {tables: [], tablesByID: {}}).tablesByID
+                            ).filter(([id, _v]) => id !== action.tableID))
+                        }
+                    }
+                }
+            };
+
+        case DELETING_SERVICE_TABLE.TERMINATE:
+            return {...state, isDeleting: false};
 
         default:
             return state;

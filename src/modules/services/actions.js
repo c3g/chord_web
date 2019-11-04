@@ -25,6 +25,7 @@ export const FETCH_SERVICE_TABLES = createNetworkActionTypes("FETCH_SERVICE_TABL
 export const LOADING_SERVICE_TABLES = createFlowActionTypes("LOADING_SERVICE_TABLES");
 
 export const ADDING_SERVICE_TABLE = createFlowActionTypes("ADDING_SERVICE_TABLE");
+export const DELETING_SERVICE_TABLE = createFlowActionTypes("DELETING_SERVICE_TABLE");
 
 export const FETCH_SERVICE_WORKFLOWS = createNetworkActionTypes("FETCH_SERVICE_WORKFLOWS");
 export const LOADING_SERVICE_WORKFLOWS = createFlowActionTypes("LOADING_SERVICE_WORKFLOWS");
@@ -35,6 +36,14 @@ export const endAddingServiceTable = (serviceID, dataTypeID, table) => ({
     serviceID,
     dataTypeID,
     table
+});
+
+
+export const endDeletingServiceTable = (serviceID, dataTypeID, tableID) => ({
+    type: DELETING_SERVICE_TABLE.END,
+    serviceID,
+    dataTypeID,
+    tableID
 });
 
 

@@ -12,6 +12,7 @@ import {
 
     ADD_PROJECT_DATASET,
     PROJECT_TABLE_ADDITION,
+    PROJECT_TABLE_DELETION,
 
     FETCH_PHENOPACKETS
 } from "./actions";
@@ -194,6 +195,7 @@ export const projectTables = (
         isFetching: false,
         isFetchingAll: false,
         isAdding: false,
+        isDeleting: false,
         itemsByProjectID: {}
     },
     action
@@ -266,6 +268,23 @@ export const projectTables = (
 
         case PROJECT_TABLE_ADDITION.TERMINATE:
             return {...state, isAdding: false};
+
+        case PROJECT_TABLE_DELETION.BEGIN:
+            return {...state, isDeleting: true};
+
+        case PROJECT_TABLE_DELETION.END:
+            return {
+                ...state,
+                isDeleting: false,
+                itemsByProjectID: {
+                    ...state.itemsByProjectID,
+                    [action.projectID]: (state.itemsByProjectID[action.projectID] || [])
+                        .filter(t => t.id !== action.tableID)
+                }
+            };
+
+        case PROJECT_TABLE_DELETION.TERMINATE:
+            return {...state, isDeleting: false};
 
         default:
             return state;

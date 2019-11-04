@@ -11,8 +11,13 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import TableAdditionModal from "./TableAdditionModal";
+import TableDeletionModal from "./TableDeletionModal";
 
-import {addProjectTable, fetchProjectsWithDatasetsAndTables} from "../../../modules/metadata/actions";
+import {
+    addProjectTable,
+    deleteProjectTableIfPossible,
+    fetchProjectsWithDatasetsAndTables
+} from "../../../modules/metadata/actions";
 
 import {projectPropTypesShape} from "../../../utils";
 
@@ -42,12 +47,19 @@ class Dataset extends Component {
             tables: value.tables || [],
             loadingTables: value.loadingTables || false,
 
-            additionModalVisible: false
+            additionModalVisible: false,
+            deletionModalVisible: false,
+            selectedTable: null
         };
 
         this.handleAdditionClick = this.handleAdditionClick.bind(this);
         this.handleAdditionCancel = this.handleAdditionCancel.bind(this);
         this.handleAdditionSubmit = this.handleAdditionSubmit.bind(this);
+
+        this.handleTableDeletionClick = this.handleTableDeletionClick.bind(this);
+        this.handleTableDeletionCancel = this.handleTableDeletionCancel.bind(this);
+        this.handleTableDeletionSubmit = this.handleTableDeletionSubmit.bind(this);
+
     }
 
     handleAdditionClick() {
@@ -68,6 +80,23 @@ class Dataset extends Component {
         this.setState({additionModalVisible: false});
     }
 
+    handleTableDeletionClick(t) {
+        this.setState({deletionModalVisible: true, selectedTable: t});
+    }
+
+    handleTableDeletionCancel() {
+        this.setState({deletionModalVisible: false});
+    }
+
+    async handleTableDeletionSubmit() {
+        if (this.state.selectedTable === null) return;
+        await this.props.deleteProjectTable(this.props.project.project_id, this.state.selectedTable);
+
+        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
+
+        this.setState({deletionModalVisible: false});
+    }
+
     render() {
         return (
             <Card key={this.state.dataset_id} title={this.state.name} extra={<>
@@ -83,6 +112,11 @@ class Dataset extends Component {
                                     dataset={this.state}
                                     onSubmit={vs => this.handleAdditionSubmit(vs)}
                                     onCancel={() => this.handleAdditionCancel()} />
+
+                <TableDeletionModal visible={this.state.deletionModalVisible}
+                                    table={this.state.selectedTable}
+                                    onSubmit={() => this.handleTableDeletionSubmit()}
+                                    onCancel={() => this.handleTableDeletionCancel()} />
 
                 {this.state.description.length > 0 ? (
                     <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
@@ -105,14 +139,15 @@ class Dataset extends Component {
                     <Table.Column dataIndex="table_id" title="ID" />
                     <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
                     <Table.Column dataIndex="data_type" title="Data Type" />
-                    <Table.Column key="actions" title="Actions" width={330} render={d => (
+                    <Table.Column key="actions" title="Actions" width={330} render={t => (
                         <Row gutter={10}>
                             <Col span={8}>
                                 <Button icon="import" style={{width: "100%"}}
-                                        onClick={() => this.onTableIngest(this.props.project, d)}>Ingest</Button>
+                                        onClick={() => this.onTableIngest(this.props.project, t)}>Ingest</Button>
                             </Col>
                             <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
                             <Col span={8}><Button type="danger" icon="delete"
+                                                  onClick={() => this.handleTableDeletionClick(t)}
                                                   style={{width: "100%"}}>Delete</Button></Col>
                         </Row>
                     )} />
@@ -138,6 +173,7 @@ Dataset.propTypes = {
 const mapDispatchToProps = dispatch => ({
     addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, datasetName) =>
         await dispatch(addProjectTable(projectID, datasetID, serviceID, dataTypeID, datasetName)),
+    deleteProjectTable: async (projectID, table) => await dispatch(deleteProjectTableIfPossible(projectID, table)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
