@@ -202,8 +202,8 @@ export const addProjectTable = (projectID, datasetID, serviceID, dataType, table
                 return;
             }
 
-            message.success("Table added!");  // TODO: Nicer GUI success message
             const projectTable = await projectResponse.json();
+            message.success("Table added!");  // TODO: Nicer GUI success message
             await dispatch(endAddingServiceTable(serviceID, dataType, serviceTable));
             await dispatch(endProjectTableAddition(projectID, projectTable));  // TODO: Check params here
         } catch (e) {
