@@ -3,19 +3,19 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Form, Layout, List, Select, Skeleton, Spin, Steps, Table, Tag} from "antd";
+import {Button, Empty, Form, Layout, List, Skeleton, Spin, Steps, Table, Tag, TreeSelect} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/form/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/list/style/css";
-import "antd/es/select/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
 import "antd/es/table/style/css";
 import "antd/es/tag/style/css";
+import "antd/es/tree-select/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -117,18 +117,35 @@ class ManagerIngestionContent extends Component {
                 const tablesByID = Object.fromEntries(this.props.projects.flatMap(p =>
                     (this.props.projectTables[p.project_id] || []).map(d => [d.table_id, d])));
 
-                const selectContents = this.props.projects.map(p => (
-                    <Select.OptGroup key={p.project_id} label={p.name}>
-                        {(this.props.projectTables[p.project_id] || []).map(t => (
-                            <Select.Option key={`${p.project_id}:${t.table_id}`}>
-                                <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
-                                {getTableName(t.service_id, t.data_type, t.table_id)
-                                    ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
-                                    : t.table_id}
-                            </Select.Option>
-                        ))}
-                    </Select.OptGroup>
-                ));
+                const selectTreeData = this.props.projects.map(p => ({
+                    title: p.name,
+                    selectable: false,
+                    key: `project:${p.project_id}`,
+                    value: `project:${p.project_id}`,
+                    children: (this.props.projectDatasets[p.project_id] || []).map(d => ({
+                        title: d.name,
+                        selectable: false,
+                        key: `dataset:${d.dataset_id}`,
+                        value: `dataset:${d.dataset_id}`,
+                        children: [
+                            (this.props.projectTables[p.project_id] || [])
+                                .filter(t => t.dataset === d.dataset_id)
+                                .map(t => ({
+                                    title: (
+                                        <>
+                                            <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
+                                            {getTableName(t.service_id, t.data_type, t.table_id)
+                                                ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
+                                                : t.table_id}
+                                        </>
+                                    ),
+                                    isLeaf: true,
+                                    key: `${p.project_id}:${t.table_id}`,
+                                    value: `${p.project_id}:${t.table_id}`
+                                }))
+                        ]
+                    }))
+                }));
 
                 const workflows = this.props.workflows
                     .filter(w => w.data_types.includes(
@@ -144,8 +161,9 @@ class ManagerIngestionContent extends Component {
                 stepContents = (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Table">
-                            <Select onChange={table => this.setState({selectedTable: table})}
-                                    value={this.state.selectedTable}>{selectContents}</Select>
+                            <TreeSelect onChange={table => this.setState({selectedTable: table})}
+                                        value={this.state.selectedTable} treeData={selectTreeData}
+                                        treeDefaultExpandAll={true} />
                         </Form.Item>
                         <Form.Item label="Workflows">
                             {this.state.selectedTable
@@ -253,6 +271,7 @@ const mapStateToProps = state => ({
     ...workflowsStateToPropsMixin(state),
     projects: state.projects.items,
     projectsByID: state.projects.itemsByID,
+    projectDatasets: state.projectDatasets.itemsByProjectID,
     projectTables: state.projectTables.itemsByProjectID,
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun
