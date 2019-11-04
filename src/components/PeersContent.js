@@ -26,7 +26,7 @@ class PeersContent extends Component {
                         <Table dataSource={this.props.peers} columns={[{
                             title: "Peer",
                             dataIndex: "url"
-                        }]} loading={this.props.loadingPeers} bordered={true} size="middle" />
+                        }]} loading={this.props.loadingPeers} rowKey="url" bordered={true} size="middle" />
                     </Layout.Content>
                 </Layout>
             </>
