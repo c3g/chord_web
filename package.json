@@ -13,7 +13,7 @@
   "license": "LGPL-3.0-only",
   "repository": "https://github.com/c3g/chord_web",
   "dependencies": {
-    "antd": "^3.24.3",
+    "antd": "^3.25.0",
     "cross-fetch": "^3.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
@@ -32,6 +32,6 @@
     "css-loader": "^3.2.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.10"
   }
 }
