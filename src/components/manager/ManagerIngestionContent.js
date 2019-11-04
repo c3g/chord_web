@@ -113,10 +113,6 @@ class ManagerIngestionContent extends Component {
             case STEP_WORKFLOW_SELECTION:
                 // TODO: Loading projects
 
-                // TODO: This really needs to be fixed
-                const tablesByID = Object.fromEntries(this.props.projects.flatMap(p =>
-                    (this.props.projectTables[p.project_id] || []).map(d => [d.table_id, d])));
-
                 const selectTreeData = this.props.projects.map(p => ({
                     title: p.name,
                     selectable: false,
