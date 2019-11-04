@@ -13,7 +13,7 @@ import {toggleProjectDatasetAdditionModal} from "../../../modules/manager/action
 import {addProjectDataset, fetchProjectsWithDatasetsAndTables} from "../../../modules/metadata/actions";
 
 
-class ManagerDatasetAdditionModal extends Component {
+class DatasetAdditionModal extends Component {
     componentDidMount() {
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -55,7 +55,7 @@ class ManagerDatasetAdditionModal extends Component {
         ) : null;
     }
 }
-ManagerDatasetAdditionModal.propTypes = {
+DatasetAdditionModal.propTypes = {
     showDatasetAdditionModal: PropTypes.bool,
     toggleProjectTableAdditionModal: PropTypes.func,
 
@@ -85,4 +85,4 @@ const mapDispatchToProps = dispatch => ({
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerDatasetAdditionModal);
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetAdditionModal);

@@ -13,7 +13,7 @@ import TableForm from "./TableForm";
 const modalTitle = (dataset, project) =>
     `Add Table to Dataset "${(dataset || {}).name || ""}" (Project "${(project || {}).name || ""}")`;
 
-class ManagerTableAdditionModal extends Component {
+class TableAdditionModal extends Component {
     componentDidMount() {
         this.onCancel = this.props.onCancel || (() => {});
         this.onSubmit = this.props.onSubmit || (() => {});
@@ -49,7 +49,7 @@ class ManagerTableAdditionModal extends Component {
         );
     }
 }
-ManagerTableAdditionModal.propTypes = {
+TableAdditionModal.propTypes = {
     visible: PropTypes.bool,
 
     projectTablesAdding: PropTypes.bool,
@@ -68,4 +68,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps)(ManagerTableAdditionModal);
+export default connect(mapStateToProps)(TableAdditionModal);

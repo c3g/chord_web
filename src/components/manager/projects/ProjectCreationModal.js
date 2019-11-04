@@ -13,7 +13,7 @@ import {toggleProjectCreationModal} from "../../../modules/manager/actions";
 import {createProjectIfPossible} from "../../../modules/metadata/actions";
 
 
-class ManagerProjectCreationModal extends Component {
+class ProjectCreationModal extends Component {
     async componentDidMount() {
         this.handleCreateCancel = this.handleCreateCancel.bind(this);
         this.handleCreateSubmit = this.handleCreateSubmit.bind(this);
@@ -49,7 +49,7 @@ class ManagerProjectCreationModal extends Component {
     }
 }
 
-ManagerProjectCreationModal.propTypes = {
+ProjectCreationModal.propTypes = {
     showCreationModal: PropTypes.bool,
     toggleProjectCreationModal: PropTypes.func,
     createProject: PropTypes.func
@@ -64,4 +64,4 @@ const mapDispatchToProps = dispatch => ({
     createProject: async project => await dispatch(createProjectIfPossible(project)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerProjectCreationModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectCreationModal);

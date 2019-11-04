@@ -14,7 +14,7 @@ import {deleteProjectIfPossible} from "../../../modules/metadata/actions";
 import {projectPropTypesShape} from "../../../utils";
 
 
-class ManagerProjectDeletionModal extends Component {
+class ProjectDeletionModal extends Component {
     componentDidMount() {
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
         this.handleDeleteSubmit = this.handleDeleteSubmit.bind(this);
@@ -52,7 +52,7 @@ class ManagerProjectDeletionModal extends Component {
     }
 }
 
-ManagerProjectDeletionModal.propTypes = {
+ProjectDeletionModal.propTypes = {
     showDeletionModal: PropTypes.bool,
 
     selectedProject: projectPropTypesShape,
@@ -77,4 +77,4 @@ const mapDispatchToProps = dispatch => ({
     deleteProject: async projectID => await dispatch(deleteProjectIfPossible(projectID)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDeletionModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectDeletionModal);

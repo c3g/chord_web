@@ -14,9 +14,9 @@ import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
 import Project from "./Project";
-import ManagerProjectCreationModal from "./ManagerProjectCreationModal";
-import ManagerProjectDeletionModal from "./ManagerProjectDeletionModal";
-import ManagerDatasetAdditionModal from "./ManagerDatasetAdditionModal";
+import ProjectCreationModal from "./ProjectCreationModal";
+import ProjectDeletionModal from "./ProjectDeletionModal";
+import DatasetAdditionModal from "./DatasetAdditionModal";
 
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../../modules/services/actions";
 
@@ -72,9 +72,9 @@ class ManagerProjectDatasetContent extends Component {
 
         return (
             <>
-                <ManagerProjectCreationModal />
-                <ManagerProjectDeletionModal />
-                <ManagerDatasetAdditionModal />
+                <ProjectCreationModal />
+                <ProjectDeletionModal />
+                <DatasetAdditionModal />
 
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (

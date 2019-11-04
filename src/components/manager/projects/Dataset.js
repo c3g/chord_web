@@ -10,7 +10,7 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import ManagerTableAdditionModal from "./ManagerTableAdditionModal";
+import TableAdditionModal from "./TableAdditionModal";
 
 import {addProjectTable, fetchProjectsWithDatasetsAndTables} from "../../../modules/metadata/actions";
 
@@ -78,11 +78,11 @@ class Dataset extends Component {
                 <Button type="danger" icon="delete">Delete</Button>
                 {/* TODO: Share button */}
             </>}>
-                <ManagerTableAdditionModal visible={this.state.additionModalVisible}
-                                           project={this.props.project}
-                                           dataset={this.state}
-                                           onSubmit={vs => this.handleAdditionSubmit(vs)}
-                                           onCancel={() => this.handleAdditionCancel()} />
+                <TableAdditionModal visible={this.state.additionModalVisible}
+                                    project={this.props.project}
+                                    dataset={this.state}
+                                    onSubmit={vs => this.handleAdditionSubmit(vs)}
+                                    onCancel={() => this.handleAdditionCancel()} />
 
                 {this.state.description.length > 0 ? (
                     <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
