@@ -1,3 +1,5 @@
+import {objectWithoutProp} from "../../utils";
+
 import {
     FETCH_PROJECTS,
 
@@ -74,7 +76,7 @@ export const projects = (
                 ...state,
                 isDeleting: false,
                 items: state.items.filter(p => p.project_id !== action.projectID),
-                itemsByID: Object.fromEntries(Object.entries(state.items).filter(([k, _]) => k !== action.projectID))
+                itemsByID: objectWithoutProp(state.itemsByID, action.projectID)
             };
 
             if (newState.itemsByID.hasOwnProperty(action.projectID)) {
@@ -132,16 +134,10 @@ export const projectDatasets = (
             };
 
         case DELETE_PROJECT.RECEIVE:
-            let newState = {
+            return {
                 ...state,
-                itemsByProjectID: {...state.itemsByProjectID}  // One layer deeper with the copy to avoid mutation
+                itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
             };
-
-            if (newState.itemsByProjectID.hasOwnProperty(action.projectID)) {
-                delete newState.itemsByProjectID[action.projectID];
-            }
-
-            return newState;
 
         case FETCH_PROJECT_DATASETS.REQUEST:
             return {
@@ -212,16 +208,10 @@ export const projectTables = (
             };
 
         case DELETE_PROJECT.RECEIVE:
-            let newState = {
+            return {
                 ...state,
-                itemsByProjectID: {...state.itemsByProjectID}  // One layer deeper with the copy to avoid mutation
+                itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
             };
-
-            if (newState.itemsByProjectID.hasOwnProperty(action.projectID)) {
-                delete newState.itemsByProjectID[action.projectID];
-            }
-
-            return newState;
 
         case FETCHING_PROJECT_TABLES.BEGIN:
             return {...state, isFetchingAll: true};

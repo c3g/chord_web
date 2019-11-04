@@ -1,3 +1,5 @@
+import {objectWithoutProp} from "../../utils";
+
 import {
     LOADING_ALL_SERVICE_DATA,
 
@@ -281,10 +283,11 @@ export const serviceTables = (
                                 || {tables: [], tablesByID: {}}),
                             tables: (((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
                                 || {tables: [], tablesByID: {}}).tables || []).filter(t => t.id !== action.tableID),
-                            tablesByID: Object.fromEntries(Object.entries(
+                            tablesByID: objectWithoutProp(
                                 ((state.itemsByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
-                                    || {tables: [], tablesByID: {}}).tablesByID
-                            ).filter(([id, _v]) => id !== action.tableID))
+                                    || {tables: [], tablesByID: {}}).tablesByID,
+                                action.tableID
+                            )
                         }
                     }
                 }
