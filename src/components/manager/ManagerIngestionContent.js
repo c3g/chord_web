@@ -95,7 +95,7 @@ class ManagerIngestionContent extends Component {
             return;
         }
 
-        const tableID = this.state.selectedTable.split(":")[1];
+        const tableID = this.state.selectedTable.split(":")[2];
 
         await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, tableID,
             this.state.selectedWorkflow, this.state.inputs, "/data/manager/runs", history);
@@ -128,8 +128,21 @@ class ManagerIngestionContent extends Component {
                         key: `dataset:${d.dataset_id}`,
                         value: `dataset:${d.dataset_id}`,
                         children: [
-                            (this.props.projectTables[p.project_id] || [])
-                                .filter(t => t.dataset === d.dataset_id)
+                            // Add the dataset metadata table in manually -- it's not "owned" per se
+                            {
+                                title: (
+                                    <>
+                                        {/*TODO: Don't hard-code data type name here, fetch from serviceTables*/}
+                                        <Tag style={{marginRight: "1em"}}>phenopacket</Tag>
+                                        {d.name} Metadata
+                                    </>
+                                ),
+                                key: `${p.project_id}:phenopacket:${d.dataset_id}`,
+                                value: `${p.project_id}:phenopacket:${d.dataset_id}`
+                            },
+                            ...(this.props.projectTables[p.project_id] || [])
+                                .filter(t => t.dataset === d.dataset_id &&
+                                    Object.keys(this.props.tablesByServiceAndDataTypeID).includes(t.service_id))
                                 .map(t => ({
                                     title: (
                                         <>
@@ -140,17 +153,16 @@ class ManagerIngestionContent extends Component {
                                         </>
                                     ),
                                     isLeaf: true,
-                                    key: `${p.project_id}:${t.table_id}`,
-                                    value: `${p.project_id}:${t.table_id}`
+                                    key: `${p.project_id}:${t.data_type}:${t.table_id}`,
+                                    value: `${p.project_id}:${t.data_type}:${t.table_id}`
                                 }))
                         ]
                     }))
                 }));
 
                 const workflows = this.props.workflows
-                    .filter(w => w.data_types.includes(
-                        (tablesByID[this.state.selectedTable ? this.state.selectedTable.split(":")[1] : null]
-                            || {data_type: null}).data_type))
+                    .filter(w => w.data_types.includes(this.state.selectedTable
+                        ? this.state.selectedTable.split(":")[1] : null))
                     .map(w => (
                         <List.Item key={w.id}>
                             <WorkflowListItem key={w.id} workflow={w} selectable={true}
@@ -192,7 +204,7 @@ class ManagerIngestionContent extends Component {
                 break;
 
             case STEP_CONFIRM:
-                const [projectID, tableID] = this.state.selectedTable.split(":");
+                const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
                 const projectName = (this.props.projectsByID[projectID] || {name: null}).name || null;
                 const tableName = getTableName(this.state.selectedWorkflow.serviceID,
                     this.state.selectedWorkflow.data_types[0], tableID);
@@ -200,6 +212,9 @@ class ManagerIngestionContent extends Component {
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Project">
                             {projectName ? `${projectName} (${projectID})` : projectID}
+                        </Form.Item>
+                        <Form.Item label="Data Type">
+                            <Tag>{dataType}</Tag>
                         </Form.Item>
                         <Form.Item label="Table">
                             {tableName ? `${tableName} (${tableID})` : tableID}
