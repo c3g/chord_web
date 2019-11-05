@@ -53,7 +53,7 @@ class RunLog extends Component {
                     {details.run_log.name}
                 </Descriptions.Item>
                 <Descriptions.Item label="Exit Code" span={1}>
-                    {details.run_log.exit_code || "N/A"}
+                    {details.run_log.exit_code === null ? "N/A" : details.run_log.exit_code}
                 </Descriptions.Item>
                 <Descriptions.Item label={<span style={{fontFamily: "monospace"}}>stdout</span>} span={3}>
                     {this.state.stdout !== null ? <pre style={{fontSize: "12px", whiteSpace: "break-spaces"}}>{
