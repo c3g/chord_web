@@ -13,7 +13,7 @@ import ManagerProjectDatasetContent from "./manager/projects/ManagerProjectDatas
 import ManagerFilesContent from "./manager/ManagerFilesContent";
 import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
-import ManagerRunsContent from "./manager/ManagerRunsContent";
+import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
