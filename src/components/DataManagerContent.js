@@ -16,6 +16,7 @@ import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
 import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+
 import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../modules/services/actions";
 import {fetchDropBoxTree} from "../modules/manager/actions";
 import {fetchProjectsWithDatasetsAndTables} from "../modules/metadata/actions";
@@ -77,7 +78,7 @@ class DataManagerContent extends Component {
                 <Route exact path="/data/manager/files" component={renderContent(ManagerFilesContent)} />
                 <Route exact path="/data/manager/ingestion" component={renderContent(ManagerIngestionContent)} />
                 <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsContent)} />
-                <Route exact path="/data/manager/runs" component={renderContent(ManagerRunsContent)} />
+                <Route path="/data/manager/runs" component={renderContent(ManagerRunsContent)} />
                 <Redirect from="/data/manager" to="/data/manager/projects" />
             </Switch>
         );
