@@ -47,7 +47,7 @@ class DiscoverySearchContent extends Component {
         // TODO: Redux?
         this.state = {
             dataUseTermsModalShown: false,
-            dataset: null,
+            table: null,
             dataUse: null
         };
 
@@ -57,8 +57,8 @@ class DiscoverySearchContent extends Component {
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleDataTypeChange = this.handleDataTypeChange.bind(this);
         this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
-        this.handleDatasetTermsClick = this.handleDatasetTermsClick.bind(this);
-        this.handleDatasetTermsCancel = this.handleDatasetTermsCancel.bind(this);
+        this.handleTableTermsClick = this.handleTableTermsClick.bind(this);
+        this.handleTableTermsCancel = this.handleTableTermsCancel.bind(this);
     }
 
     handleFormChange(fields) {
@@ -76,15 +76,15 @@ class DiscoverySearchContent extends Component {
         this.props.selectSearch(this.props.service.id, this.props.dataType.id, parseInt(searchIndex, 10));
     }
 
-    handleDatasetTermsClick(dataset) {
+    handleTableTermsClick(table) {
         this.setState({
             dataUseTermsModalShown: true,
-            dataset: dataset.id,
-            dataUse: dataset.dataUse
+            table: table.id,
+            dataUse: table.dataUse
         });
     }
 
-    handleDatasetTermsCancel() {
+    handleTableTermsCancel() {
         this.setState({dataUseTermsModalShown: false});
     }
 
@@ -122,11 +122,12 @@ class DiscoverySearchContent extends Component {
                                    }
                                }))}
                                rowKey="id">
-                            <Table.Column title="Dataset ID" dataIndex="id" />
-                            <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
+                            {/* TODO: Dataset ID rather than Table ID, get back Datasets */}
+                            <Table.Column title="Table ID" dataIndex="id" />
+                            <Table.Column title="Actions" dataIndex="actions" render={(_, table) => (
                                 <Row type="flex">
                                     <Col>
-                                        <Button type="link" onClick={() => this.handleDatasetTermsClick(dataset)}>
+                                        <Button type="link" onClick={() => this.handleTableTermsClick(table)}>
                                             Show Data Use Terms
                                         </Button>
                                     </Col>
@@ -178,9 +179,9 @@ class DiscoverySearchContent extends Component {
 
                         <Divider />
 
-                        <Modal title={`Dataset ${(this.state.dataset || "").substr(0, 18)}…: Data Use Terms`}
+                        <Modal title={`Table ${(this.state.table || "").substr(0, 18)}…: Data Use Terms`}
                                visible={this.state.dataUseTermsModalShown}
-                               onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
+                               onCancel={() => this.handleTableTermsCancel()} footer={null}>
                             <DataUseDisplay dataUse={this.state.dataUse} />
                         </Modal>
 
