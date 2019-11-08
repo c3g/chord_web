@@ -123,7 +123,24 @@ class Dataset extends Component {
                 ) : null}
 
                 <Typography.Title level={4}>Individuals and Pools</Typography.Title>
-                TODO
+                <Typography.Paragraph>
+                    Individuals can potentially be shared across many datasets.
+                </Typography.Paragraph>
+
+                <Table bordered
+                       dataSource={this.props.individuals.map(i => ({
+                           ...i,
+                           sex: i.sex || "UNKNOWN_SEX",
+                           n_of_biosamples: (i.biosamples || []).length
+                       }))}
+                       rowKey="individual_id"
+                       loading={this.props.loadingIndividuals}
+                       columns={[
+                           {title: "Individual ID", dataIndex: "individual_id"},
+                           {title: "Date of Birth", dataIndex: "date_of_birth"},
+                           {title: "Sex", dataIndex: "sex"},
+                           {title: "# Biosamples", dataIndex: "n_of_biosamples"}
+                       ]} />
 
                 <Typography.Title level={4}>
                     Tables
@@ -173,6 +190,9 @@ Dataset.propTypes = {
         tables: PropTypes.arrayOf(PropTypes.object),
         loadingTables: PropTypes.bool
     }),
+
+    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Get this via redux store instead of transformations
+    loadingIndividuals: PropTypes.bool,
 
     onTableIngest: PropTypes.func
 };

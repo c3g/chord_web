@@ -33,7 +33,11 @@ import {
 
 import {
     fetchProjectsWithDatasetsAndTables,
-    saveProjectIfPossible
+    saveProjectIfPossible,
+
+    fetchPhenopackets,
+    fetchBiosamples,
+    fetchIndividuals,
 } from "../../../modules/metadata/actions";
 
 import {projectPropTypesShape} from "../../../utils";
@@ -48,6 +52,12 @@ class ManagerProjectDatasetContent extends Component {
 
         await this.props.fetchServiceDataIfNeeded();
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
+
+        await Promise.all([
+            this.props.fetchPhenopackets(),
+            this.props.fetchBiosamples(),
+            this.props.fetchIndividuals()
+        ]);
     }
 
     componentDidUpdate() {
@@ -128,6 +138,14 @@ class ManagerProjectDatasetContent extends Component {
                                              loadingTables={this.props.loadingTables}
                                              editing={this.props.editingProject}
                                              saving={this.props.savingProject}
+                                             individuals={this.props.individuals.filter(i =>
+                                                i.phenopackets.filter(p => this.props.phenopackets
+                                                    .filter(p2 => this.props.datasets
+                                                        .map(d => d.dataset_id).includes(p2.dataset))
+                                                    .map(p2 => p2.phenopacket_id)
+                                                    .includes(p.phenopacket_id)
+                                                ).length > 0)}
+                                             loadingIndividuals={this.props.loadingIndividuals}
                                              onDelete={() => this.props.toggleProjectDeletionModal()}
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
@@ -164,7 +182,9 @@ ManagerProjectDatasetContent.propTypes = {
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
 
-    datasets: PropTypes.arrayOf(PropTypes.object),
+    datasets: PropTypes.arrayOf(PropTypes.shape({
+        dataset_id: PropTypes.string
+    })),
     tables: PropTypes.arrayOf(PropTypes.object),
 
     fetchServiceDataIfNeeded: PropTypes.func,
@@ -177,7 +197,33 @@ ManagerProjectDatasetContent.propTypes = {
 
     fetchProjectsWithDatasetsAndTables: PropTypes.func,
 
-    saveProject: PropTypes.func
+    saveProject: PropTypes.func,
+
+    phenopackets: PropTypes.arrayOf(PropTypes.shape({
+        phenopacket_id: PropTypes.string,
+        dataset: PropTypes.string
+    })),
+    biosamples: PropTypes.arrayOf(PropTypes.shape({
+        biosample_id: PropTypes.string
+    })),
+    individuals: PropTypes.arrayOf(PropTypes.shape({
+        individual_id: PropTypes.string,
+        biosamples: PropTypes.arrayOf(PropTypes.shape({
+            biosample_id: PropTypes.string
+        })),
+        phenopackets: PropTypes.arrayOf(PropTypes.shape({
+            phenopacket_id: PropTypes.string,
+            dataset: PropTypes.string
+        }))
+    })),
+
+    loadingPhenopackets: PropTypes.bool,
+    loadingBiosamples: PropTypes.bool,
+    loadingIndividuals: PropTypes.bool,
+
+    fetchPhenopackets: PropTypes.func,
+    fetchBiosamples: PropTypes.func,
+    fetchIndividuals: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -233,7 +279,17 @@ const mapStateToProps = state => {
         loadingDatasets: state.projectDatasets.isFetching || state.projectDatasets.isAdding,
         loadingTables: state.services.isFetchingAll || state.projectTables.isFetchingAll,
 
-        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null
+        selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
+
+        phenopackets: state.phenopackets.items,
+        biosamples: state.biosamples.items,
+        individuals: state.individuals.items,
+
+        loadingPhenopackets: state.phenopackets.isFetching,
+        loadingBiosamples: state.biosamples.isFetching,
+        loadingIndividuals: state.individuals.isFetching,
+
+
     };
 };
 
@@ -246,7 +302,11 @@ const mapDispatchToProps = dispatch => ({
     endProjectEditing: () => dispatch(endProjectEditing()),
     fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
-    saveProject: project => dispatch(saveProjectIfPossible(project))
+    saveProject: project => dispatch(saveProjectIfPossible(project)),
+
+    fetchPhenopackets: () => dispatch(fetchPhenopackets()),
+    fetchBiosamples: () => dispatch(fetchBiosamples()),
+    fetchIndividuals: () => dispatch(fetchIndividuals())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));

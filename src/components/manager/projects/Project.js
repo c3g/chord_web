@@ -76,6 +76,7 @@ class Project extends Component {
     }
 
     render() {
+        console.log(this.props.individuals);
         return (
             <div>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
@@ -128,12 +129,21 @@ class Project extends Component {
                 </Typography.Title>
                 <Spin spinning={this.props.loadingDatasets}>
                     {(this.props.datasets || []).length > 0
-                        ? this.props.datasets.map(d => <Dataset key={d.dataset_id} project={this.props.value} value={{
-                            ...d,
-                            tables: this.props.tables,  // TODO: Filter / transform?
-                            loadingTables: this.props.loadingTables
-                        }} strayTables={this.props.strayTables} onTableIngest={this.onTableIngest} />)
-                        : (
+                        ? this.props.datasets.map(d =>
+                            <Dataset key={d.dataset_id}
+                                     project={this.props.value}
+                                     value={{
+                                         ...d,
+                                         tables: this.props.tables,  // TODO: Filter / transform?
+                                         loadingTables: this.props.loadingTables
+                                     }}
+                                     strayTables={this.props.strayTables}
+                                     individuals={this.props.individuals
+                                         .filter(i => i.phenopackets.map(p => p.dataset)
+                                             .includes(d.dataset_id))}
+                                     loadingIndividuals={this.props.loadingIndividuals}
+                                     onTableIngest={this.onTableIngest} />
+                        ) : (
                             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
                                 <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
                             </Empty>
@@ -146,15 +156,18 @@ class Project extends Component {
 
 Project.propTypes = {
     value: projectPropTypesShape,
-    datasets: PropTypes.arrayOf(PropTypes.object),
-    tables: PropTypes.arrayOf(PropTypes.object),
-    strayTables: PropTypes.arrayOf(PropTypes.object),
+    datasets: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
+    tables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
+    strayTables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape (this is currently heterogeneous)
 
     loadingDatasets: PropTypes.bool,
     loadingTables: PropTypes.bool,
 
     editing: PropTypes.bool,
     saving: PropTypes.bool,
+
+    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
+    loadingIndividuals: PropTypes.bool,
 
     onDelete: PropTypes.func,
     onEdit: PropTypes.func,

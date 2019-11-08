@@ -38,6 +38,8 @@ export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDIT
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
 
 export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
+export const FETCH_BIOSAMPLES = createNetworkActionTypes("FETCH_BIOSAMPLES");
+export const FETCH_INDIVIDUALS = createNetworkActionTypes("FETCH_INDIVIDUALS");
 
 
 const endProjectTableAddition = (projectID, table) => ({type: PROJECT_TABLE_ADDITION.END, projectID, table});
@@ -282,4 +284,16 @@ export const fetchPhenopackets = networkAction(() => ({
     types: FETCH_PHENOPACKETS,
     url: `/api/metadata/api/phenopackets`,
     err: "Error fetching phenopackets"
+}));
+
+export const fetchBiosamples = networkAction(() => ({
+    types: FETCH_BIOSAMPLES,
+    url: `/api/metadata/api/biosamples`,
+    err: "Error fetching biosamples"
+}));
+
+export const fetchIndividuals = networkAction(() => ({
+    types: FETCH_INDIVIDUALS,
+    url: `/api/metadata/api/individuals`,
+    err: "Error fetching individuals"
 }));

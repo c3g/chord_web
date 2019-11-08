@@ -16,7 +16,7 @@ import {
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
 
-    FETCH_PHENOPACKETS
+    FETCH_PHENOPACKETS, FETCH_BIOSAMPLES, FETCH_INDIVIDUALS
 } from "./actions";
 
 
@@ -305,7 +305,7 @@ export const phenopackets = (
     },
     action
 ) => {
-    switch (action) {
+    switch (action.type) {
         case FETCH_PHENOPACKETS.REQUEST:
             return {...state, isFetching: true};
 
@@ -316,6 +316,65 @@ export const phenopackets = (
                 items: [...action.data.results],
                 itemsByDatasetID: Object.fromEntries(Object.entries(action))
             };
+
+        case FETCH_PHENOPACKETS.ERROR:
+            return {...state, isFetching: false};
+
+        default:
+            return state;
+    }
+};
+
+export const biosamples = (
+    state = {
+        isFetching: false,
+        items: [],
+        itemsByID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case FETCH_BIOSAMPLES.REQUEST:
+            return {...state, isFetching: true};
+
+        case FETCH_BIOSAMPLES.RECEIVE:
+            return {
+                ...state,
+                isFetching: false,
+                items: [...action.data.results],
+                itemsByID: Object.fromEntries(action.data.results.map(b => [b.biosample_id, b]))
+            };
+
+        case FETCH_BIOSAMPLES.ERROR:
+            return {...state, isFetching: false};
+
+        default:
+            return state;
+    }
+};
+
+export const individuals = (
+    state = {
+        isFetching: false,
+        items: [],
+        itemsByID: {}
+    },
+    action
+) => {
+    switch (action.type) {
+        case FETCH_INDIVIDUALS.REQUEST:
+            return {...state, isFetching: true};
+
+        case FETCH_INDIVIDUALS.RECEIVE:
+            return {
+                ...state,
+                isFetching: false,
+                items: [...action.data.results],
+                itemsByID: Object.fromEntries(action.data.results.map(i => [i.individual_id, i]))
+            };
+
+        case FETCH_INDIVIDUALS.ERROR:
+            return {...state, isFetching: false};
 
         default:
             return state;
