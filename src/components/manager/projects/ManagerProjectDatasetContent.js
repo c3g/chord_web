@@ -35,9 +35,9 @@ import {
     fetchProjectsWithDatasetsAndTables,
     saveProjectIfPossible,
 
-    fetchPhenopackets,
-    fetchBiosamples,
-    fetchIndividuals,
+    fetchPhenopacketsIfNeeded,
+    fetchBiosamplesIfNeeded,
+    fetchIndividualsIfNeeded,
 } from "../../../modules/metadata/actions";
 
 import {projectPropTypesShape} from "../../../utils";
@@ -54,9 +54,9 @@ class ManagerProjectDatasetContent extends Component {
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
 
         await Promise.all([
-            this.props.fetchPhenopackets(),
-            this.props.fetchBiosamples(),
-            this.props.fetchIndividuals()
+            this.props.fetchPhenopacketsIfNeeded(),
+            this.props.fetchBiosamplesIfNeeded(),
+            this.props.fetchIndividualsIfNeeded()
         ]);
     }
 
@@ -221,9 +221,9 @@ ManagerProjectDatasetContent.propTypes = {
     loadingBiosamples: PropTypes.bool,
     loadingIndividuals: PropTypes.bool,
 
-    fetchPhenopackets: PropTypes.func,
-    fetchBiosamples: PropTypes.func,
-    fetchIndividuals: PropTypes.func,
+    fetchPhenopacketsIfNeeded: PropTypes.func,
+    fetchBiosamplesIfNeeded: PropTypes.func,
+    fetchIndividualsIfNeeded: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -288,8 +288,6 @@ const mapStateToProps = state => {
         loadingPhenopackets: state.phenopackets.isFetching,
         loadingBiosamples: state.biosamples.isFetching,
         loadingIndividuals: state.individuals.isFetching,
-
-
     };
 };
 
@@ -304,9 +302,9 @@ const mapDispatchToProps = dispatch => ({
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
 
-    fetchPhenopackets: () => dispatch(fetchPhenopackets()),
-    fetchBiosamples: () => dispatch(fetchBiosamples()),
-    fetchIndividuals: () => dispatch(fetchIndividuals())
+    fetchPhenopacketsIfNeeded: () => dispatch(fetchPhenopacketsIfNeeded()),
+    fetchBiosamplesIfNeeded: () => dispatch(fetchBiosamplesIfNeeded()),
+    fetchIndividualsIfNeeded: () => dispatch(fetchIndividualsIfNeeded())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));

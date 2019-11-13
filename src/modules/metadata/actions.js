@@ -286,14 +286,29 @@ export const fetchPhenopackets = networkAction(() => ({
     err: "Error fetching phenopackets"
 }));
 
+export const fetchPhenopacketsIfNeeded = () => async (dispatch, getState) => {
+    if (getState().phenopackets.isFetching || getState().phenopackets.items.length > 0) return;
+    dispatch(fetchPhenopackets());
+};
+
 export const fetchBiosamples = networkAction(() => ({
     types: FETCH_BIOSAMPLES,
     url: `/api/metadata/api/biosamples`,
     err: "Error fetching biosamples"
 }));
 
+export const fetchBiosamplesIfNeeded = () => async (dispatch, getState) => {
+    if (getState().biosamples.isFetching || getState().biosamples.items.length > 0) return;
+    dispatch(fetchBiosamples());
+};
+
 export const fetchIndividuals = networkAction(() => ({
     types: FETCH_INDIVIDUALS,
     url: `/api/metadata/api/individuals`,
     err: "Error fetching individuals"
 }));
+
+export const fetchIndividualsIfNeeded = () => async (dispatch, getState) => {
+    if (getState().individuals.isFetching || getState().individuals.items.length > 0) return;
+    dispatch(fetchIndividuals());
+};

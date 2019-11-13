@@ -38,6 +38,10 @@ export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
     if (needsUpdate) await dispatch(fetchRunDetails(runID));
 };
 
+export const fetchAllRunDetailsIfNeeded = () => async (dispatch, getState) => {
+    await Promise.all(getState().runs.items.map(r => dispatch(fetchRunDetailsIfNeeded(r.run_id))));
+};
+
 
 export const submitIngestionWorkflowRun = networkAction(
     (serviceID, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => {
