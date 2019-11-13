@@ -49,7 +49,7 @@ export const endDeletingServiceTable = (serviceID, dataTypeID, tableID) => ({
 
 export const fetchServices = networkAction(() => ({
     types: FETCH_SERVICES,
-    url: "/api/service_registry/services",
+    url: "/api/service-registry/services",
     err: "Error fetching services"
 }));
 
