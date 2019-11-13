@@ -11,26 +11,31 @@ import "antd/es/table/style/css.js";
 const columns = [
     {
         title: "ID",
-        dataIndex: "id",
-        render: id => <Typography.Text code>{id}</Typography.Text>
+        dataIndex: "serviceInfo.id",
+        render: id => id ? <Typography.Text code>{id}</Typography.Text> : ""
+    },
+    {
+        title: "Artifact",
+        dataIndex: "type.artifact",
+        render: artifact => artifact ? <span style={{fontFamily: "monospace"}}>{artifact}</span> : ""
     },
     {
         title: "Name",
-        dataIndex: "name",
+        dataIndex: "serviceInfo.name",
     },
     {
         title: "Version",
-        dataIndex: "version",
+        dataIndex: "serviceInfo.version",
         render: version => <Typography.Text>{version || "-"}</Typography.Text>
     },
     {
         title: "URL",
-        dataIndex: "url",
-        render: url => <a href={`/api${url}`}>{`/api${url}`}</a>
+        dataIndex: "serviceInfo.url",
+        render: url => <a href={url}>{url}</a>
     },
     {
         title: "Data Service?",
-        dataIndex: "metadata.chordDataService",
+        dataIndex: "data_service",
         render: dataService => <Icon type={dataService ? "check" : "close"} />
     },
     {
@@ -45,17 +50,17 @@ const columns = [
 // noinspection JSUnusedGlobalSymbols
 const ServiceList = connect(
     state => ({
-        dataSource: state.services.items.map(service => ({
+        dataSource: state.chordServices.items.map(service => ({
             ...service,
-            status: (state.serviceMetadata.metadata[service.id] || {metadata: null}).metadata || null,
-            version: ((state.serviceMetadata.metadata[service.id] || {metadata: {version: "-"}}).metadata ||
-                {version: "-"}).version,
-            loading: ((state.serviceMetadata.metadata[service.id] || {isFetching: false}).isFetching || false)
+            key: `${service.type.organization}:${service.type.artifact}`,
+            serviceInfo: state.services.itemsByArtifact[service.type.artifact] || null,
+            status: state.services.itemsByArtifact.hasOwnProperty(service.type.artifact),
+            loading: state.services.isFetching
         })),
         columns,
-        rowKey: "id",
+        rowKey: "key",
         bordered: true,
-        loading: state.services.isFetching || state.serviceMetadata.isFetchingAll,
+        loading: state.chordServices.isFetching || state.services.isFetching,
         size: "middle"
     })
 )(Table);

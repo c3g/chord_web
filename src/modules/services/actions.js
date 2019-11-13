@@ -13,10 +13,8 @@ import {createURLSearchParams} from "../../utils/requests";
 
 export const LOADING_ALL_SERVICE_DATA = createFlowActionTypes("LOADING_ALL_SERVICE_DATA");
 
+export const FETCH_CHORD_SERVICES = createNetworkActionTypes("FETCH_CHORD_SERVICES");
 export const FETCH_SERVICES = createNetworkActionTypes("FETCH_SERVICES");
-
-export const FETCH_SERVICE_METADATA = createNetworkActionTypes("FETCH_SERVICE_METADATA");
-export const LOADING_SERVICE_METADATA = createFlowActionTypes("LOADING_SERVICE_METADATA");
 
 export const FETCH_SERVICE_DATA_TYPES = createNetworkActionTypes("FETCH_SERVICE_DATA_TYPES");
 export const LOADING_SERVICE_DATA_TYPES = createFlowActionTypes("LOADING_SERVICE_DATA_TYPES");
@@ -47,73 +45,70 @@ export const endDeletingServiceTable = (serviceID, dataTypeID, tableID) => ({
 });
 
 
+export const fetchCHORDServices = networkAction(() => ({
+    types: FETCH_CHORD_SERVICES,
+    url: "/api/service-registry/chord-services",
+    err: "Error fetching CHORD services"
+}));
+
 export const fetchServices = networkAction(() => ({
     types: FETCH_SERVICES,
     url: "/api/service-registry/services",
     err: "Error fetching services"
 }));
 
-export const fetchServiceMetadata = networkAction(service => ({
-    types: FETCH_SERVICE_METADATA,
-    params: {serviceID: service.id},
-    url: `/api${service.url}/service-info`,
-    err: `Error contacting service '${service.name}'`
-}));
-
 export const fetchDataServiceDataTypes = networkAction(service => ({
     types: FETCH_SERVICE_DATA_TYPES,
     params: {serviceID: service.id},
-    url: `/api${service.url}/data-types`,
+    url: `${service.url}/data-types`,
     err: `Error fetching data types from service '${service.name}'`
 }));
 
 export const fetchDataServiceDataTypeTables = networkAction((service, dataType) => ({
     types: FETCH_SERVICE_TABLES,
     params: {serviceID: service.id, dataTypeID: dataType.id},
-    url: `/api${service.url}/datasets?${createURLSearchParams({"data-type": dataType.id}).toString()}`,
+    url: `${service.url}/datasets?${createURLSearchParams({"data-type": dataType.id}).toString()}`,
     err: `Error fetching tables from service '${service.name}' (data type ${dataType.id})`
 }));
 
 export const fetchDataServiceWorkflows = networkAction(service => ({
     types: FETCH_SERVICE_WORKFLOWS,
     params: {serviceID: service.id},
-    url: `/api${service.url}/workflows`
+    url: `${service.url}/workflows`
 }));
 
 
 export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispatch, getState) => {
-    if (getState().services.isFetchingAll) return;
-
     await dispatch(beginFlow(LOADING_ALL_SERVICE_DATA));
 
     // Fetch Services
-    await dispatch(fetchServices());
+    await Promise.all([dispatch(fetchCHORDServices()), dispatch(fetchServices())]);
     if (!getState().services.items) {
         // Something went wrong, terminate early
         await dispatch(terminateFlow(LOADING_ALL_SERVICE_DATA));
         return;
     }
 
-    // Fetch Service Metadata
-    await dispatch(beginFlow(LOADING_SERVICE_METADATA));
-    await Promise.all(getState().services.items.map(s => dispatch(fetchServiceMetadata(s))));
-    await dispatch(endFlow(LOADING_SERVICE_METADATA));
-
     // Fetch other data (need metadata first):
 
     // - Skip services that don't provide data (i.e. no data types/workflows/etc.)
-    const dataServices = getState().services.items.filter(s => (s.metadata || {})["chordDataService"]);
+    const chordDataServiceArtifacts = getState().chordServices.items
+        .filter(s => s.data_service)
+        .map(s => s.type.artifact);
+
+    const dataServiceInfo = getState().services.items.filter(s =>
+        chordDataServiceArtifacts.includes(s.type.split(":")[1]));
 
     // - Fetch Data Service Data Types and Workflows
     await Promise.all([
         (async () => {
             await dispatch(beginFlow(LOADING_SERVICE_DATA_TYPES));
-            await Promise.all(dataServices.map(s => dispatch(fetchDataServiceDataTypes(s))));
+            await Promise.all(dataServiceInfo.map(s => dispatch(fetchDataServiceDataTypes(s))));
             await dispatch(endFlow(LOADING_SERVICE_DATA_TYPES));
         })(),
         (async () => {
             await dispatch(beginFlow(LOADING_SERVICE_WORKFLOWS));
-            await Promise.all(dataServices.map(s => dispatch(fetchDataServiceWorkflows(s))));
+            await Promise.all(dataServiceInfo.map(s => dispatch(fetchDataServiceWorkflows(s))));
             await dispatch(endFlow(LOADING_SERVICE_WORKFLOWS));
         })()
     ]);
@@ -121,7 +116,7 @@ export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispa
     // Fetch Data Service Local Tables
     // - skip services that don't provide data or don't have data types
     await dispatch(beginFlow(LOADING_SERVICE_TABLES));
-    await Promise.all(dataServices.flatMap(s =>
+    await Promise.all(dataServiceInfo.flatMap(s =>
         ((getState().serviceDataTypes.dataTypesByServiceID[s.id] || {items: []}).items || [])
             .map(dt => dispatch(fetchDataServiceDataTypeTables(s, dt)))));
     await dispatch(endFlow(LOADING_SERVICE_TABLES));
@@ -131,8 +126,7 @@ export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispa
 
 export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => async (dispatch, getState) => {
     const state = getState();
-    if ((state.services.items.length === 0 ||
-            Object.keys(state.serviceMetadata.metadata).length === 0 ||
+    if ((state.chordServices.items.length === 0 || state.services.items.length === 0 ||
             Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0) &&
             !state.services.isFetchingAll) {
         await fetchServicesWithMetadataAndDataTypesAndTables();

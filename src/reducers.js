@@ -1,8 +1,8 @@
 import {combineReducers} from "redux";
 
 import {
+    chordServices,
     services,
-    serviceMetadata,
     serviceDataTypes,
     serviceTables,
     serviceWorkflows
@@ -22,8 +22,8 @@ import {runs} from "./modules/wes/reducers";
 import {peers} from "./modules/peers/reducers";
 
 const rootReducer = combineReducers({
+    chordServices,
     services,
-    serviceMetadata,
     serviceDataTypes,
     serviceTables,
     serviceWorkflows,

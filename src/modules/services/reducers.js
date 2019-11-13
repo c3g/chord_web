@@ -3,10 +3,8 @@ import {objectWithoutProp} from "../../utils";
 import {
     LOADING_ALL_SERVICE_DATA,
 
+    FETCH_CHORD_SERVICES,
     FETCH_SERVICES,
-
-    FETCH_SERVICE_METADATA,
-    LOADING_SERVICE_METADATA,
 
     FETCH_SERVICE_DATA_TYPES,
     LOADING_SERVICE_DATA_TYPES,
@@ -21,12 +19,35 @@ import {
     LOADING_SERVICE_WORKFLOWS
 } from "./actions";
 
+export const chordServices = (
+    state = {
+        isFetching: false,
+        items: []
+    },
+    action
+) => {
+    switch (action.type) {
+        case FETCH_CHORD_SERVICES.REQUEST:
+            return {...state, isFetching: true};
+
+        case FETCH_CHORD_SERVICES.RECEIVE:
+            return {...state, isFetching: false, items: action.data};
+
+        case FETCH_CHORD_SERVICES.ERROR:
+            return {...state, isFetching: false};
+
+        default:
+            return state;
+    }
+};
+
 export const services = (
     state = {
         isFetching: false,
         isFetchingAll: false,  // TODO: Rename this, since it means more "all data including other stuff"
         items: [],
-        itemsByID: {}
+        itemsByID: {},
+        itemsByArtifact: {}
     },
     action
 ) => {
@@ -47,6 +68,7 @@ export const services = (
                 isFetching: false,
                 items: action.data,
                 itemsByID: Object.fromEntries(action.data.map(s => [s.id, s])),
+                itemsByArtifact: Object.fromEntries(action.data.map(s => [s.type.split(":")[1], s])),
                 lastUpdated: action.receivedAt
             };
 
@@ -58,63 +80,6 @@ export const services = (
     }
 };
 
-export const serviceMetadata = (
-    state = {
-        isFetchingAll: false,
-        didInvalidate: false,
-        metadata: {}
-    },
-    action
-) => {
-    switch (action.type) {
-        case LOADING_SERVICE_METADATA.BEGIN:
-            return {...state, isFetchingAll: true};
-
-        case LOADING_SERVICE_METADATA.END:
-        case LOADING_SERVICE_METADATA.TERMINATE:
-            return {...state, isFetchingAll: false};
-
-        case FETCH_SERVICE_METADATA.REQUEST:
-            return {
-                ...state,
-                metadata: {
-                    ...state.metadata,
-                    [action.serviceID]: {
-                        ...(state.metadata[action.serviceID] || {metadata: null}),
-                        isFetching: true
-                    }
-                }
-            };
-
-        case FETCH_SERVICE_METADATA.RECEIVE:
-            return {
-                ...state,
-                metadata: {
-                    ...state.metadata,
-                    [action.serviceID]: {
-                        metadata: action.data,
-                        isFetching: false
-                    }
-                },
-                lastUpdated: action.receivedAt
-            };
-
-        case FETCH_SERVICE_METADATA.ERROR:
-            return {
-                ...state,
-                metadata: {
-                    ...state.metadata,
-                    [action.serviceID]: {
-                        ...(state.metadata[action.serviceID] || {metadata: null}),
-                        isFetching: false
-                    }
-                }
-            };
-
-        default:
-            return state;
-    }
-};
 
 export const serviceDataTypes = (
     state = {
