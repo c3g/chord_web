@@ -58,7 +58,7 @@ class DiscoverySearchForm extends Component {
             field,
             fieldSchema,
             negated: false,
-            operation: OP_EQUALS,
+            operation: ((fieldSchema || {search: {}}).search.operations || [OP_EQUALS])[0] || OP_EQUALS,
             searchValue: ""
         }});
 
