@@ -76,7 +76,6 @@ class Project extends Component {
     }
 
     render() {
-        console.log(this.props.individuals);
         return (
             <div>
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
