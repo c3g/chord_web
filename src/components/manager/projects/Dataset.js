@@ -71,8 +71,9 @@ class Dataset extends Component {
     }
 
     async handleAdditionSubmit(values) {
-        const [serviceID, dataTypeID] = values.dataType.split(":");
-        await this.props.addProjectTable(this.props.project.project_id, this.state.dataset_id, serviceID, dataTypeID,
+        const [serviceArtifact, dataTypeID] = values.dataType.split(":");
+        const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
+        await this.props.addProjectTable(this.props.project.project_id, this.state.dataset_id, serviceInfo, dataTypeID,
             values.name);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
@@ -195,8 +196,14 @@ Dataset.propTypes = {
     individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Get this via redux store instead of transformations
     loadingIndividuals: PropTypes.bool,
 
-    onTableIngest: PropTypes.func
+    onTableIngest: PropTypes.func,
+
+    serviceInfoByArtifact: PropTypes.object
 };
+
+const mapStateToProps = state => ({
+    serviceInfoByArtifact: state.services.itemsByArtifact
+});
 
 const mapDispatchToProps = dispatch => ({
     addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, datasetName) =>
@@ -205,4 +212,4 @@ const mapDispatchToProps = dispatch => ({
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
-export default connect(null, mapDispatchToProps)(Dataset);
+export default connect(mapStateToProps, mapDispatchToProps)(Dataset);

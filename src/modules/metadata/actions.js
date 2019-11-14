@@ -18,8 +18,6 @@ import {
     terminateFlow,
 } from "../../utils/actions";
 
-import {createFormData} from "../../utils/requests";
-
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 
@@ -157,72 +155,84 @@ export const addProjectDataset = networkAction((project, name, description) => (
 }));
 
 
-export const addProjectTable = (projectID, datasetID, serviceID, dataType, tableName) => async (dispatch, getState) => {
-    if (getState().projectTables.isAdding) return;
+export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tableName) =>
+    async (dispatch, getState) => {
+        if (getState().projectTables.isAdding) return;
 
-    await dispatch(beginFlow(PROJECT_TABLE_ADDITION));
-    await dispatch(beginFlow(ADDING_SERVICE_TABLE));
+        await dispatch(beginFlow(PROJECT_TABLE_ADDITION));
+        await dispatch(beginFlow(ADDING_SERVICE_TABLE));
 
-    const terminate = async () => {
-        message.error(`Error adding new table '${tableName}'`);
-        await dispatch(terminateFlow(ADDING_SERVICE_TABLE));
-        await dispatch(terminateFlow(PROJECT_TABLE_ADDITION));
-    };
+        const terminate = async () => {
+            message.error(`Error adding new table '${tableName}'`);
+            await dispatch(terminateFlow(ADDING_SERVICE_TABLE));
+            await dispatch(terminateFlow(PROJECT_TABLE_ADDITION));
+        };
 
-    try {
-        const serviceResponse = await fetch(
-            `/api/${getState().services.itemsByID[serviceID].name}/datasets?data-type=${dataType}`,
-            {method: "POST", body: createFormData({name: tableName.trim(), metadata: JSON.stringify({})})});
+        await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {method: "OPTIONS"});
 
-        if (!serviceResponse.ok) {
-            console.error(serviceResponse);
-            await terminate();
-            return;
-        }
-
-        const serviceTable = await serviceResponse.json();
-
-        // TODO: Rename dataset, add actual dataset adding endpoint
         try {
-            const projectResponse = await fetch(`/api/metadata/api/table_ownership`, {
+            console.log(`${serviceInfo.url}/datasets?data-type=${dataType}`);
+            const serviceResponse = await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
-                    table_id: serviceTable.id,
-                    service_id: serviceID,
-                    data_type: dataType,
-
-                    dataset: datasetID,
-                    sample: null  // TODO: Sample ID if wanted
+                    name: tableName.trim(),
+                    metadata: {}
                 })
             });
 
-            if (!projectResponse.ok) {
-                // TODO: Delete previously-created service dataset
-                console.error(projectResponse);
+            if (!serviceResponse.ok) {
+                console.error(serviceResponse);
                 await terminate();
                 return;
             }
 
-            const projectTable = await projectResponse.json();
-            message.success("Table added!");  // TODO: Nicer GUI success message
-            await dispatch(endAddingServiceTable(serviceID, dataType, serviceTable));
-            await dispatch(endProjectTableAddition(projectID, projectTable));  // TODO: Check params here
+            const serviceTable = await serviceResponse.json();
+
+            // TODO: Rename dataset, add actual dataset adding endpoint
+            try {
+                const projectResponse = await fetch(`/api/metadata/api/table_ownership`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        table_id: serviceTable.id,
+                        service_id: serviceInfo.id,
+                        service_artifact: serviceInfo.type.split(":")[1],
+                        data_type: dataType,
+
+                        dataset: datasetID,
+                        sample: null  // TODO: Sample ID if wanted
+                    })
+                });
+
+                if (!projectResponse.ok) {
+                    // TODO: Delete previously-created service dataset
+                    console.error(projectResponse);
+                    await terminate();
+                    return;
+                }
+
+                const projectTable = await projectResponse.json();
+                message.success("Table added!");  // TODO: Nicer GUI success message
+                await dispatch(endAddingServiceTable(serviceInfo, dataType, serviceTable));
+                await dispatch(endProjectTableAddition(projectID, projectTable));  // TODO: Check params here
+            } catch (e) {
+                // TODO: Delete previously-created service dataset
+                console.error(e);
+                await terminate();
+            }
         } catch (e) {
-            // TODO: Delete previously-created service dataset
             console.error(e);
             await terminate();
         }
-    } catch (e) {
-        console.error(e);
-        await terminate();
-    }
-};
+    };
 
 
 const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
     await dispatch(beginFlow(PROJECT_TABLE_DELETION));
     await dispatch(beginFlow(DELETING_SERVICE_TABLE));
+
+    const serviceInfo = getState().services.itemsByID[table.service_id];
 
     const terminate = async () => {
         message.error(`Error deleting table '${table.name}'`);
@@ -233,11 +243,7 @@ const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
     // Delete from service
     try {
         // TODO: Dataset --> Table
-
-        const serviceResponse = await fetch(
-            `/api/${getState().services.itemsByID[table.service_id].name}/datasets/${table.table_id}`,
-            {method: "DELETE"});
-
+        const serviceResponse = await fetch(`${serviceInfo.url}/datasets/${table.table_id}`, {method: "DELETE"});
         if (!serviceResponse.ok) {
             console.error(serviceResponse);
             await terminate();
@@ -251,9 +257,7 @@ const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
 
     // Delete from project metadata
     try {
-        const projectResponse = await fetch(`/api/metadata/api/table_ownership/${table.table_id}`,
-            {method: "DELETE"});
-
+        const projectResponse = await fetch(`/api/metadata/api/table_ownership/${table.table_id}`, {method: "DELETE"});
         if (!projectResponse.ok) {
             // TODO: Handle partial failure / out-of-sync
             console.error(projectResponse);
@@ -270,7 +274,7 @@ const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
 
     message.success("Table deleted!");  // TODO: Nicer GUI success message
 
-    await dispatch(endDeletingServiceTable(table.service_id, table.table_id));  // TODO: Check params here
+    await dispatch(endDeletingServiceTable(serviceInfo.id, table.table_id));  // TODO: Check params here
     await dispatch(endProjectTableDeletion(projectID, table.table_id));  // TODO: Check params here
 };
 

@@ -13,7 +13,7 @@ import "antd/es/select/style/css";
 class TableForm extends Component {
     render() {
         const dataTypeOptions = this.props.dataTypes.map(dts => (
-            <Select.Option key={`${dts.s}:${dts.dt.id}`}>{dts.dt.id}</Select.Option>
+            <Select.Option key={`${dts.a}:${dts.dt.id}`}>{dts.dt.id}</Select.Option>
         ));
 
         return (
@@ -36,9 +36,9 @@ class TableForm extends Component {
 }
 
 const mapStateToProps = state => ({
-    dataTypes: Object.entries(state.serviceDataTypes.dataTypesByServiceID)
-        .filter(([s, _]) => ((state.services.itemsByID[s] || {}).metadata || {}).chordManageableTables)
-        .flatMap(([s, dts]) => (dts.items || []).map(dt => ({dt, s})))
+    dataTypes: Object.entries(state.serviceDataTypes.dataTypesByServiceArtifact)
+        .filter(([a, _]) => (state.chordServices.itemsByArtifact[a] || {manageable_tables: false}).manageable_tables)
+        .flatMap(([a, dts]) => (dts.items || []).map(dt => ({dt, a})))
 });
 
 export default connect(mapStateToProps, null, null, {forwardRef: true})(
