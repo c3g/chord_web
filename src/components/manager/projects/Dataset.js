@@ -128,6 +128,7 @@ class Dataset extends Component {
                 </Typography.Paragraph>
 
                 <Table bordered
+                       style={{marginBottom: "1rem"}}
                        dataSource={this.props.individuals.map(i => ({
                            ...i,
                            sex: i.sex || "UNKNOWN_SEX",
