@@ -1,5 +1,3 @@
-import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../services/actions";
-
 import {basicAction, createNetworkActionTypes, networkAction} from "../../utils/actions"
 
 
@@ -49,8 +47,6 @@ export const fetchSearch = networkAction((service, dataTypeID, conditions, query
 
 // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
 export const performSearch = (service, dataTypeID, conditions) => async dispatch => {
-    await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded());
-
     // Compile conditions into new search format
     const query = conditions.map(c => {
         let exp = [`#${c.operation}`, ["#resolve", ...c.field.split(".").slice(1)], c.searchValue];

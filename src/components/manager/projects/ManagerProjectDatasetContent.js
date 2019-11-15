@@ -18,8 +18,6 @@ import ProjectCreationModal from "./ProjectCreationModal";
 import ProjectDeletionModal from "./ProjectDeletionModal";
 import DatasetAdditionModal from "./DatasetAdditionModal";
 
-import {fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded} from "../../../modules/services/actions";
-
 import {
     beginProjectEditing,
     endProjectEditing,
@@ -31,14 +29,7 @@ import {
     toggleProjectDatasetAdditionModal,
 } from "../../../modules/manager/actions";
 
-import {
-    fetchProjectsWithDatasetsAndTables,
-    saveProjectIfPossible,
-
-    fetchPhenopacketsIfNeeded,
-    fetchBiosamplesIfNeeded,
-    fetchIndividualsIfNeeded,
-} from "../../../modules/metadata/actions";
+import {saveProjectIfPossible,} from "../../../modules/metadata/actions";
 
 import {projectPropTypesShape} from "../../../utils";
 
@@ -49,15 +40,6 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 class ManagerProjectDatasetContent extends Component {
     async componentDidMount() {
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
-
-        await this.props.fetchServiceDataIfNeeded();
-        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed
-
-        await Promise.all([
-            this.props.fetchPhenopacketsIfNeeded(),
-            this.props.fetchBiosamplesIfNeeded(),
-            this.props.fetchIndividualsIfNeeded()
-        ]);
     }
 
     componentDidUpdate() {
@@ -187,15 +169,12 @@ ManagerProjectDatasetContent.propTypes = {
     })),
     tables: PropTypes.arrayOf(PropTypes.object),
 
-    fetchServiceDataIfNeeded: PropTypes.func,
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
     toggleProjectDatasetAdditionModal: PropTypes.func,
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
-
-    fetchProjectsWithDatasetsAndTables: PropTypes.func,
 
     saveProject: PropTypes.func,
 
@@ -220,10 +199,6 @@ ManagerProjectDatasetContent.propTypes = {
     loadingPhenopackets: PropTypes.bool,
     loadingBiosamples: PropTypes.bool,
     loadingIndividuals: PropTypes.bool,
-
-    fetchPhenopacketsIfNeeded: PropTypes.func,
-    fetchBiosamplesIfNeeded: PropTypes.func,
-    fetchIndividualsIfNeeded: PropTypes.func,
 };
 
 const mapStateToProps = state => {
@@ -275,7 +250,7 @@ const mapStateToProps = state => {
         tables: tableList,
         strayTables,
 
-        loadingProjects: state.projects.isFetching,
+        loadingProjects: state.services.isFetchingAll || state.projects.isFetching,
         loadingDatasets: state.projectDatasets.isFetching || state.projectDatasets.isAdding,
         loadingTables: state.services.isFetchingAll || state.projectTables.isFetchingAll,
 
@@ -292,19 +267,13 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchServiceDataIfNeeded: async () => await dispatch(fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded()),
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
-    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
-
-    fetchPhenopacketsIfNeeded: () => dispatch(fetchPhenopacketsIfNeeded()),
-    fetchBiosamplesIfNeeded: () => dispatch(fetchBiosamplesIfNeeded()),
-    fetchIndividualsIfNeeded: () => dispatch(fetchIndividualsIfNeeded())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));

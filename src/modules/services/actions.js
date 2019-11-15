@@ -132,11 +132,11 @@ export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispa
     await dispatch(endFlow(LOADING_ALL_SERVICE_DATA));
 };
 
-export const fetchServicesWithMetadataAndDataTypesAndDatasetsIfNeeded = () => async (dispatch, getState) => {
+export const fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded = () => async (dispatch, getState) => {
     const state = getState();
     if ((state.chordServices.items.length === 0 || state.services.items.length === 0 ||
             Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0) &&
             !state.services.isFetchingAll) {
-        await fetchServicesWithMetadataAndDataTypesAndTables();
+        await dispatch(fetchServicesWithMetadataAndDataTypesAndTables());
     }
 };

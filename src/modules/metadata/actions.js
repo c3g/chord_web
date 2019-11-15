@@ -44,23 +44,23 @@ const endProjectTableAddition = (projectID, table) => ({type: PROJECT_TABLE_ADDI
 const endProjectTableDeletion = (projectID, tableID) => ({type: PROJECT_TABLE_DELETION.END, projectID, tableID});
 
 
-export const fetchProjects = networkAction(() => ({
+export const fetchProjects = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PROJECTS,
-    url: "/api/metadata/api/projects",
+    url: `${getState().services.metadataService.url}/api/projects`,
     err: "Error fetching projects"
 }));
 
 
-export const fetchProjectDatasets = networkAction(() => ({
+export const fetchProjectDatasets = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PROJECT_DATASETS,
-    url: "/api/metadata/api/datasets",
+    url: `${getState().services.metadataService.url}/api/datasets`,
     err: "Error fetching tables"
 }));
 
-export const fetchProjectTables = networkAction(projectDatasets => ({
+export const fetchProjectTables = networkAction(projectDatasets => (dispatch, getState) => ({
     types: FETCH_PROJECT_TABLES,
     params: {projectDatasets},
-    url: "/api/metadata/api/table_ownership",
+    url: `${getState().services.metadataService.url}/api/table_ownership`,
     err: "Error fetching tables"
 }));
 
@@ -79,9 +79,9 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
 };
 
 
-const createProject = networkAction(project => ({
+const createProject = networkAction(project => (dispatch, getState) => ({
     types: CREATE_PROJECT,
-    url: "/api/metadata/api/projects",
+    url: `${getState().services.metadataService.url}/api/projects`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -98,10 +98,10 @@ export const createProjectIfPossible = project => async (dispatch, getState) => 
     await dispatch(createProject(project));
 };
 
-export const deleteProject = networkAction(projectID => ({
+export const deleteProject = networkAction(projectID => (dispatch, getState) => ({
     types: DELETE_PROJECT,
     params: {projectID},
-    url: `/api/metadata/api/projects/${projectID}`,
+    url: `${getState().services.metadataService.url}/api/projects/${projectID}`,
     req: {method: "DELETE"},
     err: `Error deleting project '${projectID}'`,  // TODO: More user-friendly error
     onSuccess: () => message.success("Project deleted!")  // TODO: More user-friendly error
@@ -115,10 +115,10 @@ export const deleteProjectIfPossible = projectID => async (dispatch, getState) =
 };
 
 
-const saveProject = networkAction(project => ({
+const saveProject = networkAction(project => (dispatch, getState) => ({
     types: SAVE_PROJECT,
     params: {projectID: project.project_id},
-    url: `/api/metadata/api/projects/${project.project_id}`,
+    url: `${getState().services.metadataService.url}/api/projects/${project.project_id}`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -136,10 +136,10 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, name, description) => ({
+export const addProjectDataset = networkAction((project, name, description) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
     params: {projectID: project.project_id},
-    url: `/api/metadata/api/datasets`,
+    url: `${getState().services.metadataService.url}/api/datasets`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -191,19 +191,22 @@ export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tab
 
             // TODO: Rename dataset, add actual dataset adding endpoint
             try {
-                const projectResponse = await fetch(`/api/metadata/api/table_ownership`, {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({
-                        table_id: serviceTable.id,
-                        service_id: serviceInfo.id,
-                        service_artifact: serviceInfo.type.split(":")[1],
-                        data_type: dataType,
+                const projectResponse = await fetch(
+                    `${getState().services.metadataService.url}/api/table_ownership`,
+                    {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            table_id: serviceTable.id,
+                            service_id: serviceInfo.id,
+                            service_artifact: serviceInfo.type.split(":")[1],
+                            data_type: dataType,
 
-                        dataset: datasetID,
-                        sample: null  // TODO: Sample ID if wanted
-                    })
-                });
+                            dataset: datasetID,
+                            sample: null  // TODO: Sample ID if wanted
+                        })
+                    }
+                );
 
                 if (!projectResponse.ok) {
                     // TODO: Delete previously-created service dataset
@@ -257,7 +260,11 @@ const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
 
     // Delete from project metadata
     try {
-        const projectResponse = await fetch(`/api/metadata/api/table_ownership/${table.table_id}`, {method: "DELETE"});
+        const projectResponse = await fetch(
+            `${getState().services.metadataService.url}/api/table_ownership/${table.table_id}`,
+            {method: "DELETE"}
+        );
+
         if (!projectResponse.ok) {
             // TODO: Handle partial failure / out-of-sync
             console.error(projectResponse);
@@ -284,9 +291,9 @@ export const deleteProjectTableIfPossible = (projectID, table) => async (dispatc
 };
 
 
-export const fetchPhenopackets = networkAction(() => ({
+export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PHENOPACKETS,
-    url: `/api/metadata/api/phenopackets`,
+    url: `${getState().services.metadataService.url}/api/phenopackets`,
     err: "Error fetching phenopackets"
 }));
 
@@ -295,9 +302,9 @@ export const fetchPhenopacketsIfNeeded = () => async (dispatch, getState) => {
     dispatch(fetchPhenopackets());
 };
 
-export const fetchBiosamples = networkAction(() => ({
+export const fetchBiosamples = networkAction(() => (dispatch, getState) => ({
     types: FETCH_BIOSAMPLES,
-    url: `/api/metadata/api/biosamples`,
+    url: `${getState().services.metadataService.url}/api/biosamples`,
     err: "Error fetching biosamples"
 }));
 
@@ -306,9 +313,9 @@ export const fetchBiosamplesIfNeeded = () => async (dispatch, getState) => {
     dispatch(fetchBiosamples());
 };
 
-export const fetchIndividuals = networkAction(() => ({
+export const fetchIndividuals = networkAction(() => (dispatch, getState) => ({
     types: FETCH_INDIVIDUALS,
-    url: `/api/metadata/api/individuals`,
+    url: `${getState().services.metadataService.url}/api/individuals`,
     err: "Error fetching individuals"
 }));
 

@@ -84,6 +84,7 @@ export const services = (
                 itemsByArtifact,
 
                 dropBoxService: itemsByArtifact["drop-box"] || null,
+                federationService: itemsByArtifact["federation"] || null,
                 metadataService: itemsByArtifact["metadata"] || null,
                 wesService: itemsByArtifact["wes"] || null,
 

@@ -12,16 +12,16 @@ export const SUBMIT_INGESTION_RUN = createNetworkActionTypes("SUBMIT_INGESTION_R
 
 
 // TODO: If needed
-export const fetchRuns = networkAction(() => ({
+export const fetchRuns = networkAction(() => (dispatch, getState) => ({
     types: FETCH_RUNS,
-    url: "/api/wes/runs",
+    url: `${getState().services.wesService.url}/runs`,
     err: "Error fetching WES runs"
 }));
 
-export const fetchRunDetails = networkAction(runID => ({
+export const fetchRunDetails = networkAction(runID => (dispatch, getState) => ({
     types: FETCH_RUN_DETAILS,
     params: {runID},
-    url: `/api/wes/runs/${runID}`,
+    url: `${getState().services.wesService.url}/runs/${runID}`,
     err: `Error fetching run details for run ${runID}`
 }));
 

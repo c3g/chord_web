@@ -14,8 +14,17 @@ import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
 
-import {fetchServicesWithMetadataAndDataTypesAndTables} from "../modules/services/actions";
 import {fetchPeers} from "../modules/peers/actions";
+import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../modules/services/actions";
+import {fetchDropBoxTree} from "../modules/manager/actions";
+import {fetchRuns, fetchAllRunDetailsIfNeeded} from "../modules/wes/actions";
+import {
+    fetchProjectsWithDatasetsAndTables,
+
+    fetchPhenopacketsIfNeeded,
+    fetchBiosamplesIfNeeded,
+    fetchIndividualsIfNeeded
+} from "../modules/metadata/actions";
 
 // noinspection HtmlUnknownTarget
 const renderContent = Content => route => (
@@ -85,10 +94,24 @@ class App extends Component {
         );
     }
 
-    componentDidMount() {
-        this.props.dispatch(fetchPeers());
-        this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTables());
+    async componentDidMount() {
+        await this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
+
+        await Promise.all([
+            this.props.dispatch(fetchPeers()),
+            this.props.dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
+            this.props.dispatch(fetchDropBoxTree()),
+            (async () => {
+                await this.props.dispatch(fetchRuns());
+                await this.props.dispatch(fetchAllRunDetailsIfNeeded());
+            })(),
+            this.props.dispatch(fetchPhenopacketsIfNeeded()),
+            this.props.dispatch(fetchBiosamplesIfNeeded()),
+            this.props.dispatch(fetchIndividualsIfNeeded()),
+        ]);
     }
 }
 
-export default connect(null)(App);
+export default connect(state => ({
+    runs: state.runs.items
+}))(App);

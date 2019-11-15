@@ -36,8 +36,8 @@ export const endProjectEditing = basicAction(PROJECT_EDITING.END);
 
 
 // TODO: If needed
-export const fetchDropBoxTree = networkAction(() => ({
+export const fetchDropBoxTree = networkAction(() => (dispatch, getState) => ({
     types: FETCH_DROP_BOX_TREE,
-    url: "/api/drop-box/tree",
+    url: `${getState().services.dropBoxService.url}/tree`,
     err: "Error fetching drop box tree"  // TODO: More user-friendly error
 }));
