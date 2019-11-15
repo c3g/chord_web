@@ -13,18 +13,18 @@ export const UPDATE_DISCOVERY_SEARCH_FORM = "UPDATE_DISCOVERY_SEARCH_FORM";
 
 export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MODAL);
 
-export const selectSearch = (serviceID, dataTypeID, searchIndex) => ({
+export const selectSearch = (serviceInfo, dataTypeID, searchIndex) => ({
     type: SELECT_SEARCH,
-    serviceID,
+    serviceInfo,
     dataTypeID,
     searchIndex
 });
 
 
-export const fetchSearch = networkAction((service, dataTypeID, conditions, query) => ({
+export const fetchSearch = networkAction((serviceInfo, dataTypeID, conditions, query) => (dispatch, getState) => ({
     types: FETCH_SEARCH,
-    params: {serviceID: service.id, dataTypeID},
-    url: `/api/federation/search-aggregate${service.url}/search`,
+    params: {serviceID: serviceInfo.id, dataTypeID},
+    url: `${getState().services.federationService.url}/search-aggregate${serviceInfo.url}/search`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},  // TODO: Real GA4GH headers
@@ -40,13 +40,13 @@ export const fetchSearch = networkAction((service, dataTypeID, conditions, query
     },
     err: "Search returned an error",  // TODO: Better search errors
     afterAction: () => async (dispatch, getState) =>
-        await dispatch(selectSearch(service.id, dataTypeID,
-            getState().discovery.searchesByServiceAndDataTypeID[service.id][dataTypeID].length - 1))
+        await dispatch(selectSearch(serviceInfo.id, dataTypeID,
+            getState().discovery.searchesByServiceAndDataTypeID[serviceInfo.id][dataTypeID].length - 1))
 }));
 
 
 // TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
-export const performSearch = (service, dataTypeID, conditions) => async dispatch => {
+export const performSearch = (serviceInfo, dataTypeID, conditions) => async dispatch => {
     // Compile conditions into new search format
     const query = conditions.map(c => {
         let exp = [`#${c.operation}`, ["#resolve", ...c.field.split(".").slice(1)], c.searchValue];
@@ -54,20 +54,20 @@ export const performSearch = (service, dataTypeID, conditions) => async dispatch
         return exp;
     }).reduce((se, v) => ["#and", se, v]);
 
-    await dispatch(fetchSearch(service, dataTypeID, conditions, query));
+    await dispatch(fetchSearch(serviceInfo, dataTypeID, conditions, query));
 };
 
-export const selectDiscoveryServiceDataType = (serviceID, dataTypeID) => ({
+export const selectDiscoveryServiceDataType = (serviceInfo, dataTypeID) => ({
     type: SELECT_DISCOVERY_SERVICE_DATA_TYPE,
-    serviceID,
+    serviceInfo,
     dataTypeID
 });
 
 export const clearDiscoveryServiceDataType = basicAction(CLEAR_DISCOVERY_SERVICE_DATA_TYPE);
 
-export const updateDiscoverySearchForm = (serviceID, dataTypeID, fields) => ({
+export const updateDiscoverySearchForm = (serviceInfo, dataTypeID, fields) => ({
     type: UPDATE_DISCOVERY_SEARCH_FORM,
-    serviceID,
+    serviceInfo,
     dataTypeID,
     fields
 });

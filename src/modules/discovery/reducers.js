@@ -32,8 +32,8 @@ export const discovery = (
                 ...state,
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
-                    [action.serviceID]: Object.fromEntries(action.data.map(d =>
-                        [d.id, (state.searchFormsByServiceAndDataTypeID[action.serviceID] || {})[d.id] || {}]))
+                    [action.serviceInfo.id]: Object.fromEntries(action.data.map(d =>
+                        [d.id, (state.searchFormsByServiceAndDataTypeID[action.serviceInfo.id] || {})[d.id] || {}]))
                 }
             };
 
@@ -50,10 +50,10 @@ export const discovery = (
                 searches: [...state.searches, action.data], // Add search to search history
                 searchesByServiceAndDataTypeID: {
                     ...state.searchesByServiceAndDataTypeID,
-                    [action.serviceID]: {
-                        ...(state.searchesByServiceAndDataTypeID[action.serviceID] || {}),
+                    [action.serviceInfo.id]: {
+                        ...(state.searchesByServiceAndDataTypeID[action.serviceInfo.id] || {}),
                         [action.dataTypeID]: [
-                            ...((state.searchesByServiceAndDataTypeID[action.serviceID] || {})[action.dataTypeID]
+                            ...((state.searchesByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
                                 || []),
                             action.data
                         ]
@@ -70,8 +70,8 @@ export const discovery = (
                 ...state,
                 selectedSearchByServiceAndDataTypeID: {
                     ...state.selectedSearchByServiceAndDataTypeID,
-                    [action.serviceID]: {
-                        ...(state.selectedSearchByServiceAndDataTypeID[action.serviceID] || {}),
+                    [action.serviceInfo.id]: {
+                        ...(state.selectedSearchByServiceAndDataTypeID[action.serviceInfo.id] || {}),
                         [action.dataTypeID]: action.searchIndex
                     }
                 }
@@ -80,7 +80,7 @@ export const discovery = (
         case SELECT_DISCOVERY_SERVICE_DATA_TYPE:
             return {
                 ...state,
-                selectedServiceID: action.serviceID,
+                selectedServiceID: action.serviceInfo.id,
                 selectedDataTypeID: action.dataTypeID
             };
 
@@ -96,8 +96,8 @@ export const discovery = (
                 ...state,
                 searchFormsByServiceAndDataTypeID: {
                     ...state.searchFormsByServiceAndDataTypeID,
-                    [action.serviceID]: {
-                        ...state.searchFormsByServiceAndDataTypeID[action.serviceID],
+                    [action.serviceInfo.id]: {
+                        ...state.searchFormsByServiceAndDataTypeID[action.serviceInfo.id],
                         [action.dataTypeID]: simpleDeepCopy(action.fields) // TODO: Hack-y deep clone
                     }
                 }

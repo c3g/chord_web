@@ -9,7 +9,7 @@ import "antd/es/page-header/style/css";
 
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 
-import {selectDiscoveryServiceDataType, clearDiscoveryServiceDataType} from "../modules/discovery/actions";
+import {clearDiscoveryServiceDataType} from "../modules/discovery/actions";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
@@ -61,7 +61,6 @@ DataDiscoveryContent.propTypes = {
     selectedServiceID: PropTypes.string,
     selectedDataTypeID: PropTypes.string,
 
-    selectDataType: PropTypes.func,
     clearSelectedDataType: PropTypes.func
 };
 
@@ -71,7 +70,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    selectDataType: (serviceID, dataTypeID) => dispatch(selectDiscoveryServiceDataType(serviceID, dataTypeID)),
     clearSelectedDataType: () => dispatch(clearDiscoveryServiceDataType())
 });
 

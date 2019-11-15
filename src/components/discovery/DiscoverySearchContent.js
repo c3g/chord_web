@@ -63,17 +63,17 @@ class DiscoverySearchContent extends Component {
 
     handleFormChange(fields) {
         if (this.props.dataType === null) return;
-        this.props.updateSearchForm(this.props.service.id, this.props.dataType.id, fields);
+        this.props.updateSearchForm(this.props.serviceInfo, this.props.dataType.id, fields);
     }
 
     handleSubmit(conditions) {
         if (this.props.dataType === null) return;
-        this.props.requestSearch(this.props.service, this.props.dataType.id, conditions);
+        this.props.requestSearch(this.props.serviceInfo, this.props.dataType.id, conditions);
     }
 
     handleSearchSelect(searchIndex) {
         if (this.props.dataType === null) return;
-        this.props.selectSearch(this.props.service.id, this.props.dataType.id, parseInt(searchIndex, 10));
+        this.props.selectSearch(this.props.serviceInfo, this.props.dataType.id, parseInt(searchIndex, 10));
     }
 
     handleTableTermsClick(table) {
@@ -90,7 +90,8 @@ class DiscoverySearchContent extends Component {
 
     handleDataTypeChange(value) {
         const [sID, dtID] = value.split(":");
-        this.props.selectDataType(sID, dtID);
+        const serviceInfo = this.props.serviceInfoByID[sID];
+        this.props.selectDataType(serviceInfo, dtID);
     }
 
     handleSchemaToggle() {
@@ -144,19 +145,19 @@ class DiscoverySearchContent extends Component {
     }
 
     render() {
-        const dtKey = (sID, dtID) => `${sID}:${dtID}`;
+        const dtKey = (s, dtID) => `${s.id}:${dtID}`;
         return (
             <>
                 <Form layout="inline">
                     <Form.Item label="Data Type">
                         <Select size="large" showSearch placeholder="Data Type" style={{width: 200}}
                                 loading={this.props.dataTypesLoading}
-                                value={this.props.dataType ? dtKey(this.props.service.id, this.props.dataType.id)
+                                value={this.props.dataType ? dtKey(this.props.serviceInfo, this.props.dataType.id)
                                     : undefined}
                                 onChange={this.handleDataTypeChange}>
-                            {this.props.services.filter(s => (this.props.dataTypes[s.id] || {items: null}).items)
+                            {this.props.servicesInfo.filter(s => (this.props.dataTypes[s.id] || {items: null}).items)
                                 .flatMap(s => this.props.dataTypes[s.id].items.map(dt =>
-                                    <Select.Option key={dtKey(s.id, dt.id)}>{dt.id}</Select.Option>
+                                    <Select.Option key={dtKey(s, dt.id)}>{dt.id}</Select.Option>
                                 ))}
                         </Select>
                     </Form.Item>
@@ -198,9 +199,10 @@ class DiscoverySearchContent extends Component {
 
 DiscoverySearchContent.propTypes = {
     onSearchSelect: PropTypes.func,
-    services: PropTypes.arrayOf(PropTypes.object),
+    servicesInfo: PropTypes.arrayOf(PropTypes.object),
+    serviceInfoByID: PropTypes.object,
     dataTypes: PropTypes.object,
-    service: PropTypes.object,
+    serviceInfo: PropTypes.object,
     dataType: PropTypes.object,
     dataTypesLoading: PropTypes.bool,
     modalShown: PropTypes.bool,
@@ -230,9 +232,10 @@ const mapStateToProps = state => {
         && state.discovery.selectedSearchByServiceAndDataTypeID[sID][dID] !== undefined;
 
     return {
-        services: state.services.items,
+        servicesInfo: state.services.items,
+        serviceInfoByID: state.services.itemsByID,
         dataTypes: state.serviceDataTypes.dataTypesByServiceID,
-        service: dataTypeExists ? state.services.itemsByID[sID] : null,
+        serviceInfo: dataTypeExists ? state.services.itemsByID[sID] : null,
         dataType: dataTypeExists ? state.serviceDataTypes.dataTypesByServiceID[sID].itemsByID[dID] : null,
 
         dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetchingAll
@@ -252,12 +255,14 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    selectDataType: (serviceID, dataTypeID) => dispatch(selectDiscoveryServiceDataType(serviceID, dataTypeID)),
+    selectDataType: (serviceInfo, dataTypeID) => dispatch(selectDiscoveryServiceDataType(serviceInfo, dataTypeID)),
     toggleSchemaModal: () => dispatch(toggleDiscoverySchemaModal()),
-    updateSearchForm: (serviceID, dataTypeID, fields) =>
-        dispatch(updateDiscoverySearchForm(serviceID, dataTypeID, fields)),
-    requestSearch: (service, dataTypeID, conditions) => dispatch(performSearch(service, dataTypeID, conditions)),
-    selectSearch: (serviceID, dataTypeID, searchIndex) => dispatch(selectSearch(serviceID, dataTypeID, searchIndex)),
+    updateSearchForm: (serviceInfo, dataTypeID, fields) =>
+        dispatch(updateDiscoverySearchForm(serviceInfo, dataTypeID, fields)),
+    requestSearch: (serviceInfo, dataTypeID, conditions) =>
+        dispatch(performSearch(serviceInfo, dataTypeID, conditions)),
+    selectSearch: (serviceInfo, dataTypeID, searchIndex) =>
+        dispatch(selectSearch(serviceInfo, dataTypeID, searchIndex)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
