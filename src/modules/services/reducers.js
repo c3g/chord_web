@@ -54,7 +54,11 @@ export const services = (
         isFetchingAll: false,  // TODO: Rename this, since it means more "all data including other stuff"
         items: [],
         itemsByID: {},
-        itemsByArtifact: {}
+        itemsByArtifact: {},
+
+        dropBoxService: null,
+        metadataService: null,
+        wesService: null
     },
     action
 ) => {
@@ -70,12 +74,19 @@ export const services = (
             return {...state, isFetching: true};
 
         case FETCH_SERVICES.RECEIVE:
+            const itemsByArtifact = Object.fromEntries(action.data.map(s => [s.type.split(":")[1], s]));
             return {
                 ...state,
+
                 isFetching: false,
                 items: action.data,
                 itemsByID: Object.fromEntries(action.data.map(s => [s.id, s])),
-                itemsByArtifact: Object.fromEntries(action.data.map(s => [s.type.split(":")[1], s])),
+                itemsByArtifact,
+
+                dropBoxService: itemsByArtifact["drop-box"] || null,
+                metadataService: itemsByArtifact["metadata"] || null,
+                wesService: itemsByArtifact["wes"] || null,
+
                 lastUpdated: action.receivedAt
             };
 

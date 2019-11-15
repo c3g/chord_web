@@ -30,7 +30,7 @@ class RunLog extends Component {
     async loadResource(resource, url) {
         try {
             // TODO: Auth / proper url stuff
-            const r = await fetch(url.replace(/http:\/\/([a-zA-Z0-9]+\.)+[a-zA-Z0-9]+/, ""));
+            const r = await fetch(url);
             this.setState({
                 [resource]: r.ok
                     ? await r.text()

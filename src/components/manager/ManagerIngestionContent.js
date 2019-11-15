@@ -95,10 +95,11 @@ class ManagerIngestionContent extends Component {
             return;
         }
 
+        const serviceInfo = this.props.servicesByID[this.state.selectedWorkflow.serviceID];
         const tableID = this.state.selectedTable.split(":")[2];
 
-        await this.props.submitIngestionWorkflowRun(this.state.selectedWorkflow.serviceID, tableID,
-            this.state.selectedWorkflow, this.state.inputs, "/data/manager/runs", history);
+        await this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
+            this.state.inputs, "/data/manager/runs", history);
 
         this.setState(simpleDeepCopy(this.initialState));
     }
@@ -274,7 +275,9 @@ ManagerIngestionContent.propTypes = {
     projects: PropTypes.array,
     projectsByID: PropTypes.object,  // TODO: Shape
     projectTables: PropTypes.object,  // TODO: Shape
-    isSubmittingIngestionRun: PropTypes.bool
+    isSubmittingIngestionRun: PropTypes.bool,
+
+    servicesByID: PropTypes.object, // TODO: Shape
 };
 
 const mapStateToProps = state => ({
@@ -285,7 +288,9 @@ const mapStateToProps = state => ({
     projectDatasets: state.projectDatasets.itemsByProjectID,
     projectTables: state.projectTables.itemsByProjectID,
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
-    isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun
+    isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,
+
+    servicesByID: state.services.itemsByID,
 });
 
 const mapDispatchToProps = dispatch => ({

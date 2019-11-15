@@ -44,12 +44,11 @@ export const fetchAllRunDetailsIfNeeded = () => async (dispatch, getState) => {
 
 
 export const submitIngestionWorkflowRun = networkAction(
-    (serviceID, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => {
-        const targetBaseURL = `${window.location.origin}/api/${getState().services.itemsByID[serviceID].name}`;
+    (serviceInfo, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => {
         return {
             types: SUBMIT_INGESTION_RUN,
-            params: {serviceID, datasetID},
-            url: "/api/wes/runs",
+            params: {serviceInfo, datasetID},
+            url: `${getState().services.wesService.url}/runs`,
             req: {
                 method: "POST",
                 body: createFormData({
@@ -58,11 +57,11 @@ export const submitIngestionWorkflowRun = networkAction(
                     workflow_type: "WDL",  // TODO: Should eventually not be hard-coded
                     workflow_type_version: "1.0",  // TODO: "
                     workflow_engine_parameters: {},  // TODO: Currently unused
-                    workflow_url: `${targetBaseURL}/workflows/${workflow.id}.wdl`,
+                    workflow_url: `${serviceInfo.url}/workflows/${workflow.id}.wdl`,
                     tags: {
                         workflow_id: workflow.id,
                         workflow_metadata: workflow,
-                        ingestion_url: `${targetBaseURL}/ingest`,
+                        ingestion_url: `${serviceInfo.url}/ingest`,
                         dataset_id: datasetID  // TODO
                     }
                 })
