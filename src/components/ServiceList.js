@@ -10,11 +10,6 @@ import "antd/es/table/style/css.js";
 
 const columns = [
     {
-        title: "ID",
-        dataIndex: "serviceInfo.id",
-        render: id => id ? <Typography.Text code>{id}</Typography.Text> : ""
-    },
-    {
         title: "Artifact",
         dataIndex: "type.artifact",
         render: artifact => artifact ? <span style={{fontFamily: "monospace"}}>{artifact}</span> : ""
