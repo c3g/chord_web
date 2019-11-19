@@ -14,9 +14,10 @@ class DiscoverySearchForm extends Component {
     constructor(props) {
         super(props);
 
+        this.initialValues = {};
+
         this.addCondition = this.addCondition.bind(this);
         this.removeCondition = this.removeCondition.bind(this);
-        this.onSubmit = this.onSubmit.bind(this)
     }
 
     componentDidMount() {
@@ -53,26 +54,25 @@ class DiscoverySearchForm extends Component {
             }
         };
 
-        // Initialize new condition, otherwise the state won't get it
-        this.props.form.getFieldDecorator(`conditions[${newKey}]`, {initialValue: {
-            field,
-            fieldSchema,
-            negated: false,
-            operation: ((fieldSchema || {search: {}}).search.operations || [OP_EQUALS])[0] || OP_EQUALS,
-            searchValue: ""
-        }});
+        this.initialValues = {
+            ...this.initialValues,
+            [`conditions[${newKey}]`]: {
+                field,
+                fieldSchema,
+                negated: false,
+                operation: ((fieldSchema || {search: {}}).search.operations || [OP_EQUALS])[0] || OP_EQUALS,
+                searchValue: ""
+            }
+        };
 
-        this.props.form.setFieldsValue({
-            keys: this.props.form.getFieldValue("keys").concat(newKey),
+
+        // Initialize new condition, otherwise the state won't get it
+        this.props.form.getFieldDecorator(`conditions[${newKey}]`, {
+            initialValue: this.initialValues[`conditions[${newKey}]`]
         });
 
-    }
-
-    onSubmit(e) {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (err) return;
-            this.props.onSubmit(values["keys"].map(k => values["conditions"][k]));
+        this.props.form.setFieldsValue({
+            keys: this.props.form.getFieldValue("keys").concat(newKey)
         });
     }
 
@@ -100,13 +100,7 @@ class DiscoverySearchForm extends Component {
                 xxl: {span: 18}
             }} label={`Condition ${i+1}`}>
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
-                    initialValue: {
-                        field: undefined,
-                        fieldSchema: undefined,
-                        negated: false,
-                        operation: OP_EQUALS,
-                        searchValue: ""
-                    },
+                    initialValue: this.initialValues[`conditions[${k}]`],
                     rules: [
                         {
                             validator: (rule, value, cb) => {
@@ -135,21 +129,12 @@ class DiscoverySearchForm extends Component {
                         <Icon type="plus" /> Add condition
                     </Button>
                 </Form.Item>
-                <Form.Item wrapperCol={{
-                    xl: {span: 24},
-                    xxl: {offset: 3, span: 18}
-                }}>
-                    <Button type="primary" htmlType="submit" icon="search" loading={this.props.loading}>
-                        Search
-                    </Button>
-                </Form.Item>
             </Form>
         );
     }
 }
 
 export default Form.create({
-    name: "discovery_search_form",
     mapPropsToFields: ({formValues}) => ({
         keys: Form.createFormField({...formValues.keys}),
         ...Object.assign({}, ...(formValues["conditions"] || [])

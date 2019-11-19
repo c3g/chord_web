@@ -1,107 +1,77 @@
 import {simpleDeepCopy} from "../../utils";
 
-import {FETCH_SERVICE_DATA_TYPES} from "../services/actions";
-
 import {
     TOGGLE_DISCOVERY_SCHEMA_MODAL,
 
-    FETCH_SEARCH,
+    PERFORM_SEARCH,
     SELECT_SEARCH,
 
-    SELECT_DISCOVERY_SERVICE_DATA_TYPE,
-    CLEAR_DISCOVERY_SERVICE_DATA_TYPE,
-    UPDATE_DISCOVERY_SEARCH_FORM
+    ADD_DATA_TYPE_QUERY_FORM,
+    UPDATE_DATA_TYPE_QUERY_FORM,
+    REMOVE_DATA_TYPE_QUERY_FORM,
+    REMOVE_ALL_DATA_TYPE_QUERY_FORMS,
 } from "./actions";
 
 export const discovery = (
     state = {
         isFetching: false,
+
         schemaModalShown: false,
-        selectedServiceID: null,
-        selectedDataTypeID: null,
-        searchFormsByServiceAndDataTypeID: {},
+
+        dataTypeForms: [],
+        joinForm: null,
+
         searches: [],
-        searchesByServiceAndDataTypeID: {},
-        selectedSearchByServiceAndDataTypeID: {}
+        selectedSearch: null,
     },
     action
 ) => {
     switch (action.type) {
-        case FETCH_SERVICE_DATA_TYPES.RECEIVE:
-            return {
-                ...state,
-                searchFormsByServiceAndDataTypeID: {
-                    ...state.searchFormsByServiceAndDataTypeID,
-                    [action.serviceInfo.id]: Object.fromEntries(action.data.map(d =>
-                        [d.id, (state.searchFormsByServiceAndDataTypeID[action.serviceInfo.id] || {})[d.id] || {}]))
-                }
-            };
-
         case TOGGLE_DISCOVERY_SCHEMA_MODAL:
             return {...state, schemaModalShown: !state.schemaModalShown};
 
-        case FETCH_SEARCH.REQUEST:
+        case PERFORM_SEARCH.REQUEST:
             return {...state, isFetching: true};
 
-        case FETCH_SEARCH.RECEIVE:
+        case PERFORM_SEARCH.RECEIVE:
             return {
                 ...state,
                 isFetching: false,
                 searches: [...state.searches, action.data], // Add search to search history
-                searchesByServiceAndDataTypeID: {
-                    ...state.searchesByServiceAndDataTypeID,
-                    [action.serviceInfo.id]: {
-                        ...(state.searchesByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: [
-                            ...((state.searchesByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                || []),
-                            action.data
-                        ]
-                    }
-                },
                 lastUpdated: action.receivedAt
             };
 
-        case FETCH_SEARCH.ERROR:
+        case PERFORM_SEARCH.ERROR:
             return {...state, isFetching: false};
 
         case SELECT_SEARCH:
             return {
                 ...state,
-                selectedSearchByServiceAndDataTypeID: {
-                    ...state.selectedSearchByServiceAndDataTypeID,
-                    [action.serviceInfo.id]: {
-                        ...(state.selectedSearchByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: action.searchIndex
-                    }
-                }
+                selectedSearch: action.searchIndex
             };
 
-        case SELECT_DISCOVERY_SERVICE_DATA_TYPE:
+        case ADD_DATA_TYPE_QUERY_FORM:
             return {
                 ...state,
-                selectedServiceID: action.serviceInfo.id,
-                selectedDataTypeID: action.dataTypeID
+                dataTypeForms: (state.dataTypeForms.map(d => d.dataType.id).includes(action.dataType.id))
+                    ? state.dataTypeForms
+                    : [...(state.dataTypeForms || []), {dataType: action.dataType, formValues: {}}]
             };
 
-        case CLEAR_DISCOVERY_SERVICE_DATA_TYPE:
+        case UPDATE_DATA_TYPE_QUERY_FORM:
             return {
                 ...state,
-                selectedServiceID: null,
-                selectedDataTypeID: null
+                dataTypeForms: state.dataTypeForms.map(d => d.dataType.id === action.dataType.id
+                    ? {...d, formValues: simpleDeepCopy(action.fields)} : d)  // TODO: Hack-y deep clone
             };
 
-        case UPDATE_DISCOVERY_SEARCH_FORM:
-            return {
-                ...state,
-                searchFormsByServiceAndDataTypeID: {
-                    ...state.searchFormsByServiceAndDataTypeID,
-                    [action.serviceInfo.id]: {
-                        ...state.searchFormsByServiceAndDataTypeID[action.serviceInfo.id],
-                        [action.dataTypeID]: simpleDeepCopy(action.fields) // TODO: Hack-y deep clone
-                    }
-                }
-            };
+        case REMOVE_DATA_TYPE_QUERY_FORM:
+            return {...state, dataTypeForms: state.dataTypeForms.filter(d => d.dataType.id !== action.dataType.id)};
+
+        case REMOVE_ALL_DATA_TYPE_QUERY_FORMS:
+            return {...state, dataTypeForms: []};
+
+        // TODO: Update join query form
 
         default:
             return state;

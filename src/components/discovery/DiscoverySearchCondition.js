@@ -80,6 +80,8 @@ class DiscoverySearchCondition extends Component {
     }
 
     render() {
+        if (!this.state.fieldSchema) return (<div />);
+
         const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
             && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
 

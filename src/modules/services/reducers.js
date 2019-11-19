@@ -103,6 +103,7 @@ export const services = (
 export const serviceDataTypes = (
     state = {
         isFetchingAll: false,
+        itemsByID: {},
         dataTypesByServiceID: {},
         dataTypesByServiceArtifact: {}
     },
@@ -140,6 +141,10 @@ export const serviceDataTypes = (
             const itemsByID = Object.fromEntries(action.data.map(d => [d.id, d]));
             return {
                 ...state,
+                itemsByID: {
+                    ...state.itemsByID,
+                    ...itemsByID,
+                },
                 dataTypesByServiceID: {
                     ...state.dataTypesByServiceID,
                     [action.serviceInfo.id]: {items: action.data, itemsByID, isFetching: false}

@@ -3,71 +3,75 @@ import {basicAction, createNetworkActionTypes, networkAction} from "../../utils/
 
 export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
 
-export const FETCH_SEARCH = createNetworkActionTypes("FETCH_SEARCH");
+export const PERFORM_SEARCH = createNetworkActionTypes("PERFORM_SEARCH");
 export const SELECT_SEARCH = "SELECT_SEARCH";
 
-export const SELECT_DISCOVERY_SERVICE_DATA_TYPE = "SELECT_DISCOVERY_SERVICE_DATA_TYPE";
-export const CLEAR_DISCOVERY_SERVICE_DATA_TYPE = "CLEAR_DISCOVERY_SERVICE_DATA_TYPE";
-export const UPDATE_DISCOVERY_SEARCH_FORM = "UPDATE_DISCOVERY_SEARCH_FORM";
+export const ADD_DATA_TYPE_QUERY_FORM = "ADD_DATA_TYPE_QUERY_FORM";
+export const UPDATE_DATA_TYPE_QUERY_FORM = "UPDATE_DATA_TYPE_QUERY_FORM";
+export const REMOVE_DATA_TYPE_QUERY_FORM = "REMOVE_DATA_TYPE_QUERY_FORM";
+export const REMOVE_ALL_DATA_TYPE_QUERY_FORMS = "REMOVE_ALL_DATA_TYPE_QUERY_FORMS";
 
 
 export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MODAL);
 
-export const selectSearch = (serviceInfo, dataTypeID, searchIndex) => ({
+export const selectSearch = searchIndex => ({
     type: SELECT_SEARCH,
-    serviceInfo,
-    dataTypeID,
     searchIndex
 });
 
 
-export const fetchSearch = networkAction((serviceInfo, dataTypeID, conditions, query) => (dispatch, getState) => ({
-    types: FETCH_SEARCH,
-    params: {serviceID: serviceInfo.id, dataTypeID},
-    url: `${getState().services.federationService.url}/search-aggregate${serviceInfo.url}/search`,
+const performSearch = networkAction((dataTypeQueries, joinQuery=true) => (dispatch, getState) => ({
+    types: PERFORM_SEARCH,
+    url: `${getState().services.federationService.url}/federated-dataset-search`,
     req: {
         method: "POST",
-        headers: {"Content-Type": "application/json"},  // TODO: Real GA4GH headers
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            // OLD FORMAT
-            dataTypeID,
-            conditions,
-
-            // NEW FORMAT
-            data_type: dataTypeID,
-            query
+            data_type_queries: dataTypeQueries,
+            join_query: joinQuery
         })
     },
-    err: "Search returned an error",  // TODO: Better search errors
+    err: "Error performing search",
     afterAction: () => async (dispatch, getState) =>
-        await dispatch(selectSearch(serviceInfo.id, dataTypeID,
-            getState().discovery.searchesByServiceAndDataTypeID[serviceInfo.id][dataTypeID].length - 1))
+        await dispatch(selectSearch(getState().discovery.searches.length - 1))
 }));
 
+export const performFullSearchIfPossible = () => async (dispatch, getState) => {
+    if (getState().discovery.isFetching) return;
 
-// TODO: VALIDATE THAT THE SERVICE HAS A SEARCH ENDPOINT
-export const performSearch = (serviceInfo, dataTypeID, conditions) => async dispatch => {
-    // Compile conditions into new search format
-    const query = conditions.map(c => {
-        let exp = [`#${c.operation}`, ["#resolve", ...c.field.split(".").slice(1)], c.searchValue];
-        if (c.negated) exp = ["#not", exp];
-        return exp;
-    }).reduce((se, v) => ["#and", se, v]);
+    // TODO: Check that forms are valid first
+    const dataTypeQueries = Object.fromEntries(getState().discovery.dataTypeForms.map(d => [
+        d.dataType.id,
+        ((d.formValues || {conditions: []}).conditions || []).map(({value}) => {
+            let exp = [`#${value.operation}`,
+                ["#resolve", ...value.field.split(".").slice(1)],
+                value.searchValue];
 
-    await dispatch(fetchSearch(serviceInfo, dataTypeID, conditions, query));
+            if (value.negated) exp = ["#not", exp];
+            return exp;
+        }).reduce((se, v) => ["#and", se, v])
+    ]));
+
+    const joinQuery = true;  // TODO
+
+    await dispatch(performSearch(dataTypeQueries, joinQuery));
 };
 
-export const selectDiscoveryServiceDataType = (serviceInfo, dataTypeID) => ({
-    type: SELECT_DISCOVERY_SERVICE_DATA_TYPE,
-    serviceInfo,
-    dataTypeID
+
+export const addDataTypeQueryForm = dataType => ({
+    type: ADD_DATA_TYPE_QUERY_FORM,
+    dataType
 });
 
-export const clearDiscoveryServiceDataType = basicAction(CLEAR_DISCOVERY_SERVICE_DATA_TYPE);
-
-export const updateDiscoverySearchForm = (serviceInfo, dataTypeID, fields) => ({
-    type: UPDATE_DISCOVERY_SEARCH_FORM,
-    serviceInfo,
-    dataTypeID,
+export const updateDataTypeQueryForm = (dataType, fields) => ({
+    type: UPDATE_DATA_TYPE_QUERY_FORM,
+    dataType,
     fields
 });
+
+export const removeDataTypeQueryForm = dataType => ({
+    type: REMOVE_DATA_TYPE_QUERY_FORM,
+    dataType
+});
+
+// export const removeAllDataTypeQueryForms = basicAction(REMOVE_ALL_DATA_TYPE_QUERY_FORMS);
