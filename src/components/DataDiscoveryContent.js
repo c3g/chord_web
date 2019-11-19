@@ -9,8 +9,6 @@ import "antd/es/page-header/style/css";
 
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 
-import {clearDiscoveryServiceDataType} from "../modules/discovery/actions";
-
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
 
@@ -25,25 +23,18 @@ class DataDiscoveryContent extends Component {
     }
 
     renderContent(Content) {
-        return () => {
-            if (!(this.props.selectedServiceID && this.props.selectedDataTypeID) &&
-                    (this.props.selectedServiceID || this.props.selectedDataTypeID)) {
-                this.props.clearSelectedDataType();
-            }
-
-            return (
-                <>
-                    <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Discovery</div>}
-                                subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Federated data exploration</span>}
-                                style={PAGE_HEADER_STYLE} />
-                    <Layout>
-                        <Layout.Content style={{background: "white", padding: "24px 30px"}}>
-                            <Content />
-                        </Layout.Content>
-                    </Layout>
-                </>
-            );
-        }
+        return () => (
+            <>
+                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Discovery</div>}
+                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Federated data exploration</span>}
+                            style={PAGE_HEADER_STYLE} />
+                <Layout>
+                    <Layout.Content style={{background: "white", padding: "24px 30px"}}>
+                        <Content />
+                    </Layout.Content>
+                </Layout>
+            </>
+        );
     }
 
     render() {
@@ -60,8 +51,6 @@ class DataDiscoveryContent extends Component {
 DataDiscoveryContent.propTypes = {
     selectedServiceID: PropTypes.string,
     selectedDataTypeID: PropTypes.string,
-
-    clearSelectedDataType: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -69,8 +58,4 @@ const mapStateToProps = state => ({
     selectedDataTypeID: state.discovery.selectedDataTypeID
 });
 
-const mapDispatchToProps = dispatch => ({
-    clearSelectedDataType: () => dispatch(clearDiscoveryServiceDataType())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(DataDiscoveryContent));
+export default connect(mapStateToProps)(withRouter(DataDiscoveryContent));

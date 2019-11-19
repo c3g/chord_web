@@ -35,7 +35,7 @@ import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
 import DiscoverySearchForm from "./DiscoverySearchForm";
-import SchemaTree from "../SchemaTree";
+// import SchemaTree from "../SchemaTree";
 
 import {
     toggleDiscoverySchemaModal,
@@ -55,8 +55,7 @@ class DiscoverySearchContent extends Component {
         // TODO: Redux?
         this.state = {
             dataUseTermsModalShown: false,
-            dataset: null,
-            dataUse: null
+            dataset: null
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -87,8 +86,7 @@ class DiscoverySearchContent extends Component {
     handleDatasetTermsClick(dataset) {
         this.setState({
             dataUseTermsModalShown: true,
-            dataset: dataset.id,
-            dataUse: dataset.dataUse
+            dataset
         });
     }
 
@@ -123,19 +121,9 @@ class DiscoverySearchContent extends Component {
                 {[...this.props.searches].reverse().map((s, i) => (
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
                                     key={this.props.searches.length - i - 1}>
-                        <Table bordered={true}
-                               dataSource={s.results.map(s => ({
-                                   ...s,
-                                   dataUse: {
-                                       consent_code: {
-                                           primary_category: {code: "GRU"},
-                                           secondary_categories: [{code: "NGMR"}]
-                                       },
-                                       data_use_requirements: [{code: "COL"}, {code: "US"}]
-                                   }
-                               }))}
-                               rowKey="id">
-                            <Table.Column title="Dataset ID" dataIndex="id" />
+                        <Table bordered={true} dataSource={s.results} rowKey="dataset_id">
+                            <Table.Column title="Dataset ID" dataIndex="dataset_id" />
+                            <Table.Column title="Name" dataIndex="name" />
                             <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
                                 <Row type="flex">
                                     <Col>
@@ -198,15 +186,18 @@ class DiscoverySearchContent extends Component {
                     <Button type="primary" icon="search" onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
-                <Modal title={`${(this.props.dataType || {id: ""}).id} Schema`} visible={this.props.schemaModalShown}
-                       onCancel={this.handleSchemaToggle} footer={null}>
-                    <SchemaTree schema={(this.props.dataType || {schema: {}}).schema} />
-                </Modal>
+                {/*<Modal title={`${(this.props.dataType || {id: ""}).id} Schema`}*/}
+                {/*       visible={this.props.schemaModalShown}*/}
+                {/*       onCancel={this.handleSchemaToggle} footer={null}>*/}
+                {/*    <SchemaTree schema={(this.props.dataType || {schema: {}}).schema} />*/}
+                {/*</Modal>*/}
 
-                <Modal title={`Dataset ${(this.state.dataset || "").substr(0, 18)}…: Data Use Terms`}
+                <Modal title={`Dataset ${((this.state.dataset || {}).name || (this.state.dataset || {}).id || "")
+                    .substr(0, 18)}${((this.state.dataset || {}).name || "").length > 18 ? "…"
+                    : ""}: Data Use Terms`}
                        visible={this.state.dataUseTermsModalShown}
                        onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
-                    <DataUseDisplay dataUse={this.state.dataUse} />
+                    <DataUseDisplay dataUse={(this.state.dataset || {}).data_use} />
                 </Modal>
 
                 <Typography.Title level={3}>Results</Typography.Title>
