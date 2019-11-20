@@ -36,13 +36,14 @@ class SchemaTreeSelect extends Component {
     }
 
     render() {
-        return this.props.schema
-            ? (<TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
-                           treeData={[generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID, "",
-                               this.props.excludedKeys)]}
-                           value={this.state.selected} onChange={this.onChange.bind(this)}
-                           treeNodeLabelProp="titleSelected" />)
-            : (<div style={this.props.style} />);
+        return (
+            <TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
+                        placeholder="field"
+                        treeData={this.props.schema ? [generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID,
+                            "", this.props.excludedKeys)] : []}
+                        value={this.state.selected} onChange={this.onChange.bind(this)}
+                        treeNodeLabelProp="titleSelected" />
+        );
     }
 }
 
