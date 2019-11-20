@@ -16,6 +16,7 @@ class DiscoverySearchForm extends Component {
 
         this.initialValues = {};
 
+        this.getDataTypeFieldSchema = this.getDataTypeFieldSchema.bind(this);
         this.addCondition = this.addCondition.bind(this);
         this.removeCondition = this.removeCondition.bind(this);
     }
@@ -23,9 +24,10 @@ class DiscoverySearchForm extends Component {
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
         if (this.props.form.getFieldValue("keys").length === 0) {
-            const requiredFields = getFields(this.props.dataType.schema)
-                .filter(f =>
-                    (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false);
+            const requiredFields = this.props.dataType
+                ? getFields(this.props.dataType.schema).filter(f =>
+                    (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false)
+                : [];
 
             requiredFields.forEach(c => this.addCondition(c));
 
@@ -40,28 +42,37 @@ class DiscoverySearchForm extends Component {
         });
     }
 
-    addCondition(field = undefined) {
-        const newKey = this.props.form.getFieldValue("keys").length;
-
-        // TODO: What if operations is an empty list?
-
+    getDataTypeFieldSchema(field) {
         const fs = field ? getFieldSchema(this.props.dataType.schema, field) : {};
-        const fieldSchema = {
+        return {
             ...fs,
             search: {
                 ...DEFAULT_SEARCH_PARAMETERS,
                 ...(fs.search || {})
             }
         };
+    }
+
+    addCondition(field = undefined, field2 = undefined) {
+        const conditionType = this.props.conditionType || "data-type";
+
+        const newKey = this.props.form.getFieldValue("keys").length;
+
+        // TODO: What if operations is an empty list?
+
+        const fieldSchema = conditionType === "data-type"
+            ? this.getDataTypeFieldSchema(field)
+            : {search: {...DEFAULT_SEARCH_PARAMETERS}};  // Join search conditions have all operators "available" TODO
 
         this.initialValues = {
             ...this.initialValues,
             [`conditions[${newKey}]`]: {
                 field,
+                ...(conditionType === "data-type" ? {} : {field2}),
                 fieldSchema,
                 negated: false,
                 operation: ((fieldSchema || {search: {}}).search.operations || [OP_EQUALS])[0] || OP_EQUALS,
-                searchValue: ""
+                ...(conditionType === "data-type" ? {searchValue: ""} : {})
             }
         };
 
@@ -77,6 +88,7 @@ class DiscoverySearchForm extends Component {
     }
 
     cannotBeUsed(fieldString) {
+        if (this.props.conditionType === "join") return;
         const fs = getFieldSchema(this.props.dataType.schema, fieldString);
         return fs.search.hasOwnProperty("type") && fs.search.type === "single";
     }
@@ -111,7 +123,8 @@ class DiscoverySearchForm extends Component {
                         }
 
                     ]
-                })(<DiscoverySearchCondition dataType={this.props.dataType}
+                })(<DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
+                                             dataType={this.props.dataType}
                                              existingUniqueFields={existingUniqueFields}
                                              onRemoveClick={() => this.removeCondition(k)}
                                              removeDisabled={keys.length <= 1}/>)}

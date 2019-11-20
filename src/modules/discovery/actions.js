@@ -11,6 +11,8 @@ export const UPDATE_DATA_TYPE_QUERY_FORM = "UPDATE_DATA_TYPE_QUERY_FORM";
 export const REMOVE_DATA_TYPE_QUERY_FORM = "REMOVE_DATA_TYPE_QUERY_FORM";
 export const REMOVE_ALL_DATA_TYPE_QUERY_FORMS = "REMOVE_ALL_DATA_TYPE_QUERY_FORMS";
 
+export const UPDATE_JOIN_QUERY_FORM = "UPDATE_JOIN_QUERY_FORM";
+
 
 export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MODAL);
 
@@ -75,3 +77,8 @@ export const removeDataTypeQueryForm = dataType => ({
 });
 
 // export const removeAllDataTypeQueryForms = basicAction(REMOVE_ALL_DATA_TYPE_QUERY_FORMS);
+
+export const updateJoinQueryForm = fields => ({
+    type: UPDATE_JOIN_QUERY_FORM,
+    fields
+});

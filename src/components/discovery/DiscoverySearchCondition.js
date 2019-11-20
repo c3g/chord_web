@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Input, Select} from "antd";
@@ -25,12 +26,22 @@ class DiscoverySearchCondition extends Component {
         const value = this.props.value || {};
         this.state = {
             field: value.field || undefined,
+            field2: value.field2 || undefined,
+
             fieldSchema: value.fieldSchema || {
                 search: {...DEFAULT_SEARCH_PARAMETERS}
             },
+            fieldSchema2: value.fieldSchema2 || {
+                search: {...DEFAULT_SEARCH_PARAMETERS}
+            },
+
             negated: value.negated || false,
             operation: value.operation || OP_EQUALS,
-            searchValue: value.searchValue || ""
+            searchValue: value.searchValue || "",
+
+            // Non-value props
+            dataType: props.dataType || null,
+            dataType2: props.dataType2 || null,
         };
 
         this.onRemoveClick = this.props.onRemoveClick || (() => {});
@@ -43,9 +54,9 @@ class DiscoverySearchCondition extends Component {
         this.triggerChange = this.triggerChange.bind(this);
     }
 
-    handleField(value) {
-        if (!("value" in this.props)) this.setState({field: value.selected, fieldSchema: value.schema});
-        this.triggerChange({field: value.selected, fieldSchema: value.schema});
+    handleField(value, key="field", fieldSchemaKey="fieldSchema") {
+        if (!("value" in this.props)) this.setState({[key]: value.selected, [fieldSchemaKey]: value.schema});
+        this.triggerChange({[key]: value.selected, [fieldSchemaKey]: value.schema});
     }
 
     handleNegation(value) {
@@ -80,6 +91,8 @@ class DiscoverySearchCondition extends Component {
     }
 
     render() {
+        const conditionType = this.props.conditionType || "data-type";
+
         if (!this.state.fieldSchema) return (<div />);
 
         const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
@@ -89,25 +102,83 @@ class DiscoverySearchCondition extends Component {
             <Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>);
 
         // Subtract 1 from different elements' widths due to -1 margin-left
-        const valueWidth = 224 + (canRemove ? 49 : 0)
-            + (this.state.fieldSchema.search.canNegate ? 87 : 0) + (this.equalsOnly() ? 0 : 115);
+        const valueWidth = (224 + (conditionType === "join" ? 224 : 0) + (canRemove ? 49 : 0)
+            + (this.state.fieldSchema.search.canNegate ? 87 : 0) + (this.equalsOnly() ? 0 : 115));
 
         const getInputStyle = () => ({width: `calc(100% - ${valueWidth}px)`});
 
-        return (
-            <Input.Group compact>
+        const dataTypeOptions = Object.keys(this.props.dataTypes).map(d => (
+            <Select.Option key={d} value={d}>{d}</Select.Option>
+        ));
+
+        const lhs = (
+            <>
+                {conditionType === "join" ? (
+                    <Select style={{float: "left", width: `calc(50% - ${valueWidth / 2}px)`}}
+                            onChange={v => this.setState({dataType: this.props.dataTypes[v]})}
+                            placeholder="Data Type 1">
+                        {dataTypeOptions}
+                    </Select>
+                ) : null}
                 <SchemaTreeSelect
                     style={{
                         width: "224px",
                         float: "left",
+                        ...(conditionType === "join" ? {
+                            borderTopLeftRadius: "0",
+                            borderBottomLeftRadius: "0"
+                        } : {}),
                         borderTopRightRadius: "0",
                         borderBottomRightRadius: "0"
                     }}
                     disabled={!canRemove}
-                    schema={this.props.dataType.schema}
+                    schema={(this.state.dataType || {}).schema}
                     excludedKeys={this.props.existingUniqueFields}
                     value={{selected: this.state.field, schema: this.state.fieldSchema}}
                     onChange={this.handleField} />
+            </>
+        );
+
+        const rhs = conditionType === "join" ? (
+            <>
+                <Select style={{float: "left", width: `calc(50% - ${valueWidth / 2}px)`}}
+                        placeholder="Data Type 2"
+                        onChange={v => this.setState({dataType2: this.props.dataTypes[v]})}>
+                    {dataTypeOptions}
+                </Select>
+                <SchemaTreeSelect
+                    style={{
+                        width: "224px",
+                        float: "left",
+                        ...(conditionType === "join" ? {
+                            borderTopRightRadius: "0",
+                            borderBottomRightRadius: "0"
+                        } : {}),
+                        borderTopLeftRadius: "0",
+                        borderBottomLeftRadius: "0"
+                    }}
+                    disabled={!canRemove}
+                    schema={(this.state.dataType2 || {}).schema}
+                    excludedKeys={this.props.existingUniqueFields}
+                    value={{selected: this.state.field2, schema: this.state.fieldSchema2}}
+                    onChange={v => this.handleField(v, "field2", "fieldSchema2")} />
+            </>
+        ) : (
+            this.state.fieldSchema.hasOwnProperty("enum") ? (
+                <Select style={getInputStyle()} onChange={this.handleSearchSelectValue}
+                        value={this.state.searchValue} showSearch filterOption={(i, o) =>
+                    o.props.children.toLocaleLowerCase().includes(i.toLocaleLowerCase())}>
+                    {this.state.fieldSchema.enum.map(v => <Select.Option key={v}>{v}</Select.Option>)}
+                </Select>
+            ) : (
+                <Input style={getInputStyle()} placeholder="value" onChange={this.handleSearchValue}
+                       value={this.state.searchValue} />
+            )
+        );
+
+        return (
+            <Input.Group compact>
+                {lhs}
                 {this.state.fieldSchema.search.canNegate ? (
                     <Select style={{width: "88px", float: "left"}} value={this.state.negated ? "neg" : "pos"}
                             onChange={this.handleNegation}>
@@ -121,16 +192,7 @@ class DiscoverySearchCondition extends Component {
                         {operationOptions}
                     </Select>
                 )}
-                {this.state.fieldSchema.hasOwnProperty("enum") ? (
-                    <Select style={getInputStyle()} onChange={this.handleSearchSelectValue}
-                            value={this.state.searchValue} showSearch filterOption={(i, o) =>
-                                o.props.children.toLocaleLowerCase().includes(i.toLocaleLowerCase())}>
-                        {this.state.fieldSchema.enum.map(v => <Select.Option key={v}>{v}</Select.Option>)}
-                    </Select>
-                ) : (
-                    <Input style={getInputStyle()} placeholder="value" onChange={this.handleSearchValue}
-                           value={this.state.searchValue} />
-                )}
+                {rhs}
                 {canRemove ? (
                     <Button type="danger" style={{width: "50px"}} disabled={this.props.removeDisabled}
                             onClick={this.onRemoveClick} icon="close" />
@@ -141,7 +203,9 @@ class DiscoverySearchCondition extends Component {
 }
 
 DiscoverySearchCondition.propTypes = {
+    conditionType: PropTypes.oneOf(["data-type", "join"]),
     dataType: PropTypes.object,
+    dataTypes: PropTypes.object,
     existingUniqueFields: PropTypes.arrayOf(PropTypes.string),
     value: PropTypes.object,
     onChange: PropTypes.func,
@@ -149,4 +213,8 @@ DiscoverySearchCondition.propTypes = {
     removeDisabled: PropTypes.bool
 };
 
-export default DiscoverySearchCondition;
+const mapStateToProps = state => ({
+    dataTypes: state.serviceDataTypes.itemsByID
+});
+
+export default connect(mapStateToProps, null, null, {forwardRef: true})(DiscoverySearchCondition);

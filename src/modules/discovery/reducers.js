@@ -10,6 +10,8 @@ import {
     UPDATE_DATA_TYPE_QUERY_FORM,
     REMOVE_DATA_TYPE_QUERY_FORM,
     REMOVE_ALL_DATA_TYPE_QUERY_FORMS,
+
+    UPDATE_JOIN_QUERY_FORM,
 } from "./actions";
 
 export const discovery = (
@@ -19,7 +21,7 @@ export const discovery = (
         schemaModalShown: false,
 
         dataTypeForms: [],
-        joinForm: null,
+        joinFormValues: {},
 
         searches: [],
         selectedSearch: null,
@@ -71,7 +73,13 @@ export const discovery = (
         case REMOVE_ALL_DATA_TYPE_QUERY_FORMS:
             return {...state, dataTypeForms: []};
 
-        // TODO: Update join query form
+
+        case UPDATE_JOIN_QUERY_FORM:
+            return {
+                ...state,
+                joinFormValues: simpleDeepCopy(action.fields)  // TODO: Hack-y deep clone
+            };
+
 
         default:
             return state;

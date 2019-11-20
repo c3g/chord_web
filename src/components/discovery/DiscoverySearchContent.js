@@ -45,6 +45,8 @@ import {
     addDataTypeQueryForm,
     updateDataTypeQueryForm,
     removeDataTypeQueryForm,
+
+    updateJoinQueryForm,
 } from "../../modules/discovery/actions";
 
 
@@ -170,7 +172,8 @@ class DiscoverySearchContent extends Component {
                         <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>
                             {this.props.dataTypeForms.map(d => (
                                 <Tabs.TabPane tab={d.dataType.id} key={d.dataType.id}>
-                                    <DiscoverySearchForm dataType={d.dataType} formValues={d.formValues}
+                                    <DiscoverySearchForm conditionType="data-type"
+                                                         dataType={d.dataType} formValues={d.formValues}
                                                          loading={this.props.searchLoading}
                                                          onChange={fields =>
                                                              this.handleFormChange(d.dataType, fields)} />
@@ -182,7 +185,12 @@ class DiscoverySearchContent extends Component {
                     )}
                     <Divider />
                     <Typography.Title level={3}>Join Query</Typography.Title>
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Join Conditions Specified" />
+
+                    <DiscoverySearchForm conditionType="join"
+                                         formValues={this.props.joinFormValues}
+                                         loading={this.props.searchLoading}
+                                         onChange={fields => this.props.updateJoinForm(fields)} />
+
                     <Button type="primary" icon="search" onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
@@ -222,6 +230,7 @@ DiscoverySearchContent.propTypes = {
     searchLoading: PropTypes.bool,
     formValues: PropTypes.object,
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
+    joinFormValues: PropTypes.object,
 
     selectDataType: PropTypes.func,
     toggleSchemaModal: PropTypes.func,
@@ -249,7 +258,8 @@ const mapStateToProps = state => ({
 
     searchLoading: state.discovery.isFetching,
 
-    dataTypeForms: state.discovery.dataTypeForms
+    dataTypeForms: state.discovery.dataTypeForms,
+    joinFormValues: state.discovery.joinFormValues,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -262,6 +272,7 @@ const mapDispatchToProps = dispatch => ({
     addDataTypeQueryForm: dataType => dispatch(addDataTypeQueryForm(dataType)),
     updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(dataType, fields)),
     removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(dataType)),
+    updateJoinForm: fields => dispatch(updateJoinQueryForm(fields)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
