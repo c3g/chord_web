@@ -38,11 +38,18 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 
 
 class ManagerProjectDatasetContent extends Component {
-    async componentDidMount() {
+    componentDidMount() {
+        this.selectProjectIfNeeded = this.selectProjectIfNeeded.bind(this);
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
+
+        this.selectProjectIfNeeded();
     }
 
     componentDidUpdate() {
+        this.selectProjectIfNeeded();
+    }
+
+    selectProjectIfNeeded() {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
             this.props.selectProject(this.props.projects[0].project_id);
         }
