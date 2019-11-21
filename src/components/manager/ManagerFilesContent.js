@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
 
-import {Button, Dropdown, Icon, Layout, Menu, Tree} from "antd";
+import {Button, Dropdown, Icon, Layout, Menu, Spin, Tree} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/dropdown/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
+import "antd/es/spin/style/css";
 import "antd/es/tree/style/css";
 
 import {
@@ -83,10 +83,6 @@ class ManagerFilesContent extends Component {
             </Menu>
         );
 
-        // TODO: support directories as well
-        // TODO: Loading for files...
-        const files = generateFileTree(this.props.tree);
-
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -100,10 +96,14 @@ class ManagerFilesContent extends Component {
                         </Button>
                         <Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>
                     </div>
-                    <Tree.DirectoryTree defaultExpandAll={true} multiple={true} onSelect={this.handleSelect}
-                                        selectedKeys={this.state.selectedFiles}>
-                        <Tree.TreeNode title="chord_drop_box" key="root">{files}</Tree.TreeNode>
-                    </Tree.DirectoryTree>
+                    <Spin spinning={this.props.treeLoading}>
+                        <Tree.DirectoryTree defaultExpandAll={true} multiple={true} onSelect={this.handleSelect}
+                                            selectedKeys={this.state.selectedFiles}>
+                            <Tree.TreeNode title="chord_drop_box" key="root">
+                                {generateFileTree(this.props.tree)}
+                            </Tree.TreeNode>
+                        </Tree.DirectoryTree>
+                    </Spin>
                 </Layout.Content>
             </Layout>
         );
