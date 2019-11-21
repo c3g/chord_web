@@ -41,11 +41,9 @@ class IngestionInputForm extends Component {
     }
 
     getInputComponent(input) {
-        let inputComponent = <Input />;
-
         switch (input.type) {
             case "file":
-                inputComponent = (
+                return (
                     <TreeSelect showSearch={true} treeDefaultExpandAll={true}>
                         <TreeSelect.TreeNode title="chord_drop_box" key="root">
                             {generateFileTree(
@@ -56,22 +54,20 @@ class IngestionInputForm extends Component {
                         </TreeSelect.TreeNode>
                     </TreeSelect>
                 );
-                break;
 
             case "enum":
-                inputComponent = (
+                return (
                     <Select>
-                        {input.values.map(v => <Select.Option key={v} value={v}>{v}</Select.Option>)}
+                        {input.values.map(v => <Select.Option key={v}>{v}</Select.Option>)}
                     </Select>
                 );
-                break;
 
             case "number":
-                inputComponent = <Input type="number"/>;
-                break;
-        }
+                return <Input type="number" />;
 
-        return inputComponent;
+            default:
+                return <Input />;
+        }
     }
 
     render() {

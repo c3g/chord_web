@@ -31,11 +31,16 @@ class RunListContent extends Component {
         this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), 200);
     }
 
+    // TODO: Loading for individual rows
     render() {
         return (
             <>
                 <Typography.Title level={2}>Workflow Runs</Typography.Title>
-                <Table bordered={true} dataSource={this.props.runs} rowKey="run_id" columns={RUN_TABLE_COLUMNS} />
+                <Table bordered={true}
+                       columns={RUN_TABLE_COLUMNS}
+                       dataSource={this.props.runs}
+                       loading={this.props.servicesFetching || this.props.runsFetching}
+                       rowKey="run_id" />
             </>
         );
     }
@@ -51,7 +56,9 @@ const mapStateToProps = state => ({
             start_time: (runDetails || {run_log: {start_time: ""}}).run_log.start_time || "",
             end_time: (runDetails || {run_log: {end_time: ""}}).run_log.end_time || ""
         };
-    })
+    }),
+    servicesFetching: state.services.isFetchingAll,
+    runsFetching: state.runs.isFetching,
 });
 
 const mapDispatchToProps = dispatch => ({

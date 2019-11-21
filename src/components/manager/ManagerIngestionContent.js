@@ -67,6 +67,7 @@ class ManagerIngestionContent extends Component {
         this.handleWorkflowClick = this.handleWorkflowClick.bind(this);
         this.handleInputSubmit = this.handleInputSubmit.bind(this);
         this.handleRunIngestion = this.handleRunIngestion.bind(this);
+        this.getStepContents = this.getStepContents.bind(this);
     }
 
     handleStepChange(step) {
@@ -104,12 +105,13 @@ class ManagerIngestionContent extends Component {
         this.setState(simpleDeepCopy(this.initialState));
     }
 
-    render() {
+    getStepContents() {
         const getTableName = (serviceID, dataTypeID, tableID) =>
             ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[dataTypeID]
                 || {}).tablesByID || {})[tableID] || {}).name;
 
-        let stepContents = null;
+        const formatWithNameIfPossible = (name, id) => name ? `${name} (${id})` : id;
+
         switch (this.state.step) {
             case STEP_WORKFLOW_SELECTION:
                 // TODO: Loading projects
@@ -167,12 +169,15 @@ class ManagerIngestionContent extends Component {
                         </List.Item>
                     ));
 
-                stepContents = (
+                return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Table">
-                            <TreeSelect onChange={table => this.setState({selectedTable: table})}
-                                        value={this.state.selectedTable} treeData={selectTreeData}
-                                        treeDefaultExpandAll={true} />
+                            <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
+                                <TreeSelect onChange={table => this.setState({selectedTable: table})}
+                                            loading={true}
+                                            value={this.state.selectedTable} treeData={selectTreeData}
+                                            treeDefaultExpandAll={true} />
+                            </Spin>
                         </Form.Item>
                         <Form.Item label="Workflows">
                             {this.state.selectedTable
@@ -188,33 +193,31 @@ class ManagerIngestionContent extends Component {
                     </Form>
                 );
 
-                break;
-
             case STEP_INPUT:
-                stepContents = (
+                return (
                     <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
                                         formValues={this.state.inputFormFields}
                                         onChange={formValues => this.setState({inputFormFields: formValues})}
                                         onSubmit={this.handleInputSubmit}
                                         onBack={() => this.handleStepChange(0)} />
-                    );
-                break;
+                );
 
             case STEP_CONFIRM:
                 const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
                 const projectName = (this.props.projectsByID[projectID] || {name: null}).name || null;
                 const tableName = getTableName(this.state.selectedWorkflow.serviceID,
                     this.state.selectedWorkflow.data_types[0], tableID);
-                stepContents = (
+
+                return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Project">
-                            {projectName ? `${projectName} (${projectID})` : projectID}
+                            {formatWithNameIfPossible(projectName, projectID)}
                         </Form.Item>
                         <Form.Item label="Data Type">
                             <Tag>{dataType}</Tag>
                         </Form.Item>
                         <Form.Item label="Table">
-                            {tableName ? `${tableName} (${tableID})` : tableID}
+                            {formatWithNameIfPossible(tableName, tableID)}
                         </Form.Item>
                         <Form.Item label="Workflow">
                             <List itemLayout="vertical" style={{marginBottom: "14px"}}>
@@ -241,9 +244,10 @@ class ManagerIngestionContent extends Component {
                         </Form.Item>
                     </Form>
                 );
-                break;
         }
+    }
 
+    render() {
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -262,7 +266,7 @@ class ManagerIngestionContent extends Component {
                                     disabled={this.state.step < STEP_CONFIRM && (this.state.selectedWorkflow === null ||
                                         Object.keys(this.state.inputs).length === 0)} />
                     </Steps>
-                    <div style={{marginTop: "16px"}}>{stepContents}</div>
+                    <div style={{marginTop: "16px"}}>{this.getStepContents()}</div>
                 </Layout.Content>
             </Layout>
         )
@@ -278,6 +282,8 @@ ManagerIngestionContent.propTypes = {
     tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
     isSubmittingIngestionRun: PropTypes.bool,
 
+    projectsLoading: PropTypes.bool,
+
     servicesByID: PropTypes.object, // TODO: Shape
 };
 
@@ -290,6 +296,9 @@ const mapStateToProps = state => ({
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,
 
+    projectsLoading: state.projects.isFetching,
+
+    servicesLoading: state.services.isFetchingAll,
     servicesByID: state.services.itemsByID,
 });
 

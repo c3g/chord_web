@@ -5,9 +5,7 @@ import Run from "./Run";
 
 class RunDetailContent extends Component {
     render() {
-        return (
-            <Run run={this.props.runDetails[this.props.match.params.id] || null} />
-        );
+        return <Run run={this.props.runDetails[this.props.match.params.id] || null} />;
     }
 }
 
