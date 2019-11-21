@@ -38,23 +38,39 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=true) => (dispat
         await dispatch(selectSearch(getState().discovery.searches.length - 1))
 }));
 
+
+
+const conditionsToQuery = (conditions, join=false) => conditions
+    .filter(c => c.value && c.value.field)
+    .map(({value}) =>
+        (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
+            [`#${value.operation}`,
+                ["#resolve", ...value.field.split(".").slice(1)],
+                value.field2 ? ["#resolve", ...value.field2.split(".").slice(1)] : value.searchValue]
+        ))
+    .reduce((se, v) => ["#and", se, v]);
+
 export const performFullSearchIfPossible = () => async (dispatch, getState) => {
     if (getState().discovery.isFetching) return;
 
-    // TODO: Check that forms are valid first
-    const dataTypeQueries = Object.fromEntries(getState().discovery.dataTypeForms.map(d => [
-        d.dataType.id,
-        ((d.formValues || {conditions: []}).conditions || []).map(({value}) => {
-            let exp = [`#${value.operation}`,
-                ["#resolve", ...value.field.split(".").slice(1)],
-                value.searchValue];
+    // TODO: Check that forms are valid first (via refs somehow - passed as arguments?)
 
-            if (value.negated) exp = ["#not", exp];
-            return exp;
-        }).reduce((se, v) => ["#and", se, v])
-    ]));
+    // TODO: Map keys to avoid issues!!! Otherwise "deleted" conditions show up
 
-    const joinQuery = true;  // TODO
+    const dataTypeQueries = Object.fromEntries(getState().discovery.dataTypeForms.map(d =>
+        [d.dataType.id, conditionsToQuery(
+            (((d.formValues || {keys: {value: []}}).keys || {value: []}).value || [])
+                .map(k => ((d.formValues || {conditions: []}).conditions || [])[k] || null)
+                .filter(c => c !== null)
+        )]));
+
+    // TODO: Add data types and [item] to resolve...
+
+    const joinFormValues = getState().discovery.joinFormValues;
+    const joinQueryConditions = (((joinFormValues || {keys: {value: []}}).keys || {value: []}).value || [])
+        .map(k => ((joinFormValues || {conditions: []}).conditions || [])[k] || null)
+        .filter(c => c !== null);
+    const joinQuery = joinQueryConditions.length > 0 ? conditionsToQuery(joinQueryConditions) : true;
 
     await dispatch(performSearch(dataTypeQueries, joinQuery));
 };
@@ -77,6 +93,7 @@ export const removeDataTypeQueryForm = dataType => ({
 });
 
 // export const removeAllDataTypeQueryForms = basicAction(REMOVE_ALL_DATA_TYPE_QUERY_FORMS);
+
 
 export const updateJoinQueryForm = fields => ({
     type: UPDATE_JOIN_QUERY_FORM,

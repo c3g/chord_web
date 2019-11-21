@@ -123,11 +123,13 @@ class DiscoverySearchForm extends Component {
                         }
 
                     ]
-                })(<DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
-                                             dataType={this.props.dataType}
-                                             existingUniqueFields={existingUniqueFields}
-                                             onRemoveClick={() => this.removeCondition(k)}
-                                             removeDisabled={keys.length <= 1}/>)}
+                })(
+                    <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
+                                              dataType={this.props.dataType}
+                                              existingUniqueFields={existingUniqueFields}
+                                              onRemoveClick={() => this.removeCondition(k)}
+                                              removeDisabled={keys.length <= 1 && this.props.conditionType !== "join"}/>
+                )}
             </Form.Item>
         ));
 

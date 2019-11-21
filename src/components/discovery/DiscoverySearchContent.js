@@ -146,17 +146,25 @@ class DiscoverySearchContent extends Component {
     }
 
     render() {
-        const dtKey = (s, dtID) => `${s.id}:${dtID}`;
-
         const dataTypeMenu = (
             <Menu onClick={this.handleAddDataTypeQueryForm}>
                 {this.props.servicesInfo.filter(s => (this.props.dataTypes[s.id] || {items: null}).items)
                     .flatMap(s => this.props.dataTypes[s.id].items.map(dt =>
-                        <Menu.Item key={dtKey(s, dt.id)}>{dt.id}</Menu.Item>
+                        <Menu.Item key={`${s.id}:${dt.id}`}>{dt.id}</Menu.Item>
                     ))
                 }
             </Menu>
         );
+
+        const dataTypeTabPanes = this.props.dataTypeForms.map(d => (
+            <Tabs.TabPane tab={d.dataType.id} key={d.dataType.id}>
+                <DiscoverySearchForm conditionType="data-type"
+                                     dataType={d.dataType}
+                                     formValues={d.formValues}
+                                     loading={this.props.searchLoading}
+                                     onChange={fields => this.handleFormChange(d.dataType, fields)} />
+            </Tabs.TabPane>
+        ));
 
         return (
             <>
@@ -168,22 +176,13 @@ class DiscoverySearchContent extends Component {
                             <Button style={{float: "right"}}>Add Conditions on Data Type <Icon type="down" /></Button>
                         </Dropdown>
                     </Typography.Title>
-                    {this.props.dataTypeForms.length > 0 ? (
-                        <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>
-                            {this.props.dataTypeForms.map(d => (
-                                <Tabs.TabPane tab={d.dataType.id} key={d.dataType.id}>
-                                    <DiscoverySearchForm conditionType="data-type"
-                                                         dataType={d.dataType} formValues={d.formValues}
-                                                         loading={this.props.searchLoading}
-                                                         onChange={fields =>
-                                                             this.handleFormChange(d.dataType, fields)} />
-                                </Tabs.TabPane>
-                            ))}
-                        </Tabs>
-                    ) : (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added" />
-                    )}
+
+                    {this.props.dataTypeForms.length > 0
+                        ? <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>{dataTypeTabPanes}</Tabs>
+                        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added" />}
+
                     <Divider />
+
                     <Typography.Title level={3}>Join Query</Typography.Title>
 
                     <DiscoverySearchForm conditionType="join"
@@ -209,9 +208,7 @@ class DiscoverySearchContent extends Component {
                 </Modal>
 
                 <Typography.Title level={3}>Results</Typography.Title>
-                <Spin spinning={this.props.searchLoading}>
-                    {this.renderSearches()}
-                </Spin>
+                <Spin spinning={this.props.searchLoading}>{this.renderSearches()}</Spin>
             </>
         );
     }
@@ -272,6 +269,7 @@ const mapDispatchToProps = dispatch => ({
     addDataTypeQueryForm: dataType => dispatch(addDataTypeQueryForm(dataType)),
     updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(dataType, fields)),
     removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(dataType)),
+
     updateJoinForm: fields => dispatch(updateJoinQueryForm(fields)),
 });
 

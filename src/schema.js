@@ -5,7 +5,7 @@ import "antd/es/typography/style/css";
 
 
 export const ROOT_SCHEMA_ID = "[dataset item]";
-const ARRAY_ITEM_ID = "[array item]";
+const ARRAY_ITEM_ID = "[item]";
 
 
 /**

@@ -37,8 +37,10 @@ class SchemaTreeSelect extends Component {
 
     render() {
         return (
-            <TreeSelect treeDefaultExpandAll style={this.props.style} disabled={this.props.disabled}
+            <TreeSelect style={this.props.style}
+                        disabled={this.props.disabled}
                         placeholder="field"
+                        treeDefaultExpandedKeys={this.props.schema ? [`${ROOT_SCHEMA_ID}`] : []}
                         treeData={this.props.schema ? [generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID,
                             "", this.props.excludedKeys)] : []}
                         value={this.state.selected} onChange={this.onChange.bind(this)}
