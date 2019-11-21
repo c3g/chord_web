@@ -45,7 +45,6 @@ class Dataset extends Component {
             name: value.name || "",
             description: value.description || "",
             tables: value.tables || [],
-            loadingTables: value.loadingTables || false,
 
             additionModalVisible: false,
             deletionModalVisible: false,
@@ -186,7 +185,7 @@ class Dataset extends Component {
                        rowKey="table_id"
                        expandedRowRender={() => (<span>TODO: List of files</span>)}
                        columns={tableListColumns}
-                       loading={this.state.loadingTables} />
+                       loading={this.props.loadingTables} />
             </Card>
         );
     }
@@ -200,11 +199,12 @@ Dataset.propTypes = {
         dataset_id: PropTypes.string,
         name: PropTypes.string,
         tables: PropTypes.arrayOf(PropTypes.object),
-        loadingTables: PropTypes.bool
     }),
 
     individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Get this via redux store instead of transformations
+
     loadingIndividuals: PropTypes.bool,
+    loadingTables: PropTypes.bool,
 
     onTableIngest: PropTypes.func,
 

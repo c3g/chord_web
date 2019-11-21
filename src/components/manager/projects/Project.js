@@ -55,6 +55,7 @@ class Project extends Component {
             id: value.id || null,
             name: value.name || "",
             description: value.description || "",
+            datasets: value.datasets || [],
             data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE)
         }
     }
@@ -66,6 +67,7 @@ class Project extends Component {
                 return;
             }
 
+            // Don't save datasets since it's a related set.
             this._onSave({
                 id: this.state.id,
                 name: values.name || this.state.name,
@@ -126,28 +128,27 @@ class Project extends Component {
                         </Button>
                     </div>
                 </Typography.Title>
-                <Spin spinning={this.props.loadingDatasets}>
-                    {(this.props.datasets || []).length > 0
-                        ? this.props.datasets.map(d =>
-                            <Dataset key={d.dataset_id}
-                                     project={this.props.value}
-                                     value={{
-                                         ...d,
-                                         tables: this.props.tables,  // TODO: Filter / transform?
-                                         loadingTables: this.props.loadingTables
-                                     }}
-                                     strayTables={this.props.strayTables}
-                                     individuals={this.props.individuals
-                                         .filter(i => i.phenopackets.map(p => p.dataset)
-                                             .includes(d.dataset_id))}
-                                     loadingIndividuals={this.props.loadingIndividuals}
-                                     onTableIngest={this.onTableIngest} />
-                        ) : (
-                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
-                                <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
-                            </Empty>
-                        )}
-                </Spin>
+                {(this.state.datasets || []).length > 0
+                    ? this.state.datasets.map(d =>
+                        <Dataset key={d.dataset_id}
+                                 project={this.props.value}
+                                 value={{
+                                     ...d,
+                                     tables: this.props.tables,  // TODO: Filter / transform?
+                                     loadingTables: this.props.loadingTables
+                                 }}
+                                 strayTables={this.props.strayTables}
+                                 individuals={this.props.individuals
+                                     .filter(i => i.phenopackets.map(p => p.dataset)
+                                         .includes(d.dataset_id))}
+                                 loadingIndividuals={this.props.loadingIndividuals}
+                                 loadingTables={this.props.loadingTables}
+                                 onTableIngest={this.onTableIngest} />
+                    ) : (
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
+                            <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
+                        </Empty>
+                    )}
             </div>
         )
     }
@@ -155,11 +156,9 @@ class Project extends Component {
 
 Project.propTypes = {
     value: projectPropTypesShape,
-    datasets: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
     tables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
     strayTables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape (this is currently heterogeneous)
 
-    loadingDatasets: PropTypes.bool,
     loadingTables: PropTypes.bool,
 
     editing: PropTypes.bool,

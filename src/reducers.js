@@ -10,7 +10,6 @@ import {
 import {discovery} from "./modules/discovery/reducers";
 import {
     projects,
-    projectDatasets,
     projectTables,
 
     phenopackets,
@@ -31,7 +30,6 @@ const rootReducer = combineReducers({
     discovery,
 
     projects,
-    projectDatasets,
     projectTables,
 
     phenopackets,

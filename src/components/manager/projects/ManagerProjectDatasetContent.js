@@ -120,10 +120,8 @@ class ManagerProjectDatasetContent extends Component {
                                 {/* TODO: Fix project datasets */}
                                 {this.props.selectedProject ? (
                                     <Project value={this.props.selectedProject}
-                                             datasets={this.props.datasets}
                                              tables={this.props.tables}
                                              strayTables={this.props.strayTables}
-                                             loadingDatasets={this.props.loadingDatasets}
                                              loadingTables={this.props.loadingTables}
                                              editing={this.props.editingProject}
                                              saving={this.props.savingProject}
@@ -163,7 +161,6 @@ ManagerProjectDatasetContent.propTypes = {
     projects: PropTypes.arrayOf(projectPropTypesShape),
 
     loadingProjects: PropTypes.bool,
-    loadingDatasets: PropTypes.bool,
     loadingTables: PropTypes.bool,
 
     selectedProject: projectPropTypesShape,
@@ -209,10 +206,6 @@ ManagerProjectDatasetContent.propTypes = {
 };
 
 const mapStateToProps = state => {
-    const datasets = state.manager.selectedProjectID !== null
-        ? state.projectDatasets.itemsByProjectID[state.manager.selectedProjectID] || []
-        : [];
-
     const tables = state.serviceTables.itemsByServiceAndDataTypeID;
 
     const manageableDataTypes = state.services.items
@@ -253,13 +246,11 @@ const mapStateToProps = state => {
         savingProject: state.projects.isSaving,
 
         projects: state.projects.items,
-        datasets,
         tables: tableList,
         strayTables,
 
         loadingProjects: state.services.isFetchingAll || state.projects.isFetching,
-        loadingDatasets: state.projectDatasets.isFetching || state.projectDatasets.isAdding,
-        loadingTables: state.services.isFetchingAll || state.projectTables.isFetchingAll,
+        loadingTables: state.services.isFetchingAll || state.projectTables.isFetching,
 
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
 

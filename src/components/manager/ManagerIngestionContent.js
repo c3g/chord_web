@@ -119,7 +119,7 @@ class ManagerIngestionContent extends Component {
                     selectable: false,
                     key: `project:${p.project_id}`,
                     value: `project:${p.project_id}`,
-                    children: (this.props.projectDatasets[p.project_id] || []).map(d => ({
+                    children: p.datasets.map(d => ({
                         title: d.name,
                         selectable: false,
                         key: `dataset:${d.dataset_id}`,
@@ -131,7 +131,7 @@ class ManagerIngestionContent extends Component {
                                     <>
                                         {/*TODO: Don't hard-code data type name here, fetch from serviceTables*/}
                                         <Tag style={{marginRight: "1em"}}>phenopacket</Tag>
-                                        {d.name} Metadata
+                                        {d.name} Metadata ({d.dataset_id})
                                     </>
                                 ),
                                 key: `${p.project_id}:phenopacket:${d.dataset_id}`,
@@ -275,6 +275,7 @@ ManagerIngestionContent.propTypes = {
     projects: PropTypes.array,
     projectsByID: PropTypes.object,  // TODO: Shape
     projectTables: PropTypes.object,  // TODO: Shape
+    tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
     isSubmittingIngestionRun: PropTypes.bool,
 
     servicesByID: PropTypes.object, // TODO: Shape
@@ -285,7 +286,6 @@ const mapStateToProps = state => ({
     ...workflowsStateToPropsMixin(state),
     projects: state.projects.items,
     projectsByID: state.projects.itemsByID,
-    projectDatasets: state.projectDatasets.itemsByProjectID,
     projectTables: state.projectTables.itemsByProjectID,
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,

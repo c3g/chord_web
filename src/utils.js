@@ -27,6 +27,16 @@ export const projectPropTypesShape = PropTypes.shape({
     project_id: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
+    datasets: PropTypes.arrayOf(PropTypes.shape({
+        dataset_id: PropTypes.string,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        created: PropTypes.string,
+        updated: PropTypes.string,
+
+        // May not be present if nested (project ID)
+        project: PropTypes.string,
+    })),
     data_use: PropTypes.object,  // TODO: Shape
     created: PropTypes.string,
     updated: PropTypes.string

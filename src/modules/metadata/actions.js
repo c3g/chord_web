@@ -20,10 +20,6 @@ import {
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
-
-export const FETCH_PROJECT_DATASETS = createNetworkActionTypes("FETCH_PROJECT_DATASETS");
-
-export const FETCHING_PROJECT_TABLES = createFlowActionTypes("FETCHING_PROJECT_TABLES");
 export const FETCH_PROJECT_TABLES = createNetworkActionTypes("FETCH_PROJECT_TABLES");
 
 export const CREATE_PROJECT = createNetworkActionTypes("CREATE_PROJECT");
@@ -51,15 +47,9 @@ export const fetchProjects = networkAction(() => (dispatch, getState) => ({
 }));
 
 
-export const fetchProjectDatasets = networkAction(() => (dispatch, getState) => ({
-    types: FETCH_PROJECT_DATASETS,
-    url: `${getState().services.metadataService.url}/api/datasets`,
-    err: "Error fetching tables"
-}));
-
-export const fetchProjectTables = networkAction(projectDatasets => (dispatch, getState) => ({
+export const fetchProjectTables = networkAction(projectsByID => (dispatch, getState) => ({
     types: FETCH_PROJECT_TABLES,
-    params: {projectDatasets},
+    params: {projectsByID},
     url: `${getState().services.metadataService.url}/api/table_ownership`,
     err: "Error fetching tables"
 }));
@@ -74,8 +64,7 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
         state.projects.isSaving) return;
 
     await dispatch(fetchProjects());
-    await dispatch(fetchProjectDatasets());
-    await dispatch(fetchProjectTables(getState().projectDatasets.itemsByProjectID));
+    await dispatch(fetchProjectTables(getState().projects.itemsByID));
 };
 
 
@@ -171,7 +160,6 @@ export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tab
         await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {method: "OPTIONS"});
 
         try {
-            console.log(`${serviceInfo.url}/datasets?data-type=${dataType}`);
             const serviceResponse = await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},

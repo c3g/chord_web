@@ -2,10 +2,6 @@ import {objectWithoutProp} from "../../utils";
 
 import {
     FETCH_PROJECTS,
-
-    FETCH_PROJECT_DATASETS,
-
-    FETCHING_PROJECT_TABLES,
     FETCH_PROJECT_TABLES,
 
     CREATE_PROJECT,
@@ -29,6 +25,7 @@ export const projects = (
         isCreating: false,
         isDeleting: false,
         isSaving: false,
+        isAddingDataset: false,
         items: [],
         itemsByID: {}
     },
@@ -107,78 +104,28 @@ export const projects = (
             return {...state, isSaving: false};
 
 
-        default:
-            return state;
-    }
-};
-
-
-export const projectDatasets = (
-    state = {
-        isFetching: false,
-        isAdding: false,
-        items: [],
-        itemsByProjectID: {}
-    },
-    action
-) => {
-    switch (action.type) {
-        case CREATE_PROJECT.RECEIVE:
-            // TODO: Might want to re-fetch upon project creation instead...
-            return {
-                ...state,
-                itemsByProjectID: {
-                    ...state.itemsByProjectID,
-                    [action.data.id]: []
-                }
-            };
-
-        case DELETE_PROJECT.RECEIVE:
-            return {
-                ...state,
-                itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
-            };
-
-        case FETCH_PROJECT_DATASETS.REQUEST:
-            return {
-                ...state,
-                isFetching: true
-            };
-
-        case FETCH_PROJECT_DATASETS.RECEIVE:
-            return {
-                ...state,
-                isFetching: false,
-                items: action.data.results,
-                itemsByProjectID: Object.fromEntries(action.data.results.map(ds =>
-                    [ds.project, action.data.results.filter(ds2 => ds2.project === ds.project)]))
-            };
-
-        case FETCH_PROJECT_DATASETS.ERROR:
-            return {
-                ...state,
-                isFetching: false
-            };
-
         case ADD_PROJECT_DATASET.REQUEST:
-            return {...state, isAdding: true};
+            return {...state, isAddingDataset: true};
 
         case ADD_PROJECT_DATASET.RECEIVE:
             return {
                 ...state,
-                isAdding: false,
-                items: [...state.items, action.data],
-                itemsByProjectID: {
-                    ...state.itemsByProjectID,
-                    [action.data.project]: [
-                        ...(state.itemsByProjectID[action.data.project] || []),
-                        action.data
-                    ]
+                isAddingDataset: false,
+                // TODO: Consistent ordering
+                items: state.items.map(p => p.project_id === action.data.project
+                    ? {...p, datasets: [...p.datasets, action.data]}
+                    : p
+                ),
+                itemsByID: {
+                    ...state.ID,
+                    [action.data.project]: {
+                        ...(state.itemsByID[action.data.project] || {}),
+                        // TODO: Consistent ordering
+                        datasets: [...((state.itemsByID[action.data.project] || {}).datasets || []), action.data]
+                    }
                 }
             };
 
-        case ADD_PROJECT_DATASET.ERROR:
-            return {...state, isAdding: false};
 
         default:
             return state;
@@ -215,16 +162,6 @@ export const projectTables = (
                 itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
             };
 
-        case FETCHING_PROJECT_TABLES.BEGIN:
-            return {...state, isFetchingAll: true};
-
-        case FETCHING_PROJECT_TABLES.END:
-            return {
-                ...state,
-                isFetching: false,
-                isFetchingAll: false
-            };
-
         case FETCH_PROJECT_TABLES.REQUEST:
             return {...state, isFetching: true};
 
@@ -237,16 +174,16 @@ export const projectTables = (
                     ...action.data.results
                         .map(t => ({
                             ...t,
-                            project_id: (Object.entries(action.projectDatasets)
-                                .filter(([_, datasets]) => datasets.map(d => d.dataset_id)
+                            project_id: (Object.entries(action.projectsByID)
+                                .filter(([_, project]) => project.datasets.map(d => d.dataset_id)
                                     .includes(t.dataset))[0] || [])[0] || null
                         }))
                         .filter(t => t.project_id !== null && !state.items.map(t => t.table_id).includes(t.table_id))
                 ],
                 itemsByProjectID: {  // TODO: Improve performance by maybe returning project ID on server side?
                     ...state.itemsByProjectID,
-                    ...Object.fromEntries(Object.entries(action.projectDatasets).map(([projectID, datasets]) =>
-                        [projectID, action.data.results.filter(t => datasets
+                    ...Object.fromEntries(Object.entries(action.projectsByID).map(([projectID, project]) =>
+                        [projectID, action.data.results.filter(t => project.datasets
                             .map(d => d.dataset_id)
                             .includes(t.dataset))]))
                 }

@@ -12,6 +12,8 @@ import DatasetForm from "./DatasetForm";
 import {toggleProjectDatasetAdditionModal} from "../../../modules/manager/actions";
 import {addProjectDataset, fetchProjectsWithDatasetsAndTables} from "../../../modules/metadata/actions";
 
+import {projectPropTypesShape} from "../../../utils";
+
 
 class DatasetAdditionModal extends Component {
     componentDidMount() {
@@ -45,7 +47,7 @@ class DatasetAdditionModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
-                               loading={this.props.projectTablesAdding || this.props.projectTablesFetchingAll}>
+                               loading={this.props.projectTablesAdding || this.props.projectTablesFetching}>
                            Add
                        </Button>
                    ]}
@@ -60,9 +62,9 @@ DatasetAdditionModal.propTypes = {
     toggleProjectTableAdditionModal: PropTypes.func,
 
     projectDatasetsAdding: PropTypes.bool,
-    projectDatasetsFetching: PropTypes.bool,
+    projectTablesFetching: PropTypes.bool,
 
-    selectedProject: PropTypes.object,  // TODO: Shape
+    selectedProject: projectPropTypesShape,
     selectedProjectID: PropTypes.string,
 
     addProjectDataset: PropTypes.func
@@ -71,8 +73,8 @@ DatasetAdditionModal.propTypes = {
 const mapStateToProps = state => ({
     showDatasetAdditionModal: state.manager.projectDatasetAdditionModal,
 
-    projectDatasetsAdding: state.projectDatasets.isAdding,
-    projectDatasetsFetching: state.projectDatasets.isFetching,
+    projectDatasetsAdding: state.projects.isAddingDataset,
+    projectTablesFetching: state.projectTables.isFetching,
 
     selectedProjectID: state.manager.selectedProjectID,
     selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
@@ -80,8 +82,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
-    addProjectDataset: async (projectID, name, description) =>
-        await dispatch(addProjectDataset(projectID, name, description)),
+    addProjectDataset: async (project, name, description) =>
+        await dispatch(addProjectDataset(project, name, description)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 

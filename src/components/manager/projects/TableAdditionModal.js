@@ -39,7 +39,7 @@ class TableAdditionModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
-                               loading={this.props.projectTablesAdding || this.props.projectTablesFetchingAll}>
+                               loading={this.props.projectTablesAdding || this.props.projectTablesFetching}>
                            Add
                        </Button>
                    ]}
@@ -53,7 +53,7 @@ TableAdditionModal.propTypes = {
     visible: PropTypes.bool,
 
     projectTablesAdding: PropTypes.bool,
-    projectTablesFetchingAll: PropTypes.bool,
+    projectTablesFetching: PropTypes.bool,
 
     project: PropTypes.object,  // TODO: Re-used shape
     dataset: PropTypes.object,
@@ -64,7 +64,7 @@ TableAdditionModal.propTypes = {
 
 const mapStateToProps = state => ({
     projectTablesAdding: state.projectTables.isAdding,
-    projectTablesFetchingAll: state.projectTables.isFetchingAll,
+    projectTablesFetching: state.projectTables.isFetching,
 });
 
 
