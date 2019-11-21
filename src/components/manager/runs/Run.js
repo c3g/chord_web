@@ -53,7 +53,6 @@ const TABS = {
 class Run extends Component {
     render() {
         // TODO: 404
-        console.log(this.props.run);
         const details = (this.props.run || {}).details || null;
         const loading = this.props.run === null || details === null;
         return (
