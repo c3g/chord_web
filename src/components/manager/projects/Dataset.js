@@ -99,6 +99,29 @@ class Dataset extends Component {
     }
 
     render() {
+        const tableListColumns = [
+            {title: "ID", dataIndex: "table_id"},
+            {title: "Name", dataIndex: "name", render: n => (n ? n : NA_TEXT)},
+            {title: "Data Type", dataIndex: "data_type"},
+            {
+                title: "actions",
+                key: "actions",
+                width: 330,
+                render: t => (
+                    <Row gutter={10}>
+                        <Col span={8}>
+                            <Button icon="import" style={{width: "100%"}}
+                                    onClick={() => this.onTableIngest(this.props.project, t)}>Ingest</Button>
+                        </Col>
+                        <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                        <Col span={8}><Button type="danger" icon="delete"
+                                              onClick={() => this.handleTableDeletionClick(t)}
+                                              style={{width: "100%"}}>Delete</Button></Col>
+                    </Row>
+                )
+            }
+        ];
+
         return (
             <Card key={this.state.dataset_id} title={this.state.name} extra={<>
                 <Button icon="import" style={{marginRight: "24px"}}>
@@ -158,25 +181,12 @@ class Dataset extends Component {
                         </Button>
                     </div>
                 </Typography.Title>
-                <Table bordered dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
-                       rowKey="table_id" expandedRowRender={() => (<span>TODO: List of files</span>)}
-                       loading={this.state.loadingTables}>
-                    <Table.Column dataIndex="table_id" title="ID" />
-                    <Table.Column dataIndex="name" title="Name" render={n => (n ? n : NA_TEXT)} />
-                    <Table.Column dataIndex="data_type" title="Data Type" />
-                    <Table.Column key="actions" title="Actions" width={330} render={t => (
-                        <Row gutter={10}>
-                            <Col span={8}>
-                                <Button icon="import" style={{width: "100%"}}
-                                        onClick={() => this.onTableIngest(this.props.project, t)}>Ingest</Button>
-                            </Col>
-                            <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                            <Col span={8}><Button type="danger" icon="delete"
-                                                  onClick={() => this.handleTableDeletionClick(t)}
-                                                  style={{width: "100%"}}>Delete</Button></Col>
-                        </Row>
-                    )} />
-                </Table>
+                <Table bordered
+                       dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
+                       rowKey="table_id"
+                       expandedRowRender={() => (<span>TODO: List of files</span>)}
+                       columns={tableListColumns}
+                       loading={this.state.loadingTables} />
             </Card>
         );
     }

@@ -13,9 +13,9 @@ class RunRequest extends Component {
         return (
             <Descriptions bordered>
                 <Descriptions.Item label={"Parameters"} span={3}>
-                                    <pre style={{margin: 0}}>{
-                                        JSON.stringify(details.request.workflow_params, null, 4)
-                                    }</pre>
+                    <pre style={{margin: 0}}>{
+                        JSON.stringify(details.request.workflow_params, null, 4)
+                    }</pre>
                 </Descriptions.Item>
                 <Descriptions.Item label={"Workflow Type"}>
                     {details.request.workflow_type}

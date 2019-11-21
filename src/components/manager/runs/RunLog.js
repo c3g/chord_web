@@ -8,6 +8,8 @@ import {Descriptions, Skeleton} from "antd";
 import "antd/es/descriptions/style/css";
 import "antd/es/skeleton/style/css";
 
+const resourceLoadError = resource => `An error was encountered while loading ${resource}`;
+
 class RunLog extends Component {
     constructor(props) {
         super(props);
@@ -31,14 +33,10 @@ class RunLog extends Component {
         try {
             // TODO: Auth / proper url stuff
             const r = await fetch(url);
-            this.setState({
-                [resource]: r.ok
-                    ? await r.text()
-                    : `An error was encountered while loading ${resource}`
-            });
+            this.setState({[resource]: r.ok ? await r.text() : resourceLoadError(resource)});
         } catch (e) {
-            console.log(e);
-            this.setState({[resource]: `An error was encountered while loading ${resource}`});
+            console.error(e);
+            this.setState({[resource]: resourceLoadError(resource)});
         }
     }
 
