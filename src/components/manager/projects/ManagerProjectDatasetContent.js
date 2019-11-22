@@ -126,12 +126,12 @@ class ManagerProjectDatasetContent extends Component {
                                              editing={this.props.editingProject}
                                              saving={this.props.savingProject}
                                              individuals={this.props.individuals.filter(i =>
-                                                i.phenopackets.filter(p => this.props.phenopackets
-                                                    .filter(p2 => this.props.datasets
-                                                        .map(d => d.dataset_id).includes(p2.dataset))
-                                                    .map(p2 => p2.phenopacket_id)
-                                                    .includes(p.phenopacket_id)
-                                                ).length > 0)}
+                                                i.phenopackets.filter(p =>
+                                                    this.props.selectedProject.datasets
+                                                        .map(d => d.dataset_id)
+                                                        .includes(p.dataset)
+                                                ).length > 0
+                                             )}
                                              loadingIndividuals={this.props.loadingIndividuals}
                                              onDelete={() => this.props.toggleProjectDeletionModal()}
                                              onEdit={() => this.props.beginProjectEditing()}
@@ -168,9 +168,6 @@ ManagerProjectDatasetContent.propTypes = {
     editingProject: PropTypes.bool,
     savingProject: PropTypes.bool,
 
-    datasets: PropTypes.arrayOf(PropTypes.shape({
-        dataset_id: PropTypes.string
-    })),
     tables: PropTypes.arrayOf(PropTypes.object),
 
     toggleProjectCreationModal: PropTypes.func,
@@ -186,9 +183,6 @@ ManagerProjectDatasetContent.propTypes = {
         phenopacket_id: PropTypes.string,
         dataset: PropTypes.string
     })),
-    biosamples: PropTypes.arrayOf(PropTypes.shape({
-        biosample_id: PropTypes.string
-    })),
     individuals: PropTypes.arrayOf(PropTypes.shape({
         individual_id: PropTypes.string,
         biosamples: PropTypes.arrayOf(PropTypes.shape({
@@ -201,7 +195,6 @@ ManagerProjectDatasetContent.propTypes = {
     })),
 
     loadingPhenopackets: PropTypes.bool,
-    loadingBiosamples: PropTypes.bool,
     loadingIndividuals: PropTypes.bool,
 };
 
@@ -255,11 +248,9 @@ const mapStateToProps = state => {
         selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
 
         phenopackets: state.phenopackets.items,
-        biosamples: state.biosamples.items,
         individuals: state.individuals.items,
 
         loadingPhenopackets: state.phenopackets.isFetching,
-        loadingBiosamples: state.biosamples.isFetching,
         loadingIndividuals: state.individuals.isFetching,
     };
 };
