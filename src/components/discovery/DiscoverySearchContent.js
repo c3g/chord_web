@@ -82,7 +82,7 @@ class DiscoverySearchContent extends Component {
 
     handleSearchSelect(searchIndex) {
         if (this.props.dataType === null) return;
-        this.props.selectSearch(this.props.serviceInfo, this.props.dataType.id, parseInt(searchIndex, 10));
+        this.props.selectSearch(parseInt(searchIndex, 10));
     }
 
     handleDatasetTermsClick(dataset) {
@@ -118,7 +118,9 @@ class DiscoverySearchContent extends Component {
         );
 
         return (
-            <Collapse bordered={false} accordion={true} activeKey={(this.props.selectedSearch || 0).toString()}
+            <Collapse bordered={false}
+                      accordion={true}
+                      activeKey={(this.props.selectedSearch || 0).toString()}
                       onChange={this.handleSearchSelect}>
                 {[...this.props.searches].reverse().map((s, i) => (
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
