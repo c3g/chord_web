@@ -22,7 +22,7 @@ export const selectSearch = searchIndex => ({
 });
 
 
-const performSearch = networkAction((dataTypeQueries, joinQuery=true) => (dispatch, getState) => ({
+const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispatch, getState) => ({
     types: PERFORM_SEARCH,
     url: `${getState().services.federationService.url}/federated-dataset-search`,
     req: {
@@ -70,7 +70,7 @@ export const performFullSearchIfPossible = () => async (dispatch, getState) => {
     const joinQueryConditions = (((joinFormValues || {keys: {value: []}}).keys || {value: []}).value || [])
         .map(k => ((joinFormValues || {conditions: []}).conditions || [])[k] || null)
         .filter(c => c !== null);
-    const joinQuery = joinQueryConditions.length > 0 ? conditionsToQuery(joinQueryConditions) : true;
+    const joinQuery = joinQueryConditions.length > 0 ? conditionsToQuery(joinQueryConditions) : null;
 
     await dispatch(performSearch(dataTypeQueries, joinQuery));
 };
