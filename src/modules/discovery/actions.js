@@ -40,7 +40,7 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
 
 
 
-const conditionsToQuery = (conditions, join=false) => conditions
+const conditionsToQuery = conditions => conditions
     .filter(c => c.value && c.value.field)
     .map(({value}) =>
         (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
