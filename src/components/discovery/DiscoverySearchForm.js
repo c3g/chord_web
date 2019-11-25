@@ -32,7 +32,7 @@ class DiscoverySearchForm extends Component {
             requiredFields.forEach(c => this.addCondition(c));
 
             // Add a single default condition if necessary
-            if (requiredFields.length === 0) this.addCondition();
+            if (requiredFields.length === 0 && this.props.conditionType !== "join") this.addCondition();
         }
     }
 
