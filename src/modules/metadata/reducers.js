@@ -12,7 +12,9 @@ import {
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
 
-    FETCH_PHENOPACKETS, FETCH_BIOSAMPLES, FETCH_INDIVIDUALS
+    FETCH_PHENOPACKETS,
+    FETCH_BIOSAMPLES,
+    FETCH_INDIVIDUALS
 } from "./actions";
 
 
@@ -279,7 +281,7 @@ export const biosamples = (
                 ...state,
                 isFetching: false,
                 items: [...action.data.results],
-                itemsByID: Object.fromEntries(action.data.results.map(b => [b.biosample_id, b]))
+                itemsByID: Object.fromEntries(action.data.results.map(b => [b.id, b]))
             };
 
         case FETCH_BIOSAMPLES.ERROR:
@@ -307,7 +309,7 @@ export const individuals = (
                 ...state,
                 isFetching: false,
                 items: [...action.data.results],
-                itemsByID: Object.fromEntries(action.data.results.map(i => [i.individual_id, i]))
+                itemsByID: Object.fromEntries(action.data.results.map(i => [i.id, i]))
             };
 
         case FETCH_INDIVIDUALS.ERROR:

@@ -157,10 +157,10 @@ class Dataset extends Component {
                            sex: i.sex || "UNKNOWN_SEX",
                            n_of_biosamples: (i.biosamples || []).length
                        }))}
-                       rowKey="individual_id"
+                       rowKey="id"
                        loading={this.props.loadingIndividuals}
                        columns={[
-                           {title: "Individual ID", dataIndex: "individual_id"},
+                           {title: "Individual ID", dataIndex: "id"},
                            {title: "Date of Birth", dataIndex: "date_of_birth"},
                            {title: "Sex", dataIndex: "sex"},
                            {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples

@@ -180,16 +180,16 @@ ManagerProjectDatasetContent.propTypes = {
     saveProject: PropTypes.func,
 
     phenopackets: PropTypes.arrayOf(PropTypes.shape({
-        phenopacket_id: PropTypes.string,
+        id: PropTypes.string,
         dataset: PropTypes.string
     })),
     individuals: PropTypes.arrayOf(PropTypes.shape({
-        individual_id: PropTypes.string,
+        id: PropTypes.string,
         biosamples: PropTypes.arrayOf(PropTypes.shape({
-            biosample_id: PropTypes.string
+            id: PropTypes.string
         })),
         phenopackets: PropTypes.arrayOf(PropTypes.shape({
-            phenopacket_id: PropTypes.string,
+            id: PropTypes.string,
             dataset: PropTypes.string
         }))
     })),
