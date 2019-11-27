@@ -1,12 +1,36 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
-import {Button, Dropdown, Icon, Layout, Menu, Spin, Tree} from "antd";
+import fetch from "cross-fetch";
+
+import {Light as SyntaxHighlighter} from "react-syntax-highlighter";
+import {a11yLight} from "react-syntax-highlighter/dist/cjs/styles/hljs";
+import {json, markdown, plaintext} from "react-syntax-highlighter/dist/cjs/languages/hljs";
+
+SyntaxHighlighter.registerLanguage("json", json);
+SyntaxHighlighter.registerLanguage("markdown", markdown);
+SyntaxHighlighter.registerLanguage("plaintext", plaintext);
+
+
+const LANGUAGE_HIGHLIGHTERS = {
+    ".json": "json",
+    ".md": "markdown",
+    ".txt": "plaintext",
+
+    // Special files
+    "README": "plaintext",
+    "CHANGELOG": "plaintext",
+};
+
+import {Button, Dropdown, Icon, Layout, Menu, Modal, Spin, Tree} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/dropdown/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
+import "antd/es/menu/style/css";
+import "antd/es/modal/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/tree/style/css";
 
@@ -25,19 +49,67 @@ const generateFileTree = directory => directory.map(entry =>
         {(entry || {contents: []}).contents ? generateFileTree(entry.contents) : null}
     </Tree.TreeNode>);
 
+const resourceLoadError = resource => `An error was encountered while loading ${resource}`;
+
 class ManagerFilesContent extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedFiles: []
+            selectedFiles: [],
+            fileContents: {},
+            fileContentsModal: false
         };
 
         this.handleSelect = this.handleSelect.bind(this);
+        this.showFileContentsModal = this.showFileContentsModal.bind(this);
+        this.hideFileContentsModal = this.hideFileContentsModal.bind(this);
+        this.handleViewFile = this.handleViewFile.bind(this);
     }
 
     handleSelect(keys) {
         this.setState({selectedFiles: keys.filter(k => k !== "root")});
+    }
+
+    showFileContentsModal() {
+        this.setState({fileContentsModal: true});
+    }
+
+    hideFileContentsModal() {
+        this.setState({fileContentsModal: false});
+    }
+
+    async handleViewFile() {  // TODO: Action-ify?
+        if (this.state.selectedFiles.length !== 1) return;
+        const file = this.state.selectedFiles[0];
+        if (this.state.fileContents.hasOwnProperty(file)) {
+            this.showFileContentsModal();
+            return;
+        }
+
+        try {
+            // TODO: Auth / proper url stuff
+            // TODO: Don't hard-code replace
+            const r = await fetch(`${this.props.dropBoxService.url}/retrieve${
+                file.replace("/chord/data/drop-box", "")}`);
+
+            this.setState({
+                fileContents: {
+                    ...this.state.fileContents,
+                    [file]: r.ok ? await r.text() : resourceLoadError(file)
+                }
+            });
+
+            this.showFileContentsModal();
+        } catch (e) {
+            console.error(e);
+            this.setState({
+                fileContents: {
+                    ...this.state.fileContents,
+                    [file]: resourceLoadError(file)
+                }
+            });
+        }
     }
 
     render() {
@@ -83,14 +155,32 @@ class ManagerFilesContent extends Component {
             </Menu>
         );
 
+        const selectedFileViewable = this.state.selectedFiles.length === 1 &&
+            Object.keys(LANGUAGE_HIGHLIGHTERS).filter(e => this.state.selectedFiles[0].endsWith(e)).length > 0;
+
+        const selectedFile = selectedFileViewable ? this.state.selectedFiles[0] : "";
+
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                    <Modal visible={this.state.fileContentsModal}
+                           title={selectedFile}
+                           width={800}
+                           footer={null}
+                           onCancel={this.hideFileContentsModal}>
+                        <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFile.split(".").slice(-1)[0]}`]}
+                                           style={a11yLight} customStyle={{fontSize: "12px"}} showLineNumbers={true}>
+                            {this.state.fileContents[selectedFile]}
+                        </SyntaxHighlighter>
+                        {/*<pre>{this.state.fileContents[this.state.selectedFiles[0] || null] || ""}</pre>*/}
+                    </Modal>
                     <div style={{marginBottom: "1em"}}>
-                        <Dropdown.Button overlay={workflowMenu} style={{marginRight: "10px"}}
+                        <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
                                          disabled={this.state.selectedFiles.length === 0 || !oneWorkflowSupported}>
                             <Icon type="import" /> Ingest
                         </Dropdown.Button>
+                        <Button icon="file-text" onClick={this.handleViewFile} style={{marginRight: "12px"}}
+                                disabled={!selectedFileViewable}>View</Button>
                         <Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>
                             Delete
                         </Button>
@@ -111,11 +201,13 @@ class ManagerFilesContent extends Component {
 }
 
 ManagerFilesContent.propTypes = {
+    dropBoxService: PropTypes.object,
     ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes
 };
 
 const mapStateToProps = state => ({
+    dropBoxService: state.services.dropBoxService,
     ...dropBoxTreeStateToPropsMixin(state),
     ...workflowsStateToPropsMixin(state)
 });
