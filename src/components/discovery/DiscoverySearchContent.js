@@ -125,9 +125,9 @@ class DiscoverySearchContent extends Component {
                 {[...this.props.searches].reverse().map((s, i) => (
                     <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
                                     key={this.props.searches.length - i - 1}>
-                        <Table bordered={true} dataSource={s.results} rowKey="dataset_id">
-                            <Table.Column title="Dataset ID" dataIndex="dataset_id" />
-                            <Table.Column title="Name" dataIndex="name" />
+                        <Table bordered={true} dataSource={s.results} rowKey="id">
+                            <Table.Column title="Dataset ID" dataIndex="id" />
+                            <Table.Column title="Title" dataIndex="name" />
                             <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
                                 <Row type="flex">
                                     <Col>

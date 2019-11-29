@@ -10,9 +10,9 @@ class DatasetForm extends Component {
     render() {
         return (
             <Form style={this.props.style || {}}>
-                <Form.Item label="Name">
-                    {this.props.form.getFieldDecorator("name", {
-                        initialValue: (this.props.initialValue || {name: ""}).name || "",
+                <Form.Item label="Title">
+                    {this.props.form.getFieldDecorator("title", {
+                        initialValue: (this.props.initialValue || {title: ""}).title || "",
                         rules: [{required: true}]
                     })(<Input placeholder="My Dataset" size="large" />)}
                 </Form.Item>

@@ -32,7 +32,7 @@ class DatasetAdditionModal extends Component {
                 return;
             }
 
-            await this.props.addProjectDataset(this.props.selectedProject, values.name, values.description);
+            await this.props.addProjectDataset(this.props.selectedProject, values.title, values.description);
 
             await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -43,7 +43,7 @@ class DatasetAdditionModal extends Component {
     render() {
         return this.props.selectedProject ? (
             <Modal visible={this.props.showDatasetAdditionModal}
-                   title={`Add Dataset to "${this.props.selectedProject.name}"`}
+                   title={`Add Dataset to "${this.props.selectedProject.title}"`}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
@@ -82,8 +82,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
-    addProjectDataset: async (project, name, description) =>
-        await dispatch(addProjectDataset(project, name, description)),
+    addProjectDataset: async (project, title, description) =>
+        await dispatch(addProjectDataset(project, title, description)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 

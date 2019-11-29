@@ -18,7 +18,7 @@ import {
 } from "./actions";
 
 
-const projectSort = (a, b) => a.name.localeCompare(b.name);
+const projectSort = (a, b) => a.title.localeCompare(b.title);
 
 
 export const projects = (
@@ -42,7 +42,7 @@ export const projects = (
                 ...state,
                 isFetching: false,
                 items: action.data.results.sort(projectSort),
-                itemsByID: Object.fromEntries(action.data.results.map(p => [p.project_id, p])),
+                itemsByID: Object.fromEntries(action.data.results.map(p => [p.identifier, p])),
             };
 
         case FETCH_PROJECTS.ERROR:
@@ -59,7 +59,7 @@ export const projects = (
                 items: [...state.items, action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.data.project_id]: action.data
+                    [action.data.identifier]: action.data
                 }
             };
 
@@ -71,18 +71,13 @@ export const projects = (
             return {...state, isDeleting: true};
 
         case DELETE_PROJECT.RECEIVE:
-            let newState = {
+            return {
                 ...state,
                 isDeleting: false,
-                items: state.items.filter(p => p.project_id !== action.projectID),
-                itemsByID: objectWithoutProp(state.itemsByID, action.projectID)
+                items: state.items.filter(p => p.identifier !== action.projectID),
+                itemsByID: Object.fromEntries(Object.entries(objectWithoutProp(state.itemsByID, action.projectID))
+                    .filter(([projectID, _]) => projectID !== action.projectID))
             };
-
-            if (newState.itemsByID.hasOwnProperty(action.projectID)) {
-                delete newState.itemsByID[action.projectID];
-            }
-
-            return newState;
 
         case DELETE_PROJECT.ERROR:
             return {...state, isDeleting: false};
@@ -95,10 +90,11 @@ export const projects = (
             return {
                 ...state,
                 isSaving: false,
-                items: [...state.items.filter(p => p.id !== action.data.id), action.data].sort(projectSort),
+                items: [...state.items.filter(p => p.identifier !== action.data.identifier), action.data]
+                    .sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.data.id]: action.data
+                    [action.data.identifier]: action.data
                 }
             };
 
@@ -114,12 +110,12 @@ export const projects = (
                 ...state,
                 isAddingDataset: false,
                 // TODO: Consistent ordering
-                items: state.items.map(p => p.project_id === action.data.project
+                items: state.items.map(p => p.identifier === action.data.project
                     ? {...p, datasets: [...p.datasets, action.data]}
                     : p
                 ),
                 itemsByID: {
-                    ...state.ID,
+                    ...state.itemsByID,
                     [action.data.project]: {
                         ...(state.itemsByID[action.data.project] || {}),
                         // TODO: Consistent ordering
@@ -177,7 +173,7 @@ export const projectTables = (
                         .map(t => ({
                             ...t,
                             project_id: (Object.entries(action.projectsByID)
-                                .filter(([_, project]) => project.datasets.map(d => d.dataset_id)
+                                .filter(([_, project]) => project.datasets.map(d => d.identifier)
                                     .includes(t.dataset))[0] || [])[0] || null
                         }))
                         .filter(t => t.project_id !== null && !state.items.map(t => t.table_id).includes(t.table_id))
@@ -186,7 +182,7 @@ export const projectTables = (
                     ...state.itemsByProjectID,
                     ...Object.fromEntries(Object.entries(action.projectsByID).map(([projectID, project]) =>
                         [projectID, action.data.results.filter(t => project.datasets
-                            .map(d => d.dataset_id)
+                            .map(d => d.identifier)
                             .includes(t.dataset))]))
                 }
             };

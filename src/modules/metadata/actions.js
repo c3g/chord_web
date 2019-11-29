@@ -106,16 +106,16 @@ export const deleteProjectIfPossible = projectID => async (dispatch, getState) =
 
 const saveProject = networkAction(project => (dispatch, getState) => ({
     types: SAVE_PROJECT,
-    params: {projectID: project.project_id},
-    url: `${getState().services.metadataService.url}/api/projects/${project.project_id}`,
+    params: {projectID: project.identifier},
+    url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(project)
     },
-    err: `Error saving project '${project.name}'`,  // TODO: More user-friendly error
+    err: `Error saving project '${project.title}'`,  // TODO: More user-friendly error
     afterAction: () => async dispatch => dispatch(endProjectEditing()),
-    onSuccess: () => message.success(`Project '${project.name}' saved!`)
+    onSuccess: () => message.success(`Project '${project.title}' saved!`)
 }));
 
 export const saveProjectIfPossible = project => async (dispatch, getState) => {
@@ -125,22 +125,22 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, name, description) => (dispatch, getState) => ({
+export const addProjectDataset = networkAction((project, title, description) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
-    params: {projectID: project.project_id},
+    params: {projectID: project.identifier},
     url: `${getState().services.metadataService.url}/api/datasets`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-            name,
+            title,
             description,
-            project: project.project_id
+            project: project.identifier
         })
     },
-    err: `Error adding dataset to project '${project.name}'`,  // TODO: More user-friendly error
+    err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
-    onSuccess: () => message.success(`Added dataset '${name}' to project ${project.name}!`)
+    onSuccess: () => message.success(`Added dataset '${title}' to project ${project.title}!`)
 }));
 
 

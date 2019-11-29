@@ -9,9 +9,11 @@ import "antd/es/modal/style/css";
 
 import TableForm from "./TableForm";
 
+import {datasetPropTypesShape, projectPropTypesShape} from "../../../utils";
+
 
 const modalTitle = (dataset, project) =>
-    `Add Table to Dataset "${(dataset || {}).name || ""}" (Project "${(project || {}).name || ""}")`;
+    `Add Table to Dataset "${(dataset || {}).title || ""}" (Project "${(project || {}).title || ""}")`;
 
 class TableAdditionModal extends Component {
     componentDidMount() {
@@ -55,8 +57,8 @@ TableAdditionModal.propTypes = {
     projectTablesAdding: PropTypes.bool,
     projectTablesFetching: PropTypes.bool,
 
-    project: PropTypes.object,  // TODO: Re-used shape
-    dataset: PropTypes.object,
+    project: projectPropTypesShape,
+    dataset: datasetPropTypesShape,
 
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func

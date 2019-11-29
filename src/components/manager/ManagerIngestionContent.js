@@ -117,15 +117,15 @@ class ManagerIngestionContent extends Component {
                 // TODO: Loading projects
 
                 const selectTreeData = this.props.projects.map(p => ({
-                    title: p.name,
+                    title: p.title,
                     selectable: false,
-                    key: `project:${p.project_id}`,
-                    value: `project:${p.project_id}`,
+                    key: `project:${p.identifier}`,
+                    value: `project:${p.identifier}`,
                     children: p.datasets.map(d => ({
-                        title: d.name,
+                        title: d.title,
                         selectable: false,
-                        key: `dataset:${d.dataset_id}`,
-                        value: `dataset:${d.dataset_id}`,
+                        key: `dataset:${d.identifier}`,
+                        value: `dataset:${d.identifier}`,
                         children: [
                             // Add the dataset metadata table in manually -- it's not "owned" per se
                             {
@@ -133,27 +133,28 @@ class ManagerIngestionContent extends Component {
                                     <>
                                         {/*TODO: Don't hard-code data type name here, fetch from serviceTables*/}
                                         <Tag style={{marginRight: "1em"}}>phenopacket</Tag>
-                                        {d.name} Metadata ({d.dataset_id})
+                                        {d.title} Metadata ({d.identifier})
                                     </>
                                 ),
-                                key: `${p.project_id}:phenopacket:${d.dataset_id}`,
-                                value: `${p.project_id}:phenopacket:${d.dataset_id}`
+                                key: `${p.identifier}:phenopacket:${d.identifier}`,
+                                value: `${p.identifier}:phenopacket:${d.identifier}`
                             },
-                            ...(this.props.projectTables[p.project_id] || [])
-                                .filter(t => t.dataset === d.dataset_id &&
+                            ...(this.props.projectTables[p.identifier] || [])
+                                .filter(t => t.dataset === d.identifier &&
                                     Object.keys(this.props.tablesByServiceAndDataTypeID).includes(t.service_id))
                                 .map(t => ({
                                     title: (
                                         <>
                                             <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
                                             {getTableName(t.service_id, t.data_type, t.table_id)
-                                                ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
+                                                ? `${getTableName(
+                                                    t.service_id, t.data_type, t.table_id)} (${t.table_id})`
                                                 : t.table_id}
                                         </>
                                     ),
                                     isLeaf: true,
-                                    key: `${p.project_id}:${t.data_type}:${t.table_id}`,
-                                    value: `${p.project_id}:${t.data_type}:${t.table_id}`
+                                    key: `${p.identifier}:${t.data_type}:${t.table_id}`,
+                                    value: `${p.identifier}:${t.data_type}:${t.table_id}`
                                 }))
                         ]
                     }))
@@ -204,14 +205,14 @@ class ManagerIngestionContent extends Component {
 
             case STEP_CONFIRM:
                 const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
-                const projectName = (this.props.projectsByID[projectID] || {name: null}).name || null;
+                const projectTitle = (this.props.projectsByID[projectID] || {title: null}).title || null;
                 const tableName = getTableName(this.state.selectedWorkflow.serviceID,
                     this.state.selectedWorkflow.data_types[0], tableID);
 
                 return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Project">
-                            {formatWithNameIfPossible(projectName, projectID)}
+                            {formatWithNameIfPossible(projectTitle, projectID)}
                         </Form.Item>
                         <Form.Item label="Data Type">
                             <Tag>{dataType}</Tag>

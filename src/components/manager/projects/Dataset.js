@@ -41,8 +41,8 @@ class Dataset extends Component {
 
         const value = props.value || {};
         this.state = {  // TODO: For editing
-            dataset_id: value.dataset_id || null,
-            name: value.name || "",
+            identifier: value.identifier || null,
+            title: value.title || "",
             description: value.description || "",
             tables: value.tables || [],
 
@@ -72,7 +72,7 @@ class Dataset extends Component {
     async handleAdditionSubmit(values) {
         const [serviceArtifact, dataTypeID] = values.dataType.split(":");
         const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
-        await this.props.addProjectTable(this.props.project.project_id, this.state.dataset_id, serviceInfo, dataTypeID,
+        await this.props.addProjectTable(this.props.project.identifier, this.state.identifier, serviceInfo, dataTypeID,
             values.name);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
@@ -90,7 +90,7 @@ class Dataset extends Component {
 
     async handleTableDeletionSubmit() {
         if (this.state.selectedTable === null) return;
-        await this.props.deleteProjectTable(this.props.project.project_id, this.state.selectedTable);
+        await this.props.deleteProjectTable(this.props.project.identifier, this.state.selectedTable);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -122,7 +122,7 @@ class Dataset extends Component {
         ];
 
         return (
-            <Card key={this.state.dataset_id} title={this.state.name} extra={<>
+            <Card key={this.state.identifier} title={this.state.title} extra={<>
                 <Button icon="import" style={{marginRight: "24px"}}>
                     Ingest Metadata
                 </Button>
@@ -204,8 +204,8 @@ Dataset.propTypes = {
     strayTables: PropTypes.arrayOf(PropTypes.object),
 
     value: PropTypes.shape({
-        dataset_id: PropTypes.string,
-        name: PropTypes.string,
+        identifier: PropTypes.string,
+        title: PropTypes.string,
         tables: PropTypes.arrayOf(PropTypes.object),
     }),
 

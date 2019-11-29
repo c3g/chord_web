@@ -22,21 +22,25 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
 };
 
 
-// Prop types object shape for a single project object.
-export const projectPropTypesShape = PropTypes.shape({
-    project_id: PropTypes.string,
+// Prop types object shape for a single dataset object.
+export const datasetPropTypesShape = PropTypes.shape({
+    identifier: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    datasets: PropTypes.arrayOf(PropTypes.shape({
-        dataset_id: PropTypes.string,
-        name: PropTypes.string,
-        description: PropTypes.string,
-        created: PropTypes.string,
-        updated: PropTypes.string,
+    created: PropTypes.string,
+    updated: PropTypes.string,
 
-        // May not be present if nested (project ID)
-        project: PropTypes.string,
-    })),
+    // May not be present if nested (project ID)
+    project: PropTypes.string,
+});
+
+
+// Prop types object shape for a single project object.
+export const projectPropTypesShape = PropTypes.shape({
+    identifier: PropTypes.string,
+    name: PropTypes.string,
+    description: PropTypes.string,
+    datasets: PropTypes.arrayOf(datasetPropTypesShape),
     data_use: PropTypes.object,  // TODO: Shape
     created: PropTypes.string,
     updated: PropTypes.string

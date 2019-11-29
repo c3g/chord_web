@@ -25,7 +25,7 @@ class ProjectDeletionModal extends Component {
     }
 
     async handleDeleteSubmit() {
-        await this.props.deleteProject(this.props.selectedProject.project_id);
+        await this.props.deleteProject(this.props.selectedProject.identifier);
 
         // TODO: Only close modal if deletion was a success
         this.props.toggleProjectDeletionModal();
@@ -34,7 +34,8 @@ class ProjectDeletionModal extends Component {
     render() {
         return (
             <Modal visible={this.props.showDeletionModal}
-                   title={`Are you sure you want to delete the "${this.props.selectedProjectName}" project?`}
+                   title={`Are you sure you want to delete the "${
+                       (this.props.selectedProject || {title: ""}).title}" project?`}
                    footer={[
                        <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
                        <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}>
@@ -56,21 +57,15 @@ ProjectDeletionModal.propTypes = {
     showDeletionModal: PropTypes.bool,
 
     selectedProject: projectPropTypesShape,
-    selectedProjectName: PropTypes.string,
 
     toggleProjectDeletionModal: PropTypes.func,
     deleteProject: PropTypes.func
 };
 
-const mapStateToProps = state => {
-    const selectedProject = state.projects.itemsByID[state.manager.selectedProjectID] || null;
-
-    return {
-        showDeletionModal: state.manager.projectDeletionModal,
-        selectedProject,
-        selectedProjectName: (selectedProject || {name: ""}).name,
-    };
-};
+const mapStateToProps = state => ({
+    showDeletionModal: state.manager.projectDeletionModal,
+    selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
+});
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),

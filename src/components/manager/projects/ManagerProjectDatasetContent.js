@@ -51,7 +51,7 @@ class ManagerProjectDatasetContent extends Component {
 
     selectProjectIfNeeded() {
         if (!this.props.selectedProject && this.props.projects.length > 0) {
-            this.props.selectProject(this.props.projects[0].project_id);
+            this.props.selectProject(this.props.projects[0].identifier);
         }
     }
 
@@ -61,12 +61,12 @@ class ManagerProjectDatasetContent extends Component {
     }
 
     ingestIntoTable(p, t) {
-        this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.project_id}:${t.id}`});
+        this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
     }
 
     render() {
         const projectMenuItems = this.props.projects.map(project => (
-            <Menu.Item key={project.project_id}>{project.name}</Menu.Item>
+            <Menu.Item key={project.identifier}>{project.title}</Menu.Item>
         ));
 
         return (
@@ -101,7 +101,7 @@ class ManagerProjectDatasetContent extends Component {
                                     <Menu style={{flex: 1, paddingTop: "8px"}} mode="inline"
                                           onClick={item => this.props.selectProject(item.key)}
                                           selectedKeys={this.props.selectedProject
-                                              ? [this.props.selectedProject.project_id]
+                                              ? [this.props.selectedProject.identifier]
                                               : []}>
                                         {projectMenuItems}
                                     </Menu>
@@ -128,7 +128,7 @@ class ManagerProjectDatasetContent extends Component {
                                              individuals={this.props.individuals.filter(i =>
                                                 i.phenopackets.filter(p =>
                                                     this.props.selectedProject.datasets
-                                                        .map(d => d.dataset_id)
+                                                        .map(d => d.identifier)
                                                         .includes(p.dataset)
                                                 ).length > 0
                                              )}

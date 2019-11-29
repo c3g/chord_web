@@ -52,8 +52,8 @@ class Project extends Component {
 
         const value = props.value || {};
         this.state = {
-            id: value.id || null,
-            name: value.name || "",
+            identifier: value.identifier || null,
+            title: value.title || "",
             description: value.description || "",
             datasets: value.datasets || [],
             data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE)
@@ -69,8 +69,8 @@ class Project extends Component {
 
             // Don't save datasets since it's a related set.
             this._onSave({
-                id: this.state.id,
-                name: values.name || this.state.name,
+                identifier: this.state.identifier,
+                title: values.title || this.state.title,
                 description: values.description || this.state.description,
                 data_use: values.data_use || this.state.data_use
             });
@@ -102,7 +102,7 @@ class Project extends Component {
                 {this.props.editing ? (
                     <ProjectForm style={{maxWidth: "600px"}}
                                  initialValue={{
-                                     name: this.state.name,
+                                     title: this.state.title,
                                      description: this.state.description,
                                      data_use: this.state.data_use
                                  }}
@@ -110,7 +110,7 @@ class Project extends Component {
                 ) : (
                     <>
                         <Typography.Title level={2}>
-                            {this.state.name}
+                            {this.state.title}
                         </Typography.Title>
                         <Typography.Paragraph style={{maxWidth: "600px"}}>
                             {this.state.description}
@@ -130,7 +130,7 @@ class Project extends Component {
                 </Typography.Title>
                 {(this.state.datasets || []).length > 0
                     ? this.state.datasets.map(d =>
-                        <Dataset key={d.dataset_id}
+                        <Dataset key={d.identifier}
                                  project={this.props.value}
                                  value={{
                                      ...d,
@@ -140,9 +140,9 @@ class Project extends Component {
                                  strayTables={this.props.strayTables}
                                  individuals={this.props.individuals
                                      .filter(i => i.phenopackets.map(p => p.dataset)
-                                         .includes(d.dataset_id))}
+                                         .includes(d.identifier))}
                                  loadingIndividuals={this.props.loadingIndividuals}
-                                 loadingTables={this.props.loadingTables}
+                                 loadingTables={this.props.identifier}
                                  onTableIngest={this.onTableIngest} />
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
