@@ -10,6 +10,7 @@ import "antd/es/menu/style/css";
 import "antd/es/page-header/style/css";
 
 import ManagerProjectDatasetContent from "./manager/projects/ManagerProjectDatasetContent";
+import ManagerAccessContent from "./manager/ManagerAccessContent";
 import ManagerFilesContent from "./manager/ManagerFilesContent";
 import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
@@ -32,6 +33,9 @@ const renderContent = Content => route => (
                         }} selectedKeys={[route.match.path]}>
                             <Menu.Item key="/data/manager/projects" style={{marginLeft: "4px"}}>
                                 <Link to="/data/manager/projects">Projects and Datasets</Link>
+                            </Menu.Item>
+                            <Menu.Item key="/data/manager/access">
+                                <Link to="/data/manager/access">Access Management</Link>
                             </Menu.Item>
                             <Menu.Item key="/data/manager/files">
                                 <Link to="/data/manager/files">Files</Link>
@@ -60,6 +64,7 @@ class DataManagerContent extends Component {
         return (
             <Switch>
                 <Route exact path="/data/manager/projects" component={renderContent(ManagerProjectDatasetContent)} />
+                <Route exact path="/data/manager/access" component={renderContent(ManagerAccessContent)} />
                 <Route exact path="/data/manager/files" component={renderContent(ManagerFilesContent)} />
                 <Route exact path="/data/manager/ingestion" component={renderContent(ManagerIngestionContent)} />
                 <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsContent)} />
