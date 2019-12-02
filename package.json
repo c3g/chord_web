@@ -3,15 +3,6 @@
   "version": "0.1.0",
   "description": "CHORD web application front-end",
   "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "npx webpack --watch --mode development",
-    "build": "npx webpack --mode production",
-    "build-dev": "npx webpack --mode development"
-  },
-  "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
-  "license": "LGPL-3.0-only",
-  "repository": "github:c3g/chord_web",
   "dependencies": {
     "antd": "^3.25.3",
     "cross-fetch": "^3.0.4",
@@ -34,5 +25,21 @@
     "style-loader": "^1.0.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "npx webpack --watch --mode development",
+    "build": "npx webpack --mode production",
+    "build-dev": "npx webpack --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c3g/chord_web.git"
+  },
+  "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
+  "license": "LGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/c3g/chord_web/issues"
+  },
+  "homepage": "https://github.com/c3g/chord_web#readme"
 }
