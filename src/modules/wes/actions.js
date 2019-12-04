@@ -32,8 +32,11 @@ export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
     const state = getState();
 
     const needsUpdate = !state.runs.itemDetails.hasOwnProperty(runID)
-        || (!state.runs.itemDetails[runID].isFetching && (!state.runs.itemDetails[runID].details
-            || !RUN_DONE_STATES.includes(state.runs.itemDetails[runID].details.state)));
+        || (!state.runs.itemDetails[runID].isFetching && (
+            !state.runs.itemDetails[runID].details ||
+            (!RUN_DONE_STATES.includes(state.runs.itemDetails[runID].details.state) &&
+                state.runs.itemDetails[runID].details.run_log.exit_code === null &&
+                state.runs.itemDetails[runID].details.run_log.end_time === "")));
 
     if (needsUpdate) await dispatch(fetchRunDetails(runID));
 };
