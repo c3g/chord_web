@@ -1,3 +1,4 @@
+import io from "socket.io-client";
 import {objectWithoutProp} from "../../utils";
 
 import {
@@ -58,7 +59,9 @@ export const services = (
 
         dropBoxService: null,
         metadataService: null,
-        wesService: null
+        wesService: null,
+
+        eventRelayConnection: null
     },
     action
 ) => {
@@ -87,6 +90,19 @@ export const services = (
                 federationService: itemsByArtifact["federation"] || null,
                 metadataService: itemsByArtifact["metadata"] || null,
                 wesService: itemsByArtifact["wes"] || null,
+
+                eventRelayConnection: (() => {
+                    if (state.eventRelayConnection) return state.eventRelayConnection;
+
+                    const url = (itemsByArtifact["event-relay"] || {url: null}).url || null;
+                    return url ? (() => {
+                        const sock = io("/", {
+                            path: url.replace(/https?:\/\/[^/]+/, "") + "/socket.io"
+                        });
+                        sock.on("message", msg => console.log(msg));
+                        return sock;
+                    })() : null;
+                })(),
 
                 lastUpdated: action.receivedAt
             };
