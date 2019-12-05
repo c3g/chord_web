@@ -99,7 +99,7 @@ export const services = (
                         const sock = io("/", {
                             path: url.replace(/https?:\/\/[^/]+/, "") + "/socket.io"
                         });
-                        sock.on("message", msg => console.log(msg));
+                        sock.on("events", msg => console.log(msg));
                         return sock;
                     })() : null;
                 })(),
