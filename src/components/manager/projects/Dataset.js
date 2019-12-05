@@ -100,7 +100,13 @@ class Dataset extends Component {
     render() {
         const tableListColumns = [
             {title: "ID", dataIndex: "table_id"},
-            {title: "Name", dataIndex: "name", render: n => (n ? n : NA_TEXT)},
+            {
+                title: "Name",
+                dataIndex: "name",
+                render: n => (n ? n : NA_TEXT),
+                defaultSortOrder: "ascend",
+                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
+            },
             {title: "Data Type", dataIndex: "data_type"},
             {
                 title: "actions",
