@@ -183,7 +183,8 @@ export const projectTables = (
                     ...Object.fromEntries(Object.entries(action.projectsByID).map(([projectID, project]) =>
                         [projectID, action.data.results.filter(t => project.datasets
                             .map(d => d.identifier)
-                            .includes(t.dataset))]))
+                            .includes(t.dataset))]
+                    ))
                 }
             };
 
