@@ -21,13 +21,17 @@ import {runs} from "./modules/wes/reducers";
 import {peers} from "./modules/peers/reducers";
 
 const rootReducer = combineReducers({
+    // Services module
     chordServices,
     services,
     serviceDataTypes,
     serviceTables,
     serviceWorkflows,
 
+    // Discovery module
     discovery,
+
+    // Metadata module
 
     projects,
     projectTables,
@@ -36,10 +40,14 @@ const rootReducer = combineReducers({
     biosamples,
     individuals,
 
+    // Manager module
     manager,
     dropBox,
+
+    // WES module
     runs,
 
+    // Peers module
     peers
 });
 
