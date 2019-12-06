@@ -20,6 +20,8 @@ import {
     LOADING_SERVICE_WORKFLOWS
 } from "./actions";
 
+import eventHandler from "../../events";
+
 
 export const chordServices = (
     state = {
@@ -93,15 +95,10 @@ export const services = (
 
                 eventRelayConnection: (() => {
                     if (state.eventRelayConnection) return state.eventRelayConnection;
-
                     const url = (itemsByArtifact["event-relay"] || {url: null}).url || null;
-                    return url ? (() => {
-                        const sock = io("/", {
-                            path: url.replace(/https?:\/\/[^/]+/, "") + "/socket.io"
-                        });
-                        sock.on("events", msg => console.log(msg));
-                        return sock;
-                    })() : null;
+                    return url ? (() => io("/", {
+                            path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
+                        }).on("events", eventHandler))() : null;
                 })(),
 
                 lastUpdated: action.receivedAt

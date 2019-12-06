@@ -18,6 +18,12 @@ export const fetchRuns = networkAction(() => (dispatch, getState) => ({
     err: "Error fetching WES runs"
 }));
 
+export const receiveRunDetails = (runID, data) => ({
+    type: FETCH_RUN_DETAILS.RECEIVE,
+    runID,
+    data
+});
+
 export const fetchRunDetails = networkAction(runID => (dispatch, getState) => ({
     types: FETCH_RUN_DETAILS,
     params: {runID},
