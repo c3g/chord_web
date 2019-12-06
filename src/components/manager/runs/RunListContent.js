@@ -11,6 +11,9 @@ import {fetchRunDetailsIfNeeded} from "../../../modules/wes/actions";
 import {RUN_TABLE_COLUMNS} from "./utils";
 
 
+const RUN_REFRESH_TIMEOUT = 5000;
+
+
 class RunListContent extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +22,7 @@ class RunListContent extends Component {
     }
 
     componentDidMount() {
-        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), 200);
+        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), RUN_REFRESH_TIMEOUT);
     }
 
     componentWillUnmount() {
@@ -28,7 +31,7 @@ class RunListContent extends Component {
 
     async refreshRuns() {
         await Promise.all(this.props.runs.map(r => this.props.fetchRunDetailsIfNeeded(r.run_id)));
-        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), 200);
+        this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), RUN_REFRESH_TIMEOUT);
     }
 
     // TODO: Loading for individual rows
