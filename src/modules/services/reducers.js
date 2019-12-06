@@ -61,6 +61,7 @@ export const services = (
 
         dropBoxService: null,
         metadataService: null,
+        notificationService: null,
         wesService: null,
 
         eventRelayConnection: null
@@ -90,6 +91,7 @@ export const services = (
 
                 dropBoxService: itemsByArtifact["drop-box"] || null,
                 federationService: itemsByArtifact["federation"] || null,
+                notificationService: itemsByArtifact["notification"] || null,
                 metadataService: itemsByArtifact["metadata"] || null,
                 wesService: itemsByArtifact["wes"] || null,
 

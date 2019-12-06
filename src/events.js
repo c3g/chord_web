@@ -1,7 +1,10 @@
 import {store} from "./index";
+
+import notificationEvents from "./modules/notifications/events";
 import wesEvents from "./modules/wes/events";
 
 const handlerSets = [
+    notificationEvents,
     wesEvents,
 ];
 
