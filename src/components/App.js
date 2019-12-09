@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 
 import {Layout} from "antd";
@@ -88,4 +89,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default connect()(App);
