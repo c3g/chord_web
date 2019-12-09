@@ -48,7 +48,8 @@ class NotificationDrawer extends Component {
                        visible={this.props.notificationDrawerVisible}
                        width="auto"
                        onClose={() => this.props.hideNotificationDrawer()}>
-            <List itemLayout="vertical" dataSource={[...this.props.notifications].sort(sortNotificationTimestamps)}
+            <List itemLayout="vertical"
+                  dataSource={this.props.notifications.filter(n => !n.read).sort(sortNotificationTimestamps)}
                   renderItem={n => (
                       <List.Item key={n.id} actions={[
                           ...this.getNotificationActions(n),
