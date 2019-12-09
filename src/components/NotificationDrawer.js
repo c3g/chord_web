@@ -7,7 +7,7 @@ import "antd/es/button/style/css";
 import "antd/es/drawer/style/css";
 import "antd/es/list/style/css";
 
-import {hideNotificationDrawer} from "../modules/notifications/actions";
+import {markNotificationAsRead, hideNotificationDrawer} from "../modules/notifications/actions";
 
 
 const NOTIFICATION_WES_RUN_COMPLETED = "wes_run_completed";
@@ -53,7 +53,8 @@ class NotificationDrawer extends Component {
                   renderItem={n => (
                       <List.Item key={n.id} actions={[
                           ...this.getNotificationActions(n),
-                          <Button type="link" icon="read" style={{padding: 0}}>Mark as Read</Button>
+                          <Button type="link" icon="read" style={{padding: 0}}
+                                  onClick={() => this.props.markNotificationAsRead(n.id)}>Mark as Read</Button>
                       ]}>
                           <List.Item.Meta title={n.title} description={n.description} style={{marginBottom: "8px"}} />
                           {n.timestamp.toLocaleString()}
@@ -70,6 +71,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
     hideNotificationDrawer: () => dispatch(hideNotificationDrawer())
 });
 
