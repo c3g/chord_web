@@ -47,7 +47,7 @@ class SiteHeader extends Component {
                             <span className="nav-text">Peers</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key="notifications" style={{float: "right"}}
+                    <Menu.Item key="/notifications" style={{float: "right"}}
                                onClick={() => this.props.dispatch(showNotificationDrawer())}>
                         <Badge dot count={this.props.unreadNotifications.length}>
                             <Icon type="bell" style={{marginRight: "0"}}/>

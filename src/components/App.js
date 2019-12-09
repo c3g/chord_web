@@ -13,6 +13,7 @@ import ServicesContent from "./ServicesContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
+import NotificationsContent from "./NotificationsContent";
 
 import {fetchPeers} from "../modules/peers/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../modules/services/actions";
@@ -64,6 +65,7 @@ class App extends Component {
                     <Route path="/data/discovery" component={this.renderContent(DataDiscoveryContent)} />
                     <Route path="/data/manager" component={this.renderContent(DataManagerContent)} />
                     <Route path="/peers" component={this.renderContent(PeersContent)} />
+                    <Route path="/notifications" component={this.renderContent(NotificationsContent)} />
                     <Redirect from="/" to="/services" />
                 </Switch>
             </main>
