@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="file://$PROJECT_DIR$" libraries="{chord_web/node_modules}" />
-    <file url="file://$PROJECT_DIR$/webpack.config.js" libraries="{chord_web/node_modules}" />
-    <file url="PROJECT" libraries="{@types/react-dom, @types/react-redux, @types/react-router-dom, @types/react-syntax-highlighter, @types/socket.io-client}" />
+    <file url="file://$PROJECT_DIR$/src" libraries="{@types/prop-types, @types/react, @types/react-dom, @types/react-redux, @types/react-router-dom, @types/react-syntax-highlighter}" />
+    <file url="PROJECT" libraries="{@types/react-router-dom}" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>
