@@ -49,10 +49,14 @@ class SiteHeader extends Component {
                     </Menu.Item>
                     <Menu.Item key="notifications" style={{float: "right"}}
                                onClick={() => this.props.dispatch(showNotificationDrawer())}>
-                        <Badge dot>
+                        <Badge dot count={this.props.unreadNotifications.length}>
                             <Icon type="bell" style={{marginRight: "0"}}/>
                         </Badge>
-                        <span className="nav-text" style={{marginLeft: "10px"}}>Notifications (5)</span>
+                        <span className="nav-text" style={{marginLeft: "10px"}}>Notifications
+                            {this.props.unreadNotifications.length > 0 ? (
+                                <span> ({this.props.unreadNotifications.length})</span>
+                            ) : null}
+                        </span>
                     </Menu.Item>
                 </Menu>
             </Layout.Header>
@@ -61,7 +65,7 @@ class SiteHeader extends Component {
 }
 
 const mapStateToProps = state => ({
-    notifications: state.notifications.items
+    unreadNotifications: state.notifications.items.map(n => !n.read)
 });
 
 export default withRouter(connect(mapStateToProps)(SiteHeader));
