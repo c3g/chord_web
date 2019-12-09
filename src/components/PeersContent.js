@@ -36,7 +36,7 @@ class PeersContent extends Component {
 
 const mapStateToProps = state => ({
     peers: state.peers.items.map(p => ({url: p})),
-    loadingPeers: state.peers.isFetching
+    loadingPeers: state.services.isFetchingAll || state.peers.isFetching
 });
 
 export default connect(mapStateToProps)(PeersContent);
