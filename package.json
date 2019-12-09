@@ -4,7 +4,7 @@
   "description": "CHORD web application front-end",
   "main": "src/index.js",
   "dependencies": {
-    "antd": "^3.26.0",
+    "antd": "^3.26.1",
     "cross-fetch": "^3.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
