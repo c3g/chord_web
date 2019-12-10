@@ -5,36 +5,29 @@ import PropTypes from "prop-types";
 import {
     Button,
     Card,
-    Col,
-    Collapse,
     Divider,
     Dropdown,
     Empty,
     Icon,
     Menu,
     Modal,
-    Row,
-    Spin,
-    Table,
     Tabs,
     Typography
 } from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
-import "antd/es/collapse/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/dropdown/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/modal/style/css";
-import "antd/es/spin/style/css";
-import "antd/es/table/style/css";
 import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
 import DiscoverySearchForm from "./DiscoverySearchForm";
+import SearchList from "./SearchList";
 // import SchemaTree from "../SchemaTree";
 
 import {
@@ -61,8 +54,6 @@ class DiscoverySearchContent extends Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSearchSelect = this.handleSearchSelect.bind(this);
-        this.renderSearches = this.renderSearches.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
         this.handleDatasetTermsClick = this.handleDatasetTermsClick.bind(this);
@@ -78,11 +69,6 @@ class DiscoverySearchContent extends Component {
 
     handleSubmit() {
         this.props.performFullSearchIfPossible();
-    }
-
-    handleSearchSelect(searchIndex) {
-        if (this.props.dataType === null) return;
-        this.props.selectSearch(parseInt(searchIndex, 10));
     }
 
     handleDatasetTermsClick(dataset) {
@@ -110,41 +96,6 @@ class DiscoverySearchContent extends Component {
         if (action !== "remove") return;
         const dataType = this.props.dataTypesByID[key];
         this.props.removeDataTypeQueryForm(dataType);
-    }
-
-    renderSearches() {
-        if (!this.props.searches || this.props.searches.length === 0) return (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
-        );
-
-        return (
-            <Collapse bordered={false}
-                      accordion={true}
-                      activeKey={(this.props.selectedSearch || 0).toString()}
-                      onChange={this.handleSearchSelect}>
-                {[...this.props.searches].reverse().map((s, i) => (
-                    <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
-                                    key={this.props.searches.length - i - 1}>
-                        <Table bordered={true} dataSource={s.results} rowKey="id">
-                            <Table.Column title="Dataset ID" dataIndex="id" />
-                            <Table.Column title="Title" dataIndex="name" />
-                            <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
-                                <Row type="flex">
-                                    <Col>
-                                        <Button type="link" onClick={() => this.handleDatasetTermsClick(dataset)}>
-                                            Show Data Use Terms
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button type="link">{/* TODO: Real actions */}Request Access</Button>
-                                    </Col>
-                                </Row>
-                            )} />
-                        </Table>
-                    </Collapse.Panel>
-                ))}
-            </Collapse>
-        );
     }
 
     render() {
@@ -210,7 +161,7 @@ class DiscoverySearchContent extends Component {
                 </Modal>
 
                 <Typography.Title level={3}>Results</Typography.Title>
-                <Spin spinning={this.props.searchLoading}>{this.renderSearches()}</Spin>
+                <SearchList />
             </>
         );
     }
@@ -224,8 +175,6 @@ DiscoverySearchContent.propTypes = {
     serviceInfo: PropTypes.object,
     dataTypesLoading: PropTypes.bool,
     modalShown: PropTypes.bool,
-    searches: PropTypes.array,
-    selectedSearch: PropTypes.number,
     searchLoading: PropTypes.bool,
     formValues: PropTypes.object,
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
@@ -251,9 +200,6 @@ const mapStateToProps = state => ({
         || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
 
     schemaModalShown: state.discovery.schemaModalShown,
-
-    searches: state.discovery.searches,
-    selectedSearch: state.discovery.selectedSearch,
 
     searchLoading: state.discovery.isFetching,
 
