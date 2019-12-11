@@ -147,7 +147,8 @@ class Dataset extends Component {
                         <Col span={12}>
                             <Spin spinning={this.props.loadingTables}>
                                 {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
-                                <Statistic title="Tables" value={this.state.tables.length + 1} />
+                                <Statistic title="Tables"
+                                           value={this.props.loadingTables ? "—" : this.state.tables.length + 1} />
                             </Spin>
                         </Col>
                     </Row>
