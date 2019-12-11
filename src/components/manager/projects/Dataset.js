@@ -51,7 +51,8 @@ class Dataset extends Component {
 
             additionModalVisible: false,
             deletionModalVisible: false,
-            selectedTable: null
+            selectedTab: "overview",
+            selectedTable: null,
         };
 
         this.handleAdditionClick = this.handleAdditionClick.bind(this);
@@ -130,8 +131,80 @@ class Dataset extends Component {
             }
         ];
 
+        const tabContents = {
+            overview: (
+                <>
+                    {this.state.description.length > 0 ? (
+                        <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
+                    ) : null}
+                </>
+            ),
+            individuals: (
+                <>
+                    <Typography.Title level={4}>Individuals and Pools</Typography.Title>
+                    <Typography.Paragraph>
+                        Individuals can potentially be shared across many datasets.
+                    </Typography.Paragraph>
+
+                    <Table bordered
+                           style={{marginBottom: "1rem"}}
+                           dataSource={this.props.individuals.map(i => ({
+                               ...i,
+                               sex: i.sex || "UNKNOWN_SEX",
+                               n_of_biosamples: (i.biosamples || []).length
+                           }))}
+                           rowKey="id"
+                           loading={this.props.loadingIndividuals}
+                           columns={[
+                               {title: "Individual ID", dataIndex: "id"},
+                               {title: "Date of Birth", dataIndex: "date_of_birth"},
+                               {title: "Sex", dataIndex: "sex"},
+                               {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples
+                           ]}
+                           expandedRowRender={i => {
+                               return <div>
+                                   <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
+                                          rowKey="id"
+                                          dataSource={i.biosamples || []} />
+                               </div>;
+                           }}
+                    />
+                </>
+            ),
+            tables: (
+                <>
+                    <Typography.Title level={4}>
+                        Tables
+                        <div style={{float: "right"}}>
+                            {(this.props.strayTables || []).length > 0 ? (
+                                <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
+                                    Adopt Stray Tables ({this.props.strayTables.length})
+                                </Button>
+                            ) : null}
+                            <Button icon="plus" style={{verticalAlign: "top"}} type="primary"
+                                    onClick={() => this.handleAdditionClick()}>
+                                Add Table
+                            </Button>
+                        </div>
+                    </Typography.Title>
+                    <Table bordered
+                           dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
+                           rowKey="table_id"
+                           expandedRowRender={() => (<span>TODO: List of files</span>)}
+                           columns={tableListColumns}
+                           loading={this.props.loadingTables} />
+                </>
+            ),
+            data_use: <DataUseDisplay dataUse={this.state.data_use} />
+        };
+
         return (
-            <Card key={this.state.identifier} title={this.state.title} extra={<>
+            <Card key={this.state.identifier} title={this.state.title} tabList={[
+                {key: "overview", tab: "Overview"},
+                {key: "individuals", tab: "Individuals and Pools"},
+                {key: "tables", tab: "Data Tables"},
+                {key: "data_use", tab: "Consent Codes and Data Use"},
+            ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={<>
                 <Button icon="import" style={{marginRight: "24px"}}
                         onClick={() => this.onTableIngest(this.props.project, {
                             // Map dataset to metadata table  TODO: Remove all these hacks
@@ -155,62 +228,7 @@ class Dataset extends Component {
                                     onSubmit={() => this.handleTableDeletionSubmit()}
                                     onCancel={() => this.handleTableDeletionCancel()} />
 
-                {this.state.description.length > 0 ? (
-                    <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
-                ) : null}
-
-                <Typography.Title level={4}>Data Use</Typography.Title>
-                <DataUseDisplay dataUse={this.state.data_use} />
-
-                <Typography.Title level={4}>Individuals and Pools</Typography.Title>
-                <Typography.Paragraph>
-                    Individuals can potentially be shared across many datasets.
-                </Typography.Paragraph>
-
-                <Table bordered
-                       style={{marginBottom: "1rem"}}
-                       dataSource={this.props.individuals.map(i => ({
-                           ...i,
-                           sex: i.sex || "UNKNOWN_SEX",
-                           n_of_biosamples: (i.biosamples || []).length
-                       }))}
-                       rowKey="id"
-                       loading={this.props.loadingIndividuals}
-                       columns={[
-                           {title: "Individual ID", dataIndex: "id"},
-                           {title: "Date of Birth", dataIndex: "date_of_birth"},
-                           {title: "Sex", dataIndex: "sex"},
-                           {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples
-                       ]}
-                       expandedRowRender={i => {
-                           return <div>
-                               <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
-                                         rowKey="id"
-                                         dataSource={i.biosamples || []} />
-                           </div>;
-                       }}
-                />
-
-                <Typography.Title level={4}>
-                    Tables
-                    <div style={{float: "right"}}>
-                        {(this.props.strayTables || []).length > 0 ? (
-                            <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
-                                Adopt Stray Tables ({this.props.strayTables.length})
-                            </Button>
-                        ) : null}
-                        <Button icon="plus" style={{verticalAlign: "top"}} type="primary"
-                                onClick={() => this.handleAdditionClick()}>
-                            Add Table
-                        </Button>
-                    </div>
-                </Typography.Title>
-                <Table bordered
-                       dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
-                       rowKey="table_id"
-                       expandedRowRender={() => (<span>TODO: List of files</span>)}
-                       columns={tableListColumns}
-                       loading={this.props.loadingTables} />
+                {tabContents[this.state.selectedTab]}
             </Card>
         );
     }
