@@ -23,14 +23,16 @@ const CLOSE_WIDTH = 50;
 
 const getInputStyle = (valueWidth, div=1) => ({width: `calc(${100 / div}% - ${valueWidth / div}px)`});
 
+const toStringOrNull = x => x === null ? null : x.toString();
+
 const getSchemaTypeTransformer = type => {
     switch (type) {
         case "integer":
-            return [s => parseInt(s, 10), i => i.toString()];
+            return [s => parseInt(s, 10), toStringOrNull];
         case "number":
-            return [s => parseFloat(s), f => f.toString()];
+            return [s => parseFloat(s), toStringOrNull];
         case "boolean":
-            return [s => s === "true", b => b.toString()];
+            return [s => s === "true", toStringOrNull];
         case "null":
             return  [() => null, () => "null"];
         default:
