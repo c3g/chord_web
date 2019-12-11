@@ -34,23 +34,7 @@ class NotificationsContent extends Component {
 }
 
 const mapStateToProps = state => ({
-    notifications: [...state.notifications.items, ...[{
-        id: 1,
-        title: "WES Run Completed",
-        description: "WES run '{str(run_id)}' completed successfully",
-        notification_type: "wes_run_completed",
-        action_target: "69698eff-551b-4486-82c1-c256d5f73a14",
-        read: false,
-        timestamp: new Date(Date.parse("2019-12-09T15:53:12.053590+00:00"))
-    }, {
-        id: 2,
-        title: "WES Run Completed",
-        description: "WES run '{str(run_id)}' completed successfully",
-        notification_type: "wes_run_completed",
-        action_target: "69698eff-551b-4486-82c1-c256d5f73a14",
-        read: false,
-        timestamp: new Date(Date.parse("2019-12-09T15:55:12.053590+00:00"))
-    }]]
+    notifications: state.notifications.items
 });
 
 const mapDispatchToProps = dispatch => ({
