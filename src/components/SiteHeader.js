@@ -65,7 +65,7 @@ class SiteHeader extends Component {
 }
 
 const mapStateToProps = state => ({
-    unreadNotifications: state.notifications.items.map(n => !n.read)
+    unreadNotifications: state.notifications.items.filter(n => !n.read)
 });
 
 export default withRouter(connect(mapStateToProps)(SiteHeader));
