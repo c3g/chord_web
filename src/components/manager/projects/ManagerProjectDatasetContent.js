@@ -138,7 +138,7 @@ class ManagerProjectDatasetContent extends Component {
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
                                              onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
-                                             onTableIngest={(p, d) => this.ingestIntoTable(p, d)} />
+                                             onTableIngest={(p, t) => this.ingestIntoTable(p, t)} />
                                 ) : (
                                     this.props.loadingProjects ? (
                                         <Skeleton title={{width: 300}}
