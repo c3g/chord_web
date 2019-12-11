@@ -101,6 +101,7 @@ export default class DataUseInput extends Component {
                                     display: "inline-block",
                                     verticalAlign: "top",
                                     paddingTop: "2px",
+                                    paddingRight: "16px",
                                     whiteSpace: "normal"
                                 }}>
                                     <List.Item.Meta title={PRIMARY_CONSENT_CODE_INFO[pcc].title}
