@@ -2,11 +2,12 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Row, Statistic, Table, Typography} from "antd";
+import {Button, Card, Col, Row, Spin, Statistic, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
 import "antd/es/row/style/css";
+import "antd/es/spin/style/css";
 import "antd/es/statistic/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
@@ -144,8 +145,10 @@ class Dataset extends Component {
                                        value={(new Date(Date.parse(this.state.created))).toLocaleString()} />
                         </Col>
                         <Col span={12}>
-                            {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
-                            <Statistic title="Tables" value={this.state.tables.length + 1} />
+                            <Spin spinning={this.props.loadingTables}>
+                                {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
+                                <Statistic title="Tables" value={this.state.tables.length + 1} />
+                            </Spin>
                         </Col>
                     </Row>
                 </>
