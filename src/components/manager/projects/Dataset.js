@@ -132,7 +132,12 @@ class Dataset extends Component {
 
         return (
             <Card key={this.state.identifier} title={this.state.title} extra={<>
-                <Button icon="import" style={{marginRight: "24px"}}>
+                <Button icon="import" style={{marginRight: "24px"}}
+                        onClick={() => this.onTableIngest(this.props.project, {
+                            // Map dataset to metadata table  TODO: Remove all these hacks
+                            id: this.state.identifier,
+                            data_type: "phenopacket",  // TODO: Remove hard-coding...
+                        })}>
                     Ingest Metadata
                 </Button>
                 <Button icon="edit" style={{marginRight: "10px"}}>Edit</Button>
