@@ -2,11 +2,12 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Row, Table, Typography} from "antd";
+import {Button, Card, Col, Row, Statistic, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
 import "antd/es/row/style/css";
+import "antd/es/statistic/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
@@ -137,6 +138,16 @@ class Dataset extends Component {
                     {this.state.description.length > 0 ? (
                         <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
                     ) : null}
+                    <Row gutter={16} style={{maxWidth: "720px"}}>
+                        <Col span={12}>
+                            <Statistic title="Created"
+                                       value={(new Date(Date.parse(this.state.created))).toLocaleString()} />
+                        </Col>
+                        <Col span={12}>
+                            {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
+                            <Statistic title="Tables" value={this.state.tables.length + 1} />
+                        </Col>
+                    </Row>
                 </>
             ),
             individuals: (
