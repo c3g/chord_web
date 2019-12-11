@@ -130,14 +130,12 @@ class Project extends Component {
                                  value={{
                                      ...d,
                                      tables: this.props.tables,  // TODO: Filter / transform?
-                                     loadingTables: this.props.loadingTables
                                  }}
                                  strayTables={this.props.strayTables}
-                                 individuals={this.props.individuals
-                                     .filter(i => i.phenopackets.map(p => p.dataset)
-                                         .includes(d.identifier))}
+                                 individuals={this.props.individuals.filter(i =>
+                                     i.phenopackets.map(p => p.dataset).includes(d.identifier))}
                                  loadingIndividuals={this.props.loadingIndividuals}
-                                 loadingTables={this.props.identifier}
+                                 loadingTables={this.props.loadingTables}
                                  onTableIngest={this.onTableIngest} />
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
