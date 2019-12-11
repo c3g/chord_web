@@ -78,7 +78,7 @@ const createProject = networkAction(project => (dispatch, getState) => ({
     },
     err: "Error creating project",
     afterAction: data => async dispatch => await dispatch(selectProjectIfItExists(data.id)),
-    onSuccess: data => message.success(`Project '${data.name}' created!`)
+    onSuccess: data => message.success(`Project '${data.title}' created!`)
 }));
 
 export const createProjectIfPossible = project => async (dispatch, getState) => {
