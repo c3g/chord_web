@@ -34,8 +34,13 @@ const _networkAction = (fn, ...args) =>
             const response = await fetch(url, req);
 
             if (response.ok) {
-                const data = await response.json();
-                await dispatch({type: types.RECEIVE, ...params, data, receivedAt: Date.now()});
+                const data = response.status === 204 ? null : await response.json();
+                await dispatch({
+                    type: types.RECEIVE,
+                    ...params,
+                    ...(data === null ? {} : {data}),
+                    receivedAt: Date.now()
+                });
                 if (afterAction) await dispatch(afterAction(data));
                 if (onSuccess) onSuccess(data);
             } else {
