@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Redirect, Route, Switch} from "react-router-dom";
+import {withRouter, Redirect, Route, Switch} from "react-router-dom";
+
+import io from "socket.io-client";
 
 import {Layout} from "antd";
 
@@ -28,10 +30,13 @@ import {
 } from "../modules/metadata/actions";
 import {fetchNotifications} from "../modules/notifications/actions";
 
+import eventHandler from "../events";
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.renderContent = this.renderContent.bind(this);
+        this.eventRelayConnection = null;
     }
 
     renderContent(Content) {
@@ -75,6 +80,14 @@ class App extends Component {
     async componentDidMount() {
         await this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
 
+        this.eventRelayConnection = (() => {
+            if (this.eventRelayConnection) return this.eventRelayConnection;
+            const url = (this.props.eventRelay || {url: null}).url || null;
+            return url ? (() => io("/", {
+                path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
+            }).on("events", message => eventHandler(message, this.props.history)))() : null;
+        })();
+
         await Promise.all([
             this.props.dispatch(fetchPeers()),
             this.props.dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
@@ -91,4 +104,4 @@ class App extends Component {
     }
 }
 
-export default connect()(App);
+export default withRouter(connect(state => ({eventRelay: state.services.eventRelay}))(App));

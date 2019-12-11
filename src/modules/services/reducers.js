@@ -64,8 +64,6 @@ export const services = (
         metadataService: null,
         notificationService: null,
         wesService: null,
-
-        eventRelayConnection: null
     },
     action
 ) => {
@@ -96,14 +94,6 @@ export const services = (
                 notificationService: itemsByArtifact["notification"] || null,
                 metadataService: itemsByArtifact["metadata"] || null,
                 wesService: itemsByArtifact["wes"] || null,
-
-                eventRelayConnection: (() => {
-                    if (state.eventRelayConnection) return state.eventRelayConnection;
-                    const url = (itemsByArtifact["event-relay"] || {url: null}).url || null;
-                    return url ? (() => io("/", {
-                            path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
-                        }).on("events", eventHandler))() : null;
-                })(),
 
                 lastUpdated: action.receivedAt
             };

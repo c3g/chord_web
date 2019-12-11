@@ -1,6 +1,7 @@
 import {
     SHOW_NOTIFICATION_DRAWER,
     HIDE_NOTIFICATION_DRAWER,
+    ADD_NOTIFICATION,
     FETCH_NOTIFICATIONS,
     MARK_NOTIFICATION_AS_READ,
 } from "./actions";
@@ -18,6 +19,16 @@ export const notifications = (
     switch (action.type) {
         case FETCH_NOTIFICATIONS.REQUEST:
             return {...state, isFetching: true};
+
+        case ADD_NOTIFICATION:
+            return {
+                ...state,
+                items: [...state.items, action.data],
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.data.id]: action.data
+                }
+            };
 
         case FETCH_NOTIFICATIONS.RECEIVE:
             return {

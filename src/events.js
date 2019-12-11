@@ -9,13 +9,13 @@ const handlerSets = [
 ];
 
 // Global message handler
-export default async message => {
+export default async (message, history) => {
     const handlers = handlerSets
         .flatMap(Object.entries)
         .filter(([p, _]) => message.channel.match(new RegExp(p)) !== null)
         .map(([_, h]) => h);
 
     for (const handler of handlers) {
-        await store.dispatch(handler(message));
+        await store.dispatch(handler(message, history));
     }
 }

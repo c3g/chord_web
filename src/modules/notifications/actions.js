@@ -6,6 +6,13 @@ export const HIDE_NOTIFICATION_DRAWER = "HIDE_NOTIFICATION_DRAWER";
 export const showNotificationDrawer = basicAction(SHOW_NOTIFICATION_DRAWER);
 export const hideNotificationDrawer = basicAction(HIDE_NOTIFICATION_DRAWER);
 
+export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
+
+export const addNotification = data => () => ({
+    type: ADD_NOTIFICATION,
+    data
+});
+
 export const FETCH_NOTIFICATIONS = createNetworkActionTypes("FETCH_NOTIFICATIONS");
 
 export const MARK_NOTIFICATION_AS_READ = createNetworkActionTypes("MARK_NOTIFICATION_AS_READ");

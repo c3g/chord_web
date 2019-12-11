@@ -8,7 +8,7 @@ import "antd/es/list/style/css";
 
 import {hideNotificationDrawer, markNotificationAsRead} from "../modules/notifications/actions";
 
-import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED} from "../notifications";
+import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../notifications";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
@@ -17,13 +17,7 @@ const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
 class NotificationList extends Component {
     constructor(props) {
         super(props);
-        this.navigateToWESRun = this.navigateToWESRun.bind(this);
         this.getNotificationActions = this.getNotificationActions.bind(this);
-    }
-
-    navigateToWESRun(target) {
-        this.props.hideNotificationDrawer();
-        this.props.history.push(`/data/manager/runs/${target}/request`);
     }
 
     getNotificationActions(notification) {
@@ -31,7 +25,7 @@ class NotificationList extends Component {
             case NOTIFICATION_WES_RUN_COMPLETED:
             case NOTIFICATION_WES_RUN_FAILED:
                 return [
-                    <Button onClick={() => this.navigateToWESRun(notification.action_target)}>
+                    <Button onClick={() => this.props.navigateToWESRun(notification.action_target, this.props.history)}>
                         Run Details
                     </Button>
                 ];
@@ -41,9 +35,14 @@ class NotificationList extends Component {
     };
 
     render() {
+        const processedNotifications = this.props.notifications.map(n => ({
+            ...n,
+            timestamp: new Date(Date.parse(n.timestamp))
+        })).sort(sortNotificationTimestamps);
+
         return (
             <List itemLayout="vertical"
-                  dataSource={this.props.notifications.sort(sortNotificationTimestamps)}
+                  dataSource={processedNotifications}
                   loading={this.props.fetchingNotifications}
                   renderItem={n => (
                       <List.Item key={n.id} actions={[
@@ -69,7 +68,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
-    hideNotificationDrawer: () => dispatch(hideNotificationDrawer())
+    hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
+    navigateToWESRun: async (target, history) => await navigateToWESRun(target, dispatch, history),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationList));
