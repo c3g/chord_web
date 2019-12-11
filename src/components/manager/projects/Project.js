@@ -1,15 +1,13 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Spin, Typography} from "antd";
+import {Button, Empty, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
-import "antd/es/spin/style/css";
 import "antd/es/typography/style/css";
 
 import Dataset from "./Dataset";
-import DataUseDisplay from "../../DataUseDisplay";
 import ProjectForm from "./ProjectForm";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
@@ -56,7 +54,6 @@ class Project extends Component {
             title: value.title || "",
             description: value.description || "",
             datasets: value.datasets || [],
-            data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE)
         }
     }
 
@@ -115,8 +112,6 @@ class Project extends Component {
                         <Typography.Paragraph style={{maxWidth: "600px"}}>
                             {this.state.description}
                         </Typography.Paragraph>
-                        <Typography.Title level={3}>Data Use</Typography.Title>
-                        <DataUseDisplay dataUse={this.state.data_use} />
                     </>
                 )}
 

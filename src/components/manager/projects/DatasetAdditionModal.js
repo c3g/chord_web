@@ -32,7 +32,8 @@ class DatasetAdditionModal extends Component {
                 return;
             }
 
-            await this.props.addProjectDataset(this.props.selectedProject, values.title, values.description);
+            await this.props.addProjectDataset(this.props.selectedProject, values.title, values.description,
+                values.data_use);
 
             await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -83,8 +84,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
-    addProjectDataset: async (project, title, description) =>
-        await dispatch(addProjectDataset(project, title, description)),
+    addProjectDataset: async (project, title, description, dataUse) =>
+        await dispatch(addProjectDataset(project, title, description, dataUse)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 

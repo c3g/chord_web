@@ -5,6 +5,11 @@ import {Form, Input} from "antd";
 import "antd/es/form/style/css";
 import "antd/es/input/style/css";
 
+import DataUseInput from "../../DataUseInput";
+
+import {INITIAL_DATA_USE_VALUE} from "../../../duo";
+import {simpleDeepCopy} from "../../../utils";
+
 
 class DatasetForm extends Component {
     render() {
@@ -21,6 +26,20 @@ class DatasetForm extends Component {
                         initialValue: (this.props.initialValue || {description: ""}).description || "",
                         rules: [{required: true}]
                     })(<Input.TextArea placeholder="This is a dataset" />)}
+                </Form.Item>
+                <Form.Item label="Consent Code and Data Use Requirements">
+                    {this.props.form.getFieldDecorator("data_use", {
+                        initialValue: ((this.props.initialValue ||
+                            {data_use: simpleDeepCopy(INITIAL_DATA_USE_VALUE)}).data_use ||
+                            simpleDeepCopy(INITIAL_DATA_USE_VALUE)),
+                        rules: [{required: true}, (rule, value, callback) => {
+                            if (!(value.consent_code || {}).primary_category) {
+                                callback(["Please specify one primary consent code"]);
+                                return;
+                            }
+                            callback([]);
+                        }]
+                    })(<DataUseInput />)}
                 </Form.Item>
             </Form>
         );

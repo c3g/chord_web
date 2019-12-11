@@ -125,7 +125,7 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, title, description) => (dispatch, getState) => ({
+export const addProjectDataset = networkAction((project, title, description, dataUse) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
     params: {projectID: project.identifier},
     url: `${getState().services.metadataService.url}/api/datasets`,
@@ -135,6 +135,7 @@ export const addProjectDataset = networkAction((project, title, description) => 
         body: JSON.stringify({
             title,
             description,
+            data_use: dataUse,
             project: project.identifier
         })
     },

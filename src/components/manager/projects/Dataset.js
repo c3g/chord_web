@@ -10,6 +10,7 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import DataUseDisplay from "../../DataUseDisplay";
 import TableAdditionModal from "./TableAdditionModal";
 import TableDeletionModal from "./TableDeletionModal";
 
@@ -19,7 +20,8 @@ import {
     fetchProjectsWithDatasetsAndTables
 } from "../../../modules/metadata/actions";
 
-import {projectPropTypesShape} from "../../../utils";
+import {INITIAL_DATA_USE_VALUE} from "../../../duo";
+import {simpleDeepCopy, projectPropTypesShape} from "../../../utils";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -44,6 +46,7 @@ class Dataset extends Component {
             identifier: value.identifier || null,
             title: value.title || "",
             description: value.description || "",
+            data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE),
             tables: value.tables || [],
 
             additionModalVisible: false,
@@ -151,6 +154,9 @@ class Dataset extends Component {
                     <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
                 ) : null}
 
+                <Typography.Title level={4}>Data Use</Typography.Title>
+                <DataUseDisplay dataUse={this.state.data_use} />
+
                 <Typography.Title level={4}>Individuals and Pools</Typography.Title>
                 <Typography.Paragraph>
                     Individuals can potentially be shared across many datasets.
@@ -230,8 +236,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, datasetName) =>
-        await dispatch(addProjectTable(projectID, datasetID, serviceID, dataTypeID, datasetName)),
+    addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, tableName) =>
+        await dispatch(addProjectTable(projectID, datasetID, serviceID, dataTypeID, tableName)),
     deleteProjectTable: async (projectID, table) => await dispatch(deleteProjectTableIfPossible(projectID, table)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
