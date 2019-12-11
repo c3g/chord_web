@@ -43,6 +43,7 @@ class DatasetAdditionModal extends Component {
     render() {
         return this.props.selectedProject ? (
             <Modal visible={this.props.showDatasetAdditionModal}
+                   width={648}
                    title={`Add Dataset to "${this.props.selectedProject.title}"`}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
