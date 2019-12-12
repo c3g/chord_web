@@ -63,7 +63,7 @@ class NotificationList extends Component {
 
 
 const mapStateToProps = state => ({
-    fetchingNotifications: state.notifications.isFetching
+    fetchingNotifications: state.services.isFetchingAll || state.notifications.isFetching
 });
 
 const mapDispatchToProps = dispatch => ({
