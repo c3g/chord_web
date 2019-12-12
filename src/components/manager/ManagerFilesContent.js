@@ -173,7 +173,6 @@ class ManagerFilesContent extends Component {
                                            style={a11yLight} customStyle={{fontSize: "12px"}} showLineNumbers={true}>
                             {this.state.fileContents[selectedFile]}
                         </SyntaxHighlighter>
-                        {/*<pre>{this.state.fileContents[this.state.selectedFiles[0] || null] || ""}</pre>*/}
                     </Modal>
                     <div style={{marginBottom: "1em"}}>
                         <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
