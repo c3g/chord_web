@@ -159,6 +159,7 @@ class ManagerFilesContent extends Component {
             Object.keys(LANGUAGE_HIGHLIGHTERS).filter(e => this.state.selectedFiles[0].endsWith(e)).length > 0;
 
         const selectedFile = selectedFileViewable ? this.state.selectedFiles[0] : "";
+        const selectedFileType = selectedFile.split(".").slice(-1)[0];
 
         return (
             <Layout>
@@ -168,7 +169,7 @@ class ManagerFilesContent extends Component {
                            width={800}
                            footer={null}
                            onCancel={this.hideFileContentsModal}>
-                        <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFile.split(".").slice(-1)[0]}`]}
+                        <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFileType}`]}
                                            style={a11yLight} customStyle={{fontSize: "12px"}} showLineNumbers={true}>
                             {this.state.fileContents[selectedFile]}
                         </SyntaxHighlighter>
