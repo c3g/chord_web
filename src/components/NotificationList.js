@@ -40,9 +40,16 @@ class NotificationList extends Component {
             timestamp: new Date(Date.parse(n.timestamp))
         })).sort(sortNotificationTimestamps);
 
+        const small = this.props.small || false;
+
         return (
             <List itemLayout="vertical"
                   dataSource={processedNotifications}
+                  pagination={{
+                      hideOnSinglePage: small,
+                      pageSize: small ? 5 : 10,
+                      size: small ? "small" : ""
+                  }}
                   loading={this.props.fetchingNotifications}
                   renderItem={n => (
                       <List.Item key={n.id} actions={[

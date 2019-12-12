@@ -28,7 +28,7 @@ class NotificationDrawer extends Component {
                        visible={this.props.notificationDrawerVisible}
                        width="auto"
                        onClose={() => this.props.hideNotificationDrawer()}>
-            <NotificationList notifications={this.props.notifications.filter(n => !n.read)} />
+            <NotificationList small={true} notifications={this.props.notifications.filter(n => !n.read)} />
               <Divider />
               <Button type="link" style={{width: "100%"}} onClick={this.seeAllNotifications}>
                   See Read Notifications</Button>
