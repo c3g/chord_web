@@ -127,7 +127,7 @@ class ManagerFilesContent extends Component {
                     let workflowSupported = true;
                     let files = [...this.state.selectedFiles];
 
-                    for (let i of w.inputs.filter(i => i.type === "file")) {
+                    for (let i of w.inputs.filter(i => i.type.startsWith("file"))) {
                         // Find files where 1+ of the valid extensions (e.g. jpeg or jpg) match.
                         const compatibleFiles = files.filter(f => !!i.extensions.find(e => f.endsWith(e)));
                         if (compatibleFiles.length === 0) {

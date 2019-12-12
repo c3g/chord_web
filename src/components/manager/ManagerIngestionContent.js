@@ -231,7 +231,10 @@ class ManagerIngestionContent extends Component {
                             <Table size="small" bordered={true} showHeader={false} pagination={false} columns={[
                                 {title: "ID", dataIndex: "id", render: iID =>
                                         <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>},
-                                {title: "Value", dataIndex: "value"}
+                                {title: "Value", dataIndex: "value", render: value =>
+                                        value instanceof Array
+                                            ? <>{value.map(v => <div key={v.toString()}>{v.toString()}</div>)}</>
+                                            : value.toString()}
                             ]} rowKey="id" dataSource={this.state.selectedWorkflow.inputs.map(i =>
                                 ({id: i.id, value: this.state.inputs[i.id]}))} />
                         </Form.Item>

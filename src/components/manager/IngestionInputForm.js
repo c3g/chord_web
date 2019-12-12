@@ -43,8 +43,10 @@ class IngestionInputForm extends Component {
     getInputComponent(input) {
         switch (input.type) {
             case "file":
+            case "file[]":
+                // TODO: What about non-unique files?
                 return (
-                    <TreeSelect showSearch={true} treeDefaultExpandAll={true}>
+                    <TreeSelect showSearch={true} treeDefaultExpandAll={true} multiple={input.type === "file[]"}>
                         <TreeSelect.TreeNode title="chord_drop_box" key="root">
                             {generateFileTree(
                                 this.props.tree,
@@ -56,6 +58,7 @@ class IngestionInputForm extends Component {
                 );
 
             case "enum":
+                // TODO: enum[]
                 return (
                     <Select>
                         {input.values.map(v => <Select.Option key={v}>{v}</Select.Option>)}
@@ -64,6 +67,8 @@ class IngestionInputForm extends Component {
 
             case "number":
                 return <Input type="number" />;
+
+            // TODO: string[], enum[], number[]
 
             default:
                 return <Input />;

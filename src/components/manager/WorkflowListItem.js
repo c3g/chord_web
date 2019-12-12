@@ -29,8 +29,8 @@ const TYPE_TAG_DISPLAY = {
 };
 
 const ioTagWithType = (key, ioType, content) => (
-    <Tag key={key} color={TYPE_TAG_DISPLAY[ioType].color}>
-        <Icon type={TYPE_TAG_DISPLAY[ioType].icon} /> {content}
+    <Tag key={key} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color}>
+        <Icon type={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].icon} /> {content}
     </Tag>
 );
 
@@ -44,21 +44,24 @@ class WorkflowListItem extends Component {
         const typeTags = this.props.workflow.data_types.map(dt => <Tag key={dt}>{dt}</Tag>);
 
         const inputs = this.props.workflow.inputs.map(i =>
-            ioTagWithType(i.id, i.type, i.type === "file" ? i.extensions.join(" / ") : i.id));
+            ioTagWithType(i.id, i.type, (i.type.startsWith("file") ? i.extensions.join(" / ") : i.id)
+                + (i.type.endsWith("[]") ? " array" : "")));
 
-        const inputExtensions = {};
-        this.props.workflow.inputs.forEach(i => {
-            if (i.type !== "file") return;
-            inputExtensions[i.id] = i.extensions[0];  // TODO: What to do with more than one?
-        });
+        const inputExtensions = Object.fromEntries(this.props.workflow.inputs
+            .filter(i => i.type.startsWith("file"))
+            .map(i => [i.id, i.extensions[0]]));  // TODO: What to do with more than one?
 
         const outputs = this.props.workflow.outputs.map(o => {
             let formattedOutput = o.value;
 
-            [...o.value.matchAll(/{(.*)}/)].forEach(([_, id]) =>
-                formattedOutput = formattedOutput.replace(`{${id}}`, inputExtensions[id]));
+            [...o.value.matchAll(/{(.*)}/)].forEach(([_, id]) => {
+                formattedOutput = formattedOutput.replace(`{${id}}`, {
+                    ...inputExtensions,
+                    "": o.hasOwnProperty("map_from_input") ? inputExtensions[o.map_from_input] : undefined
+                }[id]);
+            });
 
-            return ioTagWithType(o.id, o.type, formattedOutput);
+            return ioTagWithType(o.id, o.type, formattedOutput + (o.type.endsWith("[]") ? " array" : ""));
         });
 
         return (
