@@ -136,7 +136,10 @@ class ManagerFilesContent extends Component {
                             break;
                         }
 
-                        files = files.filter(f => f !== compatibleFiles[0]);  // Steal the first compatible file
+                        // Steal the first compatible file, or all if it's an array
+                        files = files.filter(f => i.type.endsWith("[]")
+                            ? !compatibleFiles.includes(f)
+                            : f !== compatibleFiles[0]);
                     }
 
                     if (files.length > 0) {
