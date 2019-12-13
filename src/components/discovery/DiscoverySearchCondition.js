@@ -84,10 +84,12 @@ class DiscoverySearchCondition extends Component {
 
     handleField(value, key="field", fieldSchemaKey="fieldSchema") {
         if (this.state[key] === value.selected) return;
+        const fieldOperations = (value.schema.search || {}).operations || [];
         this.handleChange({
             [key]: value.selected,
             [fieldSchemaKey]: value.schema,
-            searchValue: ""  // Clear search value if the field changes
+            searchValue: "",  // Clear search value if the field changes
+            operation: fieldOperations.includes(this.state.operation) ? this.state.operation : fieldOperations[0]
         });
     }
 
