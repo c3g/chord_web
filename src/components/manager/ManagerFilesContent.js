@@ -44,7 +44,8 @@ import {
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
-const generateFileTree = directory => directory.map(entry =>
+const sortByName = (a, b) => a.name.localeCompare(b.name);
+const generateFileTree = directory => [...directory].sort(sortByName).map(entry =>
     <Tree.TreeNode title={entry.name} key={entry.path} isLeaf={!entry.hasOwnProperty("contents")}>
         {(entry || {contents: []}).contents ? generateFileTree(entry.contents) : null}
     </Tree.TreeNode>);

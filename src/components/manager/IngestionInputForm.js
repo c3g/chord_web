@@ -16,7 +16,8 @@ import {
 } from "./ingestion";
 
 
-const generateFileTree = (directory, valid) => directory.map(entry =>
+const sortByName = (a, b) => a.name.localeCompare(b.name);
+const generateFileTree = (directory, valid) => [...directory].sort(sortByName).map(entry =>
     <TreeSelect.TreeNode title={entry.name} key={entry.path} value={entry.path} disabled={!valid(entry)}
                          isLeaf={!entry.hasOwnProperty("contents")}
                          selectable={!entry.hasOwnProperty("contents")}>
