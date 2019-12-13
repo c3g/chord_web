@@ -185,10 +185,12 @@ class ManagerFilesContent extends Component {
                         </Dropdown.Button>
                         <Button icon="file-text" onClick={this.handleViewFile} style={{marginRight: "12px"}}
                                 disabled={!selectedFileViewable}>View</Button>
-                        <Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>
-                            Delete
-                        </Button>
-                        <Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>
+                        {/* TODO: Implement */}
+                        {/*<Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>*/}
+                        {/*    Delete*/}
+                        {/*</Button>*/}
+                        {/* TODO: Implement */}
+                        {/*<Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>*/}
                     </div>
                     <Spin spinning={this.props.treeLoading}>
                         <Tree.DirectoryTree defaultExpandAll={true} multiple={true} onSelect={this.handleSelect}
