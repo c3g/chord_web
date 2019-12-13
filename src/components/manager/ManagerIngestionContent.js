@@ -233,7 +233,7 @@ class ManagerIngestionContent extends Component {
                                         <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>},
                                 {title: "Value", dataIndex: "value", render: value =>
                                         value instanceof Array
-                                            ? <>{value.map(v => <div key={v.toString()}>{v.toString()}</div>)}</>
+                                            ? <ul>{value.map(v => <li key={v.toString()}>{v.toString()}</li>)}</ul>
                                             : value.toString()}
                             ]} rowKey="id" dataSource={this.state.selectedWorkflow.inputs.map(i =>
                                 ({id: i.id, value: this.state.inputs[i.id]}))} />
