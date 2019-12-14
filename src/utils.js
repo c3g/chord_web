@@ -67,7 +67,7 @@ export const workflowPropTypesShape = PropTypes.shape({
     // "Real" properties
     name: PropTypes.string,
     description: PropTypes.string,
-    data_types: PropTypes.arrayOf(PropTypes.string),
+    data_type: PropTypes.string,
     inputs: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string,
         id: PropTypes.string,

@@ -41,7 +41,7 @@ class WorkflowListItem extends Component {
     }
 
     render() {
-        const typeTags = this.props.workflow.data_types.map(dt => <Tag key={dt}>{dt}</Tag>);
+        const typeTag = <Tag key={this.props.workflow.data_type}>{this.props.workflow.data_type}</Tag>;
 
         const inputs = this.props.workflow.inputs.map(i =>
             ioTagWithType(i.id, i.type, (i.type.startsWith("file") ? i.extensions.join(" / ") : i.id)
@@ -70,9 +70,9 @@ class WorkflowListItem extends Component {
                     title={
                         this.props.selectable
                             ? <a onClick={() => this.onClick()}>
-                                {typeTags} {this.props.workflow.name}
+                                {typeTag} {this.props.workflow.name}
                                 <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
-                            : <span>{typeTags} {this.props.workflow.name}</span>}
+                            : <span>{typeTag} {this.props.workflow.name}</span>}
                     description={this.props.workflow.description || ""} />
 
                 <div style={{marginBottom: "12px"}}>

@@ -37,6 +37,8 @@ class TableTreeSelect extends Component {
             ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[dataTypeID]
                 || {}).tablesByID || {})[tableID] || {}).name;
 
+        const dataType = this.props.dataType || null;
+
         const selectTreeData = this.props.projects.map(p => ({
             title: p.title,
             selectable: false,
@@ -49,41 +51,35 @@ class TableTreeSelect extends Component {
                 value: `dataset:${d.identifier}`,
                 children: [
                     // Add the dataset metadata table in manually -- it's not "owned" per se
+                    // TODO: Don't hard-code data type name here, fetch from serviceTables
                     {
-                        title: (
-                            <>
-                                {/*TODO: Don't hard-code data type name here, fetch from serviceTables*/}
-                                <Tag style={{marginRight: "1em"}}>phenopacket</Tag>
-                                {d.title} Metadata ({d.identifier})
-                            </>
-                        ),
-                        key: `${p.identifier}:phenopacket:${d.identifier}`,
-                        value: `${p.identifier}:phenopacket:${d.identifier}`
+                        title: `${d.title} Metadata (${d.identifier})`,
+                        data_type: "phenopacket",
+                        table_id: d.identifier,
                     },
                     ...(this.props.projectTables[p.identifier] || [])
                         .filter(t => t.dataset === d.identifier &&
-                            Object.keys(this.props.tablesByServiceAndDataTypeID).includes(t.service_id))
+                            this.props.tablesByServiceAndDataTypeID.hasOwnProperty(t.service_id))
                         .map(t => ({
-                            title: (
-                                <>
-                                    <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
-                                    {getTableName(t.service_id, t.data_type, t.table_id)
-                                        ? `${getTableName(
-                                            t.service_id, t.data_type, t.table_id)} (${t.table_id})`
-                                        : t.table_id}
-                                </>
-                            ),
-                            isLeaf: true,
-                            key: `${p.identifier}:${t.data_type}:${t.table_id}`,
-                            value: `${p.identifier}:${t.data_type}:${t.table_id}`
+                            ...t,
+                            title: getTableName(t.service_id, t.data_type, t.table_id)
+                                ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
+                                : t.table_id
                         }))
-                ]
+                ].map(t => ({
+                    title: (<><Tag style={{marginRight: "1em"}}>{t.data_type}</Tag> {t.title}</>),
+                    disabled: !(dataType === null || dataType === t.data_type),
+                    isLeaf: true,
+                    key: `${p.identifier}:${t.data_type}:${t.table_id}`,
+                    value: `${p.identifier}:${t.data_type}:${t.table_id}`
+                }))
             }))
         }));
 
         return (
             <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
-                <TreeSelect onChange={this.onChange}
+                <TreeSelect style={this.props.style || {}}
+                            onChange={this.onChange}
                             value={this.state.selected}
                             treeData={selectTreeData}
                             treeDefaultExpandAll={true}/>
@@ -93,10 +89,14 @@ class TableTreeSelect extends Component {
 }
 
 TableTreeSelect.propTypes = {
+    style: PropTypes.object,
+
+    dataType: PropTypes.string,
+    onChange: PropTypes.func,
+
     projects: PropTypes.array,
     projectTables: PropTypes.object,  // TODO: Shape
     tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
-    onChange: PropTypes.func,
 
     servicesLoading: PropTypes.bool,
     projectsLoading: PropTypes.bool,

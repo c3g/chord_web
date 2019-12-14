@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import fetch from "cross-fetch";
@@ -34,6 +35,7 @@ import "antd/es/modal/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/tree/style/css";
 
+
 import {
     dropBoxTreeStateToPropsMixin,
     dropBoxTreeStateToPropsMixinPropTypes,
@@ -43,6 +45,10 @@ import {
 } from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import TableSelectionModal from "./TableSelectionModal";
+
+import {STEP_INPUT} from "./ingestion";
+
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);
 const generateFileTree = directory => [...directory].sort(sortByName).map(entry =>
@@ -52,6 +58,7 @@ const generateFileTree = directory => [...directory].sort(sortByName).map(entry 
 
 const resourceLoadError = resource => `An error was encountered while loading ${resource}`;
 
+
 class ManagerFilesContent extends Component {
     constructor(props) {
         super(props);
@@ -59,12 +66,17 @@ class ManagerFilesContent extends Component {
         this.state = {
             selectedFiles: [],
             fileContents: {},
-            fileContentsModal: false
+            fileContentsModal: false,
+
+            selectedWorkflow: null,
+            tableSelectionModal: false,
         };
 
         this.handleSelect = this.handleSelect.bind(this);
         this.showFileContentsModal = this.showFileContentsModal.bind(this);
         this.hideFileContentsModal = this.hideFileContentsModal.bind(this);
+        this.hideTableSelectionModal = this.hideTableSelectionModal.bind(this);
+        this.ingestIntoTable = this.ingestIntoTable.bind(this);
         this.handleViewFile = this.handleViewFile.bind(this);
     }
 
@@ -78,6 +90,25 @@ class ManagerFilesContent extends Component {
 
     hideFileContentsModal() {
         this.setState({fileContentsModal: false});
+    }
+
+    showTableSelectionModal(workflow) {
+        this.setState({
+            selectedWorkflow: workflow,
+            tableSelectionModal: true,
+        });
+    }
+
+    hideTableSelectionModal() {
+        this.setState({tableSelectionModal: false});
+    }
+
+    ingestIntoTable(tableKey) {
+        this.props.history.push("/data/manager/ingestion", {
+            step: STEP_INPUT,
+            selectedTable: tableKey,
+            selectedWorkflow: this.state.selectedWorkflow
+        });
     }
 
     async handleViewFile() {  // TODO: Action-ify?
@@ -117,8 +148,7 @@ class ManagerFilesContent extends Component {
         // TODO: Loading for workflows...
         // TODO: Proper workflow keys
 
-        let oneWorkflowSupported = false;
-
+        const workflowsSupported = [];
         const workflowMenu = (
             <Menu>
                 {this.props.workflows.map(w => {
@@ -129,6 +159,9 @@ class ManagerFilesContent extends Component {
                     let files = [...this.state.selectedFiles];
 
                     for (let i of w.inputs.filter(i => i.type.startsWith("file"))) {
+                        // Find tables that support the data type
+                        // TODO
+
                         // Find files where 1+ of the valid extensions (e.g. jpeg or jpg) match.
                         const compatibleFiles = files.filter(f => !!i.extensions.find(e => f.endsWith(e)));
                         if (compatibleFiles.length === 0) {
@@ -148,10 +181,12 @@ class ManagerFilesContent extends Component {
                         workflowSupported = false;
                     }
 
-                    oneWorkflowSupported = oneWorkflowSupported || workflowSupported;
+                    if (workflowSupported) workflowsSupported.push(w);
 
                     return (
-                        <Menu.Item key={w.id} disabled={!workflowSupported}>
+                        <Menu.Item key={w.id}
+                                   disabled={!workflowSupported}
+                                   onClick={() => this.showTableSelectionModal(w)}>
                             Ingest with Workflow "{w.name}"
                         </Menu.Item>
                     );
@@ -168,6 +203,13 @@ class ManagerFilesContent extends Component {
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                    <TableSelectionModal
+                        dataType={(this.state.selectedWorkflow || {}).data_type || null}
+                        visible={this.state.tableSelectionModal}
+                        title={"Select a Table to Ingest Into"}
+                        onCancel={this.hideTableSelectionModal}
+                        onOk={this.ingestIntoTable}
+                    />
                     <Modal visible={this.state.fileContentsModal}
                            title={selectedFile}
                            width={800}
@@ -180,7 +222,12 @@ class ManagerFilesContent extends Component {
                     </Modal>
                     <div style={{marginBottom: "1em"}}>
                         <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
-                                         disabled={this.state.selectedFiles.length === 0 || !oneWorkflowSupported}>
+                                         disabled={this.state.selectedFiles.length === 0
+                                            || workflowsSupported.length === 0}
+                                         onClick={() => {
+                                             if (workflowsSupported.length !== 1) return;
+                                             this.showTableSelectionModal(workflowsSupported[0])
+                                         }}>
                             <Icon type="import" /> Ingest
                         </Dropdown.Button>
                         <Button icon="file-text" onClick={this.handleViewFile} style={{marginRight: "12px"}}
@@ -218,4 +265,4 @@ const mapStateToProps = state => ({
     ...workflowsStateToPropsMixin(state)
 });
 
-export default connect(mapStateToProps)(ManagerFilesContent);
+export default withRouter(connect(mapStateToProps)(ManagerFilesContent));

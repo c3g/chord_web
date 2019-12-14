@@ -33,16 +33,16 @@ import {
 import {
     FORM_LABEL_COL,
     FORM_WRAPPER_COL,
-    FORM_BUTTON_COL
+    FORM_BUTTON_COL,
+
+    STEP_WORKFLOW_SELECTION,
+    STEP_INPUT,
+    STEP_CONFIRM,
 } from "./ingestion";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
 import TableTreeSelect from "./TableTreeSelect";
-
-const STEP_WORKFLOW_SELECTION = 0;
-const STEP_INPUT = 1;
-const STEP_CONFIRM = 2;
 
 class ManagerIngestionContent extends Component {
     constructor(props) {
@@ -60,7 +60,9 @@ class ManagerIngestionContent extends Component {
 
         this.state = {
             ...simpleDeepCopy(this.initialState),
-            selectedTable: (this.props.location.state || {}).selectedTable || this.initialState.selectedTable
+            step: (this.props.location.state || {}).step || this.initialState.step,
+            selectedTable: (this.props.location.state || {}).selectedTable || this.initialState.selectedTable,
+            selectedWorkflow: (this.props.location.state || {}).selectedWorkflow || this.initialState.selectedWorkflow,
         };
 
         this.handleStepChange = this.handleStepChange.bind(this);
@@ -115,7 +117,7 @@ class ManagerIngestionContent extends Component {
         switch (this.state.step) {
             case STEP_WORKFLOW_SELECTION:
                 const workflows = this.props.workflows
-                    .filter(w => w.data_types.includes(this.state.selectedTable
+                    .filter(w => w.data_type === (this.state.selectedTable
                         ? this.state.selectedTable.split(":")[1] : null))
                     .map(w => (
                         <List.Item key={w.id}>
@@ -157,7 +159,7 @@ class ManagerIngestionContent extends Component {
                 const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
                 const projectTitle = (this.props.projectsByID[projectID] || {title: null}).title || null;
                 const tableName = getTableName(this.state.selectedWorkflow.serviceID,
-                    this.state.selectedWorkflow.data_types[0], tableID);
+                    this.state.selectedWorkflow.data_type, tableID);
 
                 return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
