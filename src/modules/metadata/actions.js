@@ -36,8 +36,8 @@ export const FETCH_BIOSAMPLES = createNetworkActionTypes("FETCH_BIOSAMPLES");
 export const FETCH_INDIVIDUALS = createNetworkActionTypes("FETCH_INDIVIDUALS");
 
 
-const endProjectTableAddition = (projectID, table) => ({type: PROJECT_TABLE_ADDITION.END, projectID, table});
-const endProjectTableDeletion = (projectID, tableID) => ({type: PROJECT_TABLE_DELETION.END, projectID, tableID});
+const endProjectTableAddition = (project, table) => ({type: PROJECT_TABLE_ADDITION.END, project, table});
+const endProjectTableDeletion = (project, tableID) => ({type: PROJECT_TABLE_DELETION.END, project, tableID});
 
 
 export const fetchProjects = networkAction(() => (dispatch, getState) => ({
@@ -87,18 +87,18 @@ export const createProjectIfPossible = project => async (dispatch, getState) => 
     await dispatch(createProject(project));
 };
 
-export const deleteProject = networkAction(projectID => (dispatch, getState) => ({
+export const deleteProject = networkAction(project => (dispatch, getState) => ({
     types: DELETE_PROJECT,
-    params: {projectID},
-    url: `${getState().services.metadataService.url}/api/projects/${projectID}`,
+    params: {project},
+    url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
     req: {method: "DELETE"},
-    err: `Error deleting project '${projectID}'`,  // TODO: More user-friendly error
+    err: `Error deleting project '${project.title}'`,  // TODO: More user-friendly error
     onSuccess: () => message.success("Project deleted!")  // TODO: More user-friendly error
 }));  // TODO: Fix project selection afterwards
 
-export const deleteProjectIfPossible = projectID => async (dispatch, getState) => {
+export const deleteProjectIfPossible = project => async (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
-    await dispatch(deleteProject(projectID));
+    await dispatch(deleteProject(project));
 
     // TODO: Do we need to delete project tables as well? What to do here??
 };
@@ -106,7 +106,6 @@ export const deleteProjectIfPossible = projectID => async (dispatch, getState) =
 
 const saveProject = networkAction(project => (dispatch, getState) => ({
     types: SAVE_PROJECT,
-    params: {projectID: project.identifier},
     url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
     req: {
         method: "POST",
@@ -125,19 +124,13 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, title, description, dataUse) => (dispatch, getState) => ({
+export const addProjectDataset = networkAction((project, dataset) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
-    params: {projectID: project.identifier},
     url: `${getState().services.metadataService.url}/api/datasets`,
     req: {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            title,
-            description,
-            data_use: dataUse,
-            project: project.identifier
-        })
+        body: JSON.stringify({...dataset, project: project.identifier})
     },
     err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
@@ -145,7 +138,7 @@ export const addProjectDataset = networkAction((project, title, description, dat
 }));
 
 
-export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tableName) =>
+export const addProjectTable = (project, datasetID, serviceInfo, dataType, tableName) =>
     async (dispatch, getState) => {
         if (getState().projectTables.isAdding) return;
 
@@ -207,7 +200,7 @@ export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tab
                 const projectTable = await projectResponse.json();
                 message.success("Table added!");  // TODO: Nicer GUI success message
                 await dispatch(endAddingServiceTable(serviceInfo, dataType, serviceTable));
-                await dispatch(endProjectTableAddition(projectID, projectTable));  // TODO: Check params here
+                await dispatch(endProjectTableAddition(project, projectTable));  // TODO: Check params here
             } catch (e) {
                 // TODO: Delete previously-created service dataset
                 console.error(e);
@@ -220,7 +213,7 @@ export const addProjectTable = (projectID, datasetID, serviceInfo, dataType, tab
     };
 
 
-const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
+const deleteProjectTable = (project, table) => async (dispatch, getState) => {
     await dispatch(beginFlow(PROJECT_TABLE_DELETION));
     await dispatch(beginFlow(DELETING_SERVICE_TABLE));
 
@@ -271,12 +264,12 @@ const deleteProjectTable = (projectID, table) => async (dispatch, getState) => {
     message.success("Table deleted!");  // TODO: Nicer GUI success message
 
     await dispatch(endDeletingServiceTable(serviceInfo.id, table.table_id));  // TODO: Check params here
-    await dispatch(endProjectTableDeletion(projectID, table.table_id));  // TODO: Check params here
+    await dispatch(endProjectTableDeletion(project, table.table_id));  // TODO: Check params here
 };
 
-export const deleteProjectTableIfPossible = (projectID, table) => async (dispatch, getState) => {
+export const deleteProjectTableIfPossible = (project, table) => async (dispatch, getState) => {
     if (getState().projectTables.isDeleting) return;
-    await dispatch(deleteProjectTable(projectID, table));
+    await dispatch(deleteProjectTable(project, table));
 };
 
 

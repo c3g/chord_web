@@ -25,7 +25,7 @@ class ProjectDeletionModal extends Component {
     }
 
     async handleDeleteSubmit() {
-        await this.props.deleteProject(this.props.selectedProject.identifier);
+        await this.props.deleteProject(this.props.selectedProject);
 
         // TODO: Only close modal if deletion was a success
         this.props.toggleProjectDeletionModal();
@@ -69,7 +69,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    deleteProject: async projectID => await dispatch(deleteProjectIfPossible(projectID)),
+    deleteProject: async project => await dispatch(deleteProjectIfPossible(project)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectDeletionModal);

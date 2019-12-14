@@ -32,9 +32,7 @@ class DatasetAdditionModal extends Component {
                 return;
             }
 
-            await this.props.addProjectDataset(this.props.selectedProject, values.title, values.description,
-                values.data_use);
-
+            await this.props.addProjectDataset(this.props.selectedProject, values);
             await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
             this.props.toggleProjectDatasetAdditionModal();
@@ -49,7 +47,7 @@ class DatasetAdditionModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
-                               loading={this.props.projectTablesAdding || this.props.projectTablesFetching}>
+                               loading={this.props.projectsFetching  || this.props.projectDatasetsAdding}>
                            Add
                        </Button>
                    ]}
@@ -60,25 +58,28 @@ class DatasetAdditionModal extends Component {
     }
 }
 DatasetAdditionModal.propTypes = {
-    showDatasetAdditionModal: PropTypes.bool,
-    toggleProjectTableAdditionModal: PropTypes.func,
+    // From state
 
+    showDatasetAdditionModal: PropTypes.bool,
+
+    projectsFetching: PropTypes.bool,
     projectDatasetsAdding: PropTypes.bool,
-    projectTablesFetching: PropTypes.bool,
 
     selectedProject: projectPropTypesShape,
-    selectedProjectID: PropTypes.string,
 
-    addProjectDataset: PropTypes.func
+    // From dispatch
+
+    toggleProjectDatasetAdditionModal: PropTypes.func,
+    addProjectDataset: PropTypes.func,
+    fetchProjectsWithDatasetsAndTables: PropTypes.func
 };
 
 const mapStateToProps = state => ({
     showDatasetAdditionModal: state.manager.projectDatasetAdditionModal,
 
+    projectsFetching: state.projects.isFetching,
     projectDatasetsAdding: state.projects.isAddingDataset,
-    projectTablesFetching: state.projectTables.isFetching,
 
-    selectedProjectID: state.manager.selectedProjectID,
     selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
 });
 

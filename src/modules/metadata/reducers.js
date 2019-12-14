@@ -74,9 +74,9 @@ export const projects = (
             return {
                 ...state,
                 isDeleting: false,
-                items: state.items.filter(p => p.identifier !== action.projectID),
-                itemsByID: Object.fromEntries(Object.entries(objectWithoutProp(state.itemsByID, action.projectID))
-                    .filter(([projectID, _]) => projectID !== action.projectID))
+                items: state.items.filter(p => p.identifier !== action.project.identifier),
+                itemsByID: Object.fromEntries(Object.entries(objectWithoutProp(state.itemsByID,
+                    action.project.identifier)).filter(([projectID, _]) => projectID !== action.project.identifier))
             };
 
         case DELETE_PROJECT.ERROR:
@@ -156,8 +156,8 @@ export const projectTables = (
         case DELETE_PROJECT.RECEIVE:
             return {
                 ...state,
-                items: state.items.filter(t => t.project_id !== action.projectID),
-                itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.projectID)
+                items: state.items.filter(t => t.project_id !== action.project.identifier),
+                itemsByProjectID: objectWithoutProp(state.itemsByProjectID, action.project.identifier)
             };
 
         case FETCH_PROJECT_TABLES.REQUEST:
@@ -202,7 +202,8 @@ export const projectTables = (
                 items: [...state.items, action.table],
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
-                    [action.projectID]: [...(state.itemsByProjectID[action.projectID] || []), action.table]
+                    [action.project.identifier]: [...(state.itemsByProjectID[action.project.identifier] || []),
+                        action.table]
                 }
             };
 
@@ -219,7 +220,7 @@ export const projectTables = (
                 items: state.items.filter(t => t.table_id !== action.tableID),
                 itemsByProjectID: {
                     ...state.itemsByProjectID,
-                    [action.projectID]: (state.itemsByProjectID[action.projectID] || [])
+                    [action.project.identifier]: (state.itemsByProjectID[action.project.identifier] || [])
                         .filter(t => t.id !== action.tableID)
                 }
             };

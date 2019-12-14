@@ -78,7 +78,7 @@ class Dataset extends Component {
     async handleAdditionSubmit(values) {
         const [serviceArtifact, dataTypeID] = values.dataType.split(":");
         const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
-        await this.props.addProjectTable(this.props.project.identifier, this.state.identifier, serviceInfo, dataTypeID,
+        await this.props.addProjectTable(this.props.project, this.state.identifier, serviceInfo, dataTypeID,
             values.name);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
@@ -96,7 +96,7 @@ class Dataset extends Component {
 
     async handleTableDeletionSubmit() {
         if (this.state.selectedTable === null) return;
-        await this.props.deleteProjectTable(this.props.project.identifier, this.state.selectedTable);
+        await this.props.deleteProjectTable(this.props.project, this.state.selectedTable);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -274,9 +274,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addProjectTable: async (projectID, datasetID, serviceID, dataTypeID, tableName) =>
-        await dispatch(addProjectTable(projectID, datasetID, serviceID, dataTypeID, tableName)),
-    deleteProjectTable: async (projectID, table) => await dispatch(deleteProjectTableIfPossible(projectID, table)),
+    addProjectTable: async (project, datasetID, serviceID, dataTypeID, tableName) =>
+        await dispatch(addProjectTable(project, datasetID, serviceID, dataTypeID, tableName)),
+    deleteProjectTable: async (project, table) => await dispatch(deleteProjectTableIfPossible(project, table)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
