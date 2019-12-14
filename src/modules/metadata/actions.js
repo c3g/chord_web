@@ -134,7 +134,7 @@ export const addProjectDataset = networkAction((project, dataset) => (dispatch, 
     },
     err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
-    onSuccess: () => message.success(`Added dataset '${title}' to project ${project.title}!`)
+    onSuccess: () => message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
 }));
 
 

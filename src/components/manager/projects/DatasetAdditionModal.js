@@ -85,8 +85,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
-    addProjectDataset: async (project, title, description, dataUse) =>
-        await dispatch(addProjectDataset(project, title, description, dataUse)),
+    addProjectDataset: async (project, dataset) => await dispatch(addProjectDataset(project, dataset)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
