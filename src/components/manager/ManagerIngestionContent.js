@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Form, Layout, List, Skeleton, Spin, Steps, Table, Tag, TreeSelect} from "antd";
+import {Button, Empty, Form, Layout, List, Skeleton, Spin, Steps, Table, Tag} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
@@ -15,7 +15,6 @@ import "antd/es/spin/style/css";
 import "antd/es/steps/style/css";
 import "antd/es/table/style/css";
 import "antd/es/tag/style/css";
-import "antd/es/tree-select/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
@@ -39,6 +38,7 @@ import {
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
+import TableTreeSelect from "./TableTreeSelect";
 
 const STEP_WORKFLOW_SELECTION = 0;
 const STEP_INPUT = 1;
@@ -114,52 +114,6 @@ class ManagerIngestionContent extends Component {
 
         switch (this.state.step) {
             case STEP_WORKFLOW_SELECTION:
-                // TODO: Loading projects
-
-                const selectTreeData = this.props.projects.map(p => ({
-                    title: p.title,
-                    selectable: false,
-                    key: `project:${p.identifier}`,
-                    value: `project:${p.identifier}`,
-                    children: p.datasets.map(d => ({
-                        title: d.title,
-                        selectable: false,
-                        key: `dataset:${d.identifier}`,
-                        value: `dataset:${d.identifier}`,
-                        children: [
-                            // Add the dataset metadata table in manually -- it's not "owned" per se
-                            {
-                                title: (
-                                    <>
-                                        {/*TODO: Don't hard-code data type name here, fetch from serviceTables*/}
-                                        <Tag style={{marginRight: "1em"}}>phenopacket</Tag>
-                                        {d.title} Metadata ({d.identifier})
-                                    </>
-                                ),
-                                key: `${p.identifier}:phenopacket:${d.identifier}`,
-                                value: `${p.identifier}:phenopacket:${d.identifier}`
-                            },
-                            ...(this.props.projectTables[p.identifier] || [])
-                                .filter(t => t.dataset === d.identifier &&
-                                    Object.keys(this.props.tablesByServiceAndDataTypeID).includes(t.service_id))
-                                .map(t => ({
-                                    title: (
-                                        <>
-                                            <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
-                                            {getTableName(t.service_id, t.data_type, t.table_id)
-                                                ? `${getTableName(
-                                                    t.service_id, t.data_type, t.table_id)} (${t.table_id})`
-                                                : t.table_id}
-                                        </>
-                                    ),
-                                    isLeaf: true,
-                                    key: `${p.identifier}:${t.data_type}:${t.table_id}`,
-                                    value: `${p.identifier}:${t.data_type}:${t.table_id}`
-                                }))
-                        ]
-                    }))
-                }));
-
                 const workflows = this.props.workflows
                     .filter(w => w.data_types.includes(this.state.selectedTable
                         ? this.state.selectedTable.split(":")[1] : null))
@@ -173,12 +127,8 @@ class ManagerIngestionContent extends Component {
                 return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
                         <Form.Item label="Table">
-                            <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
-                                <TreeSelect onChange={table => this.setState({selectedTable: table})}
-                                            loading={true}
-                                            value={this.state.selectedTable} treeData={selectTreeData}
-                                            treeDefaultExpandAll={true} />
-                            </Spin>
+                            <TableTreeSelect onChange={table => this.setState({selectedTable: table})}
+                                             value={this.state.selectedTable} />
                         </Form.Item>
                         <Form.Item label="Workflows">
                             {this.state.selectedTable
@@ -280,30 +230,19 @@ class ManagerIngestionContent extends Component {
 ManagerIngestionContent.propTypes = {
     ...dropBoxTreeStateToPropsMixinPropTypes,
     ...workflowsStateToPropsMixinPropTypes,
-    projects: PropTypes.array,
+    servicesByID: PropTypes.object, // TODO: Shape
     projectsByID: PropTypes.object,  // TODO: Shape
-    projectTables: PropTypes.object,  // TODO: Shape
     tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
     isSubmittingIngestionRun: PropTypes.bool,
-
-    projectsLoading: PropTypes.bool,
-
-    servicesByID: PropTypes.object, // TODO: Shape
 };
 
 const mapStateToProps = state => ({
     ...dropBoxTreeStateToPropsMixin(state),
     ...workflowsStateToPropsMixin(state),
-    projects: state.projects.items,
+    servicesByID: state.services.itemsByID,
     projectsByID: state.projects.itemsByID,
-    projectTables: state.projectTables.itemsByProjectID,
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,
-
-    projectsLoading: state.projects.isFetching,
-
-    servicesLoading: state.services.isFetchingAll,
-    servicesByID: state.services.itemsByID,
 });
 
 const mapDispatchToProps = dispatch => ({
