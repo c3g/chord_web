@@ -17,6 +17,7 @@ import {
     beginFlow,
     terminateFlow,
 } from "../../utils/actions";
+import {objectWithoutProps} from "../../utils";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
@@ -27,6 +28,7 @@ export const DELETE_PROJECT = createNetworkActionTypes("DELETE_PROJECT");
 export const SAVE_PROJECT = createNetworkActionTypes("SAVE_PROJECT");
 
 export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET");
+export const SAVE_PROJECT_DATASET = createNetworkActionTypes("SAVE_PROJECT_DATASET");
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
@@ -135,6 +137,19 @@ export const addProjectDataset = networkAction((project, dataset) => (dispatch, 
     err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
     onSuccess: () => message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
+}));
+
+export const saveProjectDataset = networkAction(dataset => (dispatch, getState) => ({
+    types: SAVE_PROJECT_DATASET,
+    url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+    req: {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        // Filter out read-only props
+        body: JSON.stringify(objectWithoutProps(dataset, ["identifier", "created", "updated"]))
+    },
+    err: `Error saving dataset '${dataset.title}'`,
+    onSuccess: () => message.success(`Saved dataset '${dataset.title}'`)
 }));
 
 

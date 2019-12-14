@@ -9,12 +9,13 @@ import {
     SAVE_PROJECT,
 
     ADD_PROJECT_DATASET,
+    SAVE_PROJECT_DATASET,
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
 
     FETCH_PHENOPACKETS,
     FETCH_BIOSAMPLES,
-    FETCH_INDIVIDUALS
+    FETCH_INDIVIDUALS,
 } from "./actions";
 
 
@@ -28,6 +29,7 @@ export const projects = (
         isDeleting: false,
         isSaving: false,
         isAddingDataset: false,
+        isSavingDataset: false,
         items: [],
         itemsByID: {}
     },
@@ -109,7 +111,6 @@ export const projects = (
             return {
                 ...state,
                 isAddingDataset: false,
-                // TODO: Consistent ordering
                 items: state.items.map(p => p.identifier === action.data.project
                     ? {...p, datasets: [...p.datasets, action.data]}
                     : p
@@ -118,11 +119,35 @@ export const projects = (
                     ...state.itemsByID,
                     [action.data.project]: {
                         ...(state.itemsByID[action.data.project] || {}),
-                        // TODO: Consistent ordering
                         datasets: [...((state.itemsByID[action.data.project] || {}).datasets || []), action.data]
                     }
                 }
             };
+
+
+        case SAVE_PROJECT_DATASET.REQUEST:
+            return {...state, isSavingDataset: true};
+
+        case SAVE_PROJECT_DATASET.RECEIVE:
+            const replaceDataset = d => d.identifier === action.data.identifier ? action.data : d;
+            return {
+                ...state,
+                isSavingDataset: false,
+                items: state.items.map(p => p.identifier === action.data.project
+                    ? {...p, datasets: p.datasets.map(replaceDataset)}
+                    : p
+                ),
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.data.project]: {
+                        ...(state.itemsByID[action.data.project] || {}),
+                        datasets: ((state.itemsByID[action.data.project] || {}).datasets || []).map(replaceDataset)
+                    }
+                }
+            };
+
+        case SAVE_PROJECT_DATASET.ERROR:
+            return {...state, isSavingDataset: false};
 
 
         default:

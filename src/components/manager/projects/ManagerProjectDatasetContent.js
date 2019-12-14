@@ -16,7 +16,7 @@ import "antd/es/typography/style/css";
 import Project from "./Project";
 import ProjectCreationModal from "./ProjectCreationModal";
 import ProjectDeletionModal from "./ProjectDeletionModal";
-import DatasetAdditionModal from "./DatasetAdditionModal";
+import DatasetFormModal from "./DatasetFormModal";
 
 import {
     beginProjectEditing,
@@ -38,9 +38,21 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 
 
 class ManagerProjectDatasetContent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            datasetAdditionModal: false,
+            datasetEditModal: false,
+            selectedDataset: null
+        }
+    }
+
     componentDidMount() {
         this.selectProjectIfNeeded = this.selectProjectIfNeeded.bind(this);
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
+
+        this.hideDatasetAdditionModal = this.hideDatasetAdditionModal.bind(this);
+        this.hideDatasetEditModal = this.hideDatasetEditModal.bind(this);
 
         this.selectProjectIfNeeded();
     }
@@ -64,6 +76,14 @@ class ManagerProjectDatasetContent extends Component {
         this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
     }
 
+    hideDatasetAdditionModal() {
+        this.setState({datasetAdditionModal: false});
+    }
+
+    hideDatasetEditModal() {
+        this.setState({datasetEditModal: false});
+    }
+
     render() {
         const projectMenuItems = this.props.projects.map(project => (
             <Menu.Item key={project.identifier}>{project.title}</Menu.Item>
@@ -73,7 +93,17 @@ class ManagerProjectDatasetContent extends Component {
             <>
                 <ProjectCreationModal />
                 <ProjectDeletionModal />
-                <DatasetAdditionModal />
+
+                <DatasetFormModal mode="add"
+                                  visible={this.state.datasetAdditionModal}
+                                  onCancel={this.hideDatasetAdditionModal}
+                                  onOk={this.hideDatasetAdditionModal} />
+
+                <DatasetFormModal mode="edit"
+                                  visible={this.state.datasetEditModal}
+                                  initialValue={this.state.selectedDataset}
+                                  onCancel={this.hideDatasetEditModal}
+                                  onOk={this.hideDatasetEditModal} />
 
                 <Layout>
                     {(!this.props.loadingProjects && projectMenuItems.length === 0) ? (
@@ -138,6 +168,12 @@ class ManagerProjectDatasetContent extends Component {
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
                                              onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
+                                             onEditDataset={dataset => {
+                                                 this.setState({
+                                                     selectedDataset: dataset,
+                                                     datasetEditModal: true
+                                                 })
+                                             }}
                                              onTableIngest={(p, t) => this.ingestIntoTable(p, t)} />
                                 ) : (
                                     this.props.loadingProjects ? (

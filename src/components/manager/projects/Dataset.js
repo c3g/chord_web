@@ -41,6 +41,7 @@ class Dataset extends Component {
     constructor(props) {
         super(props);
 
+        this.onEdit = props.onEdit || (() => {});
         this.onTableIngest = props.onTableIngest || (() => {});
 
         const value = props.value || {};
@@ -228,7 +229,7 @@ class Dataset extends Component {
                         })}>
                     Ingest Metadata
                 </Button>
-                <Button icon="edit" style={{marginRight: "10px"}}>Edit</Button>
+                <Button icon="edit" style={{marginRight: "10px"}} onClick={this.onEdit}>Edit</Button>
                 <Button type="danger" icon="delete">Delete</Button>
                 {/* TODO: Share button */}
             </>}>
@@ -264,6 +265,7 @@ Dataset.propTypes = {
     loadingIndividuals: PropTypes.bool,
     loadingTables: PropTypes.bool,
 
+    onEdit: PropTypes.func,
     onTableIngest: PropTypes.func,
 
     serviceInfoByArtifact: PropTypes.object

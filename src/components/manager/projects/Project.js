@@ -40,6 +40,7 @@ class Project extends Component {
         this._onCancelEdit = props.onCancelEdit || nop;
         this._onSave = props.onSave || nop;
         this.onAddDataset = props.onAddDataset || nop;
+        this.onEditDataset = props.onEditDataset || nop;
 
         this.onTableIngest = props.onTableIngest || nop;
 
@@ -118,7 +119,7 @@ class Project extends Component {
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={() => this.onAddDataset()}>
+                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={this.onAddDataset}>
                             Add Dataset
                         </Button>
                     </div>
@@ -136,10 +137,11 @@ class Project extends Component {
                                      i.phenopackets.map(p => p.dataset).includes(d.identifier))}
                                  loadingIndividuals={this.props.loadingIndividuals}
                                  loadingTables={this.props.loadingTables}
-                                 onTableIngest={this.onTableIngest} />
+                                 onEdit={() => this.onEditDataset(d)}
+                                 onTableIngest={this.onTableIngest}  />
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
-                            <Button icon="plus" onClick={() => this.onAddDataset()}>Add Dataset</Button>
+                            <Button icon="plus" onClick={this.onAddDataset}>Add Dataset</Button>
                         </Empty>
                     )}
             </div>
@@ -165,6 +167,7 @@ Project.propTypes = {
     onCancelEdit: PropTypes.func,
     onSave: PropTypes.func,
     onAddDataset: PropTypes.func,
+    onEditDataset: PropTypes.func,
 
     onTableIngest: PropTypes.func
 };
