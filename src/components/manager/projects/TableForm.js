@@ -21,7 +21,7 @@ class TableForm extends Component {
                 <Form.Item label="Name">
                     {this.props.form.getFieldDecorator("name", {
                         initialValue: (this.props.initialValue || {name: ""}).name || "",
-                        rules: [{required: true}]
+                        rules: [{required: true}, {min: 3}]
                     })(<Input placeholder="My Variant Dataset" size="large" />)}
                 </Form.Item>
                 <Form.Item label="Data Type">
