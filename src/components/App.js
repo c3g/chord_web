@@ -55,7 +55,7 @@ class App extends Component {
                         Genomics</a>. <br/>
                         <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
                         the <a href="/LICENSE.txt">LGPLv3</a>. The source code is
-                        available <a href="https://github.com/c3g/chord_web">on BitBucket</a>.
+                        available <a href="https://github.com/c3g/chord_web">on GitHub</a>.
                     </Layout.Footer>
                 </Layout>
             </Layout>
