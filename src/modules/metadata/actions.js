@@ -108,7 +108,7 @@ const saveProject = networkAction(project => (dispatch, getState) => ({
     types: SAVE_PROJECT,
     url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
     req: {
-        method: "POST",
+        method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(project)
     },
