@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));
 
-export const objectWithoutProp = (o, p) => Object.fromEntries(Object.entries(o).filter(([p2, _]) => p2 !== p));
+export const objectWithoutProps =(o, ps) => Object.fromEntries(Object.entries(o)
+    .filter(([p2], _) => !ps.includes(p2)));
+export const objectWithoutProp = (o, p) => objectWithoutProps(o, [p]);
 
 
 // Gives components which include this in their state to props connection access to the drop box and loading status.
