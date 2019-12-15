@@ -9,7 +9,6 @@ import "antd/es/modal/style/css";
 
 import DatasetForm from "./DatasetForm";
 
-import {toggleProjectDatasetAdditionModal} from "../../../modules/manager/actions";
 import {
     addProjectDataset,
     saveProjectDataset,
@@ -102,7 +101,6 @@ DatasetFormModal.propTypes = {
 
     // From dispatch
 
-    toggleProjectDatasetAdditionModal: PropTypes.func,
     addProjectDataset: PropTypes.func,
     saveProjectDataset: PropTypes.func,
     fetchProjectsWithDatasetsAndTables: PropTypes.func
@@ -117,7 +115,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
     addProjectDataset: async (project, dataset) => await dispatch(addProjectDataset(project, dataset)),
     saveProjectDataset: async dataset => await dispatch(saveProjectDataset(dataset)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())

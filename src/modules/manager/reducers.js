@@ -3,11 +3,10 @@ import {
 
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
-    TOGGLE_PROJECT_TABLE_ADDITION_MODAL,
 
     PROJECT_EDITING,
 
-    FETCH_DROP_BOX_TREE, TOGGLE_PROJECT_DATASET_ADDITION_MODAL
+    FETCH_DROP_BOX_TREE,
 } from "./actions";
 
 import {DELETE_PROJECT} from "../metadata/actions";
@@ -18,8 +17,6 @@ export const manager = (
         selectedProjectID: null,
         projectCreationModal: false,
         projectDeletionModal: false,
-        projectDatasetAdditionModal: false,
-        projectTableAdditionModal: false,
         editingProject: false
     },
     action
@@ -39,12 +36,6 @@ export const manager = (
 
         case TOGGLE_PROJECT_DELETION_MODAL:
             return {...state, projectDeletionModal: !state.projectDeletionModal};
-
-        case TOGGLE_PROJECT_DATASET_ADDITION_MODAL:
-            return {...state, projectDatasetAdditionModal: !state.projectDatasetAdditionModal};
-
-        case TOGGLE_PROJECT_TABLE_ADDITION_MODAL:
-            return {...state, projectTableAdditionModal: !state.projectTableAdditionModal};
 
         case PROJECT_EDITING.BEGIN:
             return {...state, editingProject: true};

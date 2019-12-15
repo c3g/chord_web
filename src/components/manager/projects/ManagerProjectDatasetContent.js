@@ -26,7 +26,6 @@ import {
 
     toggleProjectCreationModal,
     toggleProjectDeletionModal,
-    toggleProjectDatasetAdditionModal,
 } from "../../../modules/manager/actions";
 
 import {saveProjectIfPossible,} from "../../../modules/metadata/actions";
@@ -51,6 +50,7 @@ class ManagerProjectDatasetContent extends Component {
         this.selectProjectIfNeeded = this.selectProjectIfNeeded.bind(this);
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
 
+        this.showDatasetAdditionModal = this.showDatasetAdditionModal.bind(this);
         this.hideDatasetAdditionModal = this.hideDatasetAdditionModal.bind(this);
         this.hideDatasetEditModal = this.hideDatasetEditModal.bind(this);
 
@@ -74,6 +74,10 @@ class ManagerProjectDatasetContent extends Component {
 
     ingestIntoTable(p, t) {
         this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
+    }
+
+    showDatasetAdditionModal() {
+        this.setState({datasetAdditionModal: true});
     }
 
     hideDatasetAdditionModal() {
@@ -167,7 +171,7 @@ class ManagerProjectDatasetContent extends Component {
                                              onEdit={() => this.props.beginProjectEditing()}
                                              onCancelEdit={() => this.props.endProjectEditing()}
                                              onSave={project => this.handleProjectSave(project)}
-                                             onAddDataset={() => this.props.toggleProjectDatasetAdditionModal()}
+                                             onAddDataset={() => this.showDatasetAdditionModal()}
                                              onEditDataset={dataset => {
                                                  this.setState({
                                                      selectedDataset: dataset,
@@ -208,7 +212,6 @@ ManagerProjectDatasetContent.propTypes = {
 
     toggleProjectCreationModal: PropTypes.func,
     toggleProjectDeletionModal: PropTypes.func,
-    toggleProjectDatasetAdditionModal: PropTypes.func,
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
@@ -294,7 +297,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
     toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
-    toggleProjectDatasetAdditionModal: () => dispatch(toggleProjectDatasetAdditionModal()),
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     selectProject: projectID => dispatch(selectProjectIfItExists(projectID)),
