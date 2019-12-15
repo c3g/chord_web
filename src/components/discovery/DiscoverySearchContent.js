@@ -143,7 +143,8 @@ class DiscoverySearchContent extends Component {
                                          loading={this.props.searchLoading}
                                          onChange={fields => this.props.updateJoinForm(fields)} />
 
-                    <Button type="primary" icon="search" onClick={this.handleSubmit}>Search</Button>
+                    <Button type="primary" icon="search" loading={this.props.searchLoading}
+                            onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
                 {/*<Modal title={`${(this.props.dataType || {id: ""}).id} Schema`}*/}
