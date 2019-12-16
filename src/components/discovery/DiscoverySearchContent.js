@@ -10,7 +10,6 @@ import {
     Empty,
     Icon,
     Menu,
-    Modal,
     Tabs,
     Typography
 } from "antd";
@@ -21,11 +20,9 @@ import "antd/es/dropdown/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
-import "antd/es/modal/style/css";
 import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
 
-import DataUseDisplay from "../DataUseDisplay";
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SearchList from "./SearchList";
 // import SchemaTree from "../SchemaTree";
@@ -47,17 +44,9 @@ class DiscoverySearchContent extends Component {
     constructor(props) {
         super(props);
 
-        // TODO: Redux?
-        this.state = {
-            dataUseTermsModalShown: false,
-            dataset: null
-        };
-
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
-        this.handleDatasetTermsClick = this.handleDatasetTermsClick.bind(this);
-        this.handleDatasetTermsCancel = this.handleDatasetTermsCancel.bind(this);
 
         this.handleAddDataTypeQueryForm = this.handleAddDataTypeQueryForm.bind(this);
         this.handleTabsEdit = this.handleTabsEdit.bind(this);
@@ -69,17 +58,6 @@ class DiscoverySearchContent extends Component {
 
     handleSubmit() {
         this.props.performFullSearchIfPossible();
-    }
-
-    handleDatasetTermsClick(dataset) {
-        this.setState({
-            dataUseTermsModalShown: true,
-            dataset
-        });
-    }
-
-    handleDatasetTermsCancel() {
-        this.setState({dataUseTermsModalShown: false});
     }
 
     handleSchemaToggle() {
@@ -152,14 +130,6 @@ class DiscoverySearchContent extends Component {
                 {/*       onCancel={this.handleSchemaToggle} footer={null}>*/}
                 {/*    <SchemaTree schema={(this.props.dataType || {schema: {}}).schema} />*/}
                 {/*</Modal>*/}
-
-                <Modal title={`Dataset ${((this.state.dataset || {}).name || (this.state.dataset || {}).id || "")
-                    .substr(0, 18)}${((this.state.dataset || {}).name || "").length > 18 ? "…"
-                    : ""}: Data Use Terms`}
-                       visible={this.state.dataUseTermsModalShown}
-                       onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
-                    <DataUseDisplay dataUse={(this.state.dataset || {}).data_use} />
-                </Modal>
 
                 <Typography.Title level={3}>Results</Typography.Title>
                 <SearchList />
