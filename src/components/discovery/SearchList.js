@@ -77,9 +77,10 @@ class SearchList extends Component {
                                                     Show Data Use Terms
                                                 </Button>
                                             </Col>
-                                            <Col>
-                                                <Button type="link">{/* TODO: Real actions */}Request Access</Button>
-                                            </Col>
+                                            {/*<Col>*/}
+                                            {/*    <Button type="link">/!*
+                                            TODO: Real actions *!/Request Access</Button>*/}
+                                            {/*</Col>*/}
                                         </Row>
                                     )} />
                                 </Table>
