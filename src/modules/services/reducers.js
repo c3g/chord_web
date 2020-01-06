@@ -1,4 +1,3 @@
-import io from "socket.io-client";
 import {objectWithoutProp} from "../../utils";
 
 import {
@@ -19,8 +18,6 @@ import {
     FETCH_SERVICE_WORKFLOWS,
     LOADING_SERVICE_WORKFLOWS
 } from "./actions";
-
-import eventHandler from "../../events";
 
 
 export const chordServices = (
