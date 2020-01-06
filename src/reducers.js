@@ -1,5 +1,6 @@
 import {combineReducers} from "redux";
 
+import {auth} from "./modules/auth/reducers";
 import {
     chordServices,
     services,
@@ -22,6 +23,9 @@ import {runs} from "./modules/wes/reducers";
 import {peers} from "./modules/peers/reducers";
 
 const rootReducer = combineReducers({
+    // Auth module
+    auth,
+
     // Services module
     chordServices,
     services,

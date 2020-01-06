@@ -17,6 +17,7 @@ import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
 import NotificationsContent from "./NotificationsContent";
 
+import {fetchUser} from "../modules/auth/actions";
 import {fetchPeers} from "../modules/peers/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../modules/services/actions";
 import {fetchDropBoxTree} from "../modules/manager/actions";
@@ -89,6 +90,7 @@ class App extends Component {
         })();
 
         await Promise.all([
+            this.props.dispatch(fetchUser()),
             this.props.dispatch(fetchPeers()),
             this.props.dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
             this.props.dispatch(fetchDropBoxTree()),
