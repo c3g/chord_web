@@ -52,7 +52,8 @@ class SiteHeader extends Component {
                                onClick={() => this.props.user ? null : window.location.href = "/api/authenticate"}>
                         <Icon type="user" />
                         <span className="nav-text">
-                            {this.props.user ? this.props.user.preferred_username : "Sign In"}
+                            {this.props.user ? this.props.user.preferred_username : (
+                                this.props.userFetching ? "Loading..." : "Sign In")}
                         </span>
                     </Menu.Item>
                     <Menu.Item key="/notifications" style={{float: "right"}}
@@ -78,12 +79,14 @@ SiteHeader.propTypes = {
         preferred_username: PropTypes.string,
         sub: PropTypes.string,
     },
+    userFetching: PropTypes.bool,
     unreadNotifications: PropTypes.array
 };
 
 const mapStateToProps = state => ({
     unreadNotifications: state.notifications.items.filter(n => !n.read),
-    user: state.auth.user
+    user: state.auth.user,
+    userFetching: state.auth.isFetching
 });
 
 export default withRouter(connect(mapStateToProps)(SiteHeader));

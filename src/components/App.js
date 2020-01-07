@@ -82,6 +82,7 @@ class App extends Component {
     }
 
     async componentDidMount() {
+        await this.props.dispatch(fetchUser());
         await this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
 
         this.eventRelayConnection = (() => {
@@ -95,7 +96,6 @@ class App extends Component {
         this.pingInterval = setInterval(async () => await fetch("/api/ping"), 20000);
 
         await Promise.all([
-            this.props.dispatch(fetchUser()),
             this.props.dispatch(fetchPeers()),
             this.props.dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
             this.props.dispatch(fetchDropBoxTree()),
