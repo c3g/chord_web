@@ -4,6 +4,8 @@ import {withRouter, Redirect, Route, Switch} from "react-router-dom";
 
 import io from "socket.io-client";
 
+import fetch from "cross-fetch";
+
 import {Layout} from "antd";
 
 import "antd/es/layout/style/css";
@@ -38,6 +40,7 @@ class App extends Component {
         super(props);
         this.renderContent = this.renderContent.bind(this);
         this.eventRelayConnection = null;
+        this.pingInterval = null;
     }
 
     renderContent(Content) {
@@ -89,6 +92,8 @@ class App extends Component {
             }).on("events", message => eventHandler(message, this.props.history)))() : null;
         })();
 
+        this.pingInterval = setInterval(async () => await fetch("/api/ping"), 20000);
+
         await Promise.all([
             this.props.dispatch(fetchUser()),
             this.props.dispatch(fetchPeers()),
@@ -103,6 +108,12 @@ class App extends Component {
             this.props.dispatch(fetchIndividualsIfNeeded()),
             this.props.dispatch(fetchNotifications())
         ]);
+    }
+
+    componentWillUnmount() {
+        if (this.pingInterval === null) return;
+        clearInterval(this.pingInterval);
+        this.pingInterval = null;
     }
 }
 
