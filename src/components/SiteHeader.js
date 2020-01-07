@@ -49,7 +49,7 @@ class SiteHeader extends Component {
                         </Link>
                     </Menu.Item>
                     <Menu.Item style={{float: "right"}}
-                               onClick={() => this.props.user? null : window.location.href = "/authenticate"}>
+                               onClick={() => this.props.user ? null : window.location.href = "/api/authenticate"}>
                         <Icon type="user" />
                         <span className="nav-text">
                             {this.props.user ? this.props.user.preferred_username : "Sign In"}
