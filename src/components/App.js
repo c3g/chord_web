@@ -93,7 +93,7 @@ class App extends Component {
             }).on("events", message => eventHandler(message, this.props.history)))() : null;
         })();
 
-        this.pingInterval = setInterval(async () => await fetch("/api/ping"), 20000);
+        this.pingInterval = setInterval(async () => await fetch("/api/ping"), 30000);
 
         await Promise.all([
             this.props.dispatch(fetchPeers()),
