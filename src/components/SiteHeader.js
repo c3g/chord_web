@@ -36,7 +36,8 @@ class SiteHeader extends Component {
                             <span className="nav-text">Data Discovery</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key="/data/manager">
+                    {/* TODO: Disable if not an owner */}
+                    <Menu.Item key="/data/manager" disabled={!this.props.user}>
                         <Link to="/data/manager">
                             <Icon type="folder-open" />
                             <span className="nav-text">Data Manager</span>
@@ -56,7 +57,9 @@ class SiteHeader extends Component {
                                 this.props.userFetching ? "Loading..." : "Sign In")}
                         </span>
                     </Menu.Item>
-                    <Menu.Item key="/notifications" style={{float: "right"}}
+                    <Menu.Item key="/notifications"
+                               style={{float: "right"}}
+                               disabled={!this.props.user}
                                onClick={() => this.props.dispatch(showNotificationDrawer())}>
                         <Badge dot count={this.props.unreadNotifications.length}>
                             <Icon type="bell" style={{marginRight: "0"}}/>
