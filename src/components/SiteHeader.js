@@ -49,14 +49,23 @@ class SiteHeader extends Component {
                             <span className="nav-text">Peers</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item style={{float: "right"}}
-                               onClick={() => this.props.user ? null : window.location.href = "/api/authenticate"}>
-                        <Icon type="user" />
-                        <span className="nav-text">
-                            {this.props.user ? this.props.user.preferred_username : (
-                                this.props.userFetching ? "Loading..." : "Sign In")}
-                        </span>
-                    </Menu.Item>
+                    {this.props.user ? (
+                        <Menu.SubMenu style={{float: "right"}} title={
+                            <span className="submenu-title-wrapper">
+                                <Icon type="user" /> <span className="nav-text">{this.props.user.preferred_username}</span>
+                            </span>
+                        }>
+                            <Menu.Item key="sign-out" onClick={() => window.location.href = "/api/auth/sign-out"}>
+                                <Icon type="logout" />
+                                <span className="nav-text">Sign Out</span>
+                            </Menu.Item>
+                        </Menu.SubMenu>
+                    ) : (
+                        <Menu.Item style={{float: "right"}} onClick={() => window.location.href = "/api/auth/sign-in"}>
+                            <Icon type="user" />
+                            <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>
+                        </Menu.Item>
+                    )}
                     <Menu.Item key="/notifications"
                                style={{float: "right"}}
                                disabled={!this.props.user}

@@ -16,7 +16,7 @@ export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 
 export const fetchUser = networkAction(() => ({
     types: FETCH_USER,
-    url: "/api/user"
+    url: "/api/auth/user"
 }));
 
 export const fetchUserAndDependentData = servicesCb => async (dispatch, getState) => {
