@@ -17,19 +17,8 @@ import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
 import NotificationsContent from "./NotificationsContent";
 
-import {fetchUser} from "../modules/auth/actions";
+import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeers} from "../modules/peers/actions";
-import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../modules/services/actions";
-import {fetchDropBoxTree} from "../modules/manager/actions";
-import {fetchRuns, fetchAllRunDetailsIfNeeded} from "../modules/wes/actions";
-import {
-    fetchProjectsWithDatasetsAndTables,
-
-    fetchPhenopacketsIfNeeded,
-    fetchBiosamplesIfNeeded,
-    fetchIndividualsIfNeeded
-} from "../modules/metadata/actions";
-import {fetchNotifications} from "../modules/notifications/actions";
 
 import eventHandler from "../events";
 
@@ -80,32 +69,18 @@ class App extends Component {
     }
 
     async componentDidMount() {
-        await this.props.dispatch(fetchUser());
-        await this.props.dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
+        await this.props.dispatch(fetchUserAndDependentData(async () => {
+            await this.props.dispatch(fetchPeers());
+            this.eventRelayConnection = (() => {
+                if (this.eventRelayConnection) return this.eventRelayConnection;
+                const url = (this.props.eventRelay || {url: null}).url || null;
+                return url ? (() => io("/", {
+                    path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
+                }).on("events", message => eventHandler(message, this.props.history)))() : null;
+            })();
+        }));
 
-        this.eventRelayConnection = (() => {
-            if (this.eventRelayConnection) return this.eventRelayConnection;
-            const url = (this.props.eventRelay || {url: null}).url || null;
-            return url ? (() => io("/", {
-                path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
-            }).on("events", message => eventHandler(message, this.props.history)))() : null;
-        })();
-
-        this.pingInterval = setInterval(() => this.props.dispatch(fetchUser()), 30000);
-
-        await Promise.all([
-            this.props.dispatch(fetchPeers()),
-            this.props.dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
-            this.props.dispatch(fetchDropBoxTree()),
-            (async () => {
-                await this.props.dispatch(fetchRuns());
-                await this.props.dispatch(fetchAllRunDetailsIfNeeded());
-            })(),
-            this.props.dispatch(fetchPhenopacketsIfNeeded()),
-            this.props.dispatch(fetchBiosamplesIfNeeded()),
-            this.props.dispatch(fetchIndividualsIfNeeded()),
-            this.props.dispatch(fetchNotifications())
-        ]);
+        this.pingInterval = setInterval(() => this.props.dispatch(fetchUserAndDependentData()), 30000);
     }
 
     componentWillUnmount() {
