@@ -52,7 +52,8 @@ class SiteHeader extends Component {
                     {this.props.user ? (
                         <Menu.SubMenu style={{float: "right"}} title={
                             <span className="submenu-title-wrapper">
-                                <Icon type="user" /> <span className="nav-text">{this.props.user.preferred_username}</span>
+                                <Icon type="user" />
+                                <span className="nav-text">{this.props.user.preferred_username}</span>
                             </span>
                         }>
                             <Menu.Item key="sign-out" onClick={() => window.location.href = "/api/auth/sign-out"}>
