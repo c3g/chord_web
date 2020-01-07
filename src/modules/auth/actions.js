@@ -25,10 +25,11 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     await dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
     await (servicesCb || (() => {}))();
 
-    if (getState().auth.user === null || oldState !== null) return;
-    // Otherwise, we're newly authenticated, so run all actions that need authentication.
-    // TODO: CHECK OWNERSHIP
+    const newState = getState().auth.user;
+    if (newState === null || (oldState || {}).chord_user_role === newState.chord_user_role) return;
+    if (newState.chord_user_role !== "owner") return;
 
+    // Otherwise, we're newly authenticated as an owner, so run all actions that need authentication.
     await Promise.all([
         dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
         dispatch(fetchDropBoxTree()),
