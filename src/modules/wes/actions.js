@@ -53,33 +53,31 @@ export const fetchAllRunDetailsIfNeeded = () => async (dispatch, getState) => {
 
 
 export const submitIngestionWorkflowRun = networkAction(
-    (serviceInfo, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => {
-        return {
-            types: SUBMIT_INGESTION_RUN,
-            params: {serviceInfo, datasetID},
-            url: `${getState().services.wesService.url}/runs`,
-            req: {
-                method: "POST",
-                body: createFormData({
-                    workflow_params: Object.fromEntries(Object.entries(inputs)
-                        .map(([k, v]) => [`${workflow.id}.${k}`, v])),
-                    workflow_type: "WDL",  // TODO: Should eventually not be hard-coded
-                    workflow_type_version: "1.0",  // TODO: "
-                    workflow_engine_parameters: {},  // TODO: Currently unused
-                    workflow_url: `${serviceInfo.url}/workflows/${workflow.id}.wdl`,
-                    tags: {
-                        workflow_id: workflow.id,
-                        workflow_metadata: workflow,
-                        ingestion_url: `${serviceInfo.url}/ingest`,
-                        dataset_id: datasetID  // TODO
-                    }
-                })
-            },
-            err: "Error submitting ingestion workflow",
-            afterAction: fetchRuns,  // TODO: Maybe just load delta?
-            onSuccess: data => {
-                message.success(`Ingestion with run ID "${data.run_id}" submitted!`);
-                if (redirect) hist.push(redirect);
-            }
-        };
-    });
+    (serviceInfo, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => ({
+        types: SUBMIT_INGESTION_RUN,
+        params: {serviceInfo, datasetID},
+        url: `${getState().services.wesService.url}/runs`,
+        req: {
+            method: "POST",
+            body: createFormData({
+                workflow_params: Object.fromEntries(Object.entries(inputs)
+                    .map(([k, v]) => [`${workflow.id}.${k}`, v])),
+                workflow_type: "WDL",  // TODO: Should eventually not be hard-coded
+                workflow_type_version: "1.0",  // TODO: "
+                workflow_engine_parameters: {},  // TODO: Currently unused
+                workflow_url: `${serviceInfo.url}/workflows/${workflow.id}.wdl`,
+                tags: {
+                    workflow_id: workflow.id,
+                    workflow_metadata: workflow,
+                    ingestion_url: `${serviceInfo.url}/ingest`,
+                    dataset_id: datasetID  // TODO
+                }
+            })
+        },
+        err: "Error submitting ingestion workflow",
+        onSuccess: async data => {
+            await dispatch(fetchRuns());  // TODO: Maybe just load delta?
+            message.success(`Ingestion with run ID "${data.run_id}" submitted!`);
+            if (redirect) hist.push(redirect);
+        }
+    }));

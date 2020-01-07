@@ -34,8 +34,7 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
         })
     },
     err: "Error performing search",
-    afterAction: () => async (dispatch, getState) =>
-        await dispatch(selectSearch(getState().discovery.searches.length - 1))
+    onSuccess: () => dispatch(selectSearch(getState().discovery.searches.length - 1))
 }));
 
 

@@ -79,8 +79,10 @@ const createProject = networkAction(project => (dispatch, getState) => ({
         body: JSON.stringify(project)
     },
     err: "Error creating project",
-    afterAction: data => async dispatch => await dispatch(selectProjectIfItExists(data.id)),
-    onSuccess: data => message.success(`Project '${data.title}' created!`)
+    onSuccess: async data => {
+        await dispatch(selectProjectIfItExists(data.id));
+        message.success(`Project '${data.title}' created!`)
+    }
 }));
 
 export const createProjectIfPossible = project => async (dispatch, getState) => {
@@ -115,8 +117,10 @@ const saveProject = networkAction(project => (dispatch, getState) => ({
         body: JSON.stringify(project)
     },
     err: `Error saving project '${project.title}'`,  // TODO: More user-friendly error
-    afterAction: () => async dispatch => dispatch(endProjectEditing()),
-    onSuccess: () => message.success(`Project '${project.title}' saved!`)
+    onSuccess: async () => {
+        await dispatch(endProjectEditing());
+        message.success(`Project '${project.title}' saved!`);
+    }
 }));
 
 export const saveProjectIfPossible = project => async (dispatch, getState) => {

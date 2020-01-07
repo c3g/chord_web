@@ -27,7 +27,7 @@ const _networkAction = (fn, ...args) =>
             fnResult = fnResult(dispatch, getState);
         }
 
-        const {types, params, url, req, err, afterAction, onSuccess} = fnResult;
+        const {types, params, url, req, err, onSuccess} = fnResult;
 
         await dispatch({type: types.REQUEST, ...params});
         try {
@@ -41,8 +41,7 @@ const _networkAction = (fn, ...args) =>
                     ...(data === null ? {} : {data}),
                     receivedAt: Date.now()
                 });
-                if (afterAction) await dispatch(afterAction(data));
-                if (onSuccess) onSuccess(data);
+                if (onSuccess) await onSuccess(data);
             } else {
                 if (err) {
                     console.error(response, err);
