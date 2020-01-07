@@ -74,11 +74,11 @@ class SiteHeader extends Component {
 }
 
 SiteHeader.propTypes = {
-    user: {
+    user: PropTypes.shape({
         email_verified: PropTypes.bool,
         preferred_username: PropTypes.string,
         sub: PropTypes.string,
-    },
+    }),
     userFetching: PropTypes.bool,
     unreadNotifications: PropTypes.array
 };
