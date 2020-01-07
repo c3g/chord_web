@@ -4,8 +4,6 @@ import {withRouter, Redirect, Route, Switch} from "react-router-dom";
 
 import io from "socket.io-client";
 
-import fetch from "cross-fetch";
-
 import {Layout} from "antd";
 
 import "antd/es/layout/style/css";
