@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
 
 
+export const urlPath = url => (new URL(url)).pathname;
+
+
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));
 
 export const objectWithoutProps =(o, ps) => Object.fromEntries(Object.entries(o)

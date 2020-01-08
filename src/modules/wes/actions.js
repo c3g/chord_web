@@ -2,6 +2,7 @@ import {message} from "antd";
 
 import "antd/es/message/style/css";
 
+import {urlPath} from "../../utils";
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 import {createFormData} from "../../utils/requests";
 
@@ -69,7 +70,7 @@ export const submitIngestionWorkflowRun = networkAction(
                 tags: {
                     workflow_id: workflow.id,
                     workflow_metadata: workflow,
-                    ingestion_url: `${serviceInfo.url}/ingest`,
+                    ingestion_path: `${urlPath(serviceInfo.url)}/private/ingest`,
                     dataset_id: datasetID  // TODO
                 }
             })
