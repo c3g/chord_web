@@ -25,7 +25,9 @@ class PeersContent extends Component {
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <Table dataSource={this.props.peers} columns={[{
                             title: "Peer",
-                            dataIndex: "url"
+                            dataIndex: "url",
+                            sorter: (a, b) => a.url.localeCompare(b.url),
+                            defaultSortOrder: "ascend"
                         }]} loading={this.props.loadingPeers} rowKey="url" bordered={true} size="middle" />
                     </Layout.Content>
                 </Layout>

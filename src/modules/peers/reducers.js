@@ -12,7 +12,7 @@ export const peers = (
             return {...state, isFetching: true};
 
         case FETCH_PEERS.RECEIVE:
-            return {...state, isFetching: false, items: action.data.peers};
+            return {...state, isFetching: false, items: action.data.peers.sort()};
 
         case FETCH_PEERS.ERROR:
             return {...state, isFetching: false};
