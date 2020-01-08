@@ -18,9 +18,10 @@ import PeersContent from "./PeersContent";
 import NotificationsContent from "./NotificationsContent";
 
 import {fetchUserAndDependentData} from "../modules/auth/actions";
-import {fetchPeers} from "../modules/peers/actions";
+import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
+import {urlPath} from "../utils";
 
 class App extends Component {
     constructor(props) {
@@ -70,16 +71,16 @@ class App extends Component {
 
     async componentDidMount() {
         await this.props.dispatch(fetchUserAndDependentData(async () => {
-            await this.props.dispatch(fetchPeers());
+            await this.props.dispatch(fetchPeersOrError());
             this.eventRelayConnection = (() => {
                 if (this.eventRelayConnection) return this.eventRelayConnection;
                 const url = (this.props.eventRelay || {url: null}).url || null;
-                return url ? (() => io("/", {
-                    path: `${url.replace(/https?:\/\/[^/]+/, "")}/socket.io`
-                }).on("events", message => eventHandler(message, this.props.history)))() : null;
+                return url ? (() => io("/", {path: `${urlPath(url)}/socket.io`})
+                    .on("events", message => eventHandler(message, this.props.history)))() : null;
             })();
         }));
 
+        // TODO: Refresh other data
         this.pingInterval = setInterval(() => this.props.dispatch(fetchUserAndDependentData()), 30000);
     }
 
