@@ -107,8 +107,6 @@ class ManagerIngestionContent extends Component {
 
         await this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
             this.state.inputs, "/data/manager/runs", history);
-
-        this.setState(simpleDeepCopy(this.initialState));
     }
 
     getStepContents() {
