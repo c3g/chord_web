@@ -17,9 +17,6 @@ export const notifications = (
     action
 ) => {
     switch (action.type) {
-        case FETCH_NOTIFICATIONS.REQUEST:
-            return {...state, isFetching: true};
-
         case ADD_NOTIFICATION:
             return {
                 ...state,
@@ -29,6 +26,9 @@ export const notifications = (
                     [action.data.id]: action.data
                 }
             };
+
+        case FETCH_NOTIFICATIONS.REQUEST:
+            return {...state, isFetching: true};
 
         case FETCH_NOTIFICATIONS.RECEIVE:
             return {

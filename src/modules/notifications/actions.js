@@ -8,7 +8,7 @@ export const hideNotificationDrawer = basicAction(HIDE_NOTIFICATION_DRAWER);
 
 export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 
-export const addNotification = data => () => ({
+export const addNotification = data => ({
     type: ADD_NOTIFICATION,
     data
 });
