@@ -83,6 +83,7 @@ class IngestionInputForm extends Component {
                     ...this.props.workflow.inputs.map(i => (
                         <Form.Item label={i.id} key={i.id}>
                             {this.props.form.getFieldDecorator(i.id, {
+                                initialValue: this.props.initialValues[i.id],  // undefined if not set
                                 rules: [{required: true}]
                             })(this.getInputComponent(i))}
                         </Form.Item>

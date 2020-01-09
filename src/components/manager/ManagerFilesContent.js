@@ -107,7 +107,8 @@ class ManagerFilesContent extends Component {
         this.props.history.push("/data/manager/ingestion", {
             step: STEP_INPUT,
             selectedTable: tableKey,
-            selectedWorkflow: this.state.selectedWorkflow
+            selectedWorkflow: this.state.selectedWorkflow,
+            initialInputValues: this.getWorkflowFit(this.state.selectedWorkflow)[1]
         });
     }
 
@@ -144,6 +145,40 @@ class ManagerFilesContent extends Component {
         }
     }
 
+    getWorkflowFit(w) {
+        let workflowSupported = true;
+        let filesLeft = [...this.state.selectedFiles];
+        const inputs = {};
+
+        for (let i of w.inputs.filter(i => i.type.startsWith("file"))) {
+            // Find tables that support the data type
+            // TODO
+
+            // Find files where 1+ of the valid extensions (e.g. jpeg or jpg) match.
+            const compatibleFiles = filesLeft.filter(f => !!i.extensions.find(e => f.endsWith(e)));
+            if (compatibleFiles.length === 0) {
+                workflowSupported = false;
+                break;
+            }
+
+            // Steal the first compatible file, or all if it's an array
+            const filesToTake = filesLeft.filter(f => i.type.endsWith("[]")
+                ? compatibleFiles.includes(f)
+                : f === compatibleFiles[0]);
+
+            inputs[i.id] = filesToTake;
+            filesLeft = filesLeft.filter(f => !filesToTake.includes(f));
+        }
+
+        if (filesLeft.length > 0) {
+            // If there are unclaimed files remaining at the end, the workflow is not compatible with the
+            // total selection of files.
+            workflowSupported = false;
+        }
+
+        return [workflowSupported, inputs];
+    }
+
     render() {
         // TODO: Loading for workflows...
         // TODO: Proper workflow keys
@@ -152,37 +187,8 @@ class ManagerFilesContent extends Component {
         const workflowMenu = (
             <Menu>
                 {this.props.workflows.map(w => {
-                    // TODO: Extend to multiple files by checking all file inputs are matched
-                    // TODO: Match greedily
-
-                    let workflowSupported = true;
-                    let files = [...this.state.selectedFiles];
-
-                    for (let i of w.inputs.filter(i => i.type.startsWith("file"))) {
-                        // Find tables that support the data type
-                        // TODO
-
-                        // Find files where 1+ of the valid extensions (e.g. jpeg or jpg) match.
-                        const compatibleFiles = files.filter(f => !!i.extensions.find(e => f.endsWith(e)));
-                        if (compatibleFiles.length === 0) {
-                            workflowSupported = false;
-                            break;
-                        }
-
-                        // Steal the first compatible file, or all if it's an array
-                        files = files.filter(f => i.type.endsWith("[]")
-                            ? !compatibleFiles.includes(f)
-                            : f !== compatibleFiles[0]);
-                    }
-
-                    if (files.length > 0) {
-                        // If there are unclaimed files remaining at the end, the workflow is not compatible with the
-                        // total selection of files.
-                        workflowSupported = false;
-                    }
-
+                    const workflowSupported = this.getWorkflowFit(w)[0];
                     if (workflowSupported) workflowsSupported.push(w);
-
                     return (
                         <Menu.Item key={w.id}
                                    disabled={!workflowSupported}

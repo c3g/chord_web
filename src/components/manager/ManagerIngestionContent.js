@@ -52,6 +52,7 @@ class ManagerIngestionContent extends Component {
             step: STEP_WORKFLOW_SELECTION,
             selectedTable: null,
             selectedWorkflow: null,
+            initialInputValues: {},
             inputFormFields: {},
             inputs: {}
         };
@@ -63,6 +64,8 @@ class ManagerIngestionContent extends Component {
             step: (this.props.location.state || {}).step || this.initialState.step,
             selectedTable: (this.props.location.state || {}).selectedTable || this.initialState.selectedTable,
             selectedWorkflow: (this.props.location.state || {}).selectedWorkflow || this.initialState.selectedWorkflow,
+            initialInputValues: (this.props.location.state || {}).initialInputValues
+                || this.initialState.initialInputValues,
         };
 
         this.handleStepChange = this.handleStepChange.bind(this);
@@ -80,6 +83,7 @@ class ManagerIngestionContent extends Component {
         this.setState({
             step: STEP_INPUT,
             selectedWorkflow: workflow,
+            initialInputValues: {},
             inputFormFields: {},
             inputs: {}
         });
@@ -148,7 +152,9 @@ class ManagerIngestionContent extends Component {
 
             case STEP_INPUT:
                 return (
-                    <IngestionInputForm workflow={this.state.selectedWorkflow} tree={this.props.tree}
+                    <IngestionInputForm workflow={this.state.selectedWorkflow}
+                                        tree={this.props.tree}
+                                        initialValues={this.state.initialInputValues}
                                         formValues={this.state.inputFormFields}
                                         onChange={formValues => this.setState({inputFormFields: formValues})}
                                         onSubmit={this.handleInputSubmit}
