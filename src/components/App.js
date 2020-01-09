@@ -4,9 +4,10 @@ import {withRouter, Redirect, Route, Switch} from "react-router-dom";
 
 import io from "socket.io-client";
 
-import {Layout} from "antd";
+import {Layout, Modal} from "antd";
 
 import "antd/es/layout/style/css";
+import "antd/es/modal/style/css";
 
 import NotificationDrawer from "./NotificationDrawer";
 import SiteHeader from "./SiteHeader";
@@ -28,6 +29,17 @@ class App extends Component {
         super(props);
         this.renderContent = this.renderContent.bind(this);
         this.eventRelayConnection = null;
+        this.pingInterval = null;
+        this.lastUser = null;
+
+        this.state = {
+            signedOutModal: false
+        };
+    }
+
+    clearPingInterval() {
+        if (this.pingInterval === null) return;
+        clearInterval(this.pingInterval);
         this.pingInterval = null;
     }
 
@@ -55,8 +67,21 @@ class App extends Component {
     }
 
     render() {
+        const signInURL = "/api/auth/sign-in";
+
+        // noinspection HtmlUnknownTarget
         return (
             <main>
+                <Modal title="You have been signed out"
+                       onOk={() => window.location.href = signInURL}
+                       onCancel={() => {
+                           this.clearPingInterval();  // Stop pinging until the user decides to sign in again
+                           this.setState({signedOutModal: false});  // Close the modal
+                           // TODO: Set a new interval at a slower rate
+                       }}
+                       visible={this.state.signedOutModal}>
+                    Please <a href={signInURL}>sign in</a> again to continue working.
+                </Modal>
                 <Switch>
                     <Route path="/services" component={this.renderContent(ServicesContent)} />
                     <Route path="/data/discovery" component={this.renderContent(DataDiscoveryContent)} />
@@ -81,14 +106,22 @@ class App extends Component {
         }));
 
         // TODO: Refresh other data
-        this.pingInterval = setInterval(() => this.props.dispatch(fetchUserAndDependentData()), 30000);
+        this.pingInterval = setInterval(async () => {
+            await this.props.dispatch(fetchUserAndDependentData());
+            if (this.lastUser !== null && this.props.user === null) {
+                // We got de-authenticated, so show a prompt
+                this.setState({signedOutModal: true});
+            }
+            this.lastUser = this.props.user;
+        }, 30000);  // TODO: Variable rate
     }
 
     componentWillUnmount() {
-        if (this.pingInterval === null) return;
-        clearInterval(this.pingInterval);
-        this.pingInterval = null;
+        this.clearPingInterval();
     }
 }
 
-export default withRouter(connect(state => ({eventRelay: state.services.eventRelay}))(App));
+export default withRouter(connect(state => ({
+    eventRelay: state.services.eventRelay,
+    user: state.auth.user
+}))(App));
