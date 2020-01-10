@@ -15,7 +15,7 @@ export const SUBMIT_INGESTION_RUN = createNetworkActionTypes("SUBMIT_INGESTION_R
 // TODO: If needed
 export const fetchRuns = networkAction(() => (dispatch, getState) => ({
     types: FETCH_RUNS,
-    url: `${getState().services.wesService.url}/runs`,
+    url: `${getState().services.wesService.url}/runs?with_details=true`,
     err: "Error fetching WES runs"
 }));
 
@@ -38,12 +38,12 @@ const RUN_DONE_STATES = ["COMPLETE", "EXECUTOR_ERROR", "SYSTEM_ERROR", "CANCELED
 export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
     const state = getState();
 
-    const needsUpdate = !state.runs.itemDetails.hasOwnProperty(runID)
-        || (!state.runs.itemDetails[runID].isFetching && (
-            !state.runs.itemDetails[runID].details ||
-            (!RUN_DONE_STATES.includes(state.runs.itemDetails[runID].details.state) &&
-                state.runs.itemDetails[runID].details.run_log.exit_code === null &&
-                state.runs.itemDetails[runID].details.run_log.end_time === "")));
+    const needsUpdate = !state.runs.itemsByID.hasOwnProperty(runID)
+        || (!state.runs.itemsByID[runID].isFetching && (
+            !state.runs.itemsByID[runID].details ||
+            (!RUN_DONE_STATES.includes(state.runs.itemsByID[runID].state) &&
+                state.runs.itemsByID[runID].details.run_log.exit_code === null &&
+                state.runs.itemsByID[runID].details.run_log.end_time === "")));
 
     if (needsUpdate) await dispatch(fetchRunDetails(runID));
 };

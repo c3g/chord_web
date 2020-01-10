@@ -5,12 +5,12 @@ import Run from "./Run";
 
 class RunDetailContent extends Component {
     render() {
-        return <Run run={this.props.runDetails[this.props.match.params.id] || null} />;
+        return <Run run={this.props.runsByID[this.props.match.params.id] || null} />;
     }
 }
 
 const mapStateToProps = state => ({
-    runDetails: state.runs.itemDetails
+    runsByID: state.runs.itemsByID
 });
 
 export default connect(mapStateToProps)(RunDetailContent);

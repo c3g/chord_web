@@ -5,7 +5,7 @@ export const runs = (
         isFetching: false,
         isSubmittingIngestionRun: false,
         items: [],
-        itemDetails: {}
+        itemsByID: {},
     },
     action
 ) => {
@@ -17,7 +17,8 @@ export const runs = (
             return {
                 ...state,
                 isFetching: false,
-                items: action.data
+                items: action.data.map(r => ({...r, details: r.details || null})),
+                itemsByID: Object.fromEntries(action.data.map(r => [r.run_id, {...r, details: r.details || null}]))
             };
 
         case FETCH_RUNS.ERROR:
@@ -26,11 +27,12 @@ export const runs = (
         case FETCH_RUN_DETAILS.REQUEST:
             return {
                 ...state,
-                itemDetails: {
-                    ...state.itemDetails,
+                itemsByID: {
+                    ...state.itemsByID,
                     [action.runID]: {
+                        ...(state.itemsByID[action.runID] || {}),
                         isFetching: true,
-                        details: (state.itemDetails[action.runID] || {details: null}).details
+                        details: state.itemsByID[action.runID] || null
                     }
                 }
             };
@@ -40,9 +42,10 @@ export const runs = (
                 ...state,
                 isFetching: false,
                 items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.data.state} : i),
-                itemDetails: {
-                    ...state.itemDetails,
+                itemsByID: {
+                    ...state.itemsByID,
                     [action.runID]: {
+                        ...(state.itemsByID[action.runID] || {}),
                         isFetching: false,
                         details: action.data
                     }
@@ -52,11 +55,12 @@ export const runs = (
         case FETCH_RUN_DETAILS.ERROR:
             return {
                 ...state,
-                itemDetails: {
-                    ...state.itemDetails,
+                itemsByID: {
+                    ...state.itemsByID,
                     [action.runID]: {
+                        ...(state.itemsByID[action.runID] || {}),
                         isFetching: false,
-                        details: (state.itemDetails[action.runID] || {details: null}).details
+                        details: (state.itemsByID[action.runID] || {}).details || null
                     }
                 }
             };

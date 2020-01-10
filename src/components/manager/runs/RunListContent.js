@@ -51,7 +51,7 @@ class RunListContent extends Component {
 
 const mapStateToProps = state => ({
     runs: state.runs.items.map(r => {
-        const runDetails = (state.runs.itemDetails[r.run_id] || {details: null}).details;
+        const runDetails = (state.runs.itemsByID[r.run_id] || {details: null}).details;
         return {
             ...r,
             purpose: "Ingestion",  // TODO: Not hard-coded, Ingestion or Analysis
