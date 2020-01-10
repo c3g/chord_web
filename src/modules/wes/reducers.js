@@ -29,11 +29,7 @@ export const runs = (
                 ...state,
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.runID]: {
-                        ...(state.itemsByID[action.runID] || {}),
-                        isFetching: true,
-                        details: state.itemsByID[action.runID] || null
-                    }
+                    [action.runID]: {...(state.itemsByID[action.runID] || {}), isFetching: true}
                 }
             };
 
@@ -57,11 +53,7 @@ export const runs = (
                 ...state,
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.runID]: {
-                        ...(state.itemsByID[action.runID] || {}),
-                        isFetching: false,
-                        details: (state.itemsByID[action.runID] || {}).details || null
-                    }
+                    [action.runID]: {...(state.itemsByID[action.runID] || {}), isFetching: false}
                 }
             };
 
