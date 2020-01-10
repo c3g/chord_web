@@ -28,13 +28,15 @@ const _networkAction = (fn, ...args) =>
         }
 
         const {types, params, url, req, err, onSuccess} = fnResult;
+        let {parse} = fnResult;
+        if (!parse) parse = async r => await r.json();
 
         await dispatch({type: types.REQUEST, ...params});
         try {
             const response = await fetch(url, req);
 
             if (response.ok) {
-                const data = response.status === 204 ? null : await response.json();
+                const data = response.status === 204 ? null : await parse(response);
                 await dispatch({
                     type: types.RECEIVE,
                     ...params,

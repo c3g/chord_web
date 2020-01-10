@@ -8,6 +8,8 @@ import {createFormData} from "../../utils/requests";
 
 export const FETCH_RUNS = createNetworkActionTypes("FETCH_RUNS");
 export const FETCH_RUN_DETAILS = createNetworkActionTypes("FETCH_RUN_DETAILS");
+export const FETCH_RUN_LOG_STDOUT = createNetworkActionTypes("FETCH_RUN_LOG_STDOUT");
+export const FETCH_RUN_LOG_STDERR = createNetworkActionTypes("FETCH_RUN_LOG_STDERR");
 
 export const SUBMIT_INGESTION_RUN = createNetworkActionTypes("SUBMIT_INGESTION_RUN");
 
@@ -45,11 +47,47 @@ export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
                 state.runs.itemsByID[runID].details.run_log.exit_code === null &&
                 state.runs.itemsByID[runID].details.run_log.end_time === "")));
 
-    if (needsUpdate) await dispatch(fetchRunDetails(runID));
+    if (!needsUpdate) return;
+
+    await dispatch(fetchRunDetails(runID));
+    const runDetails = getState().runs.itemsByID[runID].details;
+    if (runDetails) {
+        await Promise.all([
+            dispatch(fetchRunLogStdOut(getState().runs.itemsByID[runID].details)),
+            dispatch(fetchRunLogStdErr(getState().runs.itemsByID[runID].details)),
+        ]);
+    }
 };
 
 export const fetchAllRunDetailsIfNeeded = () => async (dispatch, getState) => {
     await Promise.all(getState().runs.items.map(r => dispatch(fetchRunDetailsIfNeeded(r.run_id))));
+};
+
+
+export const fetchRunLogStdOut = networkAction(runDetails => ({
+    types: FETCH_RUN_LOG_STDOUT,
+    params: {runID: runDetails.run_id},
+    url: runDetails.run_log.stdout,
+    parse: async r => r.text(),
+    err: `Error fetching stdout for run ${runDetails.run_id}`
+}));
+
+export const fetchRunLogStdErr = networkAction(runDetails => ({
+    types: FETCH_RUN_LOG_STDERR,
+    params: {runID: runDetails.run_id},
+    url: runDetails.run_log.stderr,
+    parse: async r => r.text(),
+    err: `Error fetching stderr for run ${runDetails.run_id}`
+}));
+
+export const fetchRunLogStreamsIfPossible = runID => async (dispatch, getState) => {
+    if (getState().runs.isFetching) return;
+    const run = getState().runs.itemsByID[runID];
+    if (!run || run.isFetching || !run.details) return;
+    await Promise.all([
+        dispatch(fetchRunLogStdOut(run.details)),
+        dispatch(fetchRunLogStdErr(run.details)),
+    ]);
 };
 
 

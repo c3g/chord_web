@@ -1,4 +1,47 @@
-import {FETCH_RUN_DETAILS, FETCH_RUNS, SUBMIT_INGESTION_RUN} from "./actions";
+import {
+    FETCH_RUNS,
+
+    FETCH_RUN_DETAILS,
+    FETCH_RUN_LOG_STDOUT,
+    FETCH_RUN_LOG_STDERR,
+
+    SUBMIT_INGESTION_RUN,
+} from "./actions";
+
+
+const streamRequest = (state, action, stream) => ({
+    ...state,
+    streamsByID: {
+        ...state.streamsByID,
+        [action.runID]: {
+            ...(state.streamsByID[action.runID] || {}),
+            [stream]: {isFetching: true}
+        }
+    }
+});
+
+const streamReceive = (state, action, stream) => ({
+    ...state,
+    streamsByID: {
+        ...state.streamsByID,
+        [action.runID]: {
+            ...(state.streamsByID[action.runID] || {}),
+            [stream]: {isFetching: false, data: action.data}
+        }
+    }
+});
+
+const streamError = (state, action, stream) => ({
+    ...state,
+    streamsByID: {
+        ...state.streamsByID,
+        [action.runID]: {
+            ...(state.streamsByID[action.runID] || {}),
+            [stream]: {isFetching: false}
+        }
+    }
+});
+
 
 export const runs = (
     state = {
@@ -6,6 +49,7 @@ export const runs = (
         isSubmittingIngestionRun: false,
         items: [],
         itemsByID: {},
+        streamsByID: {},
     },
     action
 ) => {
@@ -67,6 +111,22 @@ export const runs = (
                     [action.runID]: {...(state.itemsByID[action.runID] || {}), isFetching: false}
                 }
             };
+
+
+        case FETCH_RUN_LOG_STDOUT.REQUEST:
+            return streamRequest(state, action, "stdout");
+        case FETCH_RUN_LOG_STDOUT.RECEIVE:
+            return streamReceive(state, action, "stdout");
+        case FETCH_RUN_LOG_STDOUT.ERROR:
+            return streamError(state, action, "stdout");
+
+        case FETCH_RUN_LOG_STDERR.REQUEST:
+            return streamRequest(state, action, "stderr");
+        case FETCH_RUN_LOG_STDERR.RECEIVE:
+            return streamReceive(state, action, "stderr");
+        case FETCH_RUN_LOG_STDERR.ERROR:
+            return streamError(state, action, "stderr");
+
 
         case SUBMIT_INGESTION_RUN.REQUEST:
             return {...state, isSubmittingIngestionRun: true};

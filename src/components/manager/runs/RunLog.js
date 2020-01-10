@@ -1,47 +1,24 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
-
-import fetch from "cross-fetch";
 
 import {Descriptions, Skeleton} from "antd";
 
 import "antd/es/descriptions/style/css";
 import "antd/es/skeleton/style/css";
 
-const resourceLoadError = resource => `An error was encountered while loading ${resource}`;
+import {fetchRunLogStreamsIfPossible} from "../../../modules/wes/actions";
 
 class RunLog extends Component {
-    constructor(props) {
-        super(props);
-
-        this.loadResource = this.loadResource.bind(this);
-
-        this.state = {
-            stdout: null,
-            stderr: null
-        };
-    }
-
-    async componentDidMount() {
-        await Promise.all([
-            this.loadResource("stdout", this.props.details.run_log.stdout),
-            this.loadResource("stderr", this.props.details.run_log.stderr)
-        ]);
-    }
-
-    async loadResource(resource, url) {
-        try {
-            // TODO: Auth / proper url stuff
-            const r = await fetch(url);
-            this.setState({[resource]: r.ok ? await r.text() : resourceLoadError(resource)});
-        } catch (e) {
-            console.error(e);
-            this.setState({[resource]: resourceLoadError(resource)});
-        }
+    componentDidMount() {
+        this.props.fetchRunLogStreamsIfPossible(this.props.run.run_id);
     }
 
     render() {
-        const details = this.props.details || {};
+        const run = this.props.run || {};
+        const details = run.details || {};
+        const stdout = (this.props.runLogStreams[run.run_id] || {}).stdout || null;
+        const stderr = (this.props.runLogStreams[run.run_id] || {}).stderr || null;
         return (
             <Descriptions bordered style={{overflow: "auto"}}>
                 <Descriptions.Item label="Command" span={3}>
@@ -54,12 +31,12 @@ class RunLog extends Component {
                     {details.run_log.exit_code === null ? "N/A" : details.run_log.exit_code}
                 </Descriptions.Item>
                 <Descriptions.Item label={<span style={{fontFamily: "monospace"}}>stdout</span>} span={3}>
-                    {this.state.stdout !== null ? <pre style={{fontSize: "12px", whiteSpace: "break-spaces"}}>{
-                        this.state.stdout}</pre> : <Skeleton paragraph={false} />}
+                    {stdout !== null ? <pre style={{fontSize: "12px", whiteSpace: "break-spaces"}}>{
+                        (stdout.data || "")}</pre> : <Skeleton paragraph={false} />}
                 </Descriptions.Item>
                 <Descriptions.Item label={<span style={{fontFamily: "monospace"}}>stderr</span>} span={3}>
-                    {this.state.stderr !== null ? <pre style={{fontSize: "12px", whiteSpace: "break-spaces"}}>{
-                        this.state.stderr}</pre> : <Skeleton paragraph={false} />}
+                    {stderr !== null ? <pre style={{fontSize: "12px", whiteSpace: "break-spaces"}}>{
+                        (stderr.data || "")}</pre> : <Skeleton paragraph={false} />}
                 </Descriptions.Item>
             </Descriptions>
         );
@@ -67,13 +44,24 @@ class RunLog extends Component {
 }
 
 RunLog.propTypes = {
-    details: PropTypes.shape({
-        run_log: PropTypes.shape({
-            exit_code: PropTypes.number,
-            stdout: PropTypes.string,
-            stderr: PropTypes.string
+    run: PropTypes.shape({
+        run_id: PropTypes.string,
+        details: PropTypes.shape({
+            run_log: PropTypes.shape({
+                exit_code: PropTypes.number,
+                stdout: PropTypes.string,
+                stderr: PropTypes.string
+            })
         })
     })
 };
 
-export default RunLog;
+const mapStateToProps = state => ({
+    runLogStreams: state.runs.streamsByID
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchRunLogStreamsIfPossible: runID => dispatch(fetchRunLogStreamsIfPossible(runID))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RunLog);

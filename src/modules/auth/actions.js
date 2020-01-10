@@ -10,7 +10,7 @@ import {
 } from "../metadata/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
-import {fetchRuns, fetchAllRunDetailsIfNeeded} from "../wes/actions";
+import {fetchRuns} from "../wes/actions";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 

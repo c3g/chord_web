@@ -9,7 +9,7 @@ import WorkflowListItem from "../WorkflowListItem";
 
 class RunRequest extends Component {
     render() {
-        const details = this.props.details || {};
+        const details = (this.props.run || {}).details || {};
         return (
             <Descriptions bordered>
                 <Descriptions.Item label={"Parameters"} span={3}>
@@ -31,8 +31,9 @@ class RunRequest extends Component {
                 <Descriptions.Item label="Workflow">
                     <List itemLayout="vertical">
                         <List.Item>
-                            <WorkflowListItem workflow={this.props.details.request.tags.workflow_metadata}
-                                              selectable={false} onClick={() => {}} />
+                            <WorkflowListItem workflow={details.request.tags.workflow_metadata}
+                                              selectable={false}
+                                              onClick={() => {}} />
                         </List.Item>
                     </List>
                 </Descriptions.Item>

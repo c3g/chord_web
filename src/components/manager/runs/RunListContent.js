@@ -6,7 +6,7 @@ import {Table, Typography} from "antd";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import {fetchRunDetailsIfNeeded} from "../../../modules/wes/actions";
+import {fetchAllRunDetailsIfNeeded} from "../../../modules/wes/actions";
 
 import {RUN_TABLE_COLUMNS} from "./utils";
 
@@ -30,7 +30,7 @@ class RunListContent extends Component {
     }
 
     async refreshRuns() {
-        await Promise.all(this.props.runs.map(r => this.props.fetchRunDetailsIfNeeded(r.run_id)));
+        await this.props.fetchAllRunDetailsIfNeeded();
         this.runRefreshTimeout = setTimeout(() => this.refreshRuns(), RUN_REFRESH_TIMEOUT);
     }
 
@@ -65,7 +65,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchRunDetailsIfNeeded: async runID => await dispatch(fetchRunDetailsIfNeeded(runID))
+    fetchAllRunDetailsIfNeeded: async () => await dispatch(fetchAllRunDetailsIfNeeded())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RunListContent);

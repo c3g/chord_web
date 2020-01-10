@@ -17,10 +17,10 @@ import RunTaskLogs from "./RunTaskLogs";
 import {renderDate, RUN_STATE_TAG_COLORS} from "./utils";
 
 
-const renderContent = (Content, details, history, tab) => route => (
+const renderContent = (Content, run, history, tab) => route => (
     <>
-        <PageHeader title={`Run ${details.run_id}`}
-                    tags={<Tag color={RUN_STATE_TAG_COLORS[details.state]}>{details.state}</Tag>}
+        <PageHeader title={`Run ${run.run_id}`}
+                    tags={<Tag color={RUN_STATE_TAG_COLORS[run.state]}>{run.state}</Tag>}
                     footer={
                         <Tabs activeKey={tab}
                               onChange={key => history.push(`/data/manager/runs/${route.match.params.id}/${key}`)}>
@@ -31,13 +31,13 @@ const renderContent = (Content, details, history, tab) => route => (
                     }
                     onBack={() => history.push("/data/manager/runs")}>
             <Row type="flex">
-                <Statistic title="Started" value={renderDate(details.run_log.start_time) || "N/A"} />
-                <Statistic title="Ended" value={renderDate(details.run_log.end_time) || "N/A"}
+                <Statistic title="Started" value={renderDate(run.details.run_log.start_time) || "N/A"} />
+                <Statistic title="Ended" value={renderDate(run.details.run_log.end_time) || "N/A"}
                            style={{marginLeft: "24px"}} />
             </Row>
         </PageHeader>
         <div style={{margin: "24px 24px 16px 24px"}}>
-            <Content details={details} />
+            <Content run={run} />
         </div>
     </>
 );
@@ -53,8 +53,7 @@ const TABS = {
 class Run extends Component {
     render() {
         // TODO: 404
-        const details = (this.props.run || {}).details || null;
-        const loading = this.props.run === null || details === null;
+        const loading = this.props.run === null || (this.props.run || {details: null}).details === null;
         return (
             <>
                 {loading ? (
@@ -65,7 +64,7 @@ class Run extends Component {
                     <Switch>
                         {Object.entries(TABS).map(([tab, Content]) => (
                             <Route exact path={`${this.props.match.path}/${tab}`} key={tab}
-                                   component={renderContent(Content, details, this.props.history, tab)} />
+                                   component={renderContent(Content, this.props.run, this.props.history, tab)} />
                         ))}
                         <Redirect from={this.props.match.path} to={this.props.match.path + "/request"} />
                     </Switch>
