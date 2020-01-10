@@ -33,10 +33,7 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     await Promise.all([
         dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
         dispatch(fetchDropBoxTree()),
-        (async () => {
-            await dispatch(fetchRuns());
-            await dispatch(fetchAllRunDetailsIfNeeded());
-        })(),
+        dispatch(fetchRuns()),
         dispatch(fetchPhenopacketsIfNeeded()),
         dispatch(fetchBiosamplesIfNeeded()),
         dispatch(fetchIndividualsIfNeeded()),
