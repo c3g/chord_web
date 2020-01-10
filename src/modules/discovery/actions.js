@@ -1,7 +1,5 @@
-import {basicAction, createNetworkActionTypes, networkAction} from "../../utils/actions"
+import {createNetworkActionTypes, networkAction} from "../../utils/actions"
 
-
-export const TOGGLE_DISCOVERY_SCHEMA_MODAL = "TOGGLE_DISCOVERY_SCHEMA_MODAL";
 
 export const PERFORM_SEARCH = createNetworkActionTypes("PERFORM_SEARCH");
 export const SELECT_SEARCH = "SELECT_SEARCH";
@@ -13,8 +11,6 @@ export const REMOVE_ALL_DATA_TYPE_QUERY_FORMS = "REMOVE_ALL_DATA_TYPE_QUERY_FORM
 
 export const UPDATE_JOIN_QUERY_FORM = "UPDATE_JOIN_QUERY_FORM";
 
-
-export const toggleDiscoverySchemaModal = basicAction(TOGGLE_DISCOVERY_SCHEMA_MODAL);
 
 export const selectSearch = searchIndex => ({
     type: SELECT_SEARCH,

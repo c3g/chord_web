@@ -10,6 +10,7 @@ import {
     Empty,
     Icon,
     Menu,
+    Modal,
     Tabs,
     Typography
 } from "antd";
@@ -20,15 +21,15 @@ import "antd/es/dropdown/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
+import "antd/es/modal/style/css";
 import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SearchList from "./SearchList";
-// import SchemaTree from "../SchemaTree";
+import SchemaTree from "../SchemaTree";
 
 import {
-    toggleDiscoverySchemaModal,
     performFullSearchIfPossible,
     selectSearch,
 
@@ -44,9 +45,13 @@ class DiscoverySearchContent extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            schemasModalShown: false
+        };
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFormChange = this.handleFormChange.bind(this);
-        this.handleSchemaToggle = this.handleSchemaToggle.bind(this);
+        this.handleSchemasToggle = this.handleSchemasToggle.bind(this);
 
         this.handleAddDataTypeQueryForm = this.handleAddDataTypeQueryForm.bind(this);
         this.handleTabsEdit = this.handleTabsEdit.bind(this);
@@ -60,20 +65,17 @@ class DiscoverySearchContent extends Component {
         this.props.performFullSearchIfPossible();
     }
 
-    handleSchemaToggle() {
-        this.props.toggleSchemaModal();
+    handleSchemasToggle() {
+        this.setState({schemasModalShown: !this.state.schemasModalShown});
     }
 
     handleAddDataTypeQueryForm(e) {
-        const dataTypeID = e.key.split(":")[1];
-        const dataType = this.props.dataTypesByID[dataTypeID];
-        this.props.addDataTypeQueryForm(dataType);
+        this.props.addDataTypeQueryForm(this.props.dataTypesByID[e.key.split(":")[1]]);
     }
 
     handleTabsEdit(key, action) {
         if (action !== "remove") return;
-        const dataType = this.props.dataTypesByID[key];
-        this.props.removeDataTypeQueryForm(dataType);
+        this.props.removeDataTypeQueryForm(this.props.dataTypesByID[key]);
     }
 
     render() {
@@ -106,6 +108,8 @@ class DiscoverySearchContent extends Component {
                                   disabled={this.props.dataTypesLoading || this.props.searchLoading}>
                             <Button style={{float: "right"}}>Add Conditions on Data Type <Icon type="down" /></Button>
                         </Dropdown>
+                        <Button style={{float: "right", marginRight: "1em"}}
+                                onClick={this.handleSchemasToggle}>Explore Data Types</Button>
                     </Typography.Title>
 
                     {this.props.dataTypeForms.length > 0
@@ -125,11 +129,19 @@ class DiscoverySearchContent extends Component {
                             onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
-                {/*<Modal title={`${(this.props.dataType || {id: ""}).id} Schema`}*/}
-                {/*       visible={this.props.schemaModalShown}*/}
-                {/*       onCancel={this.handleSchemaToggle} footer={null}>*/}
-                {/*    <SchemaTree schema={(this.props.dataType || {schema: {}}).schema} />*/}
-                {/*</Modal>*/}
+                <Modal title="Data Type Schemas"
+                       visible={this.state.schemasModalShown}
+                       width={600}
+                       onCancel={this.handleSchemasToggle}
+                       footer={null}>
+                    <Tabs>
+                        {Object.values(this.props.dataTypes).flatMap(ds => (ds.items || []).map(d => (
+                            <Tabs.TabPane tab={d.id} key={d.id}>
+                                <SchemaTree schema={d.schema} />
+                            </Tabs.TabPane>
+                        )))}
+                    </Tabs>
+                </Modal>
 
                 <Typography.Title level={3}>Results</Typography.Title>
                 <SearchList />
@@ -152,7 +164,6 @@ DiscoverySearchContent.propTypes = {
     joinFormValues: PropTypes.object,
 
     selectDataType: PropTypes.func,
-    toggleSchemaModal: PropTypes.func,
     updateSearchForm: PropTypes.func,
     requestSearch: PropTypes.func,
     selectSearch: PropTypes.func,
@@ -179,7 +190,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    toggleSchemaModal: () => dispatch(toggleDiscoverySchemaModal()),
     selectSearch: (serviceInfo, dataTypeID, searchIndex) =>
         dispatch(selectSearch(serviceInfo, dataTypeID, searchIndex)),
 

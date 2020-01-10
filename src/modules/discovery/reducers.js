@@ -1,8 +1,6 @@
 import {simpleDeepCopy} from "../../utils";
 
 import {
-    TOGGLE_DISCOVERY_SCHEMA_MODAL,
-
     PERFORM_SEARCH,
     SELECT_SEARCH,
 
@@ -18,8 +16,6 @@ export const discovery = (
     state = {
         isFetching: false,
 
-        schemaModalShown: false,
-
         dataTypeForms: [],
         joinFormValues: {},
 
@@ -29,9 +25,6 @@ export const discovery = (
     action
 ) => {
     switch (action.type) {
-        case TOGGLE_DISCOVERY_SCHEMA_MODAL:
-            return {...state, schemaModalShown: !state.schemaModalShown};
-
         case PERFORM_SEARCH.REQUEST:
             return {...state, isFetching: true};
 
