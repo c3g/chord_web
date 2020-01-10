@@ -17,8 +17,16 @@ export const runs = (
             return {
                 ...state,
                 isFetching: false,
-                items: action.data.map(r => ({...r, details: r.details || null})),
-                itemsByID: Object.fromEntries(action.data.map(r => [r.run_id, {...r, details: r.details || null}]))
+                items: action.data.map(r => ({
+                    ...r,
+                    details: r.details || null,
+                    isFetching: false
+                })),
+                itemsByID: Object.fromEntries(action.data.map(r => [r.run_id, {
+                    ...r,
+                    details: r.details || null,
+                    isFetching: false
+                }]))
             };
 
         case FETCH_RUNS.ERROR:
@@ -27,6 +35,7 @@ export const runs = (
         case FETCH_RUN_DETAILS.REQUEST:
             return {
                 ...state,
+                items: state.items.map(r => r.run_id === action.runID ? ({...r, isFetching: true}) : r),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.runID]: {...(state.itemsByID[action.runID] || {}), isFetching: true}
@@ -37,7 +46,9 @@ export const runs = (
             return {
                 ...state,
                 isFetching: false,
-                items: state.items.map(i => i.run_id === action.runID ? {...i, state: action.data.state} : i),
+                items: state.items.map(r => r.run_id === action.runID
+                    ? {...r, isFetching: false, details: action.data}
+                    : r),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.runID]: {
