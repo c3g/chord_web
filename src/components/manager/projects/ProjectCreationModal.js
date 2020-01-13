@@ -54,7 +54,7 @@ ProjectCreationModal.propTypes = {
     showCreationModal: PropTypes.bool,
     creatingProject: PropTypes.bool,
     toggleProjectCreationModal: PropTypes.func,
-    isCreatingProject: PropTypes.func,
+    isCreatingProject: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
