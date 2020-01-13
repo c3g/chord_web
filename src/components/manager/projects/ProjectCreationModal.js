@@ -41,7 +41,8 @@ class ProjectCreationModal extends Component {
         return (
             <Modal visible={this.props.showCreationModal} title="Create Project" width={600} footer={[
                 <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
-                <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}>Create</Button>
+                <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}
+                        loading={this.props.isCreatingProject}>Create</Button>
             ]} onCancel={this.handleCreateCancel}>
                 <ProjectForm ref={form => this.form = form}/>
             </Modal>
@@ -51,12 +52,14 @@ class ProjectCreationModal extends Component {
 
 ProjectCreationModal.propTypes = {
     showCreationModal: PropTypes.bool,
+    creatingProject: PropTypes.bool,
     toggleProjectCreationModal: PropTypes.func,
-    createProject: PropTypes.func
+    isCreatingProject: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
     showCreationModal: state.manager.projectCreationModal,
+    isCreatingProject: state.projects.isCreating,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Modal, Typography} from "antd";
@@ -21,7 +22,8 @@ class TableDeletionModal extends Component {
                    title={`Are you sure you want to delete the "${(this.props.table || {}).name || ""}" table?`}
                    footer={[
                        <Button key="cancel" onClick={this.onCancel}>Cancel</Button>,
-                       <Button key="confirm" icon="delete" type="danger" onClick={this.onSubmit}>
+                       <Button key="confirm" icon="delete" type="danger" onClick={this.onSubmit}
+                               loading={this.props.isDeletingTable}>
                            Delete
                        </Button>
                    ]}
@@ -40,8 +42,14 @@ TableDeletionModal.propTypes = {
     visible: PropTypes.bool,
     table: PropTypes.object,
 
+    isDeletingTable: PropTypes.bool,
+
     onSubmit: PropTypes.func,
     onCancel: PropTypes.func
 };
 
-export default TableDeletionModal;
+const mapStateToProps = state => ({
+    isDeletingTable: state.serviceTables.isDeleting || state.projectTables.isDeleting
+});
+
+export default connect(mapStateToProps)(TableDeletionModal);

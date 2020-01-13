@@ -38,9 +38,8 @@ class ProjectDeletionModal extends Component {
                        (this.props.selectedProject || {title: ""}).title}" project?`}
                    footer={[
                        <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
-                       <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}>
-                           Delete
-                       </Button>
+                       <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}
+                               loading={this.props.isDeletingProject}>Delete</Button>
                    ]}
                    onCancel={this.handleDeleteCancel}>
                 <Typography.Paragraph>
@@ -55,8 +54,8 @@ class ProjectDeletionModal extends Component {
 
 ProjectDeletionModal.propTypes = {
     showDeletionModal: PropTypes.bool,
-
     selectedProject: projectPropTypesShape,
+    isDeletingProject: PropTypes.bool,
 
     toggleProjectDeletionModal: PropTypes.func,
     deleteProject: PropTypes.func
@@ -65,6 +64,7 @@ ProjectDeletionModal.propTypes = {
 const mapStateToProps = state => ({
     showDeletionModal: state.manager.projectDeletionModal,
     selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
+    isDeletingProject: state.projects.isDeleting,
 });
 
 const mapDispatchToProps = dispatch => ({
