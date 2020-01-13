@@ -9,6 +9,8 @@ import {Layout, Modal} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/modal/style/css";
 
+import OwnerRoute from "./OwnerRoute";
+
 import NotificationDrawer from "./NotificationDrawer";
 import SiteHeader from "./SiteHeader";
 
@@ -44,26 +46,7 @@ class App extends Component {
     }
 
     renderContent(Content) {
-        // noinspection HtmlUnknownTarget
-        return () => (
-            <Layout style={{minHeight: "100vh"}}>
-                <NotificationDrawer />
-                <SiteHeader />
-                <Layout>
-                    <Layout.Content style={{margin: "50px"}}>
-                        <Content />
-                    </Layout.Content>
-                    <Layout.Footer style={{textAlign: "center"}}>
-                        Copyright &copy; 2019
-                        the <a href="http://computationalgenomics.ca">Canadian Centre for Computational
-                        Genomics</a>. <br/>
-                        <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
-                        the <a href="/LICENSE.txt">LGPLv3</a>. The source code is
-                        available <a href="https://github.com/c3g/chord_web">on GitHub</a>.
-                    </Layout.Footer>
-                </Layout>
-            </Layout>
-        )
+        return () => <><SiteHeader /><Layout.Content style={{margin: "50px"}}><Content /></Layout.Content></>;
     }
 
     render() {
@@ -82,14 +65,24 @@ class App extends Component {
                        visible={this.state.signedOutModal}>
                     Please <a href={signInURL}>sign in</a> again to continue working.
                 </Modal>
-                <Switch>
-                    <Route path="/services" component={this.renderContent(ServicesContent)} />
-                    <Route path="/data/discovery" component={this.renderContent(DataDiscoveryContent)} />
-                    <Route path="/data/manager" component={this.renderContent(DataManagerContent)} />
-                    <Route path="/peers" component={this.renderContent(PeersContent)} />
-                    <Route path="/notifications" component={this.renderContent(NotificationsContent)} />
-                    <Redirect from="/" to="/services" />
-                </Switch>
+                <Layout style={{minHeight: "100vh"}}>
+                    <NotificationDrawer />
+                    <Switch>
+                        <Route path="/services" component={this.renderContent(ServicesContent)} />
+                        <Route path="/data/discovery" component={this.renderContent(DataDiscoveryContent)} />
+                        <OwnerRoute path="/data/manager" component={this.renderContent(DataManagerContent)} />
+                        <Route path="/peers" component={this.renderContent(PeersContent)} />
+                        <OwnerRoute path="/notifications" component={this.renderContent(NotificationsContent)} />
+                        <Redirect from="/" to="/services" />
+                    </Switch>
+                    <Layout.Footer style={{textAlign: "center"}}>
+                        Copyright &copy; 2019 the <a href="http://computationalgenomics.ca">Canadian Centre for
+                        Computational Genomics</a>. <br/>
+                        <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
+                        the <a href="/LICENSE.txt">LGPLv3</a>. The source code is available
+                        <a href="https://github.com/c3g/chord_web">on GitHub</a>.
+                    </Layout.Footer>
+                </Layout>
             </main>
         );
     }

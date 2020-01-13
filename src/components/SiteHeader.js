@@ -22,7 +22,7 @@ class SiteHeader extends Component {
                     margin: "0 30px 0 0",
                     float: "left"
                 }}>CHORD</h1></Link>
-                <Menu theme="dark" mode="horizontal" selectedKeys={[this.props.match.path]}
+                <Menu theme="dark" mode="horizontal" selectedKeys={this.props.match ? [this.props.match.path] : []}
                       style={{lineHeight: "64px"}}>
                     <Menu.Item key="/services">
                         <Link to="/services">

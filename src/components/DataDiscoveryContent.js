@@ -15,35 +15,27 @@ import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} 
 class DataDiscoveryContent extends Component {
     constructor(props) {
         super(props);
-        this.renderContent = this.renderContent.bind(this);
     }
 
     componentDidMount() {
         document.title = "CHORD - Discover Data";
     }
 
-    renderContent(Content) {
-        return () => (
+    render() {
+        return (
             <>
                 <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Discovery</div>}
                             subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Federated data exploration</span>}
                             style={PAGE_HEADER_STYLE} />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "24px 30px"}}>
-                        <Content />
+                        <Switch>
+                            <Route exact path="/data/discovery/search" component={DiscoverySearchContent} />
+                            <Redirect from="/data/discovery" to="/data/discovery/search" />
+                        </Switch>
                     </Layout.Content>
                 </Layout>
             </>
-        );
-    }
-
-    render() {
-        return (
-            <Switch>
-                <Route exact path="/data/discovery/search"
-                       component={this.renderContent(DiscoverySearchContent)} />
-                <Redirect from="/data/discovery" to="/data/discovery/search" />
-            </Switch>
         );
     }
 }
