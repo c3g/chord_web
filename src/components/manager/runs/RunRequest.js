@@ -31,9 +31,7 @@ class RunRequest extends Component {
                 <Descriptions.Item label="Workflow">
                     <List itemLayout="vertical">
                         <List.Item>
-                            <WorkflowListItem workflow={details.request.tags.workflow_metadata}
-                                              selectable={false}
-                                              onClick={() => {}} />
+                            <WorkflowListItem workflow={details.request.tags.workflow_metadata} />
                         </List.Item>
                     </List>
                 </Descriptions.Item>

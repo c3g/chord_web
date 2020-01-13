@@ -37,7 +37,6 @@ const ioTagWithType = (key, ioType, content) => (
 class WorkflowListItem extends Component {
     constructor(props) {
         super(props);
-        this.onClick = this.props.onClick || (() => {});
     }
 
     render() {
@@ -69,7 +68,7 @@ class WorkflowListItem extends Component {
                 <List.Item.Meta
                     title={
                         this.props.selectable
-                            ? <a onClick={() => this.onClick()}>
+                            ? <a onClick={() => (this.props.onClick || (() => {}))()}>
                                 {typeTag} {this.props.workflow.name}
                                 <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
                             : <span>{typeTag} {this.props.workflow.name}</span>}
