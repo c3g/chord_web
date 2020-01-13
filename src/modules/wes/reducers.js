@@ -9,16 +9,20 @@ import {
 } from "./actions";
 
 
-const streamRequest = (state, action, stream) => ({
-    ...state,
-    streamsByID: {
-        ...state.streamsByID,
-        [action.runID]: {
-            ...(state.streamsByID[action.runID] || {}),
-            [stream]: {isFetching: true}
+const streamRequest = (state, action, stream) => {
+    const existingRun = (state.streamsByID[action.runID] || {});
+    const existingStreamData = (existingRun[stream] || {}).data;
+    return {
+        ...state,
+        streamsByID: {
+            ...state.streamsByID,
+            [action.runID]: {
+                ...existingRun,
+                [stream]: {isFetching: true, data: existingStreamData === undefined ? null : existingStreamData}
+            }
         }
-    }
-});
+    };
+};
 
 const streamReceive = (state, action, stream) => ({
     ...state,
@@ -31,16 +35,20 @@ const streamReceive = (state, action, stream) => ({
     }
 });
 
-const streamError = (state, action, stream) => ({
-    ...state,
-    streamsByID: {
-        ...state.streamsByID,
-        [action.runID]: {
-            ...(state.streamsByID[action.runID] || {}),
-            [stream]: {isFetching: false}
+const streamError = (state, action, stream) => {
+    const existingRun = (state.streamsByID[action.runID] || {});
+    const existingStreamData = (existingRun[stream] || {}).data;
+    return {
+        ...state,
+        streamsByID: {
+            ...state.streamsByID,
+            [action.runID]: {
+                ...existingRun,
+                [stream]: {isFetching: false, data: existingStreamData === undefined ? null : existingStreamData}
+            }
         }
-    }
-});
+    };
+};
 
 
 export const runs = (

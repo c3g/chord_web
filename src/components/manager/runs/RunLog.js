@@ -7,11 +7,11 @@ import {Descriptions, Skeleton} from "antd";
 import "antd/es/descriptions/style/css";
 import "antd/es/skeleton/style/css";
 
-import {fetchRunLogStreamsIfPossible} from "../../../modules/wes/actions";
+import {fetchRunLogStreamsIfPossibleAndNeeded} from "../../../modules/wes/actions";
 
 class RunLog extends Component {
     componentDidMount() {
-        this.props.fetchRunLogStreamsIfPossible(this.props.run.run_id);
+        this.props.fetchRunLogStreamsIfPossibleAndNeeded(this.props.run.run_id);
     }
 
     render() {
@@ -61,7 +61,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchRunLogStreamsIfPossible: runID => dispatch(fetchRunLogStreamsIfPossible(runID))
+    fetchRunLogStreamsIfPossibleAndNeeded: runID => dispatch(fetchRunLogStreamsIfPossibleAndNeeded(runID))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RunLog);

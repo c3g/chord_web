@@ -80,10 +80,17 @@ export const fetchRunLogStdErr = networkAction(runDetails => ({
     err: `Error fetching stderr for run ${runDetails.run_id}`
 }));
 
-export const fetchRunLogStreamsIfPossible = runID => async (dispatch, getState) => {
+export const fetchRunLogStreamsIfPossibleAndNeeded = runID => async (dispatch, getState) => {
     if (getState().runs.isFetching) return;
     const run = getState().runs.itemsByID[runID];
     if (!run || run.isFetching || !run.details) return;
+    const runStreams = getState().runs.streamsByID[runID] || {};
+    if ((runStreams.stdout || {}).isFetching || (runStreams.stderr || {}).isFetching) return;
+    if (RUN_DONE_STATES.includes(run.state)
+        && runStreams.hasOwnProperty("stdout")
+        && runStreams.stdout.data !== null
+        && runStreams.hasOwnProperty("stderr")
+        && runStreams.stderr.data !== null) return;  // No new output expected
     await Promise.all([
         dispatch(fetchRunLogStdOut(run.details)),
         dispatch(fetchRunLogStdErr(run.details)),
