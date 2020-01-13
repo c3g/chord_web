@@ -29,7 +29,6 @@ import {urlPath} from "../utils";
 class App extends Component {
     constructor(props) {
         super(props);
-        this.renderContent = this.renderContent.bind(this);
         this.eventRelayConnection = null;
         this.pingInterval = null;
         this.lastUser = null;
@@ -43,10 +42,6 @@ class App extends Component {
         if (this.pingInterval === null) return;
         clearInterval(this.pingInterval);
         this.pingInterval = null;
-    }
-
-    renderContent(Content) {
-        return () => <><SiteHeader /><Layout.Content style={{margin: "50px"}}><Content /></Layout.Content></>;
     }
 
     render() {
@@ -67,14 +62,17 @@ class App extends Component {
                 </Modal>
                 <Layout style={{minHeight: "100vh"}}>
                     <NotificationDrawer />
+                    <SiteHeader />
+                    <Layout.Content style={{margin: "50px"}}>
                     <Switch>
-                        <Route path="/services" component={this.renderContent(ServicesContent)} />
-                        <Route path="/data/discovery" component={this.renderContent(DataDiscoveryContent)} />
-                        <OwnerRoute path="/data/manager" component={this.renderContent(DataManagerContent)} />
-                        <Route path="/peers" component={this.renderContent(PeersContent)} />
-                        <OwnerRoute path="/notifications" component={this.renderContent(NotificationsContent)} />
+                        <Route path="/services" component={ServicesContent} />
+                        <Route path="/data/discovery" component={DataDiscoveryContent} />
+                        <OwnerRoute path="/data/manager" component={DataManagerContent} />
+                        <Route path="/peers" component={PeersContent} />
+                        <OwnerRoute path="/notifications" component={NotificationsContent} />
                         <Redirect from="/" to="/services" />
                     </Switch>
+                    </Layout.Content>
                     <Layout.Footer style={{textAlign: "center"}}>
                         Copyright &copy; 2019 the <a href="http://computationalgenomics.ca">Canadian Centre for
                         Computational Genomics</a>. <br/>

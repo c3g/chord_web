@@ -12,8 +12,99 @@ import "antd/es/menu/style/css";
 
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
+const renderMenuItem = i => {
+    if (i.hasOwnProperty("children")) {
+        return (
+            <Menu.SubMenu style={i.style || {}} title={
+                <span className="submenu-title-wrapper">
+                    {i.icon || null}
+                    {i.text || null}
+                </span>
+            } key={i.key || ""}>
+                {(i.children || []).map(ii => renderMenuItem(ii))}
+            </Menu.SubMenu>
+        );
+    }
+
+    return (
+        <Menu.Item key={i.key || i.url || ""}
+                   onClick={i.onClick || undefined}
+                   style={i.style || {}}
+                   disabled={i.disabled || false}>
+            {i.url && !i.onClick ?
+                <Link to={i.url}>
+                    {i.icon || null}
+                    {i.text || null}
+                </Link> : <span>
+                    {i.icon || null}
+                    {i.text || null}
+                </span>}
+        </Menu.Item>
+    )
+};
+
+
 class SiteHeader extends Component {
     render() {
+        const menuItems = [
+            {
+                url: "/services",
+                icon: <Icon type="cloud-server" />,
+                text: <span className="nav-text">Services</span>,
+            },
+            {
+                url: "/data/discovery",
+                icon: <Icon type="file-search" />,
+                text: <span className="nav-text">Data Discovery</span>,
+            },
+            {
+                url: "/data/manager",
+                icon: <Icon type="folder-open" />,
+                text: <span className="nav-text">Data Manager</span>,
+                disabled: !this.props.isOwner,
+            },
+            {
+                url: "/peers",
+                icon: <Icon type="apartment" />,
+                text: <span className="nav-text">Peers</span>,
+            },
+            ...(this.props.user ? [{
+                key: "user-menu",
+                style: {float: "right"},
+                icon: <Icon type="user" />,
+                text: this.props.user.preferred_username,
+                children: [{
+                    key: "sign-out-link",
+                    onClick: () => window.location.href = "/api/auth/sign-out",
+                    icon: <Icon type="logout" />,
+                    text: <span className="nav-text">Sign Out</span>
+                }]
+            }] : [{
+                key: "sign-in",
+                style: {float: "right"},
+                icon: <Icon type="login" />,
+                text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
+            }]),
+            {
+                url: "/notifications",
+                style: {float: "right"},
+                disabled: !this.props.isOwner,
+                icon: <Badge dot count={this.props.unreadNotifications.length}>
+                    <Icon type="bell" style={{marginRight: "0"}}/>
+                </Badge>,
+                text: <span className="nav-text" style={{marginLeft: "10px"}}>
+                    Notifications
+                    {this.props.unreadNotifications.length > 0 ? (
+                        <span> ({this.props.unreadNotifications.length})</span>
+                    ) : null}
+                </span>,
+                onClick: () => this.props.dispatch(showNotificationDrawer())
+            }
+        ];
+
+        const selectedKeys = menuItems.filter(i => i.url && this.props.location.pathname.startsWith(i.url))
+            .map(i => i.key || i.url || "");
+
         return (
             <Layout.Header>
                 <Link to="/"><h1 style={{
@@ -22,67 +113,14 @@ class SiteHeader extends Component {
                     margin: "0 30px 0 0",
                     float: "left"
                 }}>CHORD</h1></Link>
-                <Menu theme="dark" mode="horizontal" selectedKeys={this.props.match ? [this.props.match.path] : []}
+                <Menu theme="dark"
+                      mode="horizontal"
+                      selectedKeys={selectedKeys}
                       style={{lineHeight: "64px"}}>
-                    <Menu.Item key="/services">
-                        <Link to="/services">
-                            <Icon type="cloud-server" />
-                            <span className="nav-text">Services</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="/data/discovery">
-                        <Link to="/data/discovery">
-                            <Icon type="file-search" />
-                            <span className="nav-text">Data Discovery</span>
-                        </Link>
-                    </Menu.Item>
-                    {/* TODO: Disable if not an owner */}
-                    <Menu.Item key="/data/manager" disabled={!this.props.isOwner}>
-                        <Link to="/data/manager">
-                            <Icon type="folder-open" />
-                            <span className="nav-text">Data Manager</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="/peers">
-                        <Link to="/peers">
-                            <Icon type="apartment" />
-                            <span className="nav-text">Peers</span>
-                        </Link>
-                    </Menu.Item>
-                    {this.props.user ? (
-                        <Menu.SubMenu style={{float: "right"}} title={
-                            <span className="submenu-title-wrapper">
-                                <Icon type="user" />
-                                <span className="nav-text">{this.props.user.preferred_username}</span>
-                            </span>
-                        }>
-                            <Menu.Item key="sign-out" onClick={() => window.location.href = "/api/auth/sign-out"}>
-                                <Icon type="logout" />
-                                <span className="nav-text">Sign Out</span>
-                            </Menu.Item>
-                        </Menu.SubMenu>
-                    ) : (
-                        <Menu.Item style={{float: "right"}} onClick={() => window.location.href = "/api/auth/sign-in"}>
-                            <Icon type="user" />
-                            <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>
-                        </Menu.Item>
-                    )}
-                    <Menu.Item key="/notifications"
-                               style={{float: "right"}}
-                               disabled={!this.props.isOwner}
-                               onClick={() => this.props.dispatch(showNotificationDrawer())}>
-                        <Badge dot count={this.props.unreadNotifications.length}>
-                            <Icon type="bell" style={{marginRight: "0"}}/>
-                        </Badge>
-                        <span className="nav-text" style={{marginLeft: "10px"}}>Notifications
-                            {this.props.unreadNotifications.length > 0 ? (
-                                <span> ({this.props.unreadNotifications.length})</span>
-                            ) : null}
-                        </span>
-                    </Menu.Item>
+                    {menuItems.map(i => renderMenuItem(i))}
                 </Menu>
             </Layout.Header>
-        )
+        );
     }
 }
 
