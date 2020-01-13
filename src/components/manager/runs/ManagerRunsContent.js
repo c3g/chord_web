@@ -20,7 +20,8 @@ class ManagerRunsContent extends Component {
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     <Switch>
                         <Route exact path="/data/manager/runs" component={RunListContent} />
-                        <Route path="/data/manager/runs/:id" component={RunDetailContent} />
+                        <Route path="/data/manager/runs/:id/:tab" component={RunDetailContent} />
+                        <Redirect from="/data/manager/runs/:id" to="/data/manager/runs/:id/request" />
                         <Redirect from="/data/manager" to="/data/manager/projects" />
                     </Switch>
                 </Layout.Content>
