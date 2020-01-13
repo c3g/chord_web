@@ -13,6 +13,7 @@ import "antd/es/table/style/css";
 import {selectSearch} from "../../modules/discovery/actions";
 import DataUseDisplay from "../DataUseDisplay";
 
+
 class SearchList extends Component {
     constructor(props) {
         super(props);
@@ -49,6 +50,43 @@ class SearchList extends Component {
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
         );
 
+        const searchResultsColumns = [
+            {
+                title: "Dataset ID",
+                dataIndex: "identifier",
+                sorter: (a, b) => a.identifier.localeCompare(b.identifier),
+            },
+            {
+                title: "Title",
+                dataIndex: "title",
+                sorter: (a, b) => a.title.localeCompare(b.title),
+                defaultSortOrder: "ascend",
+            },
+            {
+                title: "Node",
+                dataIndex: "node",
+                render: node => <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>,
+            },
+            {
+                title: "Actions",
+                dataIndex: "actions",
+                render: (_, dataset) => (
+                    <Row type="flex">
+                        <Col>
+                            <Button type="link"
+                                    onClick={() => this.handleDatasetTermsClick(dataset)}>
+                                Show Data Use Terms
+                            </Button>
+                        </Col>
+                        {/*<Col>*/}
+                        {/*    <Button type="link">/!*
+                                            TODO: Real actions *!/Request Access</Button>*/}
+                        {/*</Col>*/}
+                    </Row>
+                ),
+            },
+        ];
+
         return (
             <>
                 <Modal title={`Dataset ${((this.state.dataset || {}).name || (this.state.dataset || {}).id || "")
@@ -63,29 +101,19 @@ class SearchList extends Component {
                               accordion={true}
                               activeKey={(this.props.selectedSearch || 0).toString()}
                               onChange={this.handleSearchSelect}>
-                        {[...this.props.searches].reverse().map((s, i) => (
-                            <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
-                                            key={this.props.searches.length - i - 1}>
-                                <Table bordered={true} dataSource={s.results} rowKey="identifier">
-                                    <Table.Column title="Dataset ID" dataIndex="identifier" />
-                                    <Table.Column title="Title" dataIndex="title" />
-                                    <Table.Column title="Actions" dataIndex="actions" render={(_, dataset) => (
-                                        <Row type="flex">
-                                            <Col>
-                                                <Button type="link"
-                                                        onClick={() => this.handleDatasetTermsClick(dataset)}>
-                                                    Show Data Use Terms
-                                                </Button>
-                                            </Col>
-                                            {/*<Col>*/}
-                                            {/*    <Button type="link">/!*
-                                            TODO: Real actions *!/Request Access</Button>*/}
-                                            {/*</Col>*/}
-                                        </Row>
-                                    )} />
-                                </Table>
-                            </Collapse.Panel>
-                        ))}
+                        {[...this.props.searches].reverse().map((s, i) => {
+                            const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
+                                r.map(d => ({...d, node: n})));
+                            return (
+                                <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
+                                                key={this.props.searches.length - i - 1}>
+                                    <Table bordered={true}
+                                           columns={searchResultsColumns}
+                                           dataSource={searchResults}
+                                           rowKey="identifier" />
+                                </Collapse.Panel>
+                            );
+                        })}
                     </Collapse>
                 </Spin>
             </>
