@@ -12,36 +12,7 @@ import "antd/es/menu/style/css";
 
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
-const renderMenuItem = i => {
-    if (i.hasOwnProperty("children")) {
-        return (
-            <Menu.SubMenu style={i.style || {}} title={
-                <span className="submenu-title-wrapper">
-                    {i.icon || null}
-                    {i.text || null}
-                </span>
-            } key={i.key || ""}>
-                {(i.children || []).map(ii => renderMenuItem(ii))}
-            </Menu.SubMenu>
-        );
-    }
-
-    return (
-        <Menu.Item key={i.key || i.url || ""}
-                   onClick={i.onClick || undefined}
-                   style={i.style || {}}
-                   disabled={i.disabled || false}>
-            {i.url && !i.onClick ?
-                <Link to={i.url}>
-                    {i.icon || null}
-                    {i.text || null}
-                </Link> : <span>
-                    {i.icon || null}
-                    {i.text || null}
-                </span>}
-        </Menu.Item>
-    )
-};
+import {matchingMenuKeys, renderMenuItem} from "../utils";
 
 
 class SiteHeader extends Component {
@@ -102,9 +73,6 @@ class SiteHeader extends Component {
             }
         ];
 
-        const selectedKeys = menuItems.filter(i => i.url && this.props.location.pathname.startsWith(i.url))
-            .map(i => i.key || i.url || "");
-
         return (
             <Layout.Header>
                 <Link to="/"><h1 style={{
@@ -115,7 +83,7 @@ class SiteHeader extends Component {
                 }}>CHORD</h1></Link>
                 <Menu theme="dark"
                       mode="horizontal"
-                      selectedKeys={selectedKeys}
+                      selectedKeys={matchingMenuKeys(menuItems, this.props.location)}
                       style={{lineHeight: "64px"}}>
                     {menuItems.map(i => renderMenuItem(i))}
                 </Menu>

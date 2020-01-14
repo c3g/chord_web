@@ -18,42 +18,23 @@ import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
-const renderContent = Content => route => (
-    <>
-        <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Manager</div>}
-                    subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>
-                                Share data with the CHORD federation
-                            </span>}
-                    style={{...PAGE_HEADER_STYLE, borderBottom: "none", paddingBottom: "0"}}
-                    footer={
-                        <Menu mode="horizontal" style={{
-                            marginLeft: "-24px",
-                            marginRight: "-24px",
-                            marginTop: "-12px"
-                        }} selectedKeys={[route.match.path]}>
-                            <Menu.Item key="/data/manager/projects" style={{marginLeft: "4px"}}>
-                                <Link to="/data/manager/projects">Projects and Datasets</Link>
-                            </Menu.Item>
-                            <Menu.Item key="/data/manager/access">
-                                <Link to="/data/manager/access">Access Management</Link>
-                            </Menu.Item>
-                            <Menu.Item key="/data/manager/files">
-                                <Link to="/data/manager/files">Files</Link>
-                            </Menu.Item>
-                            <Menu.Item key="/data/manager/ingestion">
-                                <Link to="/data/manager/ingestion">Ingestion</Link>
-                            </Menu.Item>
-                            <Menu.Item key="/data/manager/workflows">
-                                <Link to="/data/manager/workflows">Workflows</Link>
-                            </Menu.Item>
-                            <Menu.Item key="/data/manager/runs">
-                                <Link to="/data/manager/runs">Workflow Runs</Link>
-                            </Menu.Item>
-                        </Menu>
-                    } />
-        <Content />
-    </>
-);
+import {renderMenuItem, matchingMenuKeys, projectPropTypesShape} from "../utils";
+
+const PAGE_MENU = [
+    {url: "/data/manager/projects", style: {marginLeft: "4px"}, text: "Projects and Datasets"},
+    {url: "/data/manager/access", text: "Access Management"},
+    {url: "/data/manager/files", text: "Files"},
+    {url: "/data/manager/ingestion", text: "Ingestion"},
+    {url: "/data/manager/workflows", text: "Workflows"},
+    {url: "/data/manager/runs", text: "Workflow Runs"},
+];
+
+const MENU_STYLE = {
+    marginLeft: "-24px",
+    marginRight: "-24px",
+    marginTop: "-12px"
+};
+
 
 class DataManagerContent extends Component {
     async componentDidMount() {
@@ -61,21 +42,34 @@ class DataManagerContent extends Component {
     }
 
     render() {
+        const selectedKeys = matchingMenuKeys(PAGE_MENU, this.props.location);
         return (
-            <Switch>
-                <Route exact path="/data/manager/projects" component={renderContent(ManagerProjectDatasetContent)} />
-                <Route exact path="/data/manager/access" component={renderContent(ManagerAccessContent)} />
-                <Route exact path="/data/manager/files" component={renderContent(ManagerFilesContent)} />
-                <Route exact path="/data/manager/ingestion" component={renderContent(ManagerIngestionContent)} />
-                <Route exact path="/data/manager/workflows" component={renderContent(ManagerWorkflowsContent)} />
-                <Route path="/data/manager/runs" component={renderContent(ManagerRunsContent)} />
-                <Redirect from="/data/manager" to="/data/manager/projects" />
-            </Switch>
+            <>
+                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Manager</div>}
+                            subTitle={
+                                <span style={PAGE_HEADER_SUBTITLE_STYLE}>Share data with the CHORD federation</span>}
+                            style={{...PAGE_HEADER_STYLE, borderBottom: "none", paddingBottom: "0"}}
+                            footer={
+                                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                                    {PAGE_MENU.map(renderMenuItem)}
+                                </Menu>
+                            } />
+                <Switch>
+                    <Route path="/data/manager/projects" component={ManagerProjectDatasetContent} />
+                    <Route exact path="/data/manager/access" component={ManagerAccessContent} />
+                    <Route exact path="/data/manager/files" component={ManagerFilesContent} />
+                    <Route exact path="/data/manager/ingestion" component={ManagerIngestionContent} />
+                    <Route exact path="/data/manager/workflows" component={ManagerWorkflowsContent} />
+                    <Route path="/data/manager/runs" component={ManagerRunsContent} />
+                    <Redirect from="/data/manager" to="/data/manager/projects" />
+                </Switch>
+            </>
         );
     }
 }
 
 DataManagerContent.propTypes = {
+    projects: PropTypes.arrayOf(projectPropTypesShape),
     runs: PropTypes.arrayOf(PropTypes.shape({
         run_id: PropTypes.string,
         state: PropTypes.string

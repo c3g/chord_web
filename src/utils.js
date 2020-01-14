@@ -1,4 +1,7 @@
 import PropTypes from "prop-types";
+import {Menu} from "antd";
+import {Link} from "react-router-dom";
+import React from "react";
 
 
 export const urlPath = url => (new URL(url)).pathname;
@@ -9,6 +12,43 @@ export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));
 export const objectWithoutProps =(o, ps) => Object.fromEntries(Object.entries(o)
     .filter(([p2], _) => !ps.includes(p2)));
 export const objectWithoutProp = (o, p) => objectWithoutProps(o, [p]);
+
+
+// Custom menu renderer
+export const renderMenuItem = i => {
+    if (i.hasOwnProperty("children")) {
+        return (
+            <Menu.SubMenu style={i.style || {}} title={
+                <span className="submenu-title-wrapper">
+                    {i.icon || null}
+                    {i.text || null}
+                </span>
+            } key={i.key || ""}>
+                {(i.children || []).map(ii => renderMenuItem(ii))}
+            </Menu.SubMenu>
+        );
+    }
+
+    return (
+        <Menu.Item key={i.key || i.url || ""}
+                   onClick={i.onClick || undefined}
+                   style={i.style || {}}
+                   disabled={i.disabled || false}>
+            {i.url && !i.onClick ?
+                <Link to={i.url}>
+                    {i.icon || null}
+                    {i.text || null}
+                </Link> : <span>
+                    {i.icon || null}
+                    {i.text || null}
+                </span>}
+        </Menu.Item>
+    )
+};
+
+export const matchingMenuKeys = (menuItems, location) => menuItems
+    .filter(i => i.url && location.pathname.startsWith(i.url))
+    .map(i => i.key || i.url || "");
 
 
 // Gives components which include this in their state to props connection access to the drop box and loading status.
