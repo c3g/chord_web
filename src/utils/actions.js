@@ -19,6 +19,36 @@ export const createFlowActionTypes = name => ({
 });
 
 
+const _unpaginatedNetworkFetch = async (url, req, parse) => {
+    const response = await fetch(url, req);
+    if (response.ok) {
+        return response.status === 204 ? null : await parse(response);
+    } else {
+        throw `${response.status} ${response.statusText}`;
+    }
+};
+
+const _paginatedNetworkFetch = async (url, req, parse) => {
+    const results = [];
+    const _fetchNext = async (pageUrl) => {
+        const response = await fetch(pageUrl, req);
+        if (response.ok) {
+            const data = await parse(response);
+            if (!data.hasOwnProperty("results")) throw "Missing results set";
+            const pageResults = data.results;
+            const nextUrl = data.next || null;
+            if (!(pageResults instanceof Array)) throw "Invalid results set";
+            results.push(...pageResults);
+            if (nextUrl) await _fetchNext(nextUrl);
+        } else {
+            throw "Invalid response encountered";
+        }
+    };
+    await _fetchNext(url);
+    return results;
+};
+
+
 const _networkAction = (fn, ...args) =>
     async (dispatch, getState) => {
         let fnResult = fn(...args);
@@ -27,30 +57,20 @@ const _networkAction = (fn, ...args) =>
             fnResult = fnResult(dispatch, getState);
         }
 
-        const {types, params, url, req, err, onSuccess} = fnResult;
+        const {types, params, url, req, err, onSuccess, paginated} = fnResult;
         let {parse} = fnResult;
         if (!parse) parse = async r => await r.json();
 
         await dispatch({type: types.REQUEST, ...params});
         try {
-            const response = await fetch(url, req);
-
-            if (response.ok) {
-                const data = response.status === 204 ? null : await parse(response);
-                await dispatch({
-                    type: types.RECEIVE,
-                    ...params,
-                    ...(data === null ? {} : {data}),
-                    receivedAt: Date.now()
-                });
-                if (onSuccess) await onSuccess(data);
-            } else {
-                if (err) {
-                    console.error(response, err);
-                    message.error(err);
-                }
-                await dispatch({type: types.ERROR, ...params});
-            }
+            const data = await (paginated ? _paginatedNetworkFetch : _unpaginatedNetworkFetch)(url, req, parse);
+            await dispatch({
+                type: types.RECEIVE,
+                ...params,
+                ...(data === null ? {} : {data}),
+                receivedAt: Date.now()
+            });
+            if (onSuccess) await onSuccess(data);
         } catch (e) {
             if (err) {
                 console.error(e, err);

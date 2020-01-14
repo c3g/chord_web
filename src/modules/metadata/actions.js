@@ -45,6 +45,7 @@ const endProjectTableDeletion = (project, tableID) => ({type: PROJECT_TABLE_DELE
 export const fetchProjects = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PROJECTS,
     url: `${getState().services.metadataService.url}/api/projects`,
+    paginated: true,
     err: "Error fetching projects"
 }));
 
@@ -53,6 +54,7 @@ export const fetchProjectTables = networkAction(projectsByID => (dispatch, getSt
     types: FETCH_PROJECT_TABLES,
     params: {projectsByID},
     url: `${getState().services.metadataService.url}/api/table_ownership`,
+    paginated: true,
     err: "Error fetching tables"
 }));
 
@@ -295,6 +297,7 @@ export const deleteProjectTableIfPossible = (project, table) => async (dispatch,
 export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PHENOPACKETS,
     url: `${getState().services.metadataService.url}/api/phenopackets`,
+    paginated: true,
     err: "Error fetching phenopackets"
 }));
 
@@ -306,6 +309,7 @@ export const fetchPhenopacketsIfNeeded = () => async (dispatch, getState) => {
 export const fetchBiosamples = networkAction(() => (dispatch, getState) => ({
     types: FETCH_BIOSAMPLES,
     url: `${getState().services.metadataService.url}/api/biosamples`,
+    paginated: true,
     err: "Error fetching biosamples"
 }));
 
@@ -317,7 +321,8 @@ export const fetchBiosamplesIfNeeded = () => async (dispatch, getState) => {
 export const fetchIndividuals = networkAction(() => (dispatch, getState) => ({
     types: FETCH_INDIVIDUALS,
     url: `${getState().services.metadataService.url}/api/individuals`,
-    err: "Error fetching individuals"
+    paginated: true,
+    err: "Error fetching individuals",
 }));
 
 export const fetchIndividualsIfNeeded = () => async (dispatch, getState) => {

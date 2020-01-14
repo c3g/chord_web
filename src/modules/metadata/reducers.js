@@ -43,8 +43,8 @@ export const projects = (
             return {
                 ...state,
                 isFetching: false,
-                items: action.data.results.sort(projectSort),
-                itemsByID: Object.fromEntries(action.data.results.map(p => [p.identifier, p])),
+                items: action.data.sort(projectSort),
+                itemsByID: Object.fromEntries(action.data.map(p => [p.identifier, p])),
             };
 
         case FETCH_PROJECTS.ERROR:
@@ -194,7 +194,7 @@ export const projectTables = (
                 isFetching: false,
                 items: [
                     ...state.items,
-                    ...action.data.results
+                    ...action.data
                         .map(t => ({
                             ...t,
                             project_id: (Object.entries(action.projectsByID)
@@ -206,7 +206,7 @@ export const projectTables = (
                 itemsByProjectID: {  // TODO: Improve performance by maybe returning project ID on server side?
                     ...state.itemsByProjectID,
                     ...Object.fromEntries(Object.entries(action.projectsByID).map(([projectID, project]) =>
-                        [projectID, action.data.results.filter(t => project.datasets
+                        [projectID, action.data.filter(t => project.datasets
                             .map(d => d.identifier)
                             .includes(t.dataset))]
                     ))
@@ -275,8 +275,8 @@ export const phenopackets = (
             return {
                 ...state,
                 isFetching: false,
-                items: [...action.data.results],
-                itemsByDatasetID: Object.fromEntries(Object.entries(action))
+                items: [...action.data],
+                itemsByDatasetID: Object.fromEntries(Object.entries(action))  // TODO: ????????
             };
 
         case FETCH_PHENOPACKETS.ERROR:
@@ -303,8 +303,8 @@ export const biosamples = (
             return {
                 ...state,
                 isFetching: false,
-                items: [...action.data.results],
-                itemsByID: Object.fromEntries(action.data.results.map(b => [b.id, b]))
+                items: [...action.data],
+                itemsByID: Object.fromEntries(action.data.map(b => [b.id, b]))
             };
 
         case FETCH_BIOSAMPLES.ERROR:
@@ -331,8 +331,8 @@ export const individuals = (
             return {
                 ...state,
                 isFetching: false,
-                items: [...action.data.results],
-                itemsByID: Object.fromEntries(action.data.results.map(i => [i.id, i]))
+                items: [...action.data],
+                itemsByID: Object.fromEntries(action.data.map(i => [i.id, i]))
             };
 
         case FETCH_INDIVIDUALS.ERROR:
