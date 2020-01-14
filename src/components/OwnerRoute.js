@@ -8,8 +8,6 @@ import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 
-import SiteHeader from "./SiteHeader";
-
 const signInIcon = (
     <div style={{textAlign: "center"}}>
         <Icon type="login" style={{fontSize: 48}} />
@@ -20,28 +18,20 @@ const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, ...rest})
     return (
         <Route {...rest} render={props => shouldRedirect
             ? (
-                <>
-                    <SiteHeader />
-                    <Layout.Content style={{
-                        margin: "50px",
-                        background: "white",
-                        padding: "32px 24px 4px",
-                        display: "flex",
-                        flexDirection: "column"
-                    }}>
-                        <div style={{flex: 1}} />
-                            <Empty image={signInIcon}
-                                   imageStyle={{height: "auto", marginBottom: "16px"}}
-                                   description="You must sign in as an owner of this node to access this page.">
-                                {isSignedIn
-                                    ? <Button onClick={() => window.location.href = "/api/auth/sign-out"}>
-                                        Sign Out</Button>
-                                    : <Button type="primary" onClick={() => window.location.href = "/api/auth/sign-in"}>
-                                        Sign In</Button>}
-                            </Empty>
-                        <div style={{flex: 1}} />
-                    </Layout.Content>
-                </>
+                <Layout.Content style={{
+                    background: "white",
+                    padding: "48px 24px",
+                }}>
+                    <Empty image={signInIcon}
+                           imageStyle={{height: "auto", marginBottom: "16px"}}
+                           description="You must sign in as an owner of this node to access this page.">
+                        {isSignedIn
+                            ? <Button onClick={() => window.location.href = "/api/auth/sign-out"}>
+                                Sign Out</Button>
+                            : <Button type="primary" onClick={() => window.location.href = "/api/auth/sign-in"}>
+                                Sign In</Button>}
+                    </Empty>
+                </Layout.Content>
             ) : <Component {...props} />} />
     );
 };
