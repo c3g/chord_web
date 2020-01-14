@@ -48,13 +48,14 @@ class SiteHeader extends Component {
                     key: "sign-out-link",
                     onClick: () => window.location.href = "/api/auth/sign-out",
                     icon: <Icon type="logout" />,
-                    text: <span className="nav-text">Sign Out</span>
+                    text: <span className="nav-text">Sign Out</span>,
                 }]
             }] : [{
                 key: "sign-in",
                 style: {float: "right"},
                 icon: <Icon type="login" />,
                 text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
+                onClick: () => window.location.href = "/api/auth/sign-in",
             }]),
             {
                 url: "/notifications",
@@ -69,7 +70,7 @@ class SiteHeader extends Component {
                         <span> ({this.props.unreadNotifications.length})</span>
                     ) : null}
                 </span>,
-                onClick: () => this.props.dispatch(showNotificationDrawer())
+                onClick: () => this.props.dispatch(showNotificationDrawer()),
             }
         ];
 
