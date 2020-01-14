@@ -7,7 +7,7 @@ import {
     endAddingServiceTable,
     endDeletingServiceTable
 } from "../services/actions";
-import {endProjectEditing, selectProjectIfItExists} from "../manager/actions";
+import {endProjectEditing} from "../manager/actions";
 
 import {
     createNetworkActionTypes,
@@ -70,7 +70,7 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
 };
 
 
-const createProject = networkAction(project => (dispatch, getState) => ({
+const createProject = networkAction((project, history) => (dispatch, getState) => ({
     types: CREATE_PROJECT,
     url: `${getState().services.metadataService.url}/api/projects`,
     req: {
@@ -80,15 +80,15 @@ const createProject = networkAction(project => (dispatch, getState) => ({
     },
     err: "Error creating project",
     onSuccess: async data => {
-        await dispatch(selectProjectIfItExists(data.id));
+        if (history) history.push(`/data/manager/projects/${data.identifier}`);
         message.success(`Project '${data.title}' created!`)
     }
 }));
 
-export const createProjectIfPossible = project => async (dispatch, getState) => {
+export const createProjectIfPossible = (project, history) => async (dispatch, getState) => {
     // TODO: Need object response from POST (is this done??)
     if (getState().projects.isCreating) return;
-    await dispatch(createProject(project));
+    await dispatch(createProject(project, history));
 };
 
 export const deleteProject = networkAction(project => (dispatch, getState) => ({

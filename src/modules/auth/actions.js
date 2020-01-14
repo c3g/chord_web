@@ -1,4 +1,10 @@
-import {createNetworkActionTypes, networkAction} from "../../utils/actions";
+import {
+    beginFlow,
+    createFlowActionTypes,
+    createNetworkActionTypes,
+    endFlow,
+    networkAction
+} from "../../utils/actions";
 
 import {fetchDropBoxTree} from "../manager/actions";
 import {
@@ -13,6 +19,7 @@ import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../service
 import {fetchRuns} from "../wes/actions";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
+export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");
 
 export const fetchUser = networkAction(() => ({
     types: FETCH_USER,
@@ -21,13 +28,21 @@ export const fetchUser = networkAction(() => ({
 
 export const fetchUserAndDependentData = servicesCb => async (dispatch, getState) => {
     const oldState = getState().auth.user;
+    const hasAttempted = getState().auth.hasAttempted;
+
+    if (!hasAttempted) await dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
+
     await dispatch(fetchUser());
     await dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
     await (servicesCb || (() => {}))();
 
     const newState = getState().auth.user;
-    if (newState === null || (oldState || {}).chord_user_role === newState.chord_user_role) return;
-    if (newState.chord_user_role !== "owner") return;
+    if (newState === null
+            || (oldState || {}).chord_user_role === newState.chord_user_role
+            || newState.chord_user_role !== "owner") {
+        if (!hasAttempted) await dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
+        return;
+    }
 
     // Otherwise, we're newly authenticated as an owner, so run all actions that need authentication.
     await Promise.all([
@@ -39,4 +54,6 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
         dispatch(fetchIndividualsIfNeeded()),
         dispatch(fetchNotifications()),
     ]);
+
+    if (!hasAttempted) await dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
 };

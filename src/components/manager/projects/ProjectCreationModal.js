@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Button, Modal} from "antd";
@@ -30,7 +31,7 @@ class ProjectCreationModal extends Component {
                 return;
             }
 
-            await this.props.createProject(values);
+            await this.props.createProject(values, this.props.history);
 
             // TODO: Only close modal if submission was a success
             this.props.toggleProjectCreationModal();
@@ -64,7 +65,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-    createProject: async project => await dispatch(createProjectIfPossible(project)),
+    createProject: async (project, history) => await dispatch(createProjectIfPossible(project, history)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectCreationModal);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectCreationModal));

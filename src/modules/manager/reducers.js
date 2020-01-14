@@ -1,6 +1,4 @@
 import {
-    SELECT_PROJECT,
-
     TOGGLE_PROJECT_CREATION_MODAL,
     TOGGLE_PROJECT_DELETION_MODAL,
 
@@ -9,12 +7,9 @@ import {
     FETCH_DROP_BOX_TREE,
 } from "./actions";
 
-import {DELETE_PROJECT} from "../metadata/actions";
-
 
 export const manager = (
     state = {
-        selectedProjectID: null,
         projectCreationModal: false,
         projectDeletionModal: false,
         editingProject: false
@@ -22,15 +17,6 @@ export const manager = (
     action
 ) => {
     switch (action.type) {
-        case SELECT_PROJECT:
-            return {...state, selectedProjectID: action.projectID};
-
-        case DELETE_PROJECT.RECEIVE:
-            return {
-                ...state,
-                selectedProjectID: state.selectedProjectID === action.projectID ? null : state.selectedProjectID
-            };
-
         case TOGGLE_PROJECT_CREATION_MODAL:
             return {...state, projectCreationModal: !state.projectCreationModal};
 
