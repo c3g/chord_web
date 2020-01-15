@@ -8,10 +8,7 @@ import "antd/es/typography/style/css";
 
 import {fetchAllRunDetailsIfNeeded} from "../../../modules/wes/actions";
 
-import {RUN_TABLE_COLUMNS} from "./utils";
-
-
-const RUN_REFRESH_TIMEOUT = 5000;
+import {RUN_REFRESH_TIMEOUT, RUN_TABLE_COLUMNS} from "./utils";
 
 
 class RunListContent extends Component {

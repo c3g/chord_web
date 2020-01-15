@@ -4,6 +4,10 @@ import {Link} from "react-router-dom";
 import {Tag} from "antd";
 import "antd/es/tag/style/css"
 
+
+export const RUN_REFRESH_TIMEOUT = 7500;
+
+
 export const renderDate = date => date === "" ? "" : new Date(Date.parse(date)).toLocaleString("en-CA");
 
 export const sortDate = (a, b, dateProperty) =>
