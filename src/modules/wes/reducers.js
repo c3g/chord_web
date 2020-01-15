@@ -95,16 +95,18 @@ export const runs = (
             };
 
         case FETCH_RUN_DETAILS.RECEIVE:
+            // Pull state out of received details to ensure it's up to date in both places
             return {
                 ...state,
                 isFetching: false,
                 items: state.items.map(r => r.run_id === action.runID
-                    ? {...r, isFetching: false, details: action.data}
+                    ? {...r, state: action.data.state || r.state, isFetching: false, details: action.data}
                     : r),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.runID]: {
                         ...(state.itemsByID[action.runID] || {}),
+                        state: action.data.state || r.state,
                         isFetching: false,
                         details: action.data
                     }
