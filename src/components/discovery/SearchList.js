@@ -30,7 +30,6 @@ class SearchList extends Component {
     }
 
     handleSearchSelect(searchIndex) {
-        if (this.props.dataType === null) return;
         this.props.selectSearch(parseInt(searchIndex, 10));
     }
 
@@ -73,8 +72,7 @@ class SearchList extends Component {
                 render: (_, dataset) => (
                     <Row type="flex">
                         <Col>
-                            <Button type="link"
-                                    onClick={() => this.handleDatasetTermsClick(dataset)}>
+                            <Button type="link" onClick={() => this.handleDatasetTermsClick(dataset)}>
                                 Show Data Use Terms
                             </Button>
                         </Col>
@@ -87,26 +85,30 @@ class SearchList extends Component {
             },
         ];
 
+        const datasetNameOrID = (this.state.dataset || {}).name || (this.state.dataset || {}).id || "";
+        const dataUseTermsTitle = `Dataset ${datasetNameOrID
+            .substr(0, 18)}${datasetNameOrID ? "…" : ""}: Data Use Terms`;
+
         return (
             <>
-                <Modal title={`Dataset ${((this.state.dataset || {}).name || (this.state.dataset || {}).id || "")
-                    .substr(0, 18)}${((this.state.dataset || {}).name || "").length > 18 ? "…"
-                    : ""}: Data Use Terms`}
+                <Modal title={dataUseTermsTitle}
                        visible={this.state.dataUseTermsModalShown}
-                       onCancel={() => this.handleDatasetTermsCancel()} footer={null}>
+                       onCancel={() => this.handleDatasetTermsCancel()}
+                       footer={null}>
                     <DataUseDisplay dataUse={(this.state.dataset || {}).data_use} />
                 </Modal>
                 <Spin spinning={this.props.searchLoading}>
-                    <Collapse bordered={false}
+                    <Collapse bordered={true}
                               accordion={true}
-                              activeKey={(this.props.selectedSearch || 0).toString()}
-                              onChange={this.handleSearchSelect}>
+                              activeKey={(this.props.selectedSearch || 0).toString(10)}
+                              onChange={() => this.handleSearchSelect()}>
                         {[...this.props.searches].reverse().map((s, i) => {
                             const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
                                 r.map(d => ({...d, node: n})));
+                            const title = `Search ${this.props.searches.length - i}: ${searchResults.length} result${
+                                searchResults.length === 1 ? "" : "s"}`;
                             return (
-                                <Collapse.Panel header={`Search ${this.props.searches.length - i}`}
-                                                key={this.props.searches.length - i - 1}>
+                                <Collapse.Panel header={title} key={this.props.searches.length - i - 1}>
                                     <Table bordered={true}
                                            columns={searchResultsColumns}
                                            dataSource={searchResults}
