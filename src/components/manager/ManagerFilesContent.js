@@ -65,6 +65,7 @@ class ManagerFilesContent extends Component {
 
         this.state = {
             selectedFiles: [],
+            loadingFileContents: false,
             fileContents: {},
             fileContentsModal: false,
 
@@ -121,28 +122,32 @@ class ManagerFilesContent extends Component {
         }
 
         try {
-            // TODO: Auth / proper url stuff
+            this.setState({loadingFileContents: true});
+
+            // TODO: Proper url stuff
             // TODO: Don't hard-code replace
             const r = await fetch(`${this.props.dropBoxService.url}/retrieve${
                 file.replace("/chord/data/drop-box", "")}`);
 
             this.setState({
+                loadingFileContents: false,
                 fileContents: {
                     ...this.state.fileContents,
                     [file]: r.ok ? await r.text() : resourceLoadError(file)
                 }
             });
-
-            this.showFileContentsModal();
         } catch (e) {
             console.error(e);
             this.setState({
+                loadingFileContents: false,
                 fileContents: {
                     ...this.state.fileContents,
                     [file]: resourceLoadError(file)
                 }
             });
         }
+
+        this.showFileContentsModal();
     }
 
     getWorkflowFit(w) {
@@ -213,18 +218,22 @@ class ManagerFilesContent extends Component {
                         dataType={(this.state.selectedWorkflow || {}).data_type || null}
                         visible={this.state.tableSelectionModal}
                         title={"Select a Table to Ingest Into"}
-                        onCancel={this.hideTableSelectionModal}
-                        onOk={this.ingestIntoTable}
+                        onCancel={() => this.hideTableSelectionModal()}
+                        onOk={() => this.ingestIntoTable()}
                     />
                     <Modal visible={this.state.fileContentsModal}
                            title={selectedFile}
                            width={800}
                            footer={null}
                            onCancel={this.hideFileContentsModal}>
-                        <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFileType}`]}
-                                           style={a11yLight} customStyle={{fontSize: "12px"}} showLineNumbers={true}>
-                            {this.state.fileContents[selectedFile]}
-                        </SyntaxHighlighter>
+                        <Spin spinning={this.state.loadingFileContents}>
+                            <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFileType}`]}
+                                               style={a11yLight}
+                                               customStyle={{fontSize: "12px"}}
+                                               showLineNumbers={true}>
+                                {this.state.fileContents[selectedFile] || ""}
+                            </SyntaxHighlighter>
+                        </Spin>
                     </Modal>
                     <div style={{marginBottom: "1em"}}>
                         <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
@@ -236,17 +245,22 @@ class ManagerFilesContent extends Component {
                                          }}>
                             <Icon type="import" /> Ingest
                         </Dropdown.Button>
-                        <Button icon="file-text" onClick={this.handleViewFile} style={{marginRight: "12px"}}
-                                disabled={!selectedFileViewable}>View</Button>
-                        {/* TODO: Implement */}
+                        <Button icon="file-text"
+                                onClick={() => this.handleViewFile()}
+                                style={{marginRight: "12px"}}
+                                disabled={!selectedFileViewable}
+                                loading={this.state.loadingFileContents}>View</Button>
+                        {/* TODO: Implement v0.2 */}
                         {/*<Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>*/}
                         {/*    Delete*/}
                         {/*</Button>*/}
-                        {/* TODO: Implement */}
+                        {/* TODO: Implement v0.2 */}
                         {/*<Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>*/}
                     </div>
                     <Spin spinning={this.props.treeLoading}>
-                        <Tree.DirectoryTree defaultExpandAll={true} multiple={true} onSelect={this.handleSelect}
+                        <Tree.DirectoryTree defaultExpandAll={true}
+                                            multiple={true}
+                                            onSelect={() => this.handleSelect()}
                                             selectedKeys={this.state.selectedFiles}>
                             <Tree.TreeNode title="chord_drop_box" key="root">
                                 {generateFileTree(this.props.tree)}
