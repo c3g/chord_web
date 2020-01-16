@@ -22,7 +22,7 @@ import {renderMenuItem, matchingMenuKeys, projectPropTypesShape} from "../utils"
 
 const PAGE_MENU = [
     {url: "/data/manager/projects", style: {marginLeft: "4px"}, text: "Projects and Datasets"},
-    {url: "/data/manager/access", text: "Access Management"},
+    // {url: "/data/manager/access", text: "Access Management"},  // TODO: Re-enable for v0.2
     {url: "/data/manager/files", text: "Files"},
     {url: "/data/manager/ingestion", text: "Ingestion"},
     {url: "/data/manager/workflows", text: "Workflows"},
