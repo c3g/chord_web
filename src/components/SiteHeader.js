@@ -12,6 +12,7 @@ import "antd/es/menu/style/css";
 
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
+import {SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
 import {matchingMenuKeys, renderMenuItem} from "../utils";
 
 
@@ -46,7 +47,7 @@ class SiteHeader extends Component {
                 text: this.props.user.preferred_username,
                 children: [{
                     key: "sign-out-link",
-                    onClick: () => window.location.href = "/api/auth/sign-out",
+                    onClick: () => window.location.href = SIGN_OUT_URL,
                     icon: <Icon type="logout" />,
                     text: <span className="nav-text">Sign Out</span>,
                 }]
@@ -55,7 +56,7 @@ class SiteHeader extends Component {
                 style: {float: "right"},
                 icon: <Icon type="login" />,
                 text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
-                onClick: () => window.location.href = "/api/auth/sign-in",
+                onClick: () => window.location.href = SIGN_IN_URL,
             }]),
             {
                 url: "/notifications",

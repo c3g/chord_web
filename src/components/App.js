@@ -9,6 +9,8 @@ import {Layout, Modal} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/modal/style/css";
 
+import {SIGN_IN_URL} from "../constants";
+
 import OwnerRoute from "./OwnerRoute";
 
 import NotificationDrawer from "./NotificationDrawer";
@@ -45,20 +47,18 @@ class App extends Component {
     }
 
     render() {
-        const signInURL = "/api/auth/sign-in";
-
         // noinspection HtmlUnknownTarget
         return (
             <main>
                 <Modal title="You have been signed out"
-                       onOk={() => window.location.href = signInURL}
+                       onOk={() => window.location.href = SIGN_IN_URL}
                        onCancel={() => {
                            this.clearPingInterval();  // Stop pinging until the user decides to sign in again
                            this.setState({signedOutModal: false});  // Close the modal
                            // TODO: Set a new interval at a slower rate
                        }}
                        visible={this.state.signedOutModal}>
-                    Please <a href={signInURL}>sign in</a> again to continue working.
+                    Please <a href={SIGN_IN_URL}>sign in</a> again to continue working.
                 </Modal>
                 <Layout style={{minHeight: "100vh"}}>
                     <NotificationDrawer />
