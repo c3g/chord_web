@@ -27,8 +27,6 @@ const generateFileTree = (directory, valid) => [...directory].sort(sortByName).m
 class IngestionInputForm extends Component {
     constructor(props) {
         super(props);
-        this.onSubmit = this.props.onSubmit || (() => {});
-        this.onBack = this.props.onBack || null;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getInputComponent = this.getInputComponent.bind(this);
     }
@@ -37,7 +35,7 @@ class IngestionInputForm extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            this.onSubmit(values);
+            (this.props.onSubmit || (() => {}))(values);
         })
     }
 
@@ -90,7 +88,9 @@ class IngestionInputForm extends Component {
                     )),
 
                     <Form.Item key="_submit" wrapperCol={FORM_BUTTON_COL}>
-                        {this.onBack ? <Button icon="left" onClick={() => this.onBack()}>Back</Button> : null}
+                        {this.props.onBack
+                            ? <Button icon="left" onClick={() => this.props.onBack()}>Back</Button>
+                            : null}
                         <Button type="primary" htmlType="submit" style={{float: "right"}}>
                             Next <Icon type="right" />
                         </Button>

@@ -35,7 +35,7 @@ class Run extends Component {
                                 <Tabs activeKey={tab} onChange={this.props.onChangeTab || (() => {})}>
                                     <Tabs.TabPane tab="Request" key="request" />
                                     <Tabs.TabPane tab="Run Log" key="run_log" />
-                                    <Tabs.TabPane tab="Task Logs" key="task_logs" />
+                                    {/*<Tabs.TabPane tab="Task Logs" key="task_logs" /> TODO: Implement v0.2 */}
                                 </Tabs>
                             }
                             onBack={this.props.onBack || (() => {})}>

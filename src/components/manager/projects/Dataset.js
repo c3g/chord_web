@@ -41,9 +41,6 @@ class Dataset extends Component {
     constructor(props) {
         super(props);
 
-        this.onEdit = props.onEdit || (() => {});
-        this.onTableIngest = props.onTableIngest || (() => {});
-
         const value = props.value || {};
         this.state = {  // TODO: For editing
             identifier: value.identifier || null,
@@ -122,11 +119,15 @@ class Dataset extends Component {
                 render: t => (
                     <Row gutter={10}>
                         <Col span={8}>
-                            <Button icon="import" style={{width: "100%"}}
-                                    onClick={() => this.onTableIngest(this.props.project, t)}>Ingest</Button>
+                            <Button icon="import"
+                                    style={{width: "100%"}}
+                                    onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
+                                Ingest
+                            </Button>
                         </Col>
                         <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                        <Col span={8}><Button type="danger" icon="delete"
+                        <Col span={8}><Button type="danger"
+                                              icon="delete"
                                               onClick={() => this.handleTableDeletionClick(t)}
                                               style={{width: "100%"}}>Delete</Button></Col>
                     </Row>
@@ -192,12 +193,15 @@ class Dataset extends Component {
                     <Typography.Title level={4}>
                         Tables
                         <div style={{float: "right"}}>
+                            {/* TODO: Implement v0.2
                             {(this.props.strayTables || []).length > 0 ? (
                                 <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
                                     Adopt Stray Tables ({this.props.strayTables.length})
                                 </Button>
-                            ) : null}
-                            <Button icon="plus" style={{verticalAlign: "top"}} type="primary"
+                            ) : null} */}
+                            <Button icon="plus"
+                                    style={{verticalAlign: "top"}}
+                                    type="primary"
                                     onClick={() => this.handleAdditionClick()}>
                                 Add Table
                             </Button>
@@ -206,7 +210,7 @@ class Dataset extends Component {
                     <Table bordered
                            dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
                            rowKey="table_id"
-                           expandedRowRender={() => (<span>TODO: List of files</span>)}
+                           // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
                            columns={tableListColumns}
                            loading={this.props.loadingTables} />
                 </>
@@ -222,14 +226,16 @@ class Dataset extends Component {
                 {key: "data_use", tab: "Consent Codes and Data Use"},
             ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={<>
                 <Button icon="import" style={{marginRight: "24px"}}
-                        onClick={() => this.onTableIngest(this.props.project, {
+                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, {
                             // Map dataset to metadata table  TODO: Remove all these hacks
                             id: this.state.identifier,
                             data_type: "phenopacket",  // TODO: Remove hard-coding...
                         })}>
                     Ingest Metadata
                 </Button>
-                <Button icon="edit" style={{marginRight: "10px"}} onClick={this.onEdit}>Edit</Button>
+                <Button icon="edit"
+                        style={{marginRight: "10px"}}
+                        onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
                 <Button type="danger" icon="delete">Delete</Button>
                 {/* TODO: Share button */}
             </>}>

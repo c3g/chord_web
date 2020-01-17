@@ -10,21 +10,15 @@ import TableTreeSelect from "./TableTreeSelect";
 class TableSelectionModal extends Component {
     constructor(props) {
         super(props);
-
-        this.onCancel = this.props.onCancel || (() => {});
-        this.onOk = this.props.onOk || (() => {});
-
-        this.state = {
-            selected: undefined
-        };
+        this.state = {selected: undefined};
     }
 
     render() {
         return (
             <Modal title={this.props.title || "Select a Table"}
                    visible={this.props.visible || false}
-                   onCancel={this.onCancel}
-                   onOk={() => this.onOk(this.state.selected)}>
+                   onCancel={() => (this.props.onCancel || (() => {}))()}
+                   onOk={() => (this.props.onOk || (() => {}))(this.state.selected)}>
                 <Form>
                     <Form.Item label="Table">
                         <TableTreeSelect style={{width: "100%"}}

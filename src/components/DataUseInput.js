@@ -86,9 +86,7 @@ export default class DataUseInput extends Component {
         return (
             <>
                 <div>
-                    <Typography.Title level={4} style={{fontSize: "20px"}}>
-                        Consent Code
-                    </Typography.Title>
+                    <Typography.Title level={4} style={{fontSize: "20px"}}>Consent Code</Typography.Title>
 
                     <div style={{fontWeight: "bold", marginBottom: "4px"}}>Primary</div>
                     <Radio.Group name="primary_consent_code"

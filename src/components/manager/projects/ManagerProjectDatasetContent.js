@@ -14,10 +14,9 @@ import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
 import ProjectCreationModal from "./ProjectCreationModal";
-import ProjectDeletionModal from "./ProjectDeletionModal";
 import RoutedProject from "./RoutedProject";
 
-import {toggleProjectCreationModal, toggleProjectDeletionModal,} from "../../../modules/manager/actions";
+import {toggleProjectCreationModal} from "../../../modules/manager/actions";
 
 import {renderMenuItem, matchingMenuKeys, projectPropTypesShape} from "../../../utils";
 
@@ -35,8 +34,6 @@ class ManagerProjectDatasetContent extends Component {
         return (
             <>
                 <ProjectCreationModal />
-                <ProjectDeletionModal />
-
                 <Layout>
                     {(!this.props.loadingAuthDependentData && projectMenuItems.length === 0) ? (
                         <Layout.Content style={LAYOUT_CONTENT_STYLE}>
@@ -108,7 +105,6 @@ ManagerProjectDatasetContent.propTypes = {
     loadingAuthDependentData: PropTypes.bool,
 
     toggleProjectCreationModal: PropTypes.func,
-    toggleProjectDeletionModal: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -119,7 +115,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-    toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));

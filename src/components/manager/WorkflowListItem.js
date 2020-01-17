@@ -35,10 +35,6 @@ const ioTagWithType = (key, ioType, content) => (
 );
 
 class WorkflowListItem extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const typeTag = <Tag key={this.props.workflow.data_type}>{this.props.workflow.data_type}</Tag>;
 

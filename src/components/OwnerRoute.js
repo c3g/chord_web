@@ -20,10 +20,7 @@ const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, ...rest})
     return (
         <Route {...rest} render={props => shouldRedirect
             ? (
-                <Layout.Content style={{
-                    background: "white",
-                    padding: "48px 24px",
-                }}>
+                <Layout.Content style={{background: "white", padding: "48px 24px"}}>
                     <Empty image={signInIcon}
                            imageStyle={{height: "auto", marginBottom: "16px"}}
                            description="You must sign in as an owner of this node to access this page.">

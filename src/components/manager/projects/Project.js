@@ -14,6 +14,9 @@ import {INITIAL_DATA_USE_VALUE} from "../../../duo";
 import {simpleDeepCopy, projectPropTypesShape} from "../../../utils";
 
 
+const nop = () => {};
+
+
 class Project extends Component {
     static getDerivedStateFromProps(nextProps) {
         // TODO: Want to warn the user if the description has changed and they're editing...
@@ -33,16 +36,8 @@ class Project extends Component {
     constructor(props) {
         super(props);
 
-        const nop = () => {};
-
-        this.onDelete = props.onDelete || nop;
-        this.onEdit = props.onEdit || nop;
         this._onCancelEdit = props.onCancelEdit || nop;
         this._onSave = props.onSave || nop;
-        this.onAddDataset = props.onAddDataset || nop;
-        this.onEditDataset = props.onEditDataset || nop;
-
-        this.onTableIngest = props.onTableIngest || nop;
 
         this.editingForm = null;
 
@@ -90,10 +85,10 @@ class Project extends Component {
                         </>
                     ) : (
                         <>
-                            <Button icon="edit" onClick={() => this.onEdit()}>Edit</Button>
+                            <Button icon="edit" onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
                             <Button type="danger" icon="delete"
                                     style={{marginLeft: "10px"}}
-                                    onClick={() => this.onDelete()}>Delete</Button>
+                                    onClick={() => (this.props.onDelete || nop)()}>Delete</Button>
                         </>
                     )}
                 </div>
@@ -119,7 +114,9 @@ class Project extends Component {
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
-                        <Button icon="plus" style={{verticalAlign: "top"}} onClick={this.onAddDataset}>
+                        <Button icon="plus"
+                                style={{verticalAlign: "top"}}
+                                onClick={() => (this.props.onAddDataset || nop)()}>
                             Add Dataset
                         </Button>
                     </div>
@@ -137,11 +134,11 @@ class Project extends Component {
                                      i.phenopackets.map(p => p.dataset).includes(d.identifier))}
                                  loadingIndividuals={this.props.loadingIndividuals}
                                  loadingTables={this.props.loadingTables}
-                                 onEdit={() => this.onEditDataset(d)}
-                                 onTableIngest={this.onTableIngest}  />
+                                 onEdit={() => (this.props.onEditDataset || nop)(d)}
+                                 onTableIngest={this.props.onTableIngest || nop}  />
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
-                            <Button icon="plus" onClick={this.onAddDataset}>Add Dataset</Button>
+                            <Button icon="plus" onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
                         </Empty>
                     )}
             </div>

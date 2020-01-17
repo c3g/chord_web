@@ -3,9 +3,10 @@ import {connect} from "react-redux";
 
 import DatasetFormModal from "./DatasetFormModal";
 import Project from "./Project";
+import ProjectDeletionModal from "./ProjectDeletionModal";
 
 import {saveProjectIfPossible} from "../../../modules/metadata/actions";
-import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
+import {beginProjectEditing, endProjectEditing, toggleProjectDeletionModal} from "../../../modules/manager/actions";
 
 class RoutedProject extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class RoutedProject extends Component {
     }
 
     showDatasetAdditionModal() {
+        console.log("b");
         this.setState({datasetAdditionModal: true});
     }
 
@@ -88,12 +90,16 @@ class RoutedProject extends Component {
 
             return (
                 <>
+                    <ProjectDeletionModal project={project} />
+
                     <DatasetFormModal mode="add"
+                                      project={project}
                                       visible={this.state.datasetAdditionModal}
                                       onCancel={this.hideDatasetAdditionModal}
                                       onOk={this.hideDatasetAdditionModal} />
 
                     <DatasetFormModal mode="edit"
+                                      project={project}
                                       visible={this.state.datasetEditModal}
                                       initialValue={this.state.selectedDataset}
                                       onCancel={this.hideDatasetEditModal}
@@ -161,6 +167,8 @@ const mapDispatchToProps = dispatch => ({
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
+
+    toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutedProject);

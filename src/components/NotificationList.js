@@ -54,13 +54,14 @@ class NotificationList extends Component {
                   renderItem={n => (
                       <List.Item key={n.id} actions={[
                           ...this.getNotificationActions(n),
-                          <Button type="link" icon="read" style={{padding: 0}}
+                          <Button type="link"
+                                  icon="read"
+                                  style={{padding: 0}}
                                   onClick={() => this.props.markNotificationAsRead(n.id)}>
                               Mark as Read
                           </Button>
                       ]}>
-                          <List.Item.Meta title={n.title} description={n.description}
-                                          style={{marginBottom: "8px"}} />
+                          <List.Item.Meta title={n.title} description={n.description} style={{marginBottom: "8px"}} />
                           {n.timestamp.toLocaleString()}
                       </List.Item>
                   )} />

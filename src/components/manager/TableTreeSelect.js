@@ -17,8 +17,6 @@ class TableTreeSelect extends Component {
 
     constructor(props) {
         super(props);
-        this.onChange = this.props.onChange.bind(this) || (() => {
-        });
         this.state = {selected: props.value || undefined};
     }
 
@@ -79,7 +77,7 @@ class TableTreeSelect extends Component {
         return (
             <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
                 <TreeSelect style={this.props.style || {}}
-                            onChange={this.onChange}
+                            onChange={this.props.onChange || (() => {})}
                             value={this.state.selected}
                             treeData={selectTreeData}
                             treeDefaultExpandAll={true}/>

@@ -42,11 +42,11 @@ class DatasetFormModal extends Component {
             const mode = this.props.mode || MODE_ADD;
 
             if (mode === MODE_ADD) {
-                await this.props.addProjectDataset(this.props.selectedProject, values);
+                await this.props.addProjectDataset(this.props.project, values);
             } else {
                 await this.props.saveProjectDataset({
                     ...(this.props.initialValue || {}),
-                    project: this.props.selectedProject.identifier,
+                    project: this.props.project.identifier,
                     ...values
                 });
             }
@@ -59,11 +59,11 @@ class DatasetFormModal extends Component {
 
     render() {
         const mode = this.props.mode || MODE_ADD;
-        return this.props.selectedProject ? (
+        return this.props.project ? (
             <Modal visible={this.props.visible}
                    width={648}
                    title={mode === MODE_ADD
-                       ? `Add Dataset to "${this.props.selectedProject.title}"`
+                       ? `Add Dataset to "${this.props.project.title}"`
                        : `Edit Dataset "${(this.props.initialValue || {}).title || ""}"`}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
@@ -89,6 +89,8 @@ DatasetFormModal.propTypes = {
     initialValue: datasetPropTypesShape,
     onCancel: PropTypes.func,
 
+    project: projectPropTypesShape,
+
     visible: PropTypes.bool,
 
     // From state
@@ -96,8 +98,6 @@ DatasetFormModal.propTypes = {
     projectsFetching: PropTypes.bool,
     projectDatasetsAdding: PropTypes.bool,
     projectDatasetsSaving: PropTypes.bool,
-
-    selectedProject: projectPropTypesShape,
 
     // From dispatch
 
@@ -110,8 +110,6 @@ const mapStateToProps = state => ({
     projectsFetching: state.projects.isFetching,
     projectDatasetsAdding: state.projects.isAddingDataset,
     projectDatasetsSaving: state.projects.isSavingDataset,
-
-    selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
 });
 
 const mapDispatchToProps = dispatch => ({

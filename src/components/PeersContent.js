@@ -10,6 +10,13 @@ import "antd/es/table/style/css";
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
 
+const PEER_COLUMNS = [{
+    title: "Peer",
+    dataIndex: "url",
+    sorter: (a, b) => a.url.localeCompare(b.url),
+    defaultSortOrder: "ascend"
+}];
+
 class PeersContent extends Component {
     componentDidMount() {
         document.title = "CHORD - Peers";
@@ -23,12 +30,12 @@ class PeersContent extends Component {
                             style={PAGE_HEADER_STYLE}/>
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
-                        <Table dataSource={this.props.peers} columns={[{
-                            title: "Peer",
-                            dataIndex: "url",
-                            sorter: (a, b) => a.url.localeCompare(b.url),
-                            defaultSortOrder: "ascend"
-                        }]} loading={this.props.loadingPeers} rowKey="url" bordered={true} size="middle" />
+                        <Table dataSource={this.props.peers}
+                               columns={PEER_COLUMNS}
+                               loading={this.props.loadingPeers}
+                               rowKey="url"
+                               bordered={true}
+                               size="middle" />
                     </Layout.Content>
                 </Layout>
             </>

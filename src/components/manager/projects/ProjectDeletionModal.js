@@ -25,7 +25,7 @@ class ProjectDeletionModal extends Component {
     }
 
     async handleDeleteSubmit() {
-        await this.props.deleteProject(this.props.selectedProject);
+        await this.props.deleteProject(this.props.project);
 
         // TODO: Only close modal if deletion was a success
         this.props.toggleProjectDeletionModal();
@@ -35,7 +35,7 @@ class ProjectDeletionModal extends Component {
         return (
             <Modal visible={this.props.showDeletionModal}
                    title={`Are you sure you want to delete the "${
-                       (this.props.selectedProject || {title: ""}).title}" project?`}
+                       (this.props.project || {title: ""}).title}" project?`}
                    footer={[
                        <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
                        <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}
@@ -53,8 +53,9 @@ class ProjectDeletionModal extends Component {
 }
 
 ProjectDeletionModal.propTypes = {
+    project: projectPropTypesShape,
+
     showDeletionModal: PropTypes.bool,
-    selectedProject: projectPropTypesShape,
     isDeletingProject: PropTypes.bool,
 
     toggleProjectDeletionModal: PropTypes.func,
@@ -63,7 +64,6 @@ ProjectDeletionModal.propTypes = {
 
 const mapStateToProps = state => ({
     showDeletionModal: state.manager.projectDeletionModal,
-    selectedProject: state.projects.itemsByID[state.manager.selectedProjectID] || null,
     isDeletingProject: state.projects.isDeleting,
 });
 

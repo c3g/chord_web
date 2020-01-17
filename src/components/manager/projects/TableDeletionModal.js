@@ -10,19 +10,16 @@ import "antd/es/typography/style/css";
 
 
 class TableDeletionModal extends Component {
-    constructor(props) {
-        super(props);
-        this.onSubmit = props.onSubmit || (() => {});
-        this.onCancel = props.onCancel || (() => {});
-    }
-
     render() {
         return (
             <Modal visible={this.props.visible}
                    title={`Are you sure you want to delete the "${(this.props.table || {}).name || ""}" table?`}
                    footer={[
-                       <Button key="cancel" onClick={this.onCancel}>Cancel</Button>,
-                       <Button key="confirm" icon="delete" type="danger" onClick={this.onSubmit}
+                       <Button key="cancel" onClick={() => (this.props.onCancel || (() => {}))()}>Cancel</Button>,
+                       <Button key="confirm"
+                               icon="delete"
+                               type="danger"
+                               onClick={() => (this.props.onSubmit || (() => {}))()}
                                loading={this.props.isDeletingTable}>
                            Delete
                        </Button>

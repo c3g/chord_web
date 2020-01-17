@@ -17,9 +17,6 @@ const modalTitle = (dataset, project) =>
 
 class TableAdditionModal extends Component {
     componentDidMount() {
-        this.onCancel = this.props.onCancel || (() => {});
-        this.onSubmit = this.props.onSubmit || (() => {});
-
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -30,7 +27,7 @@ class TableAdditionModal extends Component {
                 return;
             }
 
-            this.onSubmit(values);
+            (this.props.onSubmit || (() => {}))(values);
         });
     }
 
@@ -40,12 +37,15 @@ class TableAdditionModal extends Component {
                    title={modalTitle(this.props.dataset, this.props.project)}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
-                       <Button key="add" icon="plus" type="primary" onClick={this.handleSubmit}
+                       <Button key="add"
+                               icon="plus"
+                               type="primary"
+                               onClick={() => this.handleSubmit()}
                                loading={this.props.projectTablesAdding || this.props.projectTablesFetching}>
                            Add
                        </Button>
                    ]}
-                   onCancel={() => this.onCancel()}>
+                   onCancel={() => (this.props.onCancel || (() => {}))()}>
                 <TableForm ref={form => this.form = form} />
             </Modal>
         );
