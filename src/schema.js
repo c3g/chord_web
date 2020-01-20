@@ -7,17 +7,19 @@ import "antd/es/typography/style/css";
 export const ROOT_SCHEMA_ID = "[dataset item]";
 const ARRAY_ITEM_ID = "[item]";
 
+const getFalse = () => false;
+
 
 /**
  * Generates schema tree data and uses it to decide whether to include the current node in a searchable list fragment.
  * @param {object} node - The schema node to check.
  * @param {string} name - The node's ID (key fragment).
  * @param {string} prefix - The node's key prefix.
- * @param {string[]} excludedKeys - An array of keys to be disabled.
+ * @param {function} isExcluded - An function determining if a key is disabled.
  * @returns {object} - A tree node for use in Ant Design components.
  */
-const searchFragment = (node, name, prefix, excludedKeys) => {
-    const result = generateSchemaTreeData(node, name, prefix, excludedKeys);
+const searchFragment = (node, name, prefix = "", isExcluded = getFalse) => {
+    const result = generateSchemaTreeData(node, name, prefix, isExcluded);
     return (node.hasOwnProperty("search") || node.type === "object" && result.children.length > 0 ||
         node.type === "array" && result.children.length > 0) ? [result] : [];
 };
@@ -41,10 +43,15 @@ const sortSchemaEntries = (a, b) => {
  * @param {object} node - Current schema node.
  * @param {string} name - The node's ID (key fragment).
  * @param {string} prefix - The node's key prefix.
- * @param {string[]} excludedKeys - An array of keys to be disabled.
+ * @param {function} isExcluded - An function determining if a key is disabled.
  * @returns {{children, selectable, disabled, titleSelected, title, value, key}} - Ant tree node for the schema node.
  */
-export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
+export const generateSchemaTreeData = (
+    node,
+    name = ROOT_SCHEMA_ID,
+    prefix = "",
+    isExcluded = getFalse
+) => {
     const key = `${prefix}${name}`;
     const baseNode = {
         key,
@@ -57,8 +64,8 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
             marginRight: "0.4rem"
         }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
         selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
-            && node.search.operations.length > 0 && !excludedKeys.includes(key),
-        disabled: excludedKeys.includes(key)
+            && node.search.operations.length > 0 && !isExcluded(key),
+        disabled: isExcluded(key)
     };
 
     // Only include fields that are searchable, objects that have all searchable properties, and arrays that have items
@@ -70,13 +77,13 @@ export const generateSchemaTreeData = (node, name, prefix, excludedKeys) => {
                 ...baseNode,
                 children: Object.entries(node.properties || {})
                     .sort(sortSchemaEntries)
-                    .flatMap(([name, node]) => searchFragment(node, name, `${key}.`, excludedKeys))
+                    .flatMap(([name, node]) => searchFragment(node, name, `${key}.`, isExcluded))
             };
 
         case "array":
             return {
                 ...baseNode,
-                children: searchFragment(node.items, ARRAY_ITEM_ID, `${key}.`, excludedKeys)
+                children: searchFragment(node.items, ARRAY_ITEM_ID, `${key}.`, isExcluded)
             };
 
         default:
@@ -134,7 +141,7 @@ export const getFieldSchema = (schema, fieldString) => {
 export const getFields = schema => {
     // TODO: Deduplicate with tree select
     if (!schema) return [];
-    const treeData = generateSchemaTreeData(schema, ROOT_SCHEMA_ID, "", []);
+    const treeData = generateSchemaTreeData(schema, ROOT_SCHEMA_ID, "", getFalse);
     const getFieldsFromTreeData = (node, acc) => {
         acc.push(node.key);
         node.children.map(c => getFieldsFromTreeData(c, acc));

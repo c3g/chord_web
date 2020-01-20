@@ -25,25 +25,25 @@ class DiscoverySearchForm extends Component {
 
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
-        if (this.props.form.getFieldValue("keys").length === 0) {
-            const requiredFields = this.props.dataType
-                ? getFields(this.props.dataType.schema).filter(f =>
-                    (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false)
-                : [];
+        if (this.props.form.getFieldValue("keys").length !== 0) return;
 
-            const stateUpdates = requiredFields.map(c => this.addCondition(c, undefined, true));
+        const requiredFields = this.props.dataType
+            ? getFields(this.props.dataType.schema).filter(f =>
+                (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false)
+            : [];
 
-            // Add a single default condition if necessary
-            if (requiredFields.length === 0 && this.props.conditionType !== "join") {
-                stateUpdates.push(this.addCondition(undefined, undefined, true));
-            }
+        const stateUpdates = requiredFields.map(c => this.addCondition(c, undefined, true));
 
-            this.setState({
-                ...stateUpdates.reduce((acc, v) => ({
-                    ...acc, conditionsHelp: {...(acc.conditionsHelp || {}), ...(v.conditionsHelp || {})}
-                }), {})
-            });
+        // Add a single default condition if necessary
+        if (requiredFields.length === 0 && this.props.conditionType !== "join") {
+            stateUpdates.push(this.addCondition(undefined, undefined, true));
         }
+
+        this.setState({
+            ...stateUpdates.reduce((acc, v) => ({
+                ...acc, conditionsHelp: {...(acc.conditionsHelp || {}), ...(v.conditionsHelp || {})}
+            }), {})
+        });
     }
 
     handleFieldChange(k, change) {
@@ -120,7 +120,13 @@ class DiscoverySearchForm extends Component {
     cannotBeUsed(fieldString) {
         if (this.props.conditionType === "join") return;
         const fs = getFieldSchema(this.props.dataType.schema, fieldString);
-        return fs.search.hasOwnProperty("type") && fs.search.type === "single";
+        return (fs.search || {}).type === "single";
+    }
+
+    isNotPublic(fieldString) {
+        if (this.props.conditionType === "join") return;
+        const fs = getFieldSchema(this.props.dataType.schema, fieldString);
+        return ["internal", "none"].includes((fs.search || {}).queryable);
     }
 
     render() {
@@ -156,7 +162,7 @@ class DiscoverySearchForm extends Component {
                 })(
                     <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
                                               dataType={this.props.dataType}
-                                              existingUniqueFields={existingUniqueFields}
+                                              isExcluded={f => existingUniqueFields.includes(f) || this.isNotPublic(f)}
                                               onFieldChange={change => this.handleFieldChange(k, change)}
                                               onRemoveClick={() => this.removeCondition(k)}
                                               removeDisabled={keys.length <= 1 && this.props.conditionType !== "join"}/>

@@ -179,7 +179,7 @@ class DiscoverySearchCondition extends Component {
                 style={{float: "left", ...style}}
                 disabled={!canRemove}
                 schema={schema}
-                excludedKeys={this.props.existingUniqueFields}
+                isExcluded={this.props.isExcluded}
                 value={{selected: this.state[fieldKey], schema: this.state[fieldSchemaKey]}}
                 onChange={v => this.handleField(v, fieldKey, fieldSchemaKey)} />
         );
@@ -237,7 +237,7 @@ DiscoverySearchCondition.propTypes = {
     conditionType: PropTypes.oneOf(["data-type", "join"]),
     dataType: PropTypes.object,
     dataTypes: PropTypes.object,
-    existingUniqueFields: PropTypes.arrayOf(PropTypes.string),
+    isExcluded: PropTypes.func,
     value: PropTypes.object,
     onFieldChange: PropTypes.func,
     onChange: PropTypes.func,

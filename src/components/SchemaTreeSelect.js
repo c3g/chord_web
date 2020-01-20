@@ -42,7 +42,7 @@ class SchemaTreeSelect extends Component {
                         placeholder="field"
                         treeDefaultExpandedKeys={this.props.schema ? [`${ROOT_SCHEMA_ID}`] : []}
                         treeData={this.props.schema ? [generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID,
-                            "", this.props.excludedKeys)] : []}
+                            "", this.props.isExcluded)] : []}
                         value={this.state.selected} onChange={this.onChange.bind(this)}
                         treeNodeLabelProp="titleSelected" />
         );
@@ -51,7 +51,7 @@ class SchemaTreeSelect extends Component {
 
 SchemaTreeSelect.propTypes = {
     schema: PropTypes.object,
-    excludedKeys: PropTypes.arrayOf(PropTypes.string),
+    isExcluded: PropTypes.func,
     onChange: PropTypes.func,
     value: PropTypes.object
 };
