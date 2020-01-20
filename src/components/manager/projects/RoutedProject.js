@@ -75,10 +75,9 @@ class RoutedProject extends Component {
 
             const tableList = projectTableRecords
                 .filter(table =>  tables.hasOwnProperty(table.service_id))
-                .map(table => (tables[table.service_id][table.data_type].tables || [])
+                .flatMap(table => (tables[table.service_id][table.data_type].tables || [])
                     .filter(tb => tb.id === table.table_id)
-                    .map(tb => ({...tb, ...table})))
-                .flat();
+                    .map(tb => ({...tb, ...table})));
 
             // TODO: Inconsistent schemas
             const strayTables = [
