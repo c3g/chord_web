@@ -14,8 +14,10 @@ class DiscoverySearchForm extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {conditionsHelp: {}};
         this.initialValues = {};
 
+        this.handleFieldChange = this.handleFieldChange.bind(this);
         this.getDataTypeFieldSchema = this.getDataTypeFieldSchema.bind(this);
         this.addCondition = this.addCondition.bind(this);
         this.removeCondition = this.removeCondition.bind(this);
@@ -29,11 +31,28 @@ class DiscoverySearchForm extends Component {
                     (getFieldSchema(this.props.dataType.schema, f).search || {required: false}).required || false)
                 : [];
 
-            requiredFields.forEach(c => this.addCondition(c));
+            const stateUpdates = requiredFields.map(c => this.addCondition(c, undefined, true));
 
             // Add a single default condition if necessary
-            if (requiredFields.length === 0 && this.props.conditionType !== "join") this.addCondition();
+            if (requiredFields.length === 0 && this.props.conditionType !== "join") {
+                stateUpdates.push(this.addCondition(undefined, undefined, true));
+            }
+
+            this.setState({
+                ...stateUpdates.reduce((acc, v) => ({
+                    ...acc, conditionsHelp: {...(acc.conditionsHelp || {}), ...(v.conditionsHelp || {})}
+                }), {})
+            });
         }
+    }
+
+    handleFieldChange(k, change) {
+        this.setState({
+            conditionsHelp: {
+                ...this.state.conditionsHelp,
+                [k]: change.fieldSchema.description || undefined
+            }
+        })
     }
 
     removeCondition(k) {
@@ -53,7 +72,7 @@ class DiscoverySearchForm extends Component {
         };
     }
 
-    addCondition(field = undefined, field2 = undefined) {
+    addCondition(field = undefined, field2 = undefined, didMount = false) {
         const conditionType = this.props.conditionType || "data-type";
 
         const newKey = this.props.form.getFieldValue("keys").length;
@@ -63,6 +82,15 @@ class DiscoverySearchForm extends Component {
         const fieldSchema = conditionType === "data-type"
             ? this.getDataTypeFieldSchema(field)
             : {search: {...DEFAULT_SEARCH_PARAMETERS}};  // Join search conditions have all operators "available" TODO
+
+        const stateUpdate = {
+            conditionsHelp: {
+                ...this.state.conditionsHelp,
+                [newKey]: fieldSchema.description || undefined
+            }
+        };
+
+        if (!didMount) this.setState(stateUpdate);  // Won't fire properly in componentDidMount
 
         this.initialValues = {
             ...this.initialValues,
@@ -85,6 +113,8 @@ class DiscoverySearchForm extends Component {
         this.props.form.setFieldsValue({
             keys: this.props.form.getFieldValue("keys").concat(newKey)
         });
+
+        return stateUpdate;
     }
 
     cannotBeUsed(fieldString) {
@@ -110,7 +140,7 @@ class DiscoverySearchForm extends Component {
                 lg: {span: 24},
                 xl: {span: 20},
                 xxl: {span: 18}
-            }} label={`Condition ${i+1}`}>
+            }} label={`Condition ${i+1}`} help={this.state.conditionsHelp[k] || undefined}>
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
                     initialValue: this.initialValues[`conditions[${k}]`],
                     rules: [
@@ -127,6 +157,7 @@ class DiscoverySearchForm extends Component {
                     <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
                                               dataType={this.props.dataType}
                                               existingUniqueFields={existingUniqueFields}
+                                              onFieldChange={change => this.handleFieldChange(k, change)}
                                               onRemoveClick={() => this.removeCondition(k)}
                                               removeDisabled={keys.length <= 1 && this.props.conditionType !== "join"}/>
                 )}
