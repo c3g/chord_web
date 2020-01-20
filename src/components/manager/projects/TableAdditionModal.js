@@ -21,13 +21,14 @@ class TableAdditionModal extends Component {
     }
 
     handleSubmit() {
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
             if (err) {
                 console.error(err);
                 return;
             }
 
-            (this.props.onSubmit || (() => {}))(values);
+            await (this.props.onSubmit || (() => {}))(values);
+            this.form.resetFields();
         });
     }
 

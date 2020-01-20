@@ -33,7 +33,8 @@ class ProjectCreationModal extends Component {
 
             await this.props.createProject(values, this.props.history);
 
-            // TODO: Only close modal if submission was a success
+            // TODO: Only clear values and close modal if submission was a success
+            this.form.resetFields();
             this.props.toggleProjectCreationModal();
         });
     }
