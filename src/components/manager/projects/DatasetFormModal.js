@@ -41,19 +41,18 @@ class DatasetFormModal extends Component {
 
             const mode = this.props.mode || MODE_ADD;
 
-            if (mode === MODE_ADD) {
-                await this.props.addProjectDataset(this.props.project, values);
-            } else {
-                await this.props.saveProjectDataset({
+            await (mode === MODE_ADD
+                ? this.props.addProjectDataset(this.props.project, values)
+                : this.props.saveProjectDataset({
                     ...(this.props.initialValue || {}),
                     project: this.props.project.identifier,
                     ...values
-                });
-            }
+                }));
 
             await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
-            (this.props.onOk || (() => {}))({...(this.props.initialValue || {}), values});
+            await (this.props.onOk || (() => {}))({...(this.props.initialValue || {}), values});
+            if (mode === MODE_ADD) this.form.resetFields();
         })
     }
 
