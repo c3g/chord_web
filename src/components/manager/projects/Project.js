@@ -107,9 +107,8 @@ class Project extends Component {
                         <Typography.Title level={2}>
                             {this.state.title}
                         </Typography.Title>
-                        <Typography.Paragraph style={{maxWidth: "600px"}}>
-                            {this.state.description}
-                        </Typography.Paragraph>
+                        {this.state.description.split("\n").map((p, i) =>
+                            <Typography.Paragraph key={i} style={{maxWidth: "600px"}}>{p}</Typography.Paragraph>)}
                     </>
                 )}
 
