@@ -17,9 +17,8 @@ import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ManagerWorkflowsContent extends Component {
     render() {
-        const workflows = this.props.workflows.map(w => (
-            <List.Item key={w.name}><WorkflowListItem key={w.name} workflow={w} /></List.Item>
-        ));  // TODO: real key
+        // TODO: real key
+        const workflows = this.props.workflows.map(w => <WorkflowListItem key={w.name} workflow={w} />);
         return (
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>

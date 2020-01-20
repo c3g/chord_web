@@ -30,9 +30,7 @@ class RunRequest extends Component {
                 </Descriptions.Item>
                 <Descriptions.Item label="Workflow">
                     <List itemLayout="vertical">
-                        <List.Item>
-                            <WorkflowListItem workflow={details.request.tags.workflow_metadata} />
-                        </List.Item>
+                        <WorkflowListItem workflow={details.request.tags.workflow_metadata} />
                     </List>
                 </Descriptions.Item>
             </Descriptions>

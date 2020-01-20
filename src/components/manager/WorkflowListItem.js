@@ -60,7 +60,7 @@ class WorkflowListItem extends Component {
         });
 
         return (
-            <>
+            <List.Item>
                 <List.Item.Meta
                     title={
                         this.props.selectable
@@ -79,7 +79,7 @@ class WorkflowListItem extends Component {
                     <span style={{fontWeight: "bold", marginRight: "1em"}}>Outputs:</span>
                     {outputs}
                 </div>
-            </>
+            </List.Item>
         );
     }
 }

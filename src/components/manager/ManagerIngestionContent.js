@@ -122,10 +122,10 @@ class ManagerIngestionContent extends Component {
                     .filter(w => w.data_type === (this.state.selectedTable
                         ? this.state.selectedTable.split(":")[1] : null))
                     .map(w => (
-                        <List.Item key={w.id}>
-                            <WorkflowListItem key={w.id} workflow={w} selectable={true}
-                                              onClick={() => this.handleWorkflowClick(w)} />
-                        </List.Item>
+                        <WorkflowListItem key={w.id}
+                                          workflow={w}
+                                          selectable={true}
+                                          onClick={() => this.handleWorkflowClick(w)} />
                     ));
 
                 return (
@@ -178,9 +178,7 @@ class ManagerIngestionContent extends Component {
                         </Form.Item>
                         <Form.Item label="Workflow">
                             <List itemLayout="vertical" style={{marginBottom: "14px"}}>
-                                <List.Item>
-                                    <WorkflowListItem workflow={this.state.selectedWorkflow} />
-                                </List.Item>
+                                <WorkflowListItem workflow={this.state.selectedWorkflow} />
                             </List>
                         </Form.Item>
                         <Form.Item label="Inputs">
