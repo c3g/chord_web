@@ -34,8 +34,7 @@ class ProjectDeletionModal extends Component {
     render() {
         return (
             <Modal visible={this.props.showDeletionModal}
-                   title={`Are you sure you want to delete the "${
-                       (this.props.project || {title: ""}).title}" project?`}
+                   title={`Are you sure you want to delete the "${(this.props.project || {title: ""}).title}" project?`}
                    footer={[
                        <Button key="cancel" onClick={this.handleDeleteCancel}>Cancel</Button>,
                        <Button key="confirm" icon="delete" type="danger" onClick={this.handleDeleteSubmit}

@@ -194,7 +194,8 @@ class ManagerIngestionContent extends Component {
                         </Form.Item>
                         <Form.Item wrapperCol={FORM_BUTTON_COL}>
                             {/* TODO: Back button like the last one */}
-                            <Button type="primary" style={{marginTop: "16px", float: "right"}}
+                            <Button type="primary"
+                                    style={{marginTop: "16px", float: "right"}}
                                     loading={this.props.isSubmittingIngestionRun}
                                     onClick={() => this.handleRunIngestion(this.props.history)}>
                                 Run Ingestion

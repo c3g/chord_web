@@ -72,8 +72,6 @@ class DiscoverySearchCondition extends Component {
             dataType2: props.dataType2 || null,
         };
 
-        this.onRemoveClick = this.props.onRemoveClick || (() => {});
-
         this.handleField = this.handleField.bind(this);
         this.handleNegation = this.handleNegation.bind(this);
         this.handleOperation = this.handleOperation.bind(this);
@@ -85,12 +83,15 @@ class DiscoverySearchCondition extends Component {
     handleField(value, key="field", fieldSchemaKey="fieldSchema") {
         if (this.state[key] === value.selected) return;
         const fieldOperations = (value.schema.search || {}).operations || [];
-        this.handleChange({
+        const change = {
             [key]: value.selected,
             [fieldSchemaKey]: value.schema,
             searchValue: "",  // Clear search value if the field changes
             operation: fieldOperations.includes(this.state.operation) ? this.state.operation : fieldOperations[0]
-        });
+        };
+
+        (this.props.onFieldChange || (() => {}))(change);
+        this.handleChange(change);
     }
 
     handleNegation(value) {
@@ -225,7 +226,7 @@ class DiscoverySearchCondition extends Component {
                     ): this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
                     <Button type="danger" style={{width: `${CLOSE_WIDTH}px`}} disabled={this.props.removeDisabled}
-                            onClick={this.onRemoveClick} icon="close" />
+                            onClick={this.props.onRemoveClick || (() => {})} icon="close" />
                 ) : null}
             </Input.Group>
         );
@@ -238,6 +239,7 @@ DiscoverySearchCondition.propTypes = {
     dataTypes: PropTypes.object,
     existingUniqueFields: PropTypes.arrayOf(PropTypes.string),
     value: PropTypes.object,
+    onFieldChange: PropTypes.func,
     onChange: PropTypes.func,
     onRemoveClick: PropTypes.func,
     removeDisabled: PropTypes.bool

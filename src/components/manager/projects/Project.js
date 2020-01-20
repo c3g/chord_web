@@ -76,7 +76,9 @@ class Project extends Component {
                 <div style={{position: "absolute", top: "24px", right: "24px"}}>
                     {this.props.editing ? (
                         <>
-                            <Button type="primary" icon="check" loading={this.props.saving}
+                            <Button type="primary"
+                                    icon="check"
+                                    loading={this.props.saving}
                                     onClick={() => this.handleSave()}>Save</Button>
                             <Button icon="close"
                                     style={{marginLeft: "10px"}}
