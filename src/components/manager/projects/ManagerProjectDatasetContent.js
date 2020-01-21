@@ -4,16 +4,16 @@ import {connect} from "react-redux";
 
 import PropTypes from "prop-types";
 
-import {Button, Empty, Layout, Menu, Skeleton, Typography} from "antd";
+import {Button, Empty, Layout, Menu, Typography} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
-import "antd/es/skeleton/style/css";
 import "antd/es/typography/style/css";
 
 import ProjectCreationModal from "./ProjectCreationModal";
+import ProjectSkeleton from "./ProjectSkeleton";
 import RoutedProject from "./RoutedProject";
 
 import {toggleProjectCreationModal} from "../../../modules/manager/actions";
@@ -83,8 +83,7 @@ class ManagerProjectDatasetContent extends Component {
                                     </Switch>
                                 ) : (
                                     this.props.loadingAuthDependentData ? (
-                                        <Skeleton title={{width: 300}}
-                                                  paragraph={{rows: 4, width: [600, 580, 600, 480]}} />
+                                        <ProjectSkeleton />
                                     ) : (
                                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
                                                description="Select a project from the menu on the left to manage it." />

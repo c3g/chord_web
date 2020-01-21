@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import DatasetFormModal from "./DatasetFormModal";
 import Project from "./Project";
 import ProjectDeletionModal from "./ProjectDeletionModal";
+import ProjectSkeleton from "./ProjectSkeleton";
 
 import {saveProjectIfPossible} from "../../../modules/metadata/actions";
 import {beginProjectEditing, endProjectEditing, toggleProjectDeletionModal} from "../../../modules/manager/actions";
@@ -23,6 +24,12 @@ class RoutedProject extends Component {
         this.hideDatasetAdditionModal = this.hideDatasetAdditionModal.bind(this);
         this.hideDatasetEditModal = this.hideDatasetEditModal.bind(this);
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
+    }
+
+    componentDidUpdate() {
+        if (!this.props.projectsByID[this.props.match.params.project] && !this.props.loadingProjects) {
+            this.props.history.push("/data/manager/projects/");
+        }
     }
 
     ingestIntoTable(p, t) {
@@ -50,7 +57,7 @@ class RoutedProject extends Component {
         const selectedProjectID = this.props.match.params.project;
         if (selectedProjectID) {
             const project = this.props.projectsByID[this.props.match.params.project];
-            // TODO: 404 if project is undefined
+            if (!project) return <ProjectSkeleton />;
 
             const tables = this.props.serviceTablesByServiceAndDataTypeID;
 
@@ -159,6 +166,7 @@ const mapStateToProps = state => ({
 
     loadingPhenopackets: state.phenopackets.isFetching,
     loadingIndividuals: state.individuals.isFetching,
+    loadingProjects: state.projects.isAdding || state.projects.isFetching,
 });
 
 const mapDispatchToProps = dispatch => ({
