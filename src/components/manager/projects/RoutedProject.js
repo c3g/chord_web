@@ -35,7 +35,6 @@ class RoutedProject extends Component {
     }
 
     showDatasetAdditionModal() {
-        console.log("b");
         this.setState({datasetAdditionModal: true});
     }
 

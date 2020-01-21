@@ -10,7 +10,6 @@ import {
     Empty,
     Icon,
     Menu,
-    Modal,
     Tabs,
     Typography
 } from "antd";
@@ -27,7 +26,6 @@ import "antd/es/typography/style/css";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SearchList from "./SearchList";
-import SchemaTree from "../SchemaTree";
 
 import {
     performFullSearchIfPossible,
@@ -39,6 +37,7 @@ import {
 
     updateJoinQueryForm,
 } from "../../modules/discovery/actions";
+import DataTypeExplorationModal from "./DataTypeExplorationModal";
 
 
 class DiscoverySearchContent extends Component {
@@ -129,19 +128,9 @@ class DiscoverySearchContent extends Component {
                             onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
-                <Modal title="Data Type Schemas"
-                       visible={this.state.schemasModalShown}
-                       width={600}
-                       onCancel={this.handleSchemasToggle}
-                       footer={null}>
-                    <Tabs>
-                        {Object.values(this.props.dataTypes).flatMap(ds => (ds.items || []).map(d => (
-                            <Tabs.TabPane tab={d.id} key={d.id}>
-                                <SchemaTree schema={d.schema} />
-                            </Tabs.TabPane>
-                        )))}
-                    </Tabs>
-                </Modal>
+                <DataTypeExplorationModal dataTypes={this.props.dataTypes}
+                                          visible={this.state.schemasModalShown}
+                                          onCancel={this.handleSchemasToggle} />
 
                 <Typography.Title level={3}>Results</Typography.Title>
                 <SearchList />

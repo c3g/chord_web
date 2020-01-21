@@ -56,6 +56,7 @@ export const generateSchemaTreeData = (
     const baseNode = {
         key,
         value: key,
+        data: node,
         title: <span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>,
         titleSelected: <Typography.Text style={{
             float: "right",
@@ -90,6 +91,17 @@ export const generateSchemaTreeData = (
             return {...baseNode, children: []};
     }
 };
+
+export const generateSchemaTableData = treeData =>
+    [
+        ...(treeData.key === ROOT_SCHEMA_ID
+            ? []
+            : [{
+                ...Object.fromEntries(Object.entries(treeData).filter(p => p[0] !== "children")),
+                key: treeData.key.replace(`${ROOT_SCHEMA_ID}.`, "")
+            }]),
+        ...(treeData.children || []).flatMap(c => generateSchemaTableData(c))
+    ].sort((a, b) => a.key.localeCompare(b.key));
 
 /**
  * Resolves a particular field's schema from the overall object schema and a dot-notation field string.
