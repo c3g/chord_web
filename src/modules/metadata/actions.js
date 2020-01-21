@@ -98,9 +98,9 @@ export const deleteProject = networkAction(project => (dispatch, getState) => ({
     params: {project},
     url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
     req: {method: "DELETE"},
-    err: `Error deleting project '${project.title}'`,  // TODO: More user-friendly error
-    onSuccess: () => message.success("Project deleted!")  // TODO: More user-friendly error
-}));  // TODO: Fix project selection afterwards
+    err: `Error deleting project '${project.title}'`,  // TODO: More user-friendly, detailed error
+    onSuccess: () => message.success(`Project '${project.title}' deleted!`)
+}));
 
 export const deleteProjectIfPossible = project => async (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
