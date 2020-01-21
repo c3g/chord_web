@@ -6,6 +6,7 @@ import {Icon, Input, Modal, Radio, Table, Tabs} from "antd";
 import SchemaTree from "../SchemaTree";
 import {generateSchemaTreeData, generateSchemaTableData} from "../../schema";
 
+// TODO: Add more columns
 const FIELD_COLUMNS = [
     {title: "Key", dataIndex: "key", render: t =>
             <span style={{fontFamily: "monospace", fontSize: "12px", whiteSpace: "nowrap"}}>{t}</span>},
@@ -53,8 +54,9 @@ class DataTypeExplorationModal extends Component {
                                 <SchemaTree schema={d.schema} />
                             ) : (
                                 <>
-                                    <Input onChange={e => this.onFilterChange(e.target.value)}
-                                           placeholder="Search for a field..." style={{marginBottom: "16px"}} />
+                                    <Input.Search allowClear={true}
+                                                  onChange={e => this.onFilterChange(e.target.value)}
+                                                  placeholder="Search for a field..." style={{marginBottom: "16px"}} />
                                     <Table bordered={true}
                                            columns={FIELD_COLUMNS}
                                            dataSource={getTableData(d)} />
