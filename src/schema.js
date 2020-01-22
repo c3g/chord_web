@@ -1,6 +1,7 @@
 import React from "react";
 
-import {Typography} from "antd";
+import {Button, Popover, Typography} from "antd";
+import "antd/es/popover/style/css";
 import "antd/es/typography/style/css";
 
 
@@ -57,7 +58,18 @@ export const generateSchemaTreeData = (
         key,
         value: key,
         data: node,
-        title: <span><Typography.Text code>{name}</Typography.Text> - {node.type}</span>,
+        title: <span>
+            <Typography.Text code>{name}</Typography.Text> - {node.type}
+            {node.description ? (
+                <Popover overlayStyle={{zIndex: 1051, maxWidth: "400px"}}
+                         content={node.description}
+                         title={<span style={{fontFamily: "monospace"}}>
+                             {key.replace(`${ROOT_SCHEMA_ID}.`, "")}
+                         </span>}>
+                    <Button icon="question-circle" type="link" size="small" style={{marginLeft: "8px"}}/>
+                </Popover>
+            ) : null}
+        </span>,
         titleSelected: <Typography.Text style={{
             float: "right",
             fontFamily: "monospace",
@@ -92,6 +104,11 @@ export const generateSchemaTreeData = (
     }
 };
 
+/**
+ * Generates Ant-compatible table data from tree data.
+ * @param {object} treeData - Tree data created via generateSchemaTreeData.
+ * @returns {array} - List of table data to use as dataSource in an Ant table component.
+ */
 export const generateSchemaTableData = treeData =>
     [
         ...(treeData.key === ROOT_SCHEMA_ID
