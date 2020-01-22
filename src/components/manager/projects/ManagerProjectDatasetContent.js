@@ -55,7 +55,7 @@ class ManagerProjectDatasetContent extends Component {
                         </Layout.Content>
                     ) : (
                         <>
-                            <Layout.Sider style={{background: "white"}} width={256}>
+                            <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
                                 <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                                     <Menu style={{flex: 1, paddingTop: "8px"}}
                                           mode="inline"
