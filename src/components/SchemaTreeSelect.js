@@ -40,6 +40,7 @@ class SchemaTreeSelect extends Component {
             <TreeSelect style={this.props.style}
                         disabled={this.props.disabled}
                         placeholder="field"
+                        showSearch={true}
                         treeDefaultExpandedKeys={this.props.schema ? [`${ROOT_SCHEMA_ID}`] : []}
                         treeData={this.props.schema ? [generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID,
                             "", this.props.isExcluded)] : []}

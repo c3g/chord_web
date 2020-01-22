@@ -42,11 +42,13 @@ class TableTreeSelect extends Component {
             selectable: false,
             key: `project:${p.identifier}`,
             value: `project:${p.identifier}`,
+            data: p,
             children: p.datasets.map(d => ({
                 title: d.title,
                 selectable: false,
                 key: `dataset:${d.identifier}`,
                 value: `dataset:${d.identifier}`,
+                data: d,
                 children: [
                     // Add the dataset metadata table in manually -- it's not "owned" per se
                     // TODO: Don't hard-code data type name here, fetch from serviceTables
@@ -69,7 +71,8 @@ class TableTreeSelect extends Component {
                     disabled: !(dataType === null || dataType === t.data_type),
                     isLeaf: true,
                     key: `${p.identifier}:${t.data_type}:${t.table_id}`,
-                    value: `${p.identifier}:${t.data_type}:${t.table_id}`
+                    value: `${p.identifier}:${t.data_type}:${t.table_id}`,
+                    data: t,
                 }))
             }))
         }));
@@ -77,6 +80,14 @@ class TableTreeSelect extends Component {
         return (
             <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
                 <TreeSelect style={this.props.style || {}}
+                            showSearch={true}
+                            filterTreeNode={(v, n) => {
+                                const filter = v.toLocaleLowerCase().trim();
+                                if (filter === "") return true;
+                                return n.key.toLocaleLowerCase().includes(filter)
+                                    || n.props.data.title.toLocaleLowerCase().includes(filter)
+                                    || (n.props.data.data_type || "").toLocaleLowerCase().includes(filter);
+                            }}
                             onChange={this.props.onChange || (() => {})}
                             value={this.state.selected}
                             treeData={selectTreeData}
