@@ -76,7 +76,7 @@ export const fetchDataServiceDataTypes = networkAction((chordService, serviceInf
 export const fetchDataServiceDataTypeTables = networkAction((chordService, serviceInfo, dataType) => ({
     types: FETCH_SERVICE_TABLES,
     params: {chordService, serviceInfo, dataTypeID: dataType.id},
-    url: `${serviceInfo.url}/datasets?${createURLSearchParams({"data-type": dataType.id}).toString()}`,
+    url: `${serviceInfo.url}/tables?${createURLSearchParams({"data-type": dataType.id}).toString()}`,
     err: `Error fetching tables from service '${serviceInfo.name}' (data type ${dataType.id})`
 }));
 

@@ -172,10 +172,10 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
             await dispatch(terminateFlow(PROJECT_TABLE_ADDITION));
         };
 
-        await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {method: "OPTIONS"});
+        await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`, {method: "OPTIONS"});
 
         try {
-            const serviceResponse = await fetch(`${serviceInfo.url}/datasets?data-type=${dataType}`, {
+            const serviceResponse = await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -248,8 +248,7 @@ const deleteProjectTable = (project, table) => async (dispatch, getState) => {
 
     // Delete from service
     try {
-        // TODO: Dataset --> Table
-        const serviceResponse = await fetch(`${serviceInfo.url}/datasets/${table.table_id}`, {method: "DELETE"});
+        const serviceResponse = await fetch(`${serviceInfo.url}/tables/${table.table_id}`, {method: "DELETE"});
         if (!serviceResponse.ok) {
             console.error(serviceResponse);
             await terminate();
