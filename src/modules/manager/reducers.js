@@ -1,9 +1,6 @@
 import {
     TOGGLE_PROJECT_CREATION_MODAL,
-    TOGGLE_PROJECT_DELETION_MODAL,
-
     PROJECT_EDITING,
-
     FETCH_DROP_BOX_TREE,
 } from "./actions";
 
@@ -11,7 +8,6 @@ import {
 export const manager = (
     state = {
         projectCreationModal: false,
-        projectDeletionModal: false,
         editingProject: false
     },
     action
@@ -19,9 +15,6 @@ export const manager = (
     switch (action.type) {
         case TOGGLE_PROJECT_CREATION_MODAL:
             return {...state, projectCreationModal: !state.projectCreationModal};
-
-        case TOGGLE_PROJECT_DELETION_MODAL:
-            return {...state, projectDeletionModal: !state.projectDeletionModal};
 
         case PROJECT_EDITING.BEGIN:
             return {...state, editingProject: true};

@@ -1,13 +1,15 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
+import {Modal} from "antd";
+import "antd/es/modal/style/css";
+
 import DatasetFormModal from "./DatasetFormModal";
 import Project from "./Project";
-import ProjectDeletionModal from "./ProjectDeletionModal";
 import ProjectSkeleton from "./ProjectSkeleton";
 
-import {saveProjectIfPossible} from "../../../modules/metadata/actions";
-import {beginProjectEditing, endProjectEditing, toggleProjectDeletionModal} from "../../../modules/manager/actions";
+import {deleteProjectIfPossible, saveProjectIfPossible} from "../../../modules/metadata/actions";
+import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
 
 class RoutedProject extends Component {
     constructor(props) {
@@ -24,6 +26,7 @@ class RoutedProject extends Component {
         this.hideDatasetAdditionModal = this.hideDatasetAdditionModal.bind(this);
         this.hideDatasetEditModal = this.hideDatasetEditModal.bind(this);
         this.ingestIntoTable = this.ingestIntoTable.bind(this);
+        this.handleDeleteProject = this.handleDeleteProject.bind(this);
     }
 
     componentDidUpdate() {
@@ -51,6 +54,27 @@ class RoutedProject extends Component {
 
     hideDatasetEditModal() {
         this.setState({datasetEditModal: false});
+    }
+
+    handleDeleteProject(project) {
+        Modal.confirm({
+            title: `Are you sure you want to delete the "${project.title}" project?`,
+            content:
+                <>
+                    Deleting this project means all data contained in the project will be deleted
+                    permanently, and datasets will no longer be available for discovery within the
+                    CHORD federation. {/* TODO: Real terms and conditions */}
+                </>,
+            width: 576,
+            autoFocusButton: "cancel",
+            okText: "Delete",
+            okButtonProps: {
+                type: "danger",
+                loading: this.props.isDeletingProject,
+            },
+            maskClosable: true,
+            onOk: () => this.props.deleteProject(project)
+        });
     }
 
     render() {
@@ -95,8 +119,6 @@ class RoutedProject extends Component {
 
             return (
                 <>
-                    <ProjectDeletionModal project={project} />
-
                     <DatasetFormModal mode="add"
                                       project={project}
                                       visible={this.state.datasetAdditionModal}
@@ -121,17 +143,15 @@ class RoutedProject extends Component {
                                      .filter(p => project.datasets.map(d => d.identifier).includes(p.dataset))
                                      .length > 0)}
                              loadingIndividuals={this.props.loadingIndividuals}
-                             onDelete={() => this.props.toggleProjectDeletionModal()}
+                             onDelete={() => this.handleDeleteProject(project)}
                              onEdit={() => this.props.beginProjectEditing()}
                              onCancelEdit={() => this.props.endProjectEditing()}
                              onSave={project => this.handleProjectSave(project)}
                              onAddDataset={() => this.showDatasetAdditionModal()}
-                             onEditDataset={dataset => {
-                                 this.setState({
-                                     selectedDataset: dataset,
-                                     datasetEditModal: true
-                                 })
-                             }}
+                             onEditDataset={dataset => this.setState({
+                                 selectedDataset: dataset,
+                                 datasetEditModal: true
+                             })}
                              onTableIngest={(p, t) => this.ingestIntoTable(p, t)} />
                  </>
             );
@@ -167,14 +187,15 @@ const mapStateToProps = state => ({
     loadingPhenopackets: state.phenopackets.isFetching,
     loadingIndividuals: state.individuals.isFetching,
     loadingProjects: state.projects.isAdding || state.projects.isFetching,
+
+    isDeletingProject: state.projects.isDeleting,
 });
 
 const mapDispatchToProps = dispatch => ({
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
-
-    toggleProjectDeletionModal: () => dispatch(toggleProjectDeletionModal()),
+    deleteProject: project => dispatch(deleteProjectIfPossible(project)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutedProject);
