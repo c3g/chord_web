@@ -225,7 +225,7 @@ class Dataset extends Component {
                 {key: "tables", tab: "Data Tables"},
                 {key: "data_use", tab: "Consent Codes and Data Use"},
             ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={<>
-                <Button icon="import" style={{marginRight: "24px"}}
+                <Button icon="import" style={{marginRight: "16px"}}
                         onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, {
                             // Map dataset to metadata table  TODO: Remove all these hacks
                             id: this.state.identifier,
@@ -234,9 +234,10 @@ class Dataset extends Component {
                     Ingest Metadata
                 </Button>
                 <Button icon="edit"
-                        style={{marginRight: "10px"}}
+                        style={{marginRight: "8px"}}
                         onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
-                <Button type="danger" icon="delete">Delete</Button>
+                <Button type="danger" icon="delete" onClick={() => {}}>Delete</Button>
+                {/* TODO: Delete Dataset Button functionality (v0.1) */}
                 {/* TODO: Share button */}
             </>}>
                 <TableAdditionModal visible={this.state.additionModalVisible}

@@ -129,7 +129,7 @@ export const projects = (
             return {...state, isSavingDataset: true};
 
         case SAVE_PROJECT_DATASET.RECEIVE:
-            const replaceDataset = d => d.identifier === action.data.identifier ? action.data : d;
+            const replaceDataset = d => d.identifier === action.data.identifier ? {...d, ...action.data} : d;
             return {
                 ...state,
                 isSavingDataset: false,

@@ -149,7 +149,7 @@ export const saveProjectDataset = networkAction(dataset => (dispatch, getState) 
     types: SAVE_PROJECT_DATASET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
     req: {
-        method: "PUT",
+        method: "PUT",  // TODO: PATCH
         headers: {"Content-Type": "application/json"},
         // Filter out read-only props
         body: JSON.stringify(objectWithoutProps(dataset, ["identifier", "created", "updated"]))

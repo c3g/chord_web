@@ -4,7 +4,6 @@ import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Button, Modal} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 
@@ -46,7 +45,7 @@ class ProjectCreationModal extends Component {
                 <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}
                         loading={this.props.isCreatingProject}>Create</Button>
             ]} onCancel={this.handleCreateCancel}>
-                <ProjectForm ref={form => this.form = form}/>
+                <ProjectForm ref={form => this.form = form} />
             </Modal>
         )
     }
