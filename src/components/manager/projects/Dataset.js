@@ -2,10 +2,13 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Row, Spin, Statistic, Table, Typography} from "antd";
+import {Button, Card, Col, Divider, Empty, Modal, Row, Spin, Statistic, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
+import "antd/es/divider/style/css";
+import "antd/es/empty/style/css";
+import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/statistic/style/css";
@@ -23,7 +26,9 @@ import {
 } from "../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy, projectPropTypesShape} from "../../../utils";
+import {simpleDeepCopy, projectPropTypesShape, linkedFieldSetPropTypesShape} from "../../../utils";
+import LinkedFieldSetTable from "./LinkedFieldSetTable";
+import LinkedFieldSetAdditionModal from "./LinkedFieldSetAdditionModal";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -47,10 +52,12 @@ class Dataset extends Component {
             title: value.title || "",
             description: value.description || "",
             data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE),
+            linked_field_sets: value.linked_field_sets || [],
             tables: value.tables || [],
 
             additionModalVisible: false,
             deletionModalVisible: false,
+            fieldSetAdditionModalVisible: false,
             selectedTab: "overview",
             selectedTable: null,
         };
@@ -215,6 +222,70 @@ class Dataset extends Component {
                            loading={this.props.loadingTables} />
                 </>
             ),
+            linked_field_sets: (
+                <>
+                    <Typography.Title level={4}>
+                        Linked Field Sets
+                        <div style={{float: "right"}}>
+                            <Button icon="plus"
+                                    style={{verticalAlign: "top"}}
+                                    type="primary"
+                                    onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
+                                Add Field Link Set
+                            </Button>
+                        </div>
+                    </Typography.Title>
+                    <Typography.Paragraph style={{maxWidth: "600px"}}>
+                        Linked Field Sets group common fields (i.e. fields that share the same "value space") between
+                        multiple data types. For example, these sets can be used to tell the discovery system that
+                        Phenopacket biosample identifiers are the same as variant sample identifiers, and so variants
+                        with an identifier of "sample1" come from a biosample with identifier "sample1".
+                    </Typography.Paragraph>
+                    <Typography.Paragraph style={{maxWidth: "600px"}}>
+                        A word of caution: the more fields added to a Linked Field Set, the longer it takes to 
+                    </Typography.Paragraph>
+                    {(this.state.linked_field_sets || {}).length === 0
+                        ? (
+                            <>
+                                <Divider />
+                                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Field Link Sets">
+                                    <Button icon="plus"
+                                            type="primary"
+                                            onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
+                                        Add Field Link Set
+                                    </Button>
+                                </Empty>
+                            </>
+                        ) : null}
+                    {(this.state.linked_field_sets || []).map((fieldSet, i) => (
+                        <Card key={i} title={fieldSet.name} extra={
+                            <>
+                                <Button icon="plus" style={{marginRight: "8px"}}>Add Field to Set</Button>
+                                <Button icon="delete" type="danger" onClick={() => {
+                                    Modal.confirm({
+                                        title: `Are you sure you want to delete the "${fieldSet.name}" field link set?`,
+                                        content: <>
+                                            <Typography.Paragraph>
+                                                Doing so will mean users will <strong>no longer</strong> be able to link
+                                                search results across the data types specified via the following
+                                                linked fields:
+                                            </Typography.Paragraph>
+                                            <LinkedFieldSetTable linkedFieldSet={fieldSet} inModal={true} />
+                                        </>,
+                                        width: 720,
+                                        autoFocusButton: "cancel",
+                                        okText: "Delete",
+                                        okButtonProps: {type: "danger"},
+                                        maskClosable: true,
+                                    })
+                                }}>Delete</Button>
+                            </>
+                        }>
+                            <LinkedFieldSetTable linkedFieldSet={fieldSet} />
+                        </Card>
+                    ))}
+                </>
+            ),
             data_use: <DataUseDisplay dataUse={this.state.data_use} />
         };
 
@@ -223,6 +294,7 @@ class Dataset extends Component {
                 {key: "overview", tab: "Overview"},
                 {key: "individuals", tab: "Individuals and Pools"},
                 {key: "tables", tab: "Data Tables"},
+                {key: "linked_field_sets", tab: "Linked Field Sets"},
                 {key: "data_use", tab: "Consent Codes and Data Use"},
             ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={<>
                 <Button icon="import" style={{marginRight: "16px"}}
@@ -251,6 +323,12 @@ class Dataset extends Component {
                                     onSubmit={() => this.handleTableDeletionSubmit()}
                                     onCancel={() => this.handleTableDeletionCancel()} />
 
+                <LinkedFieldSetAdditionModal dataset={this.state}
+                                             visible={this.state.fieldSetAdditionModalVisible}
+                                             onSubmit={() => this.setState({fieldSetAdditionModalVisible: false})}
+                                             onCancel={() =>
+                                                 this.setState({fieldSetAdditionModalVisible: false})} />
+
                 {tabContents[this.state.selectedTab]}
             </Card>
         );
@@ -264,6 +342,7 @@ Dataset.propTypes = {
     value: PropTypes.shape({
         identifier: PropTypes.string,
         title: PropTypes.string,
+        linked_field_sets: PropTypes.arrayOf(linkedFieldSetPropTypesShape),
         tables: PropTypes.arrayOf(PropTypes.object),
     }),
 

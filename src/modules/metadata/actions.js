@@ -29,6 +29,7 @@ export const SAVE_PROJECT = createNetworkActionTypes("SAVE_PROJECT");
 
 export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET");
 export const SAVE_PROJECT_DATASET = createNetworkActionTypes("SAVE_PROJECT_DATASET");
+export const ADD_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("ADD_DATASET_LINKED_FIELD_SET");
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
@@ -157,6 +158,25 @@ export const saveProjectDataset = networkAction(dataset => (dispatch, getState) 
     err: `Error saving dataset '${dataset.title}'`,
     onSuccess: () => message.success(`Saved dataset '${dataset.title}'`)
 }));
+
+
+const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet) => (dispatch, getState) => ({
+    types: ADD_DATASET_LINKED_FIELD_SET,
+    url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+    req: {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({linked_field_sets: [...dataset.linked_field_sets, linkedFieldSet]})
+    },
+    err: `Error adding linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`,
+    onSuccess: () =>
+        message.success(`Added linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`)
+}));
+
+export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet) => async (dispatch, getState) => {
+    if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;
+    await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet));
+};
 
 
 export const addProjectTable = (project, datasetID, serviceInfo, dataType, tableName) =>
