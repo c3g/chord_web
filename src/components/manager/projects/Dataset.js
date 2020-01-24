@@ -242,7 +242,7 @@ class Dataset extends Component {
                         with an identifier of "sample1" come from a biosample with identifier "sample1".
                     </Typography.Paragraph>
                     <Typography.Paragraph style={{maxWidth: "600px"}}>
-                        A word of caution: the more fields added to a Linked Field Set, the longer it takes to 
+                        A word of caution: the more fields added to a Linked Field Set, the longer it takes to
                     </Typography.Paragraph>
                     {(this.state.linked_field_sets || {}).length === 0
                         ? (
