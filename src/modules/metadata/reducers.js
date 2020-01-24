@@ -10,8 +10,11 @@ import {
 
     ADD_PROJECT_DATASET,
     SAVE_PROJECT_DATASET,
+    DELETE_PROJECT_DATASET,
+
     ADD_DATASET_LINKED_FIELD_SET,
     DELETE_DATASET_LINKED_FIELD_SET,
+
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
 
@@ -32,6 +35,7 @@ export const projects = (
         isSaving: false,
         isAddingDataset: false,
         isSavingDataset: false,
+        isDeletingDataset: false,
         items: [],
         itemsByID: {}
     },
@@ -156,6 +160,33 @@ export const projects = (
         case ADD_DATASET_LINKED_FIELD_SET.ERROR:
         case DELETE_DATASET_LINKED_FIELD_SET.ERROR:
             return {...state, isSavingDataset: false};
+
+
+        case DELETE_PROJECT_DATASET.REQUEST:
+            return {...state, isDeletingDataset: true};
+
+        case DELETE_PROJECT_DATASET.RECEIVE:
+            const deleteDataset = d => d.identifier !== action.dataset.identifier;
+            return {
+                ...state,
+                isDeletingDataset: false,
+                items: state.items.map(p => p.identifier === action.project.identifier
+                    ? {...p, datasets: p.datasets.filter(deleteDataset)}
+                    : p
+                ),
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.project.identifier]: {
+                        ...(state.itemsByID[action.project.identifier] || {}),
+                        datasets: ((state.itemsByID[action.project.identifier] || {}).datasets || [])
+                            .filter(deleteDataset)
+                    }
+                }
+            };
+
+        case DELETE_PROJECT_DATASET.ERROR:
+            return {...state, isDeletingDataset: false};
+
 
         default:
             return state;

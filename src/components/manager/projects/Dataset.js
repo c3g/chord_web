@@ -21,6 +21,7 @@ import TableAdditionModal from "./TableAdditionModal";
 import TableDeletionModal from "./TableDeletionModal";
 
 import {
+    deleteProjectDatasetIfPossible,
     addProjectTable,
     deleteDatasetLinkedFieldSetIfPossible,
     deleteProjectTableIfPossible,
@@ -342,6 +343,8 @@ class Dataset extends Component {
                         okText: "Delete",
                         okButtonProps: {type: "danger"},
                         maskClosable: true,
+                        confirmLoading: this.props.isDeletingDataset,
+                        onOk: () => this.props.deleteProjectDataset(this.props.project, this.state),
                     })
                 }}>Delete</Button>
                 {/* TODO: Delete Dataset Button functionality (v0.1) */}
@@ -395,9 +398,11 @@ Dataset.propTypes = {
 const mapStateToProps = state => ({
     serviceInfoByArtifact: state.services.itemsByArtifact,
     isSavingDataset: state.projects.isSavingDataset,
+    isDeletingDataset: state.projects.isDeletingDataset,
 });
 
 const mapDispatchToProps = dispatch => ({
+    deleteProjectDataset: async (project, dataset) => await dispatch(deleteProjectDatasetIfPossible(project, dataset)),
     deleteLinkedFieldSet: async (dataset, linkedFieldSet, linkedFieldSetIndex) =>
         await dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
     addProjectTable: async (project, datasetID, serviceID, dataTypeID, tableName) =>
