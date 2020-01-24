@@ -30,7 +30,7 @@ class SearchList extends Component {
     }
 
     handleSearchSelect(searchIndex) {
-        this.props.selectSearch(parseInt(searchIndex, 10));
+        this.props.selectSearch(searchIndex === null ? null : parseInt(searchIndex, 10));
     }
 
     handleDatasetTermsClick(dataset) {
@@ -101,14 +101,15 @@ class SearchList extends Component {
                     <Collapse bordered={true}
                               accordion={true}
                               activeKey={(this.props.selectedSearch || 0).toString(10)}
-                              onChange={() => this.handleSearchSelect()}>
+                              onChange={i => this.handleSearchSelect(i)}>
                         {[...this.props.searches].reverse().map((s, i) => {
                             const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
                                 r.map(d => ({...d, node: n})));
                             const title = `Search ${this.props.searches.length - i}: ${searchResults.length} result${
                                 searchResults.length === 1 ? "" : "s"}`;
                             return (
-                                <Collapse.Panel header={title} key={this.props.searches.length - i - 1}>
+                                <Collapse.Panel header={title}
+                                                key={(this.props.searches.length - i - 1).toString(10)}>
                                     <Table bordered={true}
                                            columns={searchResultsColumns}
                                            dataSource={searchResults}
@@ -131,8 +132,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    selectSearch: (serviceInfo, dataTypeID, searchIndex) =>
-        dispatch(selectSearch(serviceInfo, dataTypeID, searchIndex)),
+    selectSearch: searchIndex => dispatch(selectSearch(searchIndex)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchList);
