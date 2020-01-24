@@ -30,6 +30,7 @@ export const SAVE_PROJECT = createNetworkActionTypes("SAVE_PROJECT");
 export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET");
 export const SAVE_PROJECT_DATASET = createNetworkActionTypes("SAVE_PROJECT_DATASET");
 export const ADD_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("ADD_DATASET_LINKED_FIELD_SET");
+export const DELETE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("DELETE_DATASET_LINKED_FIELD_SET");
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
@@ -174,9 +175,32 @@ const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet) => (dis
 }));
 
 export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet) => async (dispatch, getState) => {
-    if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;
+    if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;  // TODO: isDeleting
     await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet));
 };
+
+
+const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, linkedFieldSetIndex) =>
+    (dispatch, getState) => ({
+        types: DELETE_DATASET_LINKED_FIELD_SET,
+        url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+        req: {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                linked_field_sets: dataset.linked_field_sets.filter((_, i) => i !== linkedFieldSetIndex)
+            })
+        },
+        err: `Error deleting linked field set '${linkedFieldSet.name}' from dataset '${dataset.title}'`,
+        onSuccess: () =>
+            message.success(`Deleted linked field set '${linkedFieldSet.name}' from dataset '${dataset.title}'`)
+    }));
+
+export const deleteDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, linkedFieldSetIndex) =>
+    async (dispatch, getState) => {
+        if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;  // TODO: isDeleting
+        await dispatch(deleteDatasetLinkedFieldSet(dataset, linkedFieldSet, linkedFieldSetIndex));
+    };
 
 
 export const addProjectTable = (project, datasetID, serviceInfo, dataType, tableName) =>

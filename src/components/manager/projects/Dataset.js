@@ -2,12 +2,13 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Divider, Empty, Modal, Row, Spin, Statistic, Table, Typography} from "antd";
+import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Spin, Statistic, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
@@ -21,6 +22,7 @@ import TableDeletionModal from "./TableDeletionModal";
 
 import {
     addProjectTable,
+    deleteDatasetLinkedFieldSetIfPossible,
     deleteProjectTableIfPossible,
     fetchProjectsWithDatasetsAndTables
 } from "../../../modules/metadata/actions";
@@ -62,6 +64,8 @@ class Dataset extends Component {
             selectedTable: null,
         };
 
+        this.handleFieldSetDeletion = this.handleFieldSetDeletion.bind(this);
+
         this.handleAdditionClick = this.handleAdditionClick.bind(this);
         this.handleAdditionCancel = this.handleAdditionCancel.bind(this);
         this.handleAdditionSubmit = this.handleAdditionSubmit.bind(this);
@@ -69,8 +73,30 @@ class Dataset extends Component {
         this.handleTableDeletionClick = this.handleTableDeletionClick.bind(this);
         this.handleTableDeletionCancel = this.handleTableDeletionCancel.bind(this);
         this.handleTableDeletionSubmit = this.handleTableDeletionSubmit.bind(this);
-
     }
+
+
+    handleFieldSetDeletion(fieldSet, index) {
+        Modal.confirm({
+            title: `Are you sure you want to delete the "${fieldSet.name}" field link set?`,
+            content: <>
+                <Typography.Paragraph>
+                    Doing so will mean users will <strong>no longer</strong> be able to link
+                    search results across the data types specified via the following
+                    linked fields:
+                </Typography.Paragraph>
+                <LinkedFieldSetTable linkedFieldSet={fieldSet} inModal={true} />
+            </>,
+            width: 720,
+            autoFocusButton: "cancel",
+            okText: "Delete",
+            okType: "danger",
+            maskClosable: true,
+            confirmLoading: this.props.isSavingDataset,
+            onOk: () => this.props.deleteLinkedFieldSet(this.state, fieldSet, index),
+        });
+    }
+
 
     handleAdditionClick() {
         this.setState({additionModalVisible: true});
@@ -242,7 +268,8 @@ class Dataset extends Component {
                         with an identifier of "sample1" come from a biosample with identifier "sample1".
                     </Typography.Paragraph>
                     <Typography.Paragraph style={{maxWidth: "600px"}}>
-                        A word of caution: the more fields added to a Linked Field Set, the longer it takes to
+                        A word of caution: the more fields added to a Linked Field Set, the longer it takes to search
+                        the dataset in question.
                     </Typography.Paragraph>
                     {(this.state.linked_field_sets || {}).length === 0
                         ? (
@@ -256,34 +283,26 @@ class Dataset extends Component {
                                     </Button>
                                 </Empty>
                             </>
-                        ) : null}
-                    {(this.state.linked_field_sets || []).map((fieldSet, i) => (
-                        <Card key={i} title={fieldSet.name} extra={
-                            <>
-                                <Button icon="plus" style={{marginRight: "8px"}}>Add Field to Set</Button>
-                                <Button icon="delete" type="danger" onClick={() => {
-                                    Modal.confirm({
-                                        title: `Are you sure you want to delete the "${fieldSet.name}" field link set?`,
-                                        content: <>
-                                            <Typography.Paragraph>
-                                                Doing so will mean users will <strong>no longer</strong> be able to link
-                                                search results across the data types specified via the following
-                                                linked fields:
-                                            </Typography.Paragraph>
-                                            <LinkedFieldSetTable linkedFieldSet={fieldSet} inModal={true} />
-                                        </>,
-                                        width: 720,
-                                        autoFocusButton: "cancel",
-                                        okText: "Delete",
-                                        okButtonProps: {type: "danger"},
-                                        maskClosable: true,
-                                    })
-                                }}>Delete</Button>
-                            </>
-                        }>
-                            <LinkedFieldSetTable linkedFieldSet={fieldSet} />
-                        </Card>
-                    ))}
+                        ) : (
+                            <Row gutter={[16, 24]}>
+                                {(this.state.linked_field_sets || []).map((fieldSet, i) => (
+                                    <Col key={i} lg={24} xl={12}>
+                                        <Card title={`${i+1}. ${fieldSet.name}`} actions={[
+                                            <span onClick={() => console.log("TODO")}>  {/* TODO: Make this work */}
+                                                <Icon type="edit"
+                                                      style={{width: "auto", display: "inline"}}
+                                                      key="edit_field_sets" /> Manage Fields</span>,
+                                            <span onClick={() => this.handleFieldSetDeletion(fieldSet, i)}>
+                                                <Icon type="delete"
+                                                      style={{width: "auto", display: "inline"}}
+                                                      key="delete_field_set" /> Delete Set</span>,
+                                        ]}>
+                                            <LinkedFieldSetTable linkedFieldSet={fieldSet} />
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        )}
                 </>
             ),
             data_use: <DataUseDisplay dataUse={this.state.data_use} />
@@ -308,9 +327,25 @@ class Dataset extends Component {
                 <Button icon="edit"
                         style={{marginRight: "8px"}}
                         onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
-                <Button type="danger" icon="delete" onClick={() => {}}>Delete</Button>
+                <Button type="danger" icon="delete" onClick={() => {
+                    Modal.confirm({
+                        title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
+                        content: <>
+                            <Typography.Paragraph>
+                                All data contained in the dataset will be deleted permanently, and the dataset will no
+                                longer be available for discovery within the CHORD federation.
+                                {/* TODO: Real terms and conditions */}
+                            </Typography.Paragraph>
+                        </>,
+                        width: 572,
+                        autoFocusButton: "cancel",
+                        okText: "Delete",
+                        okButtonProps: {type: "danger"},
+                        maskClosable: true,
+                    })
+                }}>Delete</Button>
                 {/* TODO: Delete Dataset Button functionality (v0.1) */}
-                {/* TODO: Share button */}
+                {/* TODO: Share button (vFuture) */}
             </>}>
                 <TableAdditionModal visible={this.state.additionModalVisible}
                                     project={this.props.project}
@@ -358,14 +393,17 @@ Dataset.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    serviceInfoByArtifact: state.services.itemsByArtifact
+    serviceInfoByArtifact: state.services.itemsByArtifact,
+    isSavingDataset: state.projects.isSavingDataset,
 });
 
 const mapDispatchToProps = dispatch => ({
+    deleteLinkedFieldSet: async (dataset, linkedFieldSet, linkedFieldSetIndex) =>
+        await dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
     addProjectTable: async (project, datasetID, serviceID, dataTypeID, tableName) =>
         await dispatch(addProjectTable(project, datasetID, serviceID, dataTypeID, tableName)),
     deleteProjectTable: async (project, table) => await dispatch(deleteProjectTableIfPossible(project, table)),
-    fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
+    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dataset);
