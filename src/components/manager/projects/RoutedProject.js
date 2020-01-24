@@ -68,12 +68,10 @@ class RoutedProject extends Component {
             width: 576,
             autoFocusButton: "cancel",
             okText: "Delete",
-            okButtonProps: {
-                type: "danger",
-                loading: this.props.isDeletingProject,
-            },
+            okType: "danger",
             maskClosable: true,
-            onOk: () => this.props.deleteProject(project)
+            confirmLoading: this.props.isDeletingProject,
+            onOk: () => this.props.deleteProject(project),
         });
     }
 
@@ -195,7 +193,7 @@ const mapDispatchToProps = dispatch => ({
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
-    deleteProject: project => dispatch(deleteProjectIfPossible(project)),
+    deleteProject: async project => await dispatch(deleteProjectIfPossible(project)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutedProject);
