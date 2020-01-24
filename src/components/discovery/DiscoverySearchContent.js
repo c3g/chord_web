@@ -115,6 +115,7 @@ class DiscoverySearchContent extends Component {
                         ? <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>{dataTypeTabPanes}</Tabs>
                         : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added" />}
 
+                    {/* TODO: Allow this to be optionally specified for advanced users
                     <Divider />
 
                     <Typography.Title level={3}>Join Query</Typography.Title>
@@ -123,6 +124,7 @@ class DiscoverySearchContent extends Component {
                                          formValues={this.props.joinFormValues}
                                          loading={this.props.searchLoading}
                                          onChange={fields => this.props.updateJoinForm(fields)} />
+                    */}
 
                     <Button type="primary" icon="search" loading={this.props.searchLoading}
                             onClick={this.handleSubmit}>Search</Button>
