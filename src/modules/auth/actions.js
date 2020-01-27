@@ -33,8 +33,12 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     if (!hasAttempted) await dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
 
     await dispatch(fetchUser());
-    await dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
-    await (servicesCb || (() => {}))();
+
+    if (!hasAttempted) {
+        await dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
+        await (servicesCb || (() => {}))();
+        await dispatch(fetchProjectsWithDatasetsAndTables());  // TODO: If needed, remove if !hasAttempted
+    }
 
     const newState = getState().auth.user;
     if (newState === null
@@ -46,7 +50,6 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
 
     // Otherwise, we're newly authenticated as an owner, so run all actions that need authentication.
     await Promise.all([
-        dispatch(fetchProjectsWithDatasetsAndTables()),  // TODO: If needed
         dispatch(fetchDropBoxTree()),
         dispatch(fetchRuns()),
         dispatch(fetchPhenopacketsIfNeeded()),
