@@ -23,6 +23,7 @@ import PeersContent from "./PeersContent";
 import NotificationsContent from "./NotificationsContent";
 
 import {fetchUserAndDependentData} from "../modules/auth/actions";
+import {fetchNodeInfo} from "../modules/node/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
@@ -86,6 +87,7 @@ class App extends Component {
     }
 
     async componentDidMount() {
+        await this.props.dispatch(fetchNodeInfo());
         await this.props.dispatch(fetchUserAndDependentData(async () => {
             await this.props.dispatch(fetchPeersOrError());
             this.eventRelayConnection = (() => {

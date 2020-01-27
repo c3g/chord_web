@@ -51,6 +51,11 @@ export const matchingMenuKeys = (menuItems, location) => menuItems
     .map(i => i.key || i.url || "");
 
 
+export const nodeInfoDataPropTypesShape = PropTypes.shape({
+    CHORD_URL: PropTypes.string,
+});
+
+
 // Gives components which include this in their state to props connection access to the drop box and loading status.
 export const dropBoxTreeStateToPropsMixin = state => ({
     tree: state.dropBox.tree,

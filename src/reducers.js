@@ -18,6 +18,7 @@ import {
     individuals
 } from "./modules/metadata/reducers";
 import {manager, dropBox} from "./modules/manager/reducers";
+import {nodeInfo} from "./modules/node/reducers";
 import {notifications} from "./modules/notifications/reducers";
 import {runs} from "./modules/wes/reducers";
 import {peers} from "./modules/peers/reducers";
@@ -48,6 +49,9 @@ const rootReducer = combineReducers({
     // Manager module
     manager,
     dropBox,
+
+    // Node Information module
+    nodeInfo,
 
     // Notifications module
     notifications,

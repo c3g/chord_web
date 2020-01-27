@@ -1,17 +1,20 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
-import {Button, Col, Collapse, Empty, Modal, Row, Spin, Table} from "antd";
+import {Button, Col, Collapse, Empty, Icon, Modal, Row, Spin, Table} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/icon/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
 
-import {selectSearch} from "../../modules/discovery/actions";
 import DataUseDisplay from "../DataUseDisplay";
+import {selectSearch} from "../../modules/discovery/actions";
+import {nodeInfoDataPropTypesShape} from "../../utils";
 
 
 class SearchList extends Component {
@@ -49,11 +52,24 @@ class SearchList extends Component {
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
         );
 
+        const nodeURL = this.props.nodeInfo.CHORD_URL;
+        console.log(this.props.nodeInfo);
+
         const searchResultsColumns = [
             {
                 title: "Dataset ID",
                 dataIndex: "identifier",
                 sorter: (a, b) => a.identifier.localeCompare(b.identifier),
+                render: (_, dataset) => (
+                    <>
+                        {/* TODO: Don't show icon if the current node is just for exploration (vFuture) */}
+                        <Icon type={nodeURL === dataset.node ? "home" : "global"} style={{marginRight: "1em"}} />
+                        <a href={`${dataset.node}data/discovery/datasets/${dataset.identifier}`}
+                           target="_blank"
+                           rel="noreferrer noopener"
+                           style={{fontFamily: "monospace"}}>{dataset.identifier}</a>
+                    </>
+                ),
             },
             {
                 title: "Title",
@@ -64,7 +80,10 @@ class SearchList extends Component {
             {
                 title: "Node",
                 dataIndex: "node",
-                render: node => <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>,
+                render: node => <>
+                    <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>
+                    {node === nodeURL ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
+                </>,
             },
             {
                 title: "Actions",
@@ -73,9 +92,17 @@ class SearchList extends Component {
                     <Row type="flex">
                         <Col>
                             <Button type="link" onClick={() => this.handleDatasetTermsClick(dataset)}>
-                                Show Data Use Terms
+                                Data Use &amp; Consent
                             </Button>
                         </Col>
+                        {/* TODO: Implement manage button v0.2 */}
+                        {/*{dataset.node === nodeURL && this.props.user.chord_user_role === "owner" ? (*/}
+                        {/*    <Col>*/}
+                        {/*        <Button type="link" onClick={() => {}}>*/}
+                        {/*            Manage*/}
+                        {/*        </Button>*/}
+                        {/*    </Col>*/}
+                        {/*) : null}*/}
                         {/*<Col>*/}
                         {/*    <Button type="link">/!*
                                             TODO: Real actions *!/Request Access</Button>*/}
@@ -124,7 +151,18 @@ class SearchList extends Component {
     }
 }
 
+SearchList.propTypes = {
+    nodeInfo: nodeInfoDataPropTypesShape,
+    user: PropTypes.object,  // TODO: Shape
+    searches: PropTypes.array,  // TODO: Shape
+    selectedSearch: PropTypes.number,
+    searchLoading: PropTypes.bool,
+};
+
 const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
+    user: state.auth.user,
+
     searches: state.discovery.searches,
     selectedSearch: state.discovery.selectedSearch,
 
