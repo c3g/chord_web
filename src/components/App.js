@@ -16,7 +16,7 @@ import OwnerRoute from "./OwnerRoute";
 import NotificationDrawer from "./NotificationDrawer";
 import SiteHeader from "./SiteHeader";
 
-import ServicesContent from "./ServicesContent";
+import DashboardContent from "./DashboardContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
@@ -66,12 +66,12 @@ class App extends Component {
                     <SiteHeader />
                     <Layout.Content style={{margin: "50px"}}>
                     <Switch>
-                        <Route path="/services" component={ServicesContent} />
+                        <Route path="/dashboard" component={DashboardContent} />
                         <Route path="/data/discovery" component={DataDiscoveryContent} />
                         <OwnerRoute path="/data/manager" component={DataManagerContent} />
                         <Route path="/peers" component={PeersContent} />
                         <OwnerRoute path="/notifications" component={NotificationsContent} />
-                        <Redirect from="/" to="/services" />
+                        <Redirect from="/" to="/dashboard" />
                     </Switch>
                     </Layout.Content>
                     <Layout.Footer style={{textAlign: "center"}}>
@@ -87,7 +87,6 @@ class App extends Component {
     }
 
     async componentDidMount() {
-        await this.props.dispatch(fetchNodeInfo());
         await this.props.dispatch(fetchUserAndDependentData(async () => {
             await this.props.dispatch(fetchPeersOrError());
             this.eventRelayConnection = (() => {

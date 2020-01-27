@@ -20,9 +20,9 @@ class SiteHeader extends Component {
     render() {
         const menuItems = [
             {
-                url: "/services",
-                icon: <Icon type="cloud-server" />,
-                text: <span className="nav-text">Services</span>,
+                url: "/dashboard",
+                icon: <Icon type="dashboard" />,
+                text: <span className="nav-text">Dashboard</span>,
             },
             {
                 url: "/data/discovery",

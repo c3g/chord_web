@@ -4,6 +4,9 @@ import {Link} from "react-router-dom";
 import React from "react";
 
 
+export const EM_DASH = "⁠—";
+
+
 export const urlPath = url => (new URL(url)).pathname;
 
 

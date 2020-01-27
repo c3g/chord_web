@@ -14,6 +14,7 @@ import {
     fetchIndividualsIfNeeded,
     fetchPhenopacketsIfNeeded
 } from "../metadata/actions";
+import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
 import {fetchRuns} from "../wes/actions";
@@ -26,11 +27,17 @@ export const fetchUser = networkAction(() => ({
     url: "/api/auth/user"
 }));
 
+// TODO: Rename this (also fetches node info)
 export const fetchUserAndDependentData = servicesCb => async (dispatch, getState) => {
     const oldState = getState().auth.user;
     const hasAttempted = getState().auth.hasAttempted;
 
-    if (!hasAttempted) await dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
+    if (!hasAttempted) {
+        await dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
+
+        // Fetch node info if it's the first time this has been run; node info doesn't really change.
+        await dispatch(fetchNodeInfo());
+    }
 
     await dispatch(fetchUser());
 
