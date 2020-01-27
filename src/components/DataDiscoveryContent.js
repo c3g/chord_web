@@ -8,6 +8,7 @@ import "antd/es/layout/style/css";
 import "antd/es/page-header/style/css";
 
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
+import DiscoveryDatasetContent from "./discovery/DiscoveryDatasetContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
@@ -31,6 +32,7 @@ class DataDiscoveryContent extends Component {
                     <Layout.Content style={{background: "white", padding: "24px 30px"}}>
                         <Switch>
                             <Route exact path="/data/discovery/search" component={DiscoverySearchContent} />
+                            <Route exact path="/data/discovery/datasets/:dataset" component={DiscoveryDatasetContent} />
                             <Redirect from="/data/discovery" to="/data/discovery/search" />
                         </Switch>
                     </Layout.Content>
