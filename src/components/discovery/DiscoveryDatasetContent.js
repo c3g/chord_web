@@ -35,9 +35,7 @@ class DiscoveryDatasetContent extends Component {
             tables: tableList.filter(t => t.dataset === datasetId),  // TODO: Filter how?
         };
 
-        return (
-            <Dataset mode="public" value={dataset} project={project} />
-        )
+        return <Dataset mode="public" value={dataset} project={project} />;
     }
 }
 

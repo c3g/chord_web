@@ -61,6 +61,7 @@ export const projects = (
 
         case FETCHING_PROJECTS_WITH_TABLES.BEGIN:
             return {...state, isFetchingWithTables: true};
+
         case FETCHING_PROJECTS_WITH_TABLES.END:
         case FETCHING_PROJECTS_WITH_TABLES.TERMINATE:
             return {...state, isFetchingWithTables: false};
