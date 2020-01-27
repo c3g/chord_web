@@ -3,6 +3,7 @@ import {objectWithoutProp} from "../../utils";
 import {
     FETCH_PROJECTS,
     FETCH_PROJECT_TABLES,
+    FETCHING_PROJECTS_WITH_TABLES,
 
     CREATE_PROJECT,
     DELETE_PROJECT,
@@ -30,6 +31,7 @@ const projectSort = (a, b) => a.title.localeCompare(b.title);
 export const projects = (
     state = {
         isFetching: false,
+        isFetchingWithTables: false,
         isCreating: false,
         isDeleting: false,
         isSaving: false,
@@ -55,6 +57,13 @@ export const projects = (
 
         case FETCH_PROJECTS.ERROR:
             return {...state, isFetching: false};
+
+
+        case FETCHING_PROJECTS_WITH_TABLES.BEGIN:
+            return {...state, isFetchingWithTables: true};
+        case FETCHING_PROJECTS_WITH_TABLES.END:
+        case FETCHING_PROJECTS_WITH_TABLES.TERMINATE:
+            return {...state, isFetchingWithTables: false};
 
 
         case CREATE_PROJECT.REQUEST:

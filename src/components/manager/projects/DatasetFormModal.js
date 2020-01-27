@@ -71,7 +71,7 @@ class DatasetFormModal extends Component {
                                type="primary"
                                onClick={this.handleSubmit}
                                loading={this.props.projectsFetching || this.props.projectDatasetsAdding ||
-                                   this.props.projectDatasetsSaving}>
+                                   this.props.projectDatasetsSaving || this.props.projectsFetchingWithTables}>
                            {mode === MODE_ADD ? "Add" : "Save"}
                        </Button>
                    ]}
@@ -97,6 +97,7 @@ DatasetFormModal.propTypes = {
     projectsFetching: PropTypes.bool,
     projectDatasetsAdding: PropTypes.bool,
     projectDatasetsSaving: PropTypes.bool,
+    projectsFetchingWithTables: PropTypes.bool,
 
     // From dispatch
 
@@ -109,6 +110,7 @@ const mapStateToProps = state => ({
     projectsFetching: state.projects.isFetching,
     projectDatasetsAdding: state.projects.isAddingDataset,
     projectDatasetsSaving: state.projects.isSavingDataset,
+    projectsFetchingWithTables: state.projects.projectsFetchingWithTables,
 });
 
 const mapDispatchToProps = dispatch => ({

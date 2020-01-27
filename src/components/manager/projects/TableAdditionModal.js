@@ -42,7 +42,8 @@ class TableAdditionModal extends Component {
                                icon="plus"
                                type="primary"
                                onClick={() => this.handleSubmit()}
-                               loading={this.props.projectTablesAdding || this.props.projectTablesFetching}>
+                               loading={this.props.projectsFetchingWithTables ||
+                                   this.props.projectTablesAdding || this.props.projectTablesFetching}>
                            Add
                        </Button>
                    ]}
@@ -57,6 +58,7 @@ TableAdditionModal.propTypes = {
 
     projectTablesAdding: PropTypes.bool,
     projectTablesFetching: PropTypes.bool,
+    projectsFetchingWithTables: PropTypes.bool,
 
     project: projectPropTypesShape,
     dataset: datasetPropTypesShape,
@@ -68,6 +70,7 @@ TableAdditionModal.propTypes = {
 const mapStateToProps = state => ({
     projectTablesAdding: state.projectTables.isAdding,
     projectTablesFetching: state.projectTables.isFetching,
+    projectsFetchingWithTables: state.projects.projectsFetchingWithTables,
 });
 
 

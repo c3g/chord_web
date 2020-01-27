@@ -15,6 +15,7 @@ import {
     networkAction,
 
     beginFlow,
+    endFlow,
     terminateFlow,
 } from "../../utils/actions";
 import {objectWithoutProps} from "../../utils";
@@ -22,6 +23,7 @@ import {objectWithoutProps} from "../../utils";
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 export const FETCH_PROJECT_TABLES = createNetworkActionTypes("FETCH_PROJECT_TABLES");
+export const FETCHING_PROJECTS_WITH_TABLES = createFlowActionTypes("FETCHING_PROJECTS_WITH_TABLES");
 
 export const CREATE_PROJECT = createNetworkActionTypes("CREATE_PROJECT");
 export const DELETE_PROJECT = createNetworkActionTypes("DELETE_PROJECT");
@@ -70,8 +72,10 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
         state.projects.isDeleting ||
         state.projects.isSaving) return;
 
+    await dispatch(beginFlow(FETCHING_PROJECTS_WITH_TABLES));
     await dispatch(fetchProjects());
     await dispatch(fetchProjectTables(getState().projects.itemsByID));
+    await dispatch(endFlow(FETCHING_PROJECTS_WITH_TABLES));
 };
 
 
