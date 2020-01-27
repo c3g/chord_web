@@ -133,7 +133,6 @@ class RoutedProject extends Component {
                     <Project value={project}
                              tables={tableList}
                              strayTables={strayTables}
-                             loadingTables={this.props.loadingAuthDependentData}
                              editing={this.props.editingProject}
                              saving={this.props.savingProject}
                              individuals={this.props.individuals.filter(i =>
@@ -176,8 +175,6 @@ const mapStateToProps = state => ({
 
     projectTables: state.projectTables.items,
     projectTablesByProjectID: state.projectTables.itemsByProjectID,
-
-    loadingAuthDependentData: state.auth.isFetchingDependentData,
 
     phenopackets: state.phenopackets.items,
     individuals: state.individuals.items,

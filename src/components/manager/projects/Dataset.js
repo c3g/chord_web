@@ -29,7 +29,7 @@ import {
 } from "../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy, projectPropTypesShape, linkedFieldSetPropTypesShape} from "../../../utils";
+import {simpleDeepCopy, projectPropTypesShape, datasetPropTypesShape} from "../../../utils";
 import LinkedFieldSetTable from "./LinkedFieldSetTable";
 import LinkedFieldSetAdditionModal from "./LinkedFieldSetAdditionModal";
 
@@ -136,6 +136,8 @@ class Dataset extends Component {
     }
 
     render() {
+        const isPrivate = this.props.mode === "private";
+
         const tableListColumns = [
             {title: "ID", dataIndex: "table_id"},
             {
@@ -146,27 +148,29 @@ class Dataset extends Component {
                 sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
             },
             {title: "Data Type", dataIndex: "data_type"},
-            {
-                title: "actions",
-                key: "actions",
-                width: 330,
-                render: t => (
-                    <Row gutter={10}>
-                        <Col span={8}>
-                            <Button icon="import"
-                                    style={{width: "100%"}}
-                                    onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
-                                Ingest
-                            </Button>
-                        </Col>
-                        <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                        <Col span={8}><Button type="danger"
-                                              icon="delete"
-                                              onClick={() => this.handleTableDeletionClick(t)}
-                                              style={{width: "100%"}}>Delete</Button></Col>
-                    </Row>
-                )
-            }
+            ...(isPrivate ? [
+                {
+                    title: "actions",
+                    key: "actions",
+                    width: 330,
+                    render: t => (
+                        <Row gutter={10}>
+                            <Col span={8}>
+                                <Button icon="import"
+                                        style={{width: "100%"}}
+                                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
+                                    Ingest
+                                </Button>
+                            </Col>
+                            <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                            <Col span={8}><Button type="danger"
+                                                  icon="delete"
+                                                  onClick={() => this.handleTableDeletionClick(t)}
+                                                  style={{width: "100%"}}>Delete</Button></Col>
+                        </Row>
+                    )
+                }
+            ] : [])
         ];
 
         const tabContents = {
@@ -175,92 +179,101 @@ class Dataset extends Component {
                     {this.state.description.length > 0 ? (
                         <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
                     ) : null}
-                    <Row gutter={16} style={{maxWidth: "720px"}}>
-                        <Col span={12}>
+                    <Row gutter={16} style={{maxWidth: isPrivate ? "720px" : "1080px"}}>
+                        {isPrivate ? null : (
+                            <Col span={8}><Statistic title="Project" value={this.props.project.title || "—"} /></Col>
+                        )}
+                        <Col span={isPrivate ? 12 : 8}>
                             <Statistic title="Created"
                                        value={(new Date(Date.parse(this.state.created))).toLocaleString()} />
                         </Col>
-                        <Col span={12}>
-                            <Spin spinning={this.props.loadingTables}>
+                        <Col span={isPrivate ? 12 : 8}>
+                            <Spin spinning={this.props.isFetchingTables}>
                                 {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
                                 <Statistic title="Tables"
-                                           value={this.props.loadingTables ? "—" : this.state.tables.length + 1} />
+                                           value={this.props.isFetchingTables ? "—" : this.state.tables.length + 1} />
                             </Spin>
                         </Col>
                     </Row>
                 </>
             ),
-            individuals: (
-                <>
-                    <Typography.Title level={4}>Individuals and Pools</Typography.Title>
-                    <Typography.Paragraph>
-                        Individuals can potentially be shared across many datasets.
-                    </Typography.Paragraph>
+            ...(isPrivate ? {
+                individuals: (
+                    <>
+                        <Typography.Title level={4}>Individuals and Pools</Typography.Title>
+                        <Typography.Paragraph>
+                            Individuals can potentially be shared across many datasets.
+                        </Typography.Paragraph>
 
-                    <Table bordered
-                           style={{marginBottom: "1rem"}}
-                           dataSource={this.props.individuals.map(i => ({
-                               ...i,
-                               sex: i.sex || "UNKNOWN_SEX",
-                               n_of_biosamples: (i.biosamples || []).length
-                           }))}
-                           rowKey="id"
-                           loading={this.props.loadingIndividuals}
-                           columns={[
-                               {title: "Individual ID", dataIndex: "id"},
-                               {title: "Date of Birth", dataIndex: "date_of_birth"},
-                               {title: "Sex", dataIndex: "sex"},
-                               {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples
-                           ]}
-                           expandedRowRender={i => {
-                               return <div>
-                                   <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
-                                          rowKey="id"
-                                          dataSource={i.biosamples || []} />
-                               </div>;
-                           }}
-                    />
-                </>
-            ),
+                        <Table bordered
+                               style={{marginBottom: "1rem"}}
+                               dataSource={this.props.individuals.map(i => ({
+                                   ...i,
+                                   sex: i.sex || "UNKNOWN_SEX",
+                                   n_of_biosamples: (i.biosamples || []).length
+                               }))}
+                               rowKey="id"
+                               loading={this.props.loadingIndividuals}
+                               columns={[
+                                   {title: "Individual ID", dataIndex: "id"},
+                                   {title: "Date of Birth", dataIndex: "date_of_birth"},
+                                   {title: "Sex", dataIndex: "sex"},
+                                   {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples
+                               ]}
+                               expandedRowRender={i => (
+                                   <div>
+                                       <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
+                                              rowKey="id"
+                                              dataSource={i.biosamples || []} />
+                                   </div>
+                               )}
+                        />
+                    </>
+                ),
+            } : {}),
             tables: (
                 <>
                     <Typography.Title level={4}>
                         Tables
-                        <div style={{float: "right"}}>
-                            {/* TODO: Implement v0.2
-                            {(this.props.strayTables || []).length > 0 ? (
-                                <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
-                                    Adopt Stray Tables ({this.props.strayTables.length})
+                        {isPrivate ? (
+                            <div style={{float: "right"}}>
+                                {/* TODO: Implement v0.2
+                                {(this.props.strayTables || []).length > 0 ? (
+                                    <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
+                                        Adopt Stray Tables ({this.props.strayTables.length})
+                                    </Button>
+                                ) : null} */}
+                                <Button icon="plus"
+                                        style={{verticalAlign: "top"}}
+                                        type="primary"
+                                        onClick={() => this.handleAdditionClick()}>
+                                    Add Table
                                 </Button>
-                            ) : null} */}
-                            <Button icon="plus"
-                                    style={{verticalAlign: "top"}}
-                                    type="primary"
-                                    onClick={() => this.handleAdditionClick()}>
-                                Add Table
-                            </Button>
-                        </div>
+                            </div>
+                        ) : null}
                     </Typography.Title>
                     <Table bordered
                            dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
                            rowKey="table_id"
                            // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
                            columns={tableListColumns}
-                           loading={this.props.loadingTables} />
+                           loading={this.props.isFetchingTables} />
                 </>
             ),
             linked_field_sets: (
                 <>
                     <Typography.Title level={4}>
                         Linked Field Sets
-                        <div style={{float: "right"}}>
-                            <Button icon="plus"
-                                    style={{verticalAlign: "top"}}
-                                    type="primary"
-                                    onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
-                                Add Field Link Set
-                            </Button>
-                        </div>
+                        {isPrivate ? (
+                            <div style={{float: "right"}}>
+                                <Button icon="plus"
+                                        style={{verticalAlign: "top"}}
+                                        type="primary"
+                                        onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
+                                    Add Linked Field Set
+                                </Button>
+                            </div>
+                        ) : null}
                     </Typography.Title>
                     <Typography.Paragraph style={{maxWidth: "600px"}}>
                         Linked Field Sets group common fields (i.e. fields that share the same "value space") between
@@ -277,18 +290,21 @@ class Dataset extends Component {
                             <>
                                 <Divider />
                                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Field Link Sets">
-                                    <Button icon="plus"
-                                            type="primary"
-                                            onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
-                                        Add Field Link Set
-                                    </Button>
+                                    {isPrivate ? (
+                                        <Button icon="plus"
+                                                type="primary"
+                                                onClick={() =>
+                                                    this.setState({fieldSetAdditionModalVisible: true})}>
+                                            Add Field Link Set
+                                        </Button>
+                                    ) : null}
                                 </Empty>
                             </>
                         ) : (
                             <Row gutter={[16, 24]}>
                                 {(this.state.linked_field_sets || []).map((fieldSet, i) => (
                                     <Col key={i} lg={24} xl={12}>
-                                        <Card title={`${i+1}. ${fieldSet.name}`} actions={[
+                                        <Card title={`${i+1}. ${fieldSet.name}`} actions={isPrivate ? [
                                             <span onClick={() => console.log("TODO")}>  {/* TODO: Make this work */}
                                                 <Icon type="edit"
                                                       style={{width: "auto", display: "inline"}}
@@ -297,7 +313,7 @@ class Dataset extends Component {
                                                 <Icon type="delete"
                                                       style={{width: "auto", display: "inline"}}
                                                       key="delete_field_set" /> Delete Set</span>,
-                                        ]}>
+                                        ] : []}>
                                             <LinkedFieldSetTable linkedFieldSet={fieldSet} />
                                         </Card>
                                     </Col>
@@ -312,61 +328,68 @@ class Dataset extends Component {
         return (
             <Card key={this.state.identifier} title={this.state.title} tabList={[
                 {key: "overview", tab: "Overview"},
-                {key: "individuals", tab: "Individuals and Pools"},
+                ...(isPrivate ? [{key: "individuals", tab: "Individuals and Pools"}] : []),
                 {key: "tables", tab: "Data Tables"},
                 {key: "linked_field_sets", tab: "Linked Field Sets"},
                 {key: "data_use", tab: "Consent Codes and Data Use"},
-            ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={<>
-                <Button icon="import" style={{marginRight: "16px"}}
-                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, {
-                            // Map dataset to metadata table  TODO: Remove all these hacks
-                            id: this.state.identifier,
-                            data_type: "phenopacket",  // TODO: Remove hard-coding...
-                        })}>
-                    Ingest Metadata
-                </Button>
-                <Button icon="edit"
-                        style={{marginRight: "8px"}}
-                        onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
-                <Button type="danger" icon="delete" onClick={() => {
-                    Modal.confirm({
-                        title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
-                        content: <>
-                            <Typography.Paragraph>
-                                All data contained in the dataset will be deleted permanently, and the dataset will no
-                                longer be available for discovery within the CHORD federation.
-                                {/* TODO: Real terms and conditions */}
-                            </Typography.Paragraph>
-                        </>,
-                        width: 572,
-                        autoFocusButton: "cancel",
-                        okText: "Delete",
-                        okButtonProps: {type: "danger"},
-                        maskClosable: true,
-                        confirmLoading: this.props.isDeletingDataset,
-                        onOk: () => this.props.deleteProjectDataset(this.props.project, this.state),
-                    })
-                }}>Delete</Button>
-                {/* TODO: Delete Dataset Button functionality (v0.1) */}
-                {/* TODO: Share button (vFuture) */}
-            </>}>
-                <TableAdditionModal visible={this.state.additionModalVisible}
-                                    project={this.props.project}
-                                    dataset={this.state}
-                                    onSubmit={vs => this.handleAdditionSubmit(vs)}
-                                    onCancel={() => this.handleAdditionCancel()} />
+            ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={
+                isPrivate ? (
+                    <>
+                        <Button icon="import" style={{marginRight: "16px"}}
+                                onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, {
+                                    // Map dataset to metadata table  TODO: Remove all these hacks
+                                    id: this.state.identifier,
+                                    data_type: "phenopacket",  // TODO: Remove hard-coding...
+                                })}>
+                            Ingest Metadata
+                        </Button>
+                        <Button icon="edit"
+                                style={{marginRight: "8px"}}
+                                onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
+                        <Button type="danger" icon="delete" onClick={() => {
+                            Modal.confirm({
+                                title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
+                                content: <>
+                                    <Typography.Paragraph>
+                                        All data contained in the dataset will be deleted permanently, and the dataset
+                                        will no longer be available for discovery within the CHORD federation.
+                                        {/* TODO: Real terms and conditions */}
+                                    </Typography.Paragraph>
+                                </>,
+                                width: 572,
+                                autoFocusButton: "cancel",
+                                okText: "Delete",
+                                okButtonProps: {type: "danger"},
+                                maskClosable: true,
+                                confirmLoading: this.props.isDeletingDataset,
+                                onOk: () => this.props.deleteProjectDataset(this.props.project, this.state),
+                            })
+                        }}>Delete</Button>
+                        {/* TODO: Share button (vFuture) */}
+                    </>
+                ) : null
+            }>
+                {isPrivate ? (
+                    <>
+                        <TableAdditionModal visible={this.state.additionModalVisible}
+                                            project={this.props.project}
+                                            dataset={this.state}
+                                            onSubmit={vs => this.handleAdditionSubmit(vs)}
+                                            onCancel={() => this.handleAdditionCancel()} />
 
-                <TableDeletionModal visible={this.state.deletionModalVisible}
-                                    table={this.state.selectedTable}
-                                    onSubmit={() => this.handleTableDeletionSubmit()}
-                                    onCancel={() => this.handleTableDeletionCancel()} />
+                        <TableDeletionModal visible={this.state.deletionModalVisible}
+                                            table={this.state.selectedTable}
+                                            onSubmit={() => this.handleTableDeletionSubmit()}
+                                            onCancel={() => this.handleTableDeletionCancel()} />
 
-                <LinkedFieldSetAdditionModal dataset={this.state}
-                                             visible={this.state.fieldSetAdditionModalVisible}
-                                             onSubmit={() => this.setState({fieldSetAdditionModalVisible: false})}
-                                             onCancel={() =>
-                                                 this.setState({fieldSetAdditionModalVisible: false})} />
-
+                        <LinkedFieldSetAdditionModal dataset={this.state}
+                                                     visible={this.state.fieldSetAdditionModalVisible}
+                                                     onSubmit={() =>
+                                                         this.setState({fieldSetAdditionModalVisible: false})}
+                                                     onCancel={() =>
+                                                         this.setState({fieldSetAdditionModalVisible: false})} />
+                    </>
+                ) : null}
                 {tabContents[this.state.selectedTab]}
             </Card>
         );
@@ -374,20 +397,19 @@ class Dataset extends Component {
 }
 
 Dataset.propTypes = {
+    // Is the dataset being viewed in the context of the data manager or via discovery?
+    mode: PropTypes.oneOf(["public", "private"]),
+
     project: projectPropTypesShape,
     strayTables: PropTypes.arrayOf(PropTypes.object),
 
-    value: PropTypes.shape({
-        identifier: PropTypes.string,
-        title: PropTypes.string,
-        linked_field_sets: PropTypes.arrayOf(linkedFieldSetPropTypesShape),
-        tables: PropTypes.arrayOf(PropTypes.object),
-    }),
+    value: datasetPropTypesShape,
 
+    // TODO: Shape
     individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Get this via redux store instead of transformations
 
     loadingIndividuals: PropTypes.bool,
-    loadingTables: PropTypes.bool,
+    isFetchingTables: PropTypes.bool,
 
     onEdit: PropTypes.func,
     onTableIngest: PropTypes.func,
@@ -397,6 +419,9 @@ Dataset.propTypes = {
 
 const mapStateToProps = state => ({
     serviceInfoByArtifact: state.services.itemsByArtifact,
+    isFetchingTables: state.services.isFetchingAll
+        || state.projectTables.isFetching
+        || state.projects.isFetchingWithTables,  // TODO: Hiccup
     isSavingDataset: state.projects.isSavingDataset,
     isDeletingDataset: state.projects.isDeletingDataset,
 });

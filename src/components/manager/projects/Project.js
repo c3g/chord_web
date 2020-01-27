@@ -1,10 +1,12 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Empty, Typography} from "antd";
+import {Button, Col, Empty, Row, Typography} from "antd";
 
 import "antd/es/button/style/css";
+import "antd/es/col/style/css";
 import "antd/es/empty/style/css";
+import "antd/es/row/style/css";
 import "antd/es/typography/style/css";
 
 import Dataset from "./Dataset";
@@ -123,20 +125,24 @@ class Project extends Component {
                     </div>
                 </Typography.Title>
                 {(this.state.datasets || []).length > 0
-                    ? this.state.datasets.map(d =>
-                        <Dataset key={d.identifier}
-                                 project={this.props.value}
-                                 value={{
-                                     ...d,
-                                     tables: this.props.tables,  // TODO: Filter / transform?
-                                 }}
-                                 strayTables={this.props.strayTables}
-                                 individuals={this.props.individuals.filter(i =>
-                                     i.phenopackets.map(p => p.dataset).includes(d.identifier))}
-                                 loadingIndividuals={this.props.loadingIndividuals}
-                                 loadingTables={this.props.loadingTables}
-                                 onEdit={() => (this.props.onEditDataset || nop)(d)}
-                                 onTableIngest={this.props.onTableIngest || nop}  />
+                    ? this.state.datasets.sort((d1, d2) => d1.title.localeCompare(d2.title)).map(d =>
+                        <Row gutter={[0, 16]} key={d.identifier}>
+                            <Col span={24}>
+                                <Dataset key={d.identifier}
+                                         mode="private"
+                                         project={this.props.value}
+                                         value={{
+                                             ...d,
+                                             tables: this.props.tables.filter(t => t.dataset === d.identifier),
+                                         }}
+                                         strayTables={this.props.strayTables}
+                                         individuals={this.props.individuals.filter(i =>
+                                             i.phenopackets.map(p => p.dataset).includes(d.identifier))}
+                                         loadingIndividuals={this.props.loadingIndividuals}
+                                         onEdit={() => (this.props.onEditDataset || nop)(d)}
+                                         onTableIngest={this.props.onTableIngest || nop}  />
+                            </Col>
+                        </Row>
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
                             <Button icon="plus" onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
@@ -151,8 +157,6 @@ Project.propTypes = {
     value: projectPropTypesShape,
     tables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
     strayTables: PropTypes.arrayOf(PropTypes.object),  // TODO: shape (this is currently heterogeneous)
-
-    loadingTables: PropTypes.bool,
 
     editing: PropTypes.bool,
     saving: PropTypes.bool,
