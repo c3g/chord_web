@@ -32,7 +32,7 @@ import {
     updateDataTypeQueryForm,
     removeDataTypeQueryForm,
 
-    updateJoinQueryForm,
+    // updateJoinQueryForm,
 } from "../../modules/discovery/actions";
 import DataTypeExplorationModal from "./DataTypeExplorationModal";
 
@@ -95,22 +95,30 @@ class DiscoverySearchContent extends Component {
             </Tabs.TabPane>
         ));
 
+        const addConditionsOnDataType = (buttonProps = {style: {float: "right"}}) => (
+            <Dropdown overlay={dataTypeMenu}
+                      disabled={this.props.dataTypesLoading || this.props.searchLoading}>
+                <Button {...buttonProps}>Add Conditions on Data Type <Icon type="down" /></Button>
+            </Dropdown>
+        );
+
         return (
             <>
                 <Card style={{marginBottom: "1.5em"}}>
                     <Typography.Title level={3} style={{marginBottom: "1.5rem"}}>
                         Data Type Queries
-                        <Dropdown overlay={dataTypeMenu}
-                                  disabled={this.props.dataTypesLoading || this.props.searchLoading}>
-                            <Button style={{float: "right"}}>Add Conditions on Data Type <Icon type="down" /></Button>
-                        </Dropdown>
+                        {addConditionsOnDataType()}
                         <Button style={{float: "right", marginRight: "1em"}}
                                 onClick={this.handleSchemasToggle}>Explore Data Types</Button>
                     </Typography.Title>
 
                     {this.props.dataTypeForms.length > 0
                         ? <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>{dataTypeTabPanes}</Tabs>
-                        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added" />}
+                        : (
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added">
+                                {addConditionsOnDataType({type: "primary"})}
+                            </Empty>
+                        )}
 
                     {/* TODO: Allow this to be optionally specified for advanced users
                     <Divider />
@@ -123,7 +131,10 @@ class DiscoverySearchContent extends Component {
                                          onChange={fields => this.props.updateJoinForm(fields)} />
                     */}
 
-                    <Button type="primary" icon="search" loading={this.props.searchLoading}
+                    <Button type="primary"
+                            icon="search"
+                            loading={this.props.searchLoading}
+                            disabled={this.props.dataTypeForms.length === 0}
                             onClick={this.handleSubmit}>Search</Button>
                 </Card>
 
@@ -187,7 +198,7 @@ const mapDispatchToProps = dispatch => ({
     updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(dataType, fields)),
     removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(dataType)),
 
-    updateJoinForm: fields => dispatch(updateJoinQueryForm(fields)),
+    // updateJoinForm: fields => dispatch(updateJoinQueryForm(fields)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
