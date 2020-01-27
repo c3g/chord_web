@@ -126,7 +126,7 @@ class ManagerFilesContent extends Component {
 
             // TODO: Proper url stuff
             // TODO: Don't hard-code replace
-            const r = await fetch(`${this.props.dropBoxService.url}/retrieve${
+            const r = await fetch(`${this.props.dropBoxService.url}/objects${
                 file.replace("/chord/data/drop-box", "")}`);
 
             this.setState({
@@ -221,8 +221,9 @@ class ManagerFilesContent extends Component {
                         onCancel={() => this.hideTableSelectionModal()}
                         onOk={() => this.ingestIntoTable()}
                     />
+                    {/* TODO: v0.2: Don't hard-code replace */}
                     <Modal visible={this.state.fileContentsModal}
-                           title={selectedFile}
+                           title={selectedFile.replace("/chord/data/drop-box", "")}
                            width={800}
                            footer={null}
                            onCancel={this.hideFileContentsModal}>
@@ -260,7 +261,7 @@ class ManagerFilesContent extends Component {
                     <Spin spinning={this.props.treeLoading}>
                         <Tree.DirectoryTree defaultExpandAll={true}
                                             multiple={true}
-                                            onSelect={() => this.handleSelect()}
+                                            onSelect={keys => this.handleSelect(keys)}
                                             selectedKeys={this.state.selectedFiles}>
                             <Tree.TreeNode title="chord_drop_box" key="root">
                                 {generateFileTree(this.props.tree)}
