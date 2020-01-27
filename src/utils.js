@@ -53,6 +53,7 @@ export const matchingMenuKeys = (menuItems, location) => menuItems
 
 export const nodeInfoDataPropTypesShape = PropTypes.shape({
     CHORD_URL: PropTypes.string,
+    OIDC_DISCOVERY_URI: PropTypes.string,
 });
 
 

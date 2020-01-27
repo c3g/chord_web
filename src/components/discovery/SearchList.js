@@ -53,7 +53,6 @@ class SearchList extends Component {
         );
 
         const nodeURL = this.props.nodeInfo.CHORD_URL;
-        console.log(this.props.nodeInfo);
 
         const searchResultsColumns = [
             {
