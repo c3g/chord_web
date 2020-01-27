@@ -75,7 +75,7 @@ class App extends Component {
                     </Switch>
                     </Layout.Content>
                     <Layout.Footer style={{textAlign: "center"}}>
-                        Copyright &copy; 2019 the <a href="http://computationalgenomics.ca">Canadian Centre for
+                        Copyright &copy; 2019-2020 the <a href="http://computationalgenomics.ca">Canadian Centre for
                         Computational Genomics</a>. <br/>
                         <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
                         the <a href="/LICENSE.txt">LGPLv3</a>. The source code is
