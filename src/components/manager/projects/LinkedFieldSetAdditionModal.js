@@ -28,7 +28,8 @@ class LinkedFieldSetAdditionModal extends Component {
                 }))
             };
             await this.props.addLinkedFieldSet(this.props.dataset, fieldSet);
-            if (this.props.onSubmit) this.props.onSubmit();
+            if (this.props.onSubmit) await this.props.onSubmit();
+            this.form.resetFields();
         });
     }
 
