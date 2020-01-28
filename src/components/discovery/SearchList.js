@@ -1,13 +1,15 @@
-import React, {Component} from "react";
+import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Col, Collapse, Empty, Icon, Modal, Row, Spin, Table} from "antd";
+import {Button, Col, Collapse, Empty, Icon, Modal, Popover, Row, Spin, Table} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
+import "antd/es/modal/style/css";
+import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
@@ -56,18 +58,29 @@ class SearchList extends Component {
 
         const searchResultsColumns = [
             {
+                title: "Node",
+                dataIndex: "node",
+                width: 75,
+                render: node => (
+                    /* TODO: Don't show icon if the current node is just for exploration (vFuture) */
+                    <Popover content={<>
+                        <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>
+                        {node === nodeURL ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
+                    </>}>
+                        <div style={{width: "100%", textAlign: "center"}}>
+                            <Icon type={nodeURL === node ? "home" : "global"} /> {/* style={{marginRight: "1em"}} */}
+                        </div>
+                    </Popover>
+                )
+            },
+            {
                 title: "Dataset ID",
                 dataIndex: "identifier",
                 sorter: (a, b) => a.identifier.localeCompare(b.identifier),
                 render: (_, dataset) => (
-                    <>
-                        {/* TODO: Don't show icon if the current node is just for exploration (vFuture) */}
-                        <Icon type={nodeURL === dataset.node ? "home" : "global"} style={{marginRight: "1em"}} />
-                        <a href={`${dataset.node}data/discovery/datasets/${dataset.identifier}`}
-                           target="_blank"
-                           rel="noreferrer noopener"
-                           style={{fontFamily: "monospace"}}>{dataset.identifier}</a>
-                    </>
+                    <a target="_blank"
+                       rel="noreferrer noopener"
+                       style={{fontFamily: "monospace"}}>{dataset.identifier}</a>
                 ),
             },
             {
@@ -77,12 +90,10 @@ class SearchList extends Component {
                 defaultSortOrder: "ascend",
             },
             {
-                title: "Node",
-                dataIndex: "node",
-                render: node => <>
-                    <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>
-                    {node === nodeURL ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
-                </>,
+                title: "Contact Information",
+                dataIndex: "contact_info",
+                render: contactInfo => (contactInfo || "").split("\n")
+                        .map((p, i) => <Fragment key={i}>{p}<br /></Fragment>)
             },
             {
                 title: "Actions",
