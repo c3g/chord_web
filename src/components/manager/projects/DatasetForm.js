@@ -27,6 +27,11 @@ class DatasetForm extends Component {
                         rules: [{required: true}]
                     })(<Input.TextArea placeholder="This is a dataset" />)}
                 </Form.Item>
+                <Form.Item label="Contact Information">
+                    {this.props.form.getFieldDecorator("contact_info", {
+                        initialValue: (this.props.initialValue || {contact_info: ""}).contact_info || "",
+                    })(<Input.TextArea placeholder={"David Lougheed\ndavid.lougheed@mail.mcgill.ca"} />)}
+                </Form.Item>
                 <Form.Item label="Consent Code and Data Use Requirements">
                     {this.props.form.getFieldDecorator("data_use", {
                         initialValue: ((this.props.initialValue ||

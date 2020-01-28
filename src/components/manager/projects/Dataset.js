@@ -54,6 +54,7 @@ class Dataset extends Component {
             identifier: value.identifier || null,
             title: value.title || "",
             description: value.description || "",
+            contact_info: value.contact_info || "",
             data_use: simpleDeepCopy(value.data_use || INITIAL_DATA_USE_VALUE),
             linked_field_sets: value.linked_field_sets || [],
             tables: value.tables || [],
@@ -176,9 +177,14 @@ class Dataset extends Component {
         const tabContents = {
             overview: (
                 <>
-                    {this.state.description.length > 0 ? (
-                        <Typography.Paragraph>{this.state.description}</Typography.Paragraph>
-                    ) : null}
+                    {this.state.description.length > 0
+                        ? this.state.description.split("\n").map((p, i) =>
+                            <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)
+                        : null}
+                    {this.state.contact_info.length > 0
+                        ? this.state.contact_info.split("\n").map((p, i) =>
+                            <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)
+                        : null}
                     <Row gutter={16} style={{maxWidth: isPrivate ? "720px" : "1080px"}}>
                         {isPrivate ? null : (
                             <Col span={8}><Statistic title="Project" value={this.props.project.title || "—"} /></Col>

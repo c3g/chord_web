@@ -46,7 +46,9 @@ class DatasetFormModal extends Component {
                 : this.props.saveProjectDataset({
                     ...(this.props.initialValue || {}),
                     project: this.props.project.identifier,
-                    ...values
+                    ...values,
+                    description: (values.description || "").trim(),
+                    contact_info: (values.contact_info || "").trim(),
                 }));
 
             await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
