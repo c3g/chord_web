@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
@@ -178,13 +178,20 @@ class Dataset extends Component {
             overview: (
                 <>
                     {this.state.description.length > 0
-                        ? this.state.description.split("\n").map((p, i) =>
-                            <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)
-                        : null}
+                        ? (<>
+                            <Typography.Title level={4}>Description</Typography.Title>
+                            {this.state.description.split("\n").map((p, i) =>
+                                <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)}
+                        </>) : null}
                     {this.state.contact_info.length > 0
-                        ? this.state.contact_info.split("\n").map((p, i) =>
-                            <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)
-                        : null}
+                        ? (<>
+                            <Typography.Title level={4}>Contact Information</Typography.Title>
+                            <Typography.Paragraph>
+                                {this.state.contact_info.split("\n").map((p, i) =>
+                                    <Fragment key={i}>{p}<br /></Fragment>)}
+                            </Typography.Paragraph>
+                        </>) : null}
+                    {(this.state.description.length > 0 || this.state.contact_info.length > 0) ? <Divider /> : null}
                     <Row gutter={16} style={{maxWidth: isPrivate ? "720px" : "1080px"}}>
                         {isPrivate ? null : (
                             <Col span={8}><Statistic title="Project" value={this.props.project.title || "—"} /></Col>
