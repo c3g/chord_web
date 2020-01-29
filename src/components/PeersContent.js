@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Layout, PageHeader, Table} from "antd";
+import {Icon, Layout, PageHeader, Table} from "antd";
 
 import "antd/es/layout/style/css";
 import "antd/es/page-header/style/css";
@@ -9,15 +9,34 @@ import "antd/es/table/style/css";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
-
-const PEER_COLUMNS = [{
-    title: "Peer",
-    dataIndex: "url",
-    sorter: (a, b) => a.url.localeCompare(b.url),
-    defaultSortOrder: "ascend"
-}];
-
 class PeersContent extends Component {
+    constructor(props) {
+        super(props);
+        this.peerColumns = [
+            {
+                title: "",
+                key: "icon",
+                width: 75,
+                render: (_, peer) => (
+                    <div style={{width: "100%", textAlign: "center"}}>
+                        <Icon type={this.props.nodeInfo.CHORD_URL === peer.url ? "home" : "global"} />
+                    </div>
+                )
+            },
+            {
+                title: "Peer",
+                dataIndex: "url",
+                render: url => <>
+                    <a href={url} target="_blank" rel="noreferrer noopener">{url}</a>
+                    {this.props.nodeInfo.CHORD_URL === url ? <span style={{marginLeft: "0.5em"}}>(current node)</span>
+                        : null}
+                </>,
+                sorter: (a, b) => a.url.localeCompare(b.url),
+                defaultSortOrder: "ascend"
+            }
+        ];
+    }
+
     componentDidMount() {
         document.title = "CHORD - Peers";
     }
@@ -31,7 +50,7 @@ class PeersContent extends Component {
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <Table dataSource={this.props.peers}
-                               columns={PEER_COLUMNS}
+                               columns={this.peerColumns}
                                loading={this.props.loadingPeers}
                                rowKey="url"
                                bordered={true}
@@ -44,6 +63,7 @@ class PeersContent extends Component {
 }
 
 const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
     peers: state.peers.items.map(p => ({url: p})),
     loadingPeers: state.services.isFetchingAll || state.peers.isFetching
 });
