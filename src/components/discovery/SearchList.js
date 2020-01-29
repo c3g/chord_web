@@ -58,6 +58,7 @@ class SearchList extends Component {
                 render: (_, dataset) => (
                     <a target="_blank"
                        rel="noreferrer noopener"
+                       href={`${dataset.node}data/discovery/datasets/${dataset.identifier}`}
                        style={{fontFamily: "monospace"}}>{dataset.identifier}</a>
                 ),
             },
