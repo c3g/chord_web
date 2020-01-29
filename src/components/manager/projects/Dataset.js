@@ -88,23 +88,24 @@ class Dataset extends Component {
             {title: "Data Type", dataIndex: "data_type"},
             ...(this.props.mode === "private" ? [
                 {
-                    title: "actions",
+                    title: "Actions",
                     key: "actions",
-                    width: 330,
+                    width: 230, /*330,*/
                     render: t => (
                         <Row gutter={10}>
-                            <Col span={8}>
+                            <Col span={12}>
                                 <Button icon="import"
                                         style={{width: "100%"}}
                                         onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
                                     Ingest
                                 </Button>
                             </Col>
-                            <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                            <Col span={8}><Button type="danger"
-                                                  icon="delete"
-                                                  onClick={() => this.handleTableDeletionClick(t)}
-                                                  style={{width: "100%"}}>Delete</Button></Col>
+                            {/* TODO: Edit Table Name: v0.2 */}
+                            {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
+                            <Col span={12}><Button type="danger"
+                                                   icon="delete"
+                                                   onClick={() => this.handleTableDeletionClick(t)}
+                                                   style={{width: "100%"}}>Delete</Button></Col>
                         </Row>
                     )
                 }
