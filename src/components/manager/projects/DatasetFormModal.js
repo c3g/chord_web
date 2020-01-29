@@ -15,7 +15,7 @@ import {
     fetchProjectsWithDatasetsAndTables
 } from "../../../modules/metadata/actions";
 
-import {datasetPropTypesShape, projectPropTypesShape} from "../../../utils";
+import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../utils";
 
 
 const MODE_ADD = "add";
@@ -30,7 +30,7 @@ class DatasetFormModal extends Component {
     }
 
     handleCancel() {
-        (this.props.onCancel || (() => {}))();
+        (this.props.onCancel || nop)();
     }
 
     handleSubmit() {
@@ -58,7 +58,7 @@ class DatasetFormModal extends Component {
 
     async handleSuccess(values) {
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
-        await (this.props.onOk || (() => {}))({...(this.props.initialValue || {}), values});
+        await (this.props.onOk || nop)({...(this.props.initialValue || {}), values});
         if ((this.props.mode || MODE_ADD) === MODE_ADD) this.form.resetFields();
     }
 

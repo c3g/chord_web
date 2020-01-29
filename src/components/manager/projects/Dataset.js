@@ -29,7 +29,7 @@ import {
 } from "../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy, projectPropTypesShape, datasetPropTypesShape} from "../../../utils";
+import {simpleDeepCopy, projectPropTypesShape, datasetPropTypesShape, nop} from "../../../utils";
 import LinkedFieldSetTable from "./LinkedFieldSetTable";
 import LinkedFieldSetAdditionModal from "./LinkedFieldSetAdditionModal";
 
@@ -96,7 +96,7 @@ class Dataset extends Component {
                             <Col span={12}>
                                 <Button icon="import"
                                         style={{width: "100%"}}
-                                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
+                                        onClick={() => (this.props.onTableIngest || nop)(this.props.project, t)}>
                                     Ingest
                                 </Button>
                             </Col>
@@ -350,7 +350,7 @@ class Dataset extends Component {
                 isPrivate ? (
                     <>
                         <Button icon="import" style={{marginRight: "16px"}}
-                                onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, {
+                                onClick={() => (this.props.onTableIngest || nop)(this.props.project, {
                                     // Map dataset to metadata table  TODO: Remove all these hacks
                                     id: this.state.identifier,
                                     data_type: "phenopacket",  // TODO: Remove hard-coding...
@@ -359,7 +359,7 @@ class Dataset extends Component {
                         </Button>
                         <Button icon="edit"
                                 style={{marginRight: "8px"}}
-                                onClick={() => (this.props.onEdit || (() => {}))()}>Edit</Button>
+                                onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
                         <Button type="danger" icon="delete" onClick={() => {
                             Modal.confirm({
                                 title: `Are you sure you want to delete the "${this.state.title}" dataset?`,

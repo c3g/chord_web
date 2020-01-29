@@ -8,7 +8,7 @@ import "antd/es/modal/style/css";
 import LinkedFieldSetForm from "./LinkedFieldSetForm";
 
 import {addDatasetLinkedFieldSetIfPossible} from "../../../modules/metadata/actions";
-import {datasetPropTypesShape} from "../../../utils";
+import {datasetPropTypesShape, nop} from "../../../utils";
 
 class LinkedFieldSetAdditionModal extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class LinkedFieldSetAdditionModal extends Component {
             const fieldSet = {
                 name: values.name,
                 fields: Object.fromEntries(values.fields.map(f => {
-                    const parts = f.selected.split(".").slice(1);
+                    const parts = f.selected.split(".").slice(1);  // TODO: Condense this with filter (_, i)
                     return [parts[0], parts.slice(2)];
                 }))
             };
@@ -39,7 +39,7 @@ class LinkedFieldSetAdditionModal extends Component {
                    visible={this.props.visible}
                    confirmLoading={this.props.isSavingDataset}
                    onOk={() => this.handleSubmit()}
-                   onCancel={() => (this.props.onCancel || (() => {}))()}>
+                   onCancel={() => (this.props.onCancel || nop)()}>
                 <LinkedFieldSetForm dataTypes={this.props.dataTypes} ref={form => this.form = form} />
             </Modal>
         );

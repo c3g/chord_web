@@ -5,6 +5,7 @@ import {Icon, Input, Modal, Radio, Table, Tabs} from "antd";
 
 import SchemaTree from "../SchemaTree";
 import {generateSchemaTreeData, generateSchemaTableData} from "../../schema";
+import {nop} from "../../utils";
 
 // TODO: Add more columns
 const FIELD_COLUMNS = [
@@ -38,7 +39,7 @@ class DataTypeExplorationModal extends Component {
             <Modal title="Data Types"
                    visible={this.props.visible}
                    width={1280}
-                   onCancel={this.props.onCancel || (() => {})}
+                   onCancel={this.props.onCancel || nop}
                    footer={null}>
                 <Radio.Group value={this.state.view}
                              onChange={e => this.setState({view: e.target.value})}

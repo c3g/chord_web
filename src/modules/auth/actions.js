@@ -18,6 +18,7 @@ import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
 import {fetchRuns} from "../wes/actions";
+import {nop} from "../../utils";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");
@@ -43,7 +44,7 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
 
     if (!hasAttempted) {
         await dispatch(fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded());
-        await (servicesCb || (() => {}))();
+        await (servicesCb || nop)();
         await dispatch(fetchProjectsWithDatasetsAndTables());  // TODO: If needed, remove if !hasAttempted
     }
 

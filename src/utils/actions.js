@@ -15,7 +15,7 @@ export const createNetworkActionTypes = name => ({
 export const createFlowActionTypes = name => ({
     BEGIN: `${name}.BEGIN`,
     END: `${name}.END`,
-    TERMINATE: `${name}.TERMINATE`
+    TERMINATE: `${name}.TERMINATE`,
 });
 
 

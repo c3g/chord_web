@@ -13,6 +13,7 @@ import RunLog from "./RunLog";
 import RunTaskLogs from "./RunTaskLogs";
 
 import {renderDate, RUN_STATE_TAG_COLORS} from "./utils";
+import {nop} from "../../../utils";
 
 
 const TABS = {
@@ -32,13 +33,13 @@ class Run extends Component {
                 <PageHeader title={`Run ${run.run_id}`}
                             tags={<Tag color={RUN_STATE_TAG_COLORS[run.state]}>{run.state}</Tag>}
                             footer={
-                                <Tabs activeKey={tab} onChange={this.props.onChangeTab || (() => {})}>
+                                <Tabs activeKey={tab} onChange={this.props.onChangeTab || nop}>
                                     <Tabs.TabPane tab="Request" key="request" />
                                     <Tabs.TabPane tab="Run Log" key="run_log" />
                                     {/*<Tabs.TabPane tab="Task Logs" key="task_logs" /> TODO: Implement v0.2 */}
                                 </Tabs>
                             }
-                            onBack={this.props.onBack || (() => {})}>
+                            onBack={this.props.onBack || nop}>
                     <Row type="flex">
                         <Statistic title="Started" value={renderDate(run.details.run_log.start_time) || "N/A"} />
                         <Statistic title="Ended" value={renderDate(run.details.run_log.end_time) || "N/A"}

@@ -3,10 +3,11 @@ import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Modal, Typography} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
+
+import {nop} from "../../../utils";
 
 
 // TODO: Replace with Modal.confirm
@@ -16,16 +17,16 @@ class TableDeletionModal extends Component {
             <Modal visible={this.props.visible}
                    title={`Are you sure you want to delete the "${(this.props.table || {}).name || ""}" table?`}
                    footer={[
-                       <Button key="cancel" onClick={() => (this.props.onCancel || (() => {}))()}>Cancel</Button>,
+                       <Button key="cancel" onClick={() => (this.props.onCancel || nop)()}>Cancel</Button>,
                        <Button key="confirm"
                                icon="delete"
                                type="danger"
-                               onClick={() => (this.props.onSubmit || (() => {}))()}
+                               onClick={() => (this.props.onSubmit || nop)()}
                                loading={this.props.isDeletingTable}>
                            Delete
                        </Button>
                    ]}
-                   onCancel={this.props.onCancel || (() => {})}>
+                   onCancel={this.props.onCancel || nop}>
                 <Typography.Paragraph>
                     Deleting this table means all data contained in the table will be deleted permanently, and
                     the will no longer be available for discovery within the CHORD federation.

@@ -13,10 +13,7 @@ import Dataset from "./Dataset";
 import ProjectForm from "./ProjectForm";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy, projectPropTypesShape} from "../../../utils";
-
-
-const nop = () => {};
+import {nop, simpleDeepCopy, projectPropTypesShape} from "../../../utils";
 
 
 class Project extends Component {

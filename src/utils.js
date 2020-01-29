@@ -7,6 +7,12 @@ import React from "react";
 export const EM_DASH = "⁠—";
 
 
+// Functional utilities
+export const id = x => x;  // id is a function that returns it's first passed parameter
+export const nop = () => {};
+export const constFn = x => () => x;  // constFn(null) creates a function that always returns null
+
+
 export const urlPath = url => (new URL(url)).pathname;
 
 

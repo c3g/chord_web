@@ -10,6 +10,7 @@ import "antd/es/select/style/css";
 import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search";
 
 import SchemaTreeSelect from "../SchemaTreeSelect";
+import {constFn, id, nop} from "../../utils";
 
 
 const BOOLEAN_OPTIONS = ["true", "false"];
@@ -34,9 +35,9 @@ const getSchemaTypeTransformer = type => {
         case "boolean":
             return [s => s === "true", toStringOrNull];
         case "null":
-            return  [() => null, () => "null"];
+            return  [constFn(null), constFn("null")];
         default:
-            return [x => x, x => x];
+            return [id, id];
     }
 };
 
@@ -90,7 +91,7 @@ class DiscoverySearchCondition extends Component {
             operation: fieldOperations.includes(this.state.operation) ? this.state.operation : fieldOperations[0]
         };
 
-        (this.props.onFieldChange || (() => {}))(change);
+        (this.props.onFieldChange || nop)(change);
         this.handleChange(change);
     }
 
@@ -152,7 +153,7 @@ class DiscoverySearchCondition extends Component {
     render() {
         const conditionType = this.props.conditionType || "data-type";
 
-        if (!this.state.fieldSchema) return (<div />);
+        if (!this.state.fieldSchema) return <div />;
 
         const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
             && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
@@ -226,7 +227,7 @@ class DiscoverySearchCondition extends Component {
                     ): this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
                     <Button type="danger" style={{width: `${CLOSE_WIDTH}px`}} disabled={this.props.removeDisabled}
-                            onClick={this.props.onRemoveClick || (() => {})} icon="close" />
+                            onClick={this.props.onRemoveClick || nop} icon="close" />
                 ) : null}
             </Input.Group>
         );

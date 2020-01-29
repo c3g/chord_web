@@ -232,6 +232,7 @@ export const deleteDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, l
     };
 
 
+// TODO: Split into network actions, use onSuccess
 export const addProjectTable = (project, datasetID, serviceInfo, dataType, tableName) =>
     async (dispatch, getState) => {
         if (getState().projectTables.isAdding) return;  // TODO: or isDeleting
@@ -307,6 +308,7 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
     };
 
 
+// TODO: Split into network actions, use onSuccess
 const deleteProjectTable = (project, table) => async (dispatch, getState) => {
     await dispatch(beginFlow(PROJECT_TABLE_DELETION));
     await dispatch(beginFlow(DELETING_SERVICE_TABLE));

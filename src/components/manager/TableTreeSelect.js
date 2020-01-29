@@ -7,6 +7,8 @@ import "antd/es/spin/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/tree-select/style/css";
 
+import {nop} from "../../utils";
+
 class TableTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {
         if ("value" in nextProps) {
@@ -88,7 +90,7 @@ class TableTreeSelect extends Component {
                                     || n.props.data.title.toLocaleLowerCase().includes(filter)
                                     || (n.props.data.data_type || "").toLocaleLowerCase().includes(filter);
                             }}
-                            onChange={this.props.onChange || (() => {})}
+                            onChange={this.props.onChange || nop}
                             value={this.state.selected}
                             treeData={selectTreeData}
                             treeDefaultExpandAll={true}/>

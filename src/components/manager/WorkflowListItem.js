@@ -7,7 +7,7 @@ import "antd/es/icon/style/css";
 import "antd/es/list/style/css";
 import "antd/es/tag/style/css";
 
-import {workflowPropTypesShape} from "../../utils";
+import {nop, workflowPropTypesShape} from "../../utils";
 
 const TYPE_TAG_DISPLAY = {
     file: {
@@ -64,7 +64,7 @@ class WorkflowListItem extends Component {
                 <List.Item.Meta
                     title={
                         this.props.selectable
-                            ? <a onClick={() => (this.props.onClick || (() => {}))()}>
+                            ? <a onClick={() => (this.props.onClick || nop)()}>
                                 {typeTag} {this.props.workflow.name}
                                 <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
                             : <span>{typeTag} {this.props.workflow.name}</span>}

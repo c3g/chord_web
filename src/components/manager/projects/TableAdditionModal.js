@@ -9,7 +9,7 @@ import "antd/es/modal/style/css";
 
 import TableForm from "./TableForm";
 
-import {datasetPropTypesShape, projectPropTypesShape} from "../../../utils";
+import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../utils";
 
 
 const modalTitle = (dataset, project) =>
@@ -27,7 +27,7 @@ class TableAdditionModal extends Component {
                 return;
             }
 
-            await (this.props.onSubmit || (() => {}))(values);
+            await (this.props.onSubmit || nop)(values);
             this.form.resetFields();
         });
     }
@@ -47,7 +47,7 @@ class TableAdditionModal extends Component {
                            Add
                        </Button>
                    ]}
-                   onCancel={() => (this.props.onCancel || (() => {}))()}>
+                   onCancel={() => (this.props.onCancel || nop)()}>
                 <TableForm ref={form => this.form = form} />
             </Modal>
         );

@@ -7,6 +7,8 @@ import "antd/es/modal/style/css";
 
 import TableTreeSelect from "./TableTreeSelect";
 
+import {nop} from "../../utils";
+
 class TableSelectionModal extends Component {
     constructor(props) {
         super(props);
@@ -17,8 +19,8 @@ class TableSelectionModal extends Component {
         return (
             <Modal title={this.props.title || "Select a Table"}
                    visible={this.props.visible || false}
-                   onCancel={() => (this.props.onCancel || (() => {}))()}
-                   onOk={() => (this.props.onOk || (() => {}))(this.state.selected)}>
+                   onCancel={() => (this.props.onCancel || nop)()}
+                   onOk={() => (this.props.onOk || nop)(this.state.selected)}>
                 <Form>
                     <Form.Item label="Table">
                         <TableTreeSelect style={{width: "100%"}}

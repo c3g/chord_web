@@ -15,6 +15,8 @@ import {
     FORM_BUTTON_COL
 } from "./ingestion";
 
+import {nop} from "../../utils";
+
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);
 const generateFileTree = (directory, valid) => [...directory].sort(sortByName).map(entry =>
@@ -35,7 +37,7 @@ class IngestionInputForm extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            (this.props.onSubmit || (() => {}))(values);
+            (this.props.onSubmit || nop)(values);
         })
     }
 
