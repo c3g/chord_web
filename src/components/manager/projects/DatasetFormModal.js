@@ -26,6 +26,7 @@ class DatasetFormModal extends Component {
     componentDidMount() {
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSuccess = this.handleSuccess.bind(this);
     }
 
     handleCancel() {
@@ -41,21 +42,24 @@ class DatasetFormModal extends Component {
 
             const mode = this.props.mode || MODE_ADD;
 
+            const onSuccess = async () => await this.handleSuccess(values);
+
             await (mode === MODE_ADD
-                ? this.props.addProjectDataset(this.props.project, values)
+                ? this.props.addProjectDataset(this.props.project, values, onSuccess)
                 : this.props.saveProjectDataset({
                     ...(this.props.initialValue || {}),
                     project: this.props.project.identifier,
                     ...values,
                     description: (values.description || "").trim(),
                     contact_info: (values.contact_info || "").trim(),
-                }));
-
-            await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
-
-            await (this.props.onOk || (() => {}))({...(this.props.initialValue || {}), values});
-            if (mode === MODE_ADD) this.form.resetFields();
+                }, onSuccess));
         })
+    }
+
+    async handleSuccess(values) {
+        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
+        await (this.props.onOk || (() => {}))({...(this.props.initialValue || {}), values});
+        if ((this.props.mode || MODE_ADD) === MODE_ADD) this.form.resetFields();
     }
 
     render() {
@@ -116,8 +120,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addProjectDataset: async (project, dataset) => await dispatch(addProjectDataset(project, dataset)),
-    saveProjectDataset: async dataset => await dispatch(saveProjectDataset(dataset)),
+    addProjectDataset: async (project, dataset, onSuccess) =>
+        await dispatch(addProjectDataset(project, dataset, onSuccess)),
+    saveProjectDataset: async (dataset, onSuccess) => await dispatch(saveProjectDataset(dataset, onSuccess)),
     fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
 });
 

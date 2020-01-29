@@ -138,20 +138,24 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, dataset) => (dispatch, getState) => ({
-    types: ADD_PROJECT_DATASET,
-    url: `${getState().services.metadataService.url}/api/datasets`,
-    req: {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({...dataset, project: project.identifier})
-    },
-    err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
-    // TODO: END ACTION?
-    onSuccess: () => message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
-}));
+export const addProjectDataset = networkAction((project, dataset, onSuccess = (() => {})) =>
+    (dispatch, getState) => ({
+        types: ADD_PROJECT_DATASET,
+        url: `${getState().services.metadataService.url}/api/datasets`,
+        req: {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({...dataset, project: project.identifier})
+        },
+        err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
+        // TODO: END ACTION?
+        onSuccess: async () => {
+            await onSuccess();
+            message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
+        }
+    }));
 
-export const saveProjectDataset = networkAction(dataset => (dispatch, getState) => ({
+export const saveProjectDataset = networkAction((dataset, onSuccess = (() => {})) => (dispatch, getState) => ({
     types: SAVE_PROJECT_DATASET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
     req: {
@@ -161,7 +165,10 @@ export const saveProjectDataset = networkAction(dataset => (dispatch, getState) 
         body: JSON.stringify(objectWithoutProps(dataset, ["identifier", "created", "updated"]))
     },
     err: `Error saving dataset '${dataset.title}'`,
-    onSuccess: () => message.success(`Saved dataset '${dataset.title}'`)
+    onSuccess: async () => {
+        await onSuccess();
+        message.success(`Saved dataset '${dataset.title}'`);
+    }
 }));
 
 export const deleteProjectDataset = networkAction((project, dataset) => (dispatch, getState) => ({
