@@ -24,7 +24,7 @@ class TableDeletionModal extends Component {
                            Delete
                        </Button>
                    ]}
-                   onCancel={this.onCancel}>
+                   onCancel={this.props.onCancel || (() => {})}>
                 <Typography.Paragraph>
                     Deleting this table means all data contained in the table will be deleted permanently, and
                     the will no longer be available for discovery within the CHORD federation.
