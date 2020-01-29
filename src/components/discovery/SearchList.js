@@ -32,31 +32,8 @@ class SearchList extends Component {
         this.handleSearchSelect = this.handleSearchSelect.bind(this);
         this.handleDatasetTermsClick = this.handleDatasetTermsClick.bind(this);
         this.handleDatasetTermsCancel = this.handleDatasetTermsCancel.bind(this);
-    }
 
-    handleSearchSelect(searchIndex) {
-        this.props.selectSearch(searchIndex === null ? null : parseInt(searchIndex, 10));
-    }
-
-    handleDatasetTermsClick(dataset) {
-        this.setState({
-            dataUseTermsModalShown: true,
-            dataset
-        });
-    }
-
-    handleDatasetTermsCancel() {
-        this.setState({dataUseTermsModalShown: false});
-    }
-
-    render() {
-        if (!this.props.searches || this.props.searches.length === 0) return (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
-        );
-
-        const nodeURL = this.props.nodeInfo.CHORD_URL;
-
-        const searchResultsColumns = [
+        this.searchResultColumns = [
             {
                 title: "Node",
                 dataIndex: "node",
@@ -65,10 +42,11 @@ class SearchList extends Component {
                     /* TODO: Don't show icon if the current node is just for exploration (vFuture) */
                     <Popover content={<>
                         <a href={node} target="_blank" rel="noreferrer noopener">{node}</a>
-                        {node === nodeURL ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
+                        {this.props.nodeInfo.CHORD_URL === node
+                            ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
                     </>}>
                         <div style={{width: "100%", textAlign: "center"}}>
-                            <Icon type={nodeURL === node ? "home" : "global"} /> {/* style={{marginRight: "1em"}} */}
+                            <Icon type={this.props.nodeInfo.CHORD_URL === node ? "home" : "global"} />
                         </div>
                     </Popover>
                 )
@@ -93,7 +71,7 @@ class SearchList extends Component {
                 title: "Contact Information",
                 dataIndex: "contact_info",
                 render: contactInfo => (contactInfo || "").split("\n")
-                        .map((p, i) => <Fragment key={i}>{p}<br /></Fragment>)
+                    .map((p, i) => <Fragment key={i}>{p}<br /></Fragment>)
             },
             {
                 title: "Actions",
@@ -121,6 +99,27 @@ class SearchList extends Component {
                 ),
             },
         ];
+    }
+
+    handleSearchSelect(searchIndex) {
+        this.props.selectSearch(searchIndex === null ? null : parseInt(searchIndex, 10));
+    }
+
+    handleDatasetTermsClick(dataset) {
+        this.setState({
+            dataUseTermsModalShown: true,
+            dataset
+        });
+    }
+
+    handleDatasetTermsCancel() {
+        this.setState({dataUseTermsModalShown: false});
+    }
+
+    render() {
+        if (!this.props.searches || this.props.searches.length === 0) return (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Searches" />
+        );
 
         const datasetNameOrID = (this.state.dataset || {}).name || (this.state.dataset || {}).id || "";
         const dataUseTermsTitle = `Dataset ${datasetNameOrID
@@ -148,7 +147,7 @@ class SearchList extends Component {
                                 <Collapse.Panel header={title}
                                                 key={(this.props.searches.length - i - 1).toString(10)}>
                                     <Table bordered={true}
-                                           columns={searchResultsColumns}
+                                           columns={this.searchResultColumns}
                                            dataSource={searchResults}
                                            rowKey="identifier" />
                                 </Collapse.Panel>

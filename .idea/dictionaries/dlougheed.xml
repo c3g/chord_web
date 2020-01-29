@@ -18,6 +18,7 @@
       <w>unpaginated</w>
       <w>usergroup</w>
       <w>workflows</w>
+      <w>wsgi</w>
     </words>
   </dictionary>
 </component>

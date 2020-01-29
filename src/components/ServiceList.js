@@ -1,14 +1,16 @@
-import React from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Table, Typography, Icon, Tag} from "antd";
-
 import "antd/es/table/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
 
-const columns = [
+import {chordServicePropTypesMixin, serviceInfoPropTypesShape} from "../utils";
+
+const SERVICE_COLUMNS = [
     {
         title: "Artifact",
         dataIndex: "type.artifact",
@@ -42,22 +44,35 @@ const columns = [
     }
 ];
 
-// noinspection JSUnusedGlobalSymbols
-const ServiceList = connect(
-    state => ({
-        dataSource: state.chordServices.items.map(service => ({
-            ...service,
-            key: `${service.type.organization}:${service.type.artifact}`,
-            serviceInfo: state.services.itemsByArtifact[service.type.artifact] || null,
-            status: state.services.itemsByArtifact.hasOwnProperty(service.type.artifact),
-            loading: state.services.isFetching
-        })),
-        columns,
-        rowKey: "key",
-        bordered: true,
-        loading: state.chordServices.isFetching || state.services.isFetching,
-        size: "middle"
-    })
-)(Table);
+class ServiceList extends Component {
+    render() {
+        return <Table {...this.props} />;
+    }
+}
 
-export default ServiceList;
+ServiceList.propTypes = {
+    dataSource: PropTypes.arrayOf(PropTypes.shape({
+        ...chordServicePropTypesMixin,
+        key: PropTypes.string,
+        serviceInfo: serviceInfoPropTypesShape,
+        status: PropTypes.bool,
+        loading: PropTypes.bool,
+    }))
+};
+
+const mapStateToProps = state => ({
+    dataSource: state.chordServices.items.map(service => ({
+        ...service,
+        key: `${service.type.organization}:${service.type.artifact}`,
+        serviceInfo: state.services.itemsByArtifact[service.type.artifact] || null,
+        status: state.services.itemsByArtifact.hasOwnProperty(service.type.artifact),
+        loading: state.services.isFetching
+    })),
+    columns: SERVICE_COLUMNS,
+    rowKey: "key",
+    bordered: true,
+    loading: state.chordServices.isFetching || state.services.isFetching,
+    size: "middle"
+});
+
+export default connect(mapStateToProps)(ServiceList);

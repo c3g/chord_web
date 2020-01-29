@@ -218,7 +218,9 @@ const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, link
 
 export const deleteDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, linkedFieldSetIndex) =>
     async (dispatch, getState) => {
-        if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;  // TODO: isDeleting
+        if (getState().projects.isAddingDataset
+            || getState().projects.isSavingDataset
+            || getState().projects.isDeletingDataset) return;
         await dispatch(deleteDatasetLinkedFieldSet(dataset, linkedFieldSet, linkedFieldSetIndex));
     };
 
@@ -353,6 +355,12 @@ const deleteProjectTable = (project, table) => async (dispatch, getState) => {
 
 export const deleteProjectTableIfPossible = (project, table) => async (dispatch, getState) => {
     if (getState().projectTables.isDeleting) return;
+    const chordServiceInfo = getState().chordServices.itemsByArtifact[
+        getState().services.itemsByID[table.service_id].type.split(":")[1]];
+    if (chordServiceInfo.manageable_tables === false) {
+        // If manageable_tables is set and not true, we can't delete the table.
+        return;
+    }
     await dispatch(deleteProjectTable(project, table));
 };
 

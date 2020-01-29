@@ -75,12 +75,47 @@ class Dataset extends Component {
         this.handleTableDeletionClick = this.handleTableDeletionClick.bind(this);
         this.handleTableDeletionCancel = this.handleTableDeletionCancel.bind(this);
         this.handleTableDeletionSubmit = this.handleTableDeletionSubmit.bind(this);
+
+        this.tableListColumns = [
+            {title: "ID", dataIndex: "table_id"},
+            {
+                title: "Name",
+                dataIndex: "name",
+                render: n => (n ? n : NA_TEXT),
+                defaultSortOrder: "ascend",
+                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
+            },
+            {title: "Data Type", dataIndex: "data_type"},
+            ...(this.props.mode === "private" ? [
+                {
+                    title: "actions",
+                    key: "actions",
+                    width: 330,
+                    render: t => (
+                        <Row gutter={10}>
+                            <Col span={8}>
+                                <Button icon="import"
+                                        style={{width: "100%"}}
+                                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
+                                    Ingest
+                                </Button>
+                            </Col>
+                            <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
+                            <Col span={8}><Button type="danger"
+                                                  icon="delete"
+                                                  onClick={() => this.handleTableDeletionClick(t)}
+                                                  style={{width: "100%"}}>Delete</Button></Col>
+                        </Row>
+                    )
+                }
+            ] : [])
+        ];
     }
 
 
     handleFieldSetDeletion(fieldSet, index) {
         Modal.confirm({
-            title: `Are you sure you want to delete the "${fieldSet.name}" field link set?`,
+            title: `Are you sure you want to delete the "${fieldSet.name}" linked field set?`,
             content: <>
                 <Typography.Paragraph>
                     Doing so will mean users will <strong>no longer</strong> be able to link
@@ -94,7 +129,7 @@ class Dataset extends Component {
             okText: "Delete",
             okType: "danger",
             maskClosable: true,
-            confirmLoading: this.props.isSavingDataset,
+            okButtonProps: {loading: this.props.isSavingDataset},
             onOk: () => this.props.deleteLinkedFieldSet(this.state, fieldSet, index),
         });
     }
@@ -138,41 +173,6 @@ class Dataset extends Component {
 
     render() {
         const isPrivate = this.props.mode === "private";
-
-        const tableListColumns = [
-            {title: "ID", dataIndex: "table_id"},
-            {
-                title: "Name",
-                dataIndex: "name",
-                render: n => (n ? n : NA_TEXT),
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
-            },
-            {title: "Data Type", dataIndex: "data_type"},
-            ...(isPrivate ? [
-                {
-                    title: "actions",
-                    key: "actions",
-                    width: 330,
-                    render: t => (
-                        <Row gutter={10}>
-                            <Col span={8}>
-                                <Button icon="import"
-                                        style={{width: "100%"}}
-                                        onClick={() => (this.props.onTableIngest || (() => {}))(this.props.project, t)}>
-                                    Ingest
-                                </Button>
-                            </Col>
-                            <Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>
-                            <Col span={8}><Button type="danger"
-                                                  icon="delete"
-                                                  onClick={() => this.handleTableDeletionClick(t)}
-                                                  style={{width: "100%"}}>Delete</Button></Col>
-                        </Row>
-                    )
-                }
-            ] : [])
-        ];
 
         const tabContents = {
             overview: (
@@ -269,7 +269,7 @@ class Dataset extends Component {
                            dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
                            rowKey="table_id"
                            // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
-                           columns={tableListColumns}
+                           columns={this.tableListColumns}
                            loading={this.props.isFetchingTables} />
                 </>
             ),
@@ -372,9 +372,9 @@ class Dataset extends Component {
                                 width: 572,
                                 autoFocusButton: "cancel",
                                 okText: "Delete",
-                                okButtonProps: {type: "danger"},
+                                okType: "danger",
+                                okButtonProps: {loading: this.props.isDeletingDataset},
                                 maskClosable: true,
-                                confirmLoading: this.props.isDeletingDataset,
                                 onOk: () => this.props.deleteProjectDataset(this.props.project, this.state),
                             })
                         }}>Delete</Button>
