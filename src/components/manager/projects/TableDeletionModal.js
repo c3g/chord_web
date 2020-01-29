@@ -9,6 +9,7 @@ import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
 
 
+// TODO: Replace with Modal.confirm
 class TableDeletionModal extends Component {
     render() {
         return (
