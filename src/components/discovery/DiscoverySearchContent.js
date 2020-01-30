@@ -9,6 +9,7 @@ import {
     Empty,
     Icon,
     Menu,
+    Modal,
     Tabs,
     Typography
 } from "antd";
@@ -18,6 +19,7 @@ import "antd/es/dropdown/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
+import "antd/es/modal/style/css";
 import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
 
@@ -109,7 +111,35 @@ class DiscoverySearchContent extends Component {
                         Data Type Queries
                         {addConditionsOnDataType()}
                         <Button style={{float: "right", marginRight: "1em"}}
-                                onClick={this.handleSchemasToggle}>Explore Data Types</Button>
+                                onClick={this.handleSchemasToggle}><Icon type="table" /> Explore Data Types</Button>
+                        <Button style={{float: "right", marginRight: "1em"}} onClick={() => {
+                            Modal.info({
+                                title: "Help",
+                                content: <>
+                                    <Typography.Paragraph>
+                                        CHORD defines multiple queryable data types for researchers to take advantage of
+                                        to standardize their datasets and make them discoverable. Each of these data
+                                        types is defined by a <strong>schema</strong>, which specifies all the
+                                        components of a single object in a table of a given data type. Some of the
+                                        fields of these objects are directly queryable, while others aren't; this is
+                                        determined in part by the sensitivity of the field.
+                                    </Typography.Paragraph>
+                                    <Typography.Paragraph>
+                                        Data types and their schemas can
+                                        be <a href="#" onClick={this.handleSchemasToggle}>explored</a> in both a tree
+                                        and a searchable table structure.
+                                    </Typography.Paragraph>
+                                    <Typography.Paragraph>
+                                        If two or more data types are queried at the same time, the federated search
+                                        system will look for datasets that have linked data objects matching both
+                                        criteria. This first requires that researchers have correctly set up their
+                                        datasets to link e.g. patients with their corresponding genomic variants.
+                                    </Typography.Paragraph>
+                                </>,
+                                maskClosable: true,
+                                width: 720
+                            })
+                        }}><Icon type="question-circle" /> Help</Button>
                     </Typography.Title>
 
                     {this.props.dataTypeForms.length > 0
