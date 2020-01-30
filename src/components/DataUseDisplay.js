@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import {Col, List, Icon, Row, Tag, Typography} from "antd";
+import {Col, List, Icon, Row, Tag, Typography, Popover} from "antd";
 
 import "antd/es/col/style/css";
 import "antd/es/icon/style/css";
@@ -8,7 +8,14 @@ import "antd/es/row/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
 
-import {DUO_NOT_FOR_PROFIT_USE_ONLY, DATA_USE_KEYS, DATA_USE_INFO, DATA_USE_PROP_TYPE_SHAPE} from "../duo";
+import {
+    DUO_NOT_FOR_PROFIT_USE_ONLY,
+    DATA_USE_KEYS,
+    DATA_USE_INFO,
+    DATA_USE_PROP_TYPE_SHAPE,
+    PRIMARY_CONSENT_CODE_INFO,
+    SECONDARY_CONSENT_CODE_INFO
+} from "../duo";
 
 
 const TAG_LABEL_STYLING = {
@@ -25,6 +32,7 @@ const TAG_STYLING = {
 
 class DataUseDisplay extends Component {
     render() {
+        const primaryCode = this.props.dataUse.consent_code.primary_category.code;
         const uses = this.props.dataUse.data_use_requirements.map(u => u.code) || [];
 
         return (
@@ -36,15 +44,22 @@ class DataUseDisplay extends Component {
                     <Row gutter={10} type="flex">
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Primary</div>
-                            <Tag color="blue" style={TAG_STYLING}>
-                                {this.props.dataUse.consent_code.primary_category.code}
-                            </Tag>
+                            <Popover {...PRIMARY_CONSENT_CODE_INFO[primaryCode]}
+                                     overlayStyle={{maxWidth: "576px"}}>
+                                <Tag color="blue" style={TAG_STYLING}>
+                                    {this.props.dataUse.consent_code.primary_category.code}
+                                </Tag>
+                            </Popover>
                         </Col>
                         <Col>
                             <div style={TAG_LABEL_STYLING}>Secondary</div>
                             {this.props.dataUse.consent_code.secondary_categories.length > 0
                                 ? this.props.dataUse.consent_code.secondary_categories.map(sc =>
-                                    <Tag style={TAG_STYLING} key={sc.code}>{sc.code}</Tag>)
+                                    <Popover {...SECONDARY_CONSENT_CODE_INFO[sc.code]}
+                                             overlayStyle={{maxWidth: "576px"}}>
+                                        <Tag style={TAG_STYLING}
+                                             key={sc.code}>{sc.code}</Tag>
+                                    </Popover>)
                                 : <Tag style={{...TAG_STYLING, background: "white", borderStyle: "dashed"}}>N/A</Tag>}
                         </Col>
                     </Row>
