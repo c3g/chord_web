@@ -187,7 +187,7 @@ export const deleteProjectDatasetIfPossible = (project, dataset) => async (dispa
 };
 
 
-const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet) => (dispatch, getState) => ({
+const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, onSuccess) => (dispatch, getState) => ({
     types: ADD_DATASET_LINKED_FIELD_SET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
     req: {
@@ -196,14 +196,19 @@ const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet) => (dis
         body: JSON.stringify({linked_field_sets: [...dataset.linked_field_sets, linkedFieldSet]})
     },
     err: `Error adding linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`,
-    onSuccess: () =>
-        message.success(`Added linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`)
+    onSuccess: async () => {
+        await onSuccess();
+        message.success(`Added linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`);
+    }
 }));
 
-export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet) => async (dispatch, getState) => {
-    if (getState().projects.isAddingDataset || getState().projects.isSavingDataset) return;  // TODO: isDeleting
-    await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet));
-};
+export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, onSuccess = nop) =>
+    async (dispatch, getState) => {
+        if (getState().projects.isAddingDataset
+            || getState().projects.isSavingDataset
+            || getState().projects.isDeletingDataset) return;
+        await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet, onSuccess));
+    };
 
 
 const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, linkedFieldSetIndex) =>
@@ -279,7 +284,7 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
                             data_type: dataType,
 
                             dataset: datasetID,
-                            sample: null  // TODO: Sample ID if wanted
+                            sample: null  // TODO: Sample ID if wanted  // TODO: Deprecate?
                         })
                     }
                 );

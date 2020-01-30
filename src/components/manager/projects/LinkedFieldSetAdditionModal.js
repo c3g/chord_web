@@ -27,9 +27,10 @@ class LinkedFieldSetAdditionModal extends Component {
                     return [parts[0], parts.slice(2)];
                 }))
             };
-            await this.props.addLinkedFieldSet(this.props.dataset, fieldSet);
-            if (this.props.onSubmit) await this.props.onSubmit();
-            this.form.resetFields();
+            await this.props.addLinkedFieldSet(this.props.dataset, fieldSet, async () => {
+                if (this.props.onSubmit) await this.props.onSubmit();
+                this.form.resetFields();
+            });
         });
     }
 
@@ -62,8 +63,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addLinkedFieldSet: async (dataset, linkedFieldSet) =>
-        await dispatch(addDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet)),
+    addLinkedFieldSet: async (dataset, linkedFieldSet, onSuccess) =>
+        await dispatch(addDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, onSuccess)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkedFieldSetAdditionModal);

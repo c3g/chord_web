@@ -148,7 +148,6 @@ export const projects = (
             const replaceDataset = d => d.identifier === action.data.identifier ? {...d, ...action.data} : d;
             return {
                 ...state,
-                // isSavingDataset: false,
                 items: state.items.map(p => p.identifier === action.data.project
                     ? {...p, datasets: p.datasets.map(replaceDataset)}
                     : p

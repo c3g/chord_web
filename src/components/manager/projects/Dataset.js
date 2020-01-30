@@ -115,7 +115,7 @@ class Dataset extends Component {
 
 
     handleFieldSetDeletion(fieldSet, index) {
-        Modal.confirm({
+        const deleteModal = Modal.confirm({
             title: `Are you sure you want to delete the "${fieldSet.name}" linked field set?`,
             content: <>
                 <Typography.Paragraph>
@@ -130,8 +130,11 @@ class Dataset extends Component {
             okText: "Delete",
             okType: "danger",
             maskClosable: true,
-            okButtonProps: {loading: this.props.isSavingDataset},
-            onOk: () => this.props.deleteLinkedFieldSet(this.state, fieldSet, index),
+            onOk: async () => {
+                deleteModal.update({okButtonProps: {loading: true}});
+                await this.props.deleteLinkedFieldSet(this.state, fieldSet, index);
+                deleteModal.update({okButtonProps: {loading: false}});
+            },
         });
     }
 
@@ -361,7 +364,7 @@ class Dataset extends Component {
                                 style={{marginRight: "8px"}}
                                 onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
                         <Button type="danger" icon="delete" onClick={() => {
-                            Modal.confirm({
+                            const deleteModal = Modal.confirm({
                                 title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
                                 content: <>
                                     <Typography.Paragraph>
@@ -374,10 +377,13 @@ class Dataset extends Component {
                                 autoFocusButton: "cancel",
                                 okText: "Delete",
                                 okType: "danger",
-                                okButtonProps: {loading: this.props.isDeletingDataset},
                                 maskClosable: true,
-                                onOk: () => this.props.deleteProjectDataset(this.props.project, this.state),
-                            })
+                                onOk: async () => {
+                                    deleteModal.update({okButtonProps: {loading: true}});
+                                    await this.props.deleteProjectDataset(this.props.project, this.state);
+                                    deleteModal.update({okButtonProps: {loading: false}});
+                                },
+                            });
                         }}>Delete</Button>
                         {/* TODO: Share button (vFuture) */}
                     </>

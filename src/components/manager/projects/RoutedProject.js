@@ -57,7 +57,7 @@ class RoutedProject extends Component {
     }
 
     handleDeleteProject(project) {
-        Modal.confirm({
+        const deleteModal = Modal.confirm({
             title: `Are you sure you want to delete the "${project.title}" project?`,
             content:
                 <>
@@ -70,8 +70,11 @@ class RoutedProject extends Component {
             okText: "Delete",
             okType: "danger",
             maskClosable: true,
-            confirmLoading: this.props.isDeletingProject,
-            onOk: () => this.props.deleteProject(project),
+            onOk: async () => {
+                deleteModal.update({okButtonProps: {loading: true}});
+                await this.props.deleteProject(project);
+                deleteModal.update({okButtonProps: {loading: false}});
+            },
         });
     }
 
