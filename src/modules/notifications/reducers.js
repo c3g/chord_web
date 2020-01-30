@@ -29,26 +29,20 @@ export const notifications = (
 
         case FETCH_NOTIFICATIONS.REQUEST:
             return {...state, isFetching: true};
-
         case FETCH_NOTIFICATIONS.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 items: action.data,
                 itemsByID: Object.fromEntries(action.data.map(n => [n.id, n]))
             };
-
-        case FETCH_NOTIFICATIONS.ERROR:
+        case FETCH_NOTIFICATIONS.FINISH:
             return {...state, isFetching: false};
-
 
         case MARK_NOTIFICATION_AS_READ.REQUEST:
             return {...state, isMarkingAsRead: true};
-
         case MARK_NOTIFICATION_AS_READ.RECEIVE:
             return {
                 ...state,
-                isMarkingAsRead: false,
                 items: state.items.map(i => i.id === action.notificationID ? {...i, read: true} : i),
                 itemsByID: {
                     ...state.itemsByID,
@@ -58,17 +52,13 @@ export const notifications = (
                     }
                 }
             };
-
-        case MARK_NOTIFICATION_AS_READ.ERROR:
+        case MARK_NOTIFICATION_AS_READ.FINISH:
             return {...state, isMarkingAsRead: false};
-
 
         case SHOW_NOTIFICATION_DRAWER:
             return {...state, drawerVisible: true};
-
         case HIDE_NOTIFICATION_DRAWER:
             return {...state, drawerVisible: false};
-
 
         default:
             return state;

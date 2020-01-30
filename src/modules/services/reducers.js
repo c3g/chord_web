@@ -31,16 +31,13 @@ export const chordServices = (
     switch (action.type) {
         case FETCH_CHORD_SERVICES.REQUEST:
             return {...state, isFetching: true};
-
         case FETCH_CHORD_SERVICES.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 items: action.data,
                 itemsByArtifact: Object.fromEntries(action.data.map(s => [s.type.artifact, s]))
             };
-
-        case FETCH_CHORD_SERVICES.ERROR:
+        case FETCH_CHORD_SERVICES.FINISH:
             return {...state, isFetching: false};
 
         default:
@@ -80,7 +77,6 @@ export const services = (
             return {
                 ...state,
 
-                isFetching: false,
                 items: action.data,
                 itemsByID: Object.fromEntries(action.data.map(s => [s.id, s])),
                 itemsByArtifact,
@@ -95,7 +91,7 @@ export const services = (
                 lastUpdated: action.receivedAt
             };
 
-        case FETCH_SERVICES.ERROR:
+        case FETCH_SERVICES.FINISH:
             return {...state, isFetching: false};
 
         default:

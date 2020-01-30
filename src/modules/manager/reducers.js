@@ -37,15 +37,9 @@ export const dropBox = (
     switch (action.type) {
         case FETCH_DROP_BOX_TREE.REQUEST:
             return {...state, isFetching: true};
-
         case FETCH_DROP_BOX_TREE.RECEIVE:
-            return {
-                ...state,
-                isFetching: false,
-                tree: action.data
-            };
-
-        case FETCH_DROP_BOX_TREE.ERROR:
+            return {...state, tree: action.data};
+        case FETCH_DROP_BOX_TREE.FINISH:
             return {...state, isFetching: false};
 
         default:

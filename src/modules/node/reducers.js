@@ -5,14 +5,14 @@ export const nodeInfo = (
         isFetching: false,
         data: {}
     },
-    action
+    {type, data}
 ) => {
-    switch (action.type) {
+    switch (type) {
         case FETCH_NODE_INFO.REQUEST:
             return {...state, isFetching: true};
         case FETCH_NODE_INFO.RECEIVE:
-            return {...state, data: action.data, isFetching: false};
-        case FETCH_NODE_INFO.ERROR:
+            return {...state, data};
+        case FETCH_NODE_INFO.FINISH:
             return {...state, isFetching: false};
         default:
             return state;

@@ -31,12 +31,11 @@ export const discovery = (
         case PERFORM_SEARCH.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 searches: [...state.searches, action.data], // Add search to search history
                 lastUpdated: action.receivedAt
             };
 
-        case PERFORM_SEARCH.ERROR:
+        case PERFORM_SEARCH.FINISH:
             return {...state, isFetching: false};
 
         case SELECT_SEARCH:

@@ -10,11 +10,9 @@ export const peers = (
     switch (action.type) {
         case FETCH_PEERS.REQUEST:
             return {...state, isFetching: true};
-
         case FETCH_PEERS.RECEIVE:
-            return {...state, isFetching: false, items: action.data.peers.sort()};
-
-        case FETCH_PEERS.ERROR:
+            return {...state, items: action.data.peers.sort()};
+        case FETCH_PEERS.FINISH:
             return {...state, isFetching: false};
 
         default:

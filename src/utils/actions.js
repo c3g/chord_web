@@ -9,7 +9,8 @@ export const basicAction = t => () => ({type: t});
 export const createNetworkActionTypes = name => ({
     REQUEST: `${name}.REQUEST`,
     RECEIVE: `${name}.RECEIVE`,
-    ERROR: `${name}.ERROR`
+    ERROR: `${name}.ERROR`,
+    FINISH: `${name}.FINISH`,
 });
 
 export const createFlowActionTypes = name => ({
@@ -78,6 +79,7 @@ const _networkAction = (fn, ...args) =>
             }
             await dispatch({type: types.ERROR, ...params});
         }
+        await dispatch({type: types.FINISH, ...params});
     };
 
 // Curried version

@@ -68,7 +68,6 @@ export const runs = (
         case FETCH_RUNS.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 items: action.data.map(r => ({
                     ...r,
                     details: r.details || null,
@@ -81,7 +80,7 @@ export const runs = (
                 }]))
             };
 
-        case FETCH_RUNS.ERROR:
+        case FETCH_RUNS.FINISH:
             return {...state, isFetching: false};
 
         case FETCH_RUN_DETAILS.REQUEST:
@@ -98,24 +97,23 @@ export const runs = (
             // Pull state out of received details to ensure it's up to date in both places
             return {
                 ...state,
-                isFetching: false,
                 items: state.items.map(r => r.run_id === action.runID
-                    ? {...r, state: action.data.state || r.state, isFetching: false, details: action.data}
+                    ? {...r, state: action.data.state || r.state, details: action.data}
                     : r),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.runID]: {
                         ...(state.itemsByID[action.runID] || {}),
                         state: action.data.state || r.state,
-                        isFetching: false,
                         details: action.data
                     }
                 }
             };
 
-        case FETCH_RUN_DETAILS.ERROR:
+        case FETCH_RUN_DETAILS.FINISH:
             return {
                 ...state,
+                items: state.items.map(r => r.run_id === action.runID ? {...r, isFetching: false} : r),
                 itemsByID: {
                     ...state.itemsByID,
                     [action.runID]: {...(state.itemsByID[action.runID] || {}), isFetching: false}
@@ -142,7 +140,7 @@ export const runs = (
             return {...state, isSubmittingIngestionRun: true};
 
         case SUBMIT_INGESTION_RUN.RECEIVE:  // TODO: Do something here
-        case SUBMIT_INGESTION_RUN.ERROR:
+        case SUBMIT_INGESTION_RUN.FINISH:
             return {...state, isSubmittingIngestionRun: false};
 
         default:

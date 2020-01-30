@@ -50,12 +50,11 @@ export const projects = (
         case FETCH_PROJECTS.RECEIVE:
             return {
                 ...state,
-                isFetching: false,
                 items: action.data.sort(projectSort),
                 itemsByID: Object.fromEntries(action.data.map(p => [p.identifier, p])),
             };
 
-        case FETCH_PROJECTS.ERROR:
+        case FETCH_PROJECTS.FINISH:
             return {...state, isFetching: false};
 
 
@@ -73,7 +72,6 @@ export const projects = (
         case CREATE_PROJECT.RECEIVE:
             return {
                 ...state,
-                isCreating: false,
                 items: [...state.items, action.data].sort(projectSort),
                 itemsByID: {
                     ...state.itemsByID,
@@ -81,7 +79,7 @@ export const projects = (
                 }
             };
 
-        case CREATE_PROJECT.ERROR:
+        case CREATE_PROJECT.FINISH:
             return {...state, isCreating: false};
 
 
@@ -91,13 +89,12 @@ export const projects = (
         case DELETE_PROJECT.RECEIVE:
             return {
                 ...state,
-                isDeleting: false,
                 items: state.items.filter(p => p.identifier !== action.project.identifier),
                 itemsByID: Object.fromEntries(Object.entries(objectWithoutProp(state.itemsByID,
                     action.project.identifier)).filter(([projectID, _]) => projectID !== action.project.identifier))
             };
 
-        case DELETE_PROJECT.ERROR:
+        case DELETE_PROJECT.FINISH:
             return {...state, isDeleting: false};
 
 
@@ -107,7 +104,6 @@ export const projects = (
         case SAVE_PROJECT.RECEIVE:
             return {
                 ...state,
-                isSaving: false,
                 items: [...state.items.filter(p => p.identifier !== action.data.identifier), action.data]
                     .sort(projectSort),
                 itemsByID: {
@@ -116,7 +112,7 @@ export const projects = (
                 }
             };
 
-        case SAVE_PROJECT.ERROR:
+        case SAVE_PROJECT.FINISH:
             return {...state, isSaving: false};
 
 
@@ -152,7 +148,7 @@ export const projects = (
             const replaceDataset = d => d.identifier === action.data.identifier ? {...d, ...action.data} : d;
             return {
                 ...state,
-                isSavingDataset: false,
+                // isSavingDataset: false,
                 items: state.items.map(p => p.identifier === action.data.project
                     ? {...p, datasets: p.datasets.map(replaceDataset)}
                     : p
@@ -166,9 +162,9 @@ export const projects = (
                 }
             };
 
-        case SAVE_PROJECT_DATASET.ERROR:
-        case ADD_DATASET_LINKED_FIELD_SET.ERROR:
-        case DELETE_DATASET_LINKED_FIELD_SET.ERROR:
+        case SAVE_PROJECT_DATASET.FINISH:
+        case ADD_DATASET_LINKED_FIELD_SET.FINISH:
+        case DELETE_DATASET_LINKED_FIELD_SET.FINISH:
             return {...state, isSavingDataset: false};
 
 
@@ -179,7 +175,6 @@ export const projects = (
             const deleteDataset = d => d.identifier !== action.dataset.identifier;
             return {
                 ...state,
-                isDeletingDataset: false,
                 items: state.items.map(p => p.identifier === action.project.identifier
                     ? {...p, datasets: p.datasets.filter(deleteDataset)}
                     : p
@@ -194,7 +189,7 @@ export const projects = (
                 }
             };
 
-        case DELETE_PROJECT_DATASET.ERROR:
+        case DELETE_PROJECT_DATASET.FINISH:
             return {...state, isDeletingDataset: false};
 
 
@@ -261,7 +256,7 @@ export const projectTables = (
                 }
             };
 
-        case FETCH_PROJECT_TABLES.ERROR:
+        case FETCH_PROJECT_TABLES.FINISH:
             return {...state, isFetching: false};
 
         case PROJECT_TABLE_ADDITION.BEGIN:

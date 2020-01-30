@@ -18,7 +18,7 @@ import {
     endFlow,
     terminateFlow,
 } from "../../utils/actions";
-import {objectWithoutProps} from "../../utils";
+import {nop, objectWithoutProps} from "../../utils";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
@@ -138,24 +138,23 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 };
 
 
-export const addProjectDataset = networkAction((project, dataset, onSuccess = (() => {})) =>
-    (dispatch, getState) => ({
-        types: ADD_PROJECT_DATASET,
-        url: `${getState().services.metadataService.url}/api/datasets`,
-        req: {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({...dataset, project: project.identifier})
-        },
-        err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
-        // TODO: END ACTION?
-        onSuccess: async () => {
-            await onSuccess();
-            message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
-        }
-    }));
+export const addProjectDataset = networkAction((project, dataset, onSuccess = nop) => (dispatch, getState) => ({
+    types: ADD_PROJECT_DATASET,
+    url: `${getState().services.metadataService.url}/api/datasets`,
+    req: {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({...dataset, project: project.identifier})
+    },
+    err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
+    // TODO: END ACTION?
+    onSuccess: async () => {
+        await onSuccess();
+        message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
+    }
+}));
 
-export const saveProjectDataset = networkAction((dataset, onSuccess = (() => {})) => (dispatch, getState) => ({
+export const saveProjectDataset = networkAction((dataset, onSuccess = nop) => (dispatch, getState) => ({
     types: SAVE_PROJECT_DATASET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
     req: {

@@ -13,10 +13,12 @@ export const auth = (
         case FETCH_USER.REQUEST:
             return {...state, isFetching: true};
         case FETCH_USER.RECEIVE:
-            return {...state, isFetching: false, user: action.data, hasAttempted: true};
+            return {...state, user: action.data};
         case FETCH_USER.ERROR:
             // TODO: Handle different errors differently?
-            return {...state, isFetching: false, user: null, hasAttempted: true};
+            return {...state, user: null};
+        case FETCH_USER.FINISH:
+            return {...state, isFetching: false, hasAttempted: true};
 
         case FETCHING_USER_DEPENDENT_DATA.BEGIN:
             return {...state, isFetchingDependentData: true};
