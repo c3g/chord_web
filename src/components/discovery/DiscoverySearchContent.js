@@ -113,7 +113,7 @@ class DiscoverySearchContent extends Component {
                         <Button style={{float: "right", marginRight: "1em"}}
                                 onClick={this.handleSchemasToggle}><Icon type="table" /> Explore Data Types</Button>
                         <Button style={{float: "right", marginRight: "1em"}} onClick={() => {
-                            Modal.info({
+                            const helpModal = Modal.info({
                                 title: "Help",
                                 content: <>
                                     <Typography.Paragraph>
@@ -126,7 +126,10 @@ class DiscoverySearchContent extends Component {
                                     </Typography.Paragraph>
                                     <Typography.Paragraph>
                                         Data types and their schemas can
-                                        be <a href="#" onClick={this.handleSchemasToggle}>explored</a> in both a tree
+                                        be <a href="#" onClick={() => {
+                                            this.handleSchemasToggle();
+                                            helpModal.destroy();
+                                        }}>explored</a> in both a tree
                                         and a searchable table structure.
                                     </Typography.Paragraph>
                                     <Typography.Paragraph>
