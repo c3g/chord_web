@@ -13,30 +13,32 @@ import "antd/es/menu/style/css";
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
 import {SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
-import {matchingMenuKeys, renderMenuItem} from "../utils";
+import {matchingMenuKeys, nodeInfoDataPropTypesShape, renderMenuItem, urlPath} from "../utils";
 
 
 class SiteHeader extends Component {
     render() {
+        const basePath = this.props.nodeInfo.CHORD_URL ? urlPath(this.props.nodeInfo.CHORD_URL) : "/";
+        const withBasePath = path => `${basePath}${path}`;
         const menuItems = [
             {
-                url: "/dashboard",
+                url: withBasePath("dashboard"),
                 icon: <Icon type="dashboard" />,
                 text: <span className="nav-text">Dashboard</span>,
             },
             {
-                url: "/data/discovery",
+                url: withBasePath("data/discovery"),
                 icon: <Icon type="file-search" />,
                 text: <span className="nav-text">Data Discovery</span>,
             },
             {
-                url: "/data/manager",
+                url: withBasePath("data/manager"),
                 icon: <Icon type="folder-open" />,
                 text: <span className="nav-text">Data Manager</span>,
                 disabled: !this.props.isOwner,
             },
             {
-                url: "/peers",
+                url: withBasePath("peers"),
                 icon: <Icon type="apartment" />,
                 text: <span className="nav-text">Peers</span>,
             },
@@ -47,7 +49,7 @@ class SiteHeader extends Component {
                 text: this.props.user.preferred_username,
                 children: [{
                     key: "sign-out-link",
-                    onClick: () => window.location.href = SIGN_OUT_URL,
+                    onClick: () => window.location.href = withBasePath(SIGN_OUT_URL),
                     icon: <Icon type="logout" />,
                     text: <span className="nav-text">Sign Out</span>,
                 }]
@@ -56,10 +58,10 @@ class SiteHeader extends Component {
                 style: {float: "right"},
                 icon: <Icon type="login" />,
                 text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
-                onClick: () => window.location.href = SIGN_IN_URL,
+                onClick: () => window.location.href = withBasePath(SIGN_IN_URL),
             }]),
             {
-                url: "/notifications",
+                url: withBasePath("notifications"),
                 style: {float: "right"},
                 disabled: !this.props.isOwner,
                 icon: <Badge dot count={this.props.unreadNotifications.length}>
@@ -77,7 +79,7 @@ class SiteHeader extends Component {
 
         return (
             <Layout.Header>
-                <Link to="/"><h1 style={{
+                <Link to={basePath}><h1 style={{
                     display: "inlineBlock",
                     color: "rgba(255, 255, 255, 0.95)",
                     margin: "0 30px 0 0",
@@ -85,7 +87,7 @@ class SiteHeader extends Component {
                 }}>CHORD</h1></Link>
                 <Menu theme="dark"
                       mode="horizontal"
-                      selectedKeys={matchingMenuKeys(menuItems, this.props.location)}
+                      selectedKeys={matchingMenuKeys(menuItems, basePath)}
                       style={{lineHeight: "64px"}}>
                     {menuItems.map(i => renderMenuItem(i))}
                 </Menu>
@@ -95,6 +97,7 @@ class SiteHeader extends Component {
 }
 
 SiteHeader.propTypes = {
+    nodeInfo: nodeInfoDataPropTypesShape,
     user: PropTypes.shape({
         chord_user_role: PropTypes.string.isRequired,
         email_verified: PropTypes.bool,
@@ -107,6 +110,7 @@ SiteHeader.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
     unreadNotifications: state.notifications.items.filter(n => !n.read),
     user: state.auth.user,
     userFetching: state.auth.isFetching,
