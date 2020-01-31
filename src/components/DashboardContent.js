@@ -62,9 +62,7 @@ class DashboardContent extends Component {
                                     <Statistic title="Network Size"
                                                value={this.props.isFetchingPeers
                                                    ? EM_DASH
-                                                   : this.props.peers
-                                                       .filter(p => p !== this.props.nodeInfo.CHORD_URL)
-                                                       .length} />
+                                                   : this.props.peers.length} />
                                 </Spin>
                             </Col>
                         </Row>
