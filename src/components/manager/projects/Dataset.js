@@ -150,8 +150,7 @@ class Dataset extends Component {
     async handleAdditionSubmit(values) {
         const [serviceArtifact, dataTypeID] = values.dataType.split(":");
         const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
-        await this.props.addProjectTable(this.props.project, this.state.identifier, serviceInfo, dataTypeID,
-            values.name);
+        await this.props.addProjectTable(this.state.identifier, serviceInfo, dataTypeID, values.name);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -168,7 +167,7 @@ class Dataset extends Component {
 
     async handleTableDeletionSubmit() {
         if (this.state.selectedTable === null) return;
-        await this.props.deleteProjectTable(this.props.project, this.state.selectedTable);
+        await this.props.deleteProjectTable(this.state.selectedTable);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
@@ -380,7 +379,7 @@ class Dataset extends Component {
                                 maskClosable: true,
                                 onOk: async () => {
                                     deleteModal.update({okButtonProps: {loading: true}});
-                                    await this.props.deleteProjectDataset(this.props.project, this.state);
+                                    await this.props.deleteProjectDataset(this.state);
                                     deleteModal.update({okButtonProps: {loading: false}});
                                 },
                             });
@@ -446,13 +445,13 @@ const mapStateToProps = state => ({
     isDeletingDataset: state.projects.isDeletingDataset,
 });
 
-const mapDispatchToProps = dispatch => ({
-    deleteProjectDataset: async (project, dataset) => await dispatch(deleteProjectDatasetIfPossible(project, dataset)),
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    deleteProjectDataset: async dataset => await dispatch(deleteProjectDatasetIfPossible(ownProps.project, dataset)),
     deleteLinkedFieldSet: async (dataset, linkedFieldSet, linkedFieldSetIndex) =>
         await dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
-    addProjectTable: async (project, datasetID, serviceID, dataTypeID, tableName) =>
-        await dispatch(addProjectTable(project, datasetID, serviceID, dataTypeID, tableName)),
-    deleteProjectTable: async (project, table) => await dispatch(deleteProjectTableIfPossible(project, table)),
+    addProjectTable: async (datasetID, serviceID, dataTypeID, tableName) =>
+        await dispatch(addProjectTable(ownProps.project, datasetID, serviceID, dataTypeID, tableName)),
+    deleteProjectTable: async table => await dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
     fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
