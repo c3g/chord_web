@@ -105,7 +105,7 @@ class App extends Component {
             this.eventRelayConnection = (() => {
                 if (this.eventRelayConnection) return this.eventRelayConnection;
                 const url = (this.props.eventRelay || {url: null}).url || null;
-                return url ? (() => io(this.props.basePath, {path: this.withBasePath("private/socket.io")})
+                return url ? (() => io(this.props.basePath, {path: `${urlPath(url)}/private/socket.io`})
                     .on("events", message => eventHandler(message, this.props.history)))() : null;
             })();
         }));
