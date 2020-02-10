@@ -9,6 +9,7 @@ import "antd/es/list/style/css";
 import {hideNotificationDrawer, markNotificationAsRead} from "../modules/notifications/actions";
 
 import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../notifications";
+import {urlPath} from "../utils";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
@@ -25,7 +26,7 @@ class NotificationList extends Component {
             case NOTIFICATION_WES_RUN_COMPLETED:
             case NOTIFICATION_WES_RUN_FAILED:
                 return [
-                    <Button onClick={() => this.props.navigateToWESRun(notification.action_target, this.props.history)}>
+                    <Button onClick={() => this.props.navigateToWESRun(notification.action_target)}>
                         Run Details
                     </Button>
                 ];
@@ -71,13 +72,16 @@ class NotificationList extends Component {
 
 
 const mapStateToProps = state => ({
-    fetchingNotifications: state.services.isFetchingAll || state.notifications.isFetching
+    fetchingNotifications: state.services.isFetchingAll || state.notifications.isFetching,
+    nodeInfo: state.nodeInfo.data,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
     markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
     hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
-    navigateToWESRun: async (target, history) => await navigateToWESRun(target, dispatch, history),
+    navigateToWESRun: async target =>
+        await navigateToWESRun(target, dispatch, ownProps.history,
+            ownProps.nodeInfo.CHORD_URL ? urlPath(ownProps.nodeInfo.CHORD_URL) : "/"),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationList));
