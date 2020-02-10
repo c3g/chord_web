@@ -54,12 +54,13 @@ export const generateSchemaTreeData = (
     isExcluded = getFalse
 ) => {
     const key = `${prefix}${name}`;
+    const displayType = (node.type instanceof Array) ? node.type.join(" or ") : node.type;
     const baseNode = {
         key,
         value: key,
         data: node,
         title: <span>
-            <Typography.Text code>{name}</Typography.Text> - {node.type}
+            <Typography.Text code>{name}</Typography.Text> - {displayType}
             {node.description ? (
                 <Popover overlayStyle={{zIndex: 1051, maxWidth: "400px"}}
                          content={node.description}
