@@ -294,8 +294,8 @@ class Dataset extends Component {
                     <Typography.Paragraph style={{maxWidth: "600px"}}>
                         Linked Field Sets group common fields (i.e. fields that share the same "value space") between
                         multiple data types. For example, these sets can be used to tell the discovery system that
-                        Phenopacket biosample identifiers are the same as variant sample identifiers, and so variants
-                        with an identifier of "sample1" come from a biosample with identifier "sample1".
+                        Phenopacket biosample identifiers are the same as variant call sample identifiers, and so
+                        variant calls with an identifier of "sample1" come from a biosample with identifier "sample1".
                     </Typography.Paragraph>
                     <Typography.Paragraph style={{maxWidth: "600px"}}>
                         A word of caution: the more fields added to a Linked Field Set, the longer it takes to search
