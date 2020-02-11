@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Modal} from "antd";
 import "antd/es/modal/style/css";
 
-import DatasetFormModal from "./DatasetFormModal";
+import DatasetFormModal from "./dataset/DatasetFormModal";
 import Project from "./Project";
 import ProjectSkeleton from "./ProjectSkeleton";
 

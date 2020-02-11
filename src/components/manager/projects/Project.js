@@ -9,7 +9,7 @@ import "antd/es/empty/style/css";
 import "antd/es/row/style/css";
 import "antd/es/typography/style/css";
 
-import Dataset from "./Dataset";
+import Dataset from "./dataset/Dataset";
 import ProjectForm from "./ProjectForm";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";

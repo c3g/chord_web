@@ -16,7 +16,7 @@ import "antd/es/statistic/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import DataUseDisplay from "../../DataUseDisplay";
+import DataUseDisplay from "../../../DataUseDisplay";
 import TableAdditionModal from "./TableAdditionModal";
 import TableDeletionModal from "./TableDeletionModal";
 
@@ -26,9 +26,9 @@ import {
     deleteDatasetLinkedFieldSetIfPossible,
     deleteProjectTableIfPossible,
     fetchProjectsWithDatasetsAndTables
-} from "../../../modules/metadata/actions";
+} from "../../../../modules/metadata/actions";
 
-import {INITIAL_DATA_USE_VALUE} from "../../../duo";
+import {INITIAL_DATA_USE_VALUE} from "../../../../duo";
 import {
     simpleDeepCopy,
     projectPropTypesShape,
@@ -36,9 +36,10 @@ import {
     nop,
     FORM_MODE_EDIT,
     FORM_MODE_ADD
-} from "../../../utils";
+} from "../../../../utils";
 import LinkedFieldSetTable from "./LinkedFieldSetTable";
 import LinkedFieldSetModal from "./LinkedFieldSetModal";
+import DatasetOverview from "./DatasetOverview";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -193,41 +194,10 @@ class Dataset extends Component {
         const isPrivate = this.props.mode === "private";
 
         const tabContents = {
-            overview: (
-                <>
-                    {this.state.description.length > 0
-                        ? (<>
-                            <Typography.Title level={4}>Description</Typography.Title>
-                            {this.state.description.split("\n").map((p, i) =>
-                                <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)}
-                        </>) : null}
-                    {this.state.contact_info.length > 0
-                        ? (<>
-                            <Typography.Title level={4}>Contact Information</Typography.Title>
-                            <Typography.Paragraph>
-                                {this.state.contact_info.split("\n").map((p, i) =>
-                                    <Fragment key={i}>{p}<br /></Fragment>)}
-                            </Typography.Paragraph>
-                        </>) : null}
-                    {(this.state.description.length > 0 || this.state.contact_info.length > 0) ? <Divider /> : null}
-                    <Row gutter={16} style={{maxWidth: isPrivate ? "720px" : "1080px"}}>
-                        {isPrivate ? null : (
-                            <Col span={8}><Statistic title="Project" value={this.props.project.title || "—"} /></Col>
-                        )}
-                        <Col span={isPrivate ? 12 : 8}>
-                            <Statistic title="Created"
-                                       value={(new Date(Date.parse(this.state.created))).toLocaleString()} />
-                        </Col>
-                        <Col span={isPrivate ? 12 : 8}>
-                            <Spin spinning={this.props.isFetchingTables}>
-                                {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
-                                <Statistic title="Tables"
-                                           value={this.props.isFetchingTables ? "—" : this.state.tables.length + 1} />
-                            </Spin>
-                        </Col>
-                    </Row>
-                </>
-            ),
+            overview: <DatasetOverview dataset={this.state}
+                                       project={this.props.project}
+                                       isPrivate={isPrivate}
+                                       isFetchingTables={this.props.isFetchingTables} />,
             ...(isPrivate ? {
                 individuals: (
                     <>

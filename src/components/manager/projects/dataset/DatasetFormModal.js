@@ -13,7 +13,7 @@ import {
     addProjectDataset,
     saveProjectDataset,
     fetchProjectsWithDatasetsAndTables
-} from "../../../modules/metadata/actions";
+} from "../../../../modules/metadata/actions";
 
 import {
     datasetPropTypesShape,
@@ -21,7 +21,7 @@ import {
     projectPropTypesShape,
     FORM_MODE_ADD,
     propTypesFormMode
-} from "../../../utils";
+} from "../../../../utils";
 
 
 class DatasetFormModal extends Component {
