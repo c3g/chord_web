@@ -15,11 +15,13 @@ import {
     fetchProjectsWithDatasetsAndTables
 } from "../../../modules/metadata/actions";
 
-import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../utils";
-
-
-const MODE_ADD = "add";
-const MODE_EDIT = "edit";
+import {
+    datasetPropTypesShape,
+    nop,
+    projectPropTypesShape,
+    FORM_MODE_ADD,
+    propTypesFormMode
+} from "../../../utils";
 
 
 class DatasetFormModal extends Component {
@@ -40,11 +42,11 @@ class DatasetFormModal extends Component {
                 return;
             }
 
-            const mode = this.props.mode || MODE_ADD;
+            const mode = this.props.mode || FORM_MODE_ADD;
 
             const onSuccess = async () => await this.handleSuccess(values);
 
-            await (mode === MODE_ADD
+            await (mode === FORM_MODE_ADD
                 ? this.props.addProjectDataset(this.props.project, values, onSuccess)
                 : this.props.saveProjectDataset({
                     ...(this.props.initialValue || {}),
@@ -59,38 +61,38 @@ class DatasetFormModal extends Component {
     async handleSuccess(values) {
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
         await (this.props.onOk || nop)({...(this.props.initialValue || {}), values});
-        if ((this.props.mode || MODE_ADD) === MODE_ADD) this.form.resetFields();
+        if ((this.props.mode || FORM_MODE_ADD) === FORM_MODE_ADD) this.form.resetFields();
     }
 
     render() {
-        const mode = this.props.mode || MODE_ADD;
+        const mode = this.props.mode || FORM_MODE_ADD;
         return this.props.project ? (
             <Modal visible={this.props.visible}
                    width={648}
-                   title={mode === MODE_ADD
+                   title={mode === FORM_MODE_ADD
                        ? `Add Dataset to "${this.props.project.title}"`
                        : `Edit Dataset "${(this.props.initialValue || {}).title || ""}"`}
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="save"
-                               icon={mode === MODE_ADD ? "plus" : "save"}
+                               icon={mode === FORM_MODE_ADD ? "plus" : "save"}
                                type="primary"
                                onClick={this.handleSubmit}
                                loading={this.props.projectsFetching || this.props.projectDatasetsAdding ||
                                    this.props.projectDatasetsSaving || this.props.projectsFetchingWithTables}>
-                           {mode === MODE_ADD ? "Add" : "Save"}
+                           {mode === FORM_MODE_ADD ? "Add" : "Save"}
                        </Button>
                    ]}
                    onCancel={this.handleCancel}>
                 <DatasetForm ref={form => this.form = form}
-                             initialValue={mode === MODE_ADD ? null : this.props.initialValue} />
+                             initialValue={mode === FORM_MODE_ADD ? null : this.props.initialValue} />
             </Modal>
         ) : null;
     }
 }
 
 DatasetFormModal.propTypes = {
-    mode: PropTypes.oneOf([MODE_ADD, MODE_EDIT]),
+    mode: propTypesFormMode,
     initialValue: datasetPropTypesShape,
     onCancel: PropTypes.func,
 
@@ -123,7 +125,7 @@ const mapDispatchToProps = dispatch => ({
     addProjectDataset: async (project, dataset, onSuccess) =>
         await dispatch(addProjectDataset(project, dataset, onSuccess)),
     saveProjectDataset: async (dataset, onSuccess) => await dispatch(saveProjectDataset(dataset, onSuccess)),
-    fetchProjectsWithDatasetsAndTables: async () => dispatch(fetchProjectsWithDatasetsAndTables())
+    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetFormModal);

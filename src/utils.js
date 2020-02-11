@@ -65,6 +65,11 @@ export const matchingMenuKeys = (menuItems, basePath) => menuItems
     .map(i => i.key || i.url || "");
 
 
+export const FORM_MODE_ADD = "add";
+export const FORM_MODE_EDIT = "edit";
+export const propTypesFormMode = PropTypes.oneOf([FORM_MODE_ADD, FORM_MODE_EDIT]);
+
+
 export const nodeInfoDataPropTypesShape = PropTypes.shape({
     CHORD_URL: PropTypes.string,
     OIDC_DISCOVERY_URI: PropTypes.string,

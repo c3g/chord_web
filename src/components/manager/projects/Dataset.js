@@ -29,9 +29,16 @@ import {
 } from "../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../duo";
-import {simpleDeepCopy, projectPropTypesShape, datasetPropTypesShape, nop} from "../../../utils";
+import {
+    simpleDeepCopy,
+    projectPropTypesShape,
+    datasetPropTypesShape,
+    nop,
+    FORM_MODE_EDIT,
+    FORM_MODE_ADD
+} from "../../../utils";
 import LinkedFieldSetTable from "./LinkedFieldSetTable";
-import LinkedFieldSetAdditionModal from "./LinkedFieldSetAdditionModal";
+import LinkedFieldSetModal from "./LinkedFieldSetModal";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -61,7 +68,15 @@ class Dataset extends Component {
 
             additionModalVisible: false,
             deletionModalVisible: false,
+
             fieldSetAdditionModalVisible: false,
+
+            fieldSetEditModalVisible: false,
+            selectedLinkedFieldSet: {
+                data: null,
+                index: null
+            },
+
             selectedTab: "overview",
             selectedTable: null,
         };
@@ -321,7 +336,13 @@ class Dataset extends Component {
                                 {(this.state.linked_field_sets || []).map((fieldSet, i) => (
                                     <Col key={i} lg={24} xl={12}>
                                         <Card title={`${i+1}. ${fieldSet.name}`} actions={isPrivate ? [
-                                            <span onClick={() => console.log("TODO")}>  {/* TODO: Make this work */}
+                                            <span onClick={() => this.setState({
+                                                fieldSetEditModalVisible: true,
+                                                selectedLinkedFieldSet: {
+                                                    data: fieldSet,
+                                                    index: i
+                                                }
+                                            })}>
                                                 <Icon type="edit"
                                                       style={{width: "auto", display: "inline"}}
                                                       key="edit_field_sets" /> Manage Fields</span>,
@@ -401,12 +422,20 @@ class Dataset extends Component {
                                             onSubmit={() => this.handleTableDeletionSubmit()}
                                             onCancel={() => this.handleTableDeletionCancel()} />
 
-                        <LinkedFieldSetAdditionModal dataset={this.state}
-                                                     visible={this.state.fieldSetAdditionModalVisible}
-                                                     onSubmit={() =>
-                                                         this.setState({fieldSetAdditionModalVisible: false})}
-                                                     onCancel={() =>
+                        <LinkedFieldSetModal mode={FORM_MODE_ADD}
+                                             dataset={this.state}
+                                             visible={this.state.fieldSetAdditionModalVisible}
+                                             onSubmit={() => this.setState({fieldSetAdditionModalVisible: false})}
+                                             onCancel={() =>
                                                          this.setState({fieldSetAdditionModalVisible: false})} />
+
+                        <LinkedFieldSetModal mode={FORM_MODE_EDIT}
+                                             dataset={this.state}
+                                             visible={this.state.fieldSetEditModalVisible}
+                                             linkedFieldSet={this.state.selectedLinkedFieldSet.data}
+                                             linkedFieldSetIndex={this.state.selectedLinkedFieldSet.index}
+                                             onSubmit={() => this.setState({fieldSetEditModalVisible: false})}
+                                             onCancel={() => this.setState({fieldSetEditModalVisible: false})} />
                     </>
                 ) : null}
                 {tabContents[this.state.selectedTab]}

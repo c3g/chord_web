@@ -33,6 +33,7 @@ export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET
 export const SAVE_PROJECT_DATASET = createNetworkActionTypes("SAVE_PROJECT_DATASET");
 export const DELETE_PROJECT_DATASET = createNetworkActionTypes("DELETE_PROJECT_DATASET");
 export const ADD_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("ADD_DATASET_LINKED_FIELD_SET");
+export const SAVE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("SAVE_DATASET_LINKED_FIELD_SET");
 export const DELETE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("DELETE_DATASET_LINKED_FIELD_SET");
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
@@ -208,6 +209,33 @@ export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, onSu
             || getState().projects.isSavingDataset
             || getState().projects.isDeletingDataset) return;
         await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet, onSuccess));
+    };
+
+
+const saveDatasetLinkedFieldSet = networkAction((dataset, index, linkedFieldSet, onSuccess) =>
+    (dispatch, getState) => ({
+        types: SAVE_DATASET_LINKED_FIELD_SET,
+        url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+        req: {
+            method: "PATCH",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                linked_field_sets: dataset.linked_field_sets.map((l, i) => i === index ? linkedFieldSet : l)
+            })
+        },
+        err: `Error saving linked field set '${linkedFieldSet.name}' in dataset '${dataset.title}'`,
+        onSuccess: async () => {
+            await onSuccess();
+            message.success(`Saved linked field set '${linkedFieldSet.name}' in dataset '${dataset.title}'`);
+        }
+    }));
+
+export const saveDatasetLinkedFieldSetIfPossible = (dataset, index, linkedFieldSet, onSuccess = nop) =>
+    async (dispatch, getState) => {
+        if (getState().projects.isAddingDataset
+            || getState().projects.isSavingDataset
+            || getState().projects.isDeletingDataset) return;
+        await dispatch(saveDatasetLinkedFieldSet(dataset, index, linkedFieldSet, onSuccess));
     };
 
 

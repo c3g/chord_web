@@ -142,7 +142,8 @@ export const getFieldSchema = (schema, fieldString) => {
                 currentComponent++;
                 if (!currentSchema.hasOwnProperty("properties")
                         || !currentSchema.properties.hasOwnProperty(components[currentComponent])) {
-                    throw new Error("Invalid field specified in field string.");
+                    throw new Error(`Invalid field specified in field string (missing property, at ${
+                        components.slice(currentComponent)})`);
                 }
                 currentSchema = currentSchema.properties[components[currentComponent]];
                 break;
@@ -150,7 +151,8 @@ export const getFieldSchema = (schema, fieldString) => {
             case "array":
                 currentComponent++;
                 if (!currentSchema.hasOwnProperty("items") || components[currentComponent] !== ARRAY_ITEM_ID) {
-                    throw new Error("Invalid field specified in field string.");
+                    throw new Error(`Invalid field specified in field string (missing [item], at ${
+                        components.slice(currentComponent)})`);
                 }
                 currentSchema = currentSchema.items;
                 break;

@@ -14,7 +14,9 @@ const COLUMNS = [
 class LinkedFieldSetTable extends Component {
     render() {
         const data = Object.entries(this.props.linkedFieldSet.fields)
-            .map(([dataType, field]) => ({dataType, field}));
+            .map(([dataType, field]) => ({dataType, field}))
+            .sort((a, b) =>
+                a.dataType.localeCompare(b.dataType));
         return <Table columns={COLUMNS}
                       dataSource={data}
                       rowKey="dataType"
