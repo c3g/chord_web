@@ -15,8 +15,6 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../../../DataUseDisplay";
-import TableAdditionModal from "./TableAdditionModal";
-import TableDeletionModal from "./TableDeletionModal";
 
 import {
     deleteProjectDatasetIfPossible,
@@ -38,9 +36,8 @@ import {
 import LinkedFieldSetTable from "./LinkedFieldSetTable";
 import LinkedFieldSetModal from "./LinkedFieldSetModal";
 import DatasetOverview from "./DatasetOverview";
+import DatasetTables from "./DatasetTables";
 
-
-const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
 
 class Dataset extends Component {
     // TODO: Editing
@@ -65,9 +62,6 @@ class Dataset extends Component {
             linked_field_sets: value.linked_field_sets || [],
             tables: value.tables || [],
 
-            additionModalVisible: false,
-            deletionModalVisible: false,
-
             fieldSetAdditionModalVisible: false,
 
             fieldSetEditModalVisible: false,
@@ -81,50 +75,6 @@ class Dataset extends Component {
         };
 
         this.handleFieldSetDeletion = this.handleFieldSetDeletion.bind(this);
-
-        this.handleAdditionClick = this.handleAdditionClick.bind(this);
-        this.handleAdditionCancel = this.handleAdditionCancel.bind(this);
-        this.handleAdditionSubmit = this.handleAdditionSubmit.bind(this);
-
-        this.handleTableDeletionClick = this.handleTableDeletionClick.bind(this);
-        this.handleTableDeletionCancel = this.handleTableDeletionCancel.bind(this);
-        this.handleTableDeletionSubmit = this.handleTableDeletionSubmit.bind(this);
-
-        this.tableListColumns = [
-            {title: "ID", dataIndex: "table_id"},
-            {
-                title: "Name",
-                dataIndex: "name",
-                render: n => (n ? n : NA_TEXT),
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
-            },
-            {title: "Data Type", dataIndex: "data_type"},
-            ...(this.props.mode === "private" ? [
-                {
-                    title: "Actions",
-                    key: "actions",
-                    width: 230, /*330,*/
-                    render: t => (
-                        <Row gutter={10}>
-                            <Col span={12}>
-                                <Button icon="import"
-                                        style={{width: "100%"}}
-                                        onClick={() => (this.props.onTableIngest || nop)(this.props.project, t)}>
-                                    Ingest
-                                </Button>
-                            </Col>
-                            {/* TODO: Edit Table Name: v0.2 */}
-                            {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
-                            <Col span={12}><Button type="danger"
-                                                   icon="delete"
-                                                   onClick={() => this.handleTableDeletionClick(t)}
-                                                   style={{width: "100%"}}>Delete</Button></Col>
-                        </Row>
-                    )
-                }
-            ] : [])
-        ];
     }
 
 
@@ -150,42 +100,6 @@ class Dataset extends Component {
                 deleteModal.update({okButtonProps: {loading: false}});
             },
         });
-    }
-
-
-    handleAdditionClick() {
-        this.setState({additionModalVisible: true});
-    }
-
-    handleAdditionCancel() {
-        this.setState({additionModalVisible: false});
-    }
-
-    async handleAdditionSubmit(values) {
-        const [serviceArtifact, dataTypeID] = values.dataType.split(":");
-        const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
-        await this.props.addProjectTable(this.state.identifier, serviceInfo, dataTypeID, values.name);
-
-        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
-
-        this.setState({additionModalVisible: false});
-    }
-
-    handleTableDeletionClick(t) {
-        this.setState({deletionModalVisible: true, selectedTable: t});
-    }
-
-    handleTableDeletionCancel() {
-        this.setState({deletionModalVisible: false});
-    }
-
-    async handleTableDeletionSubmit() {
-        if (this.state.selectedTable === null) return;
-        await this.props.deleteProjectTable(this.state.selectedTable);
-
-        await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
-
-        this.setState({deletionModalVisible: false});
     }
 
     render() {
@@ -230,35 +144,11 @@ class Dataset extends Component {
                     </>
                 ),
             } : {}),
-            tables: (
-                <>
-                    <Typography.Title level={4}>
-                        Tables
-                        {isPrivate ? (
-                            <div style={{float: "right"}}>
-                                {/* TODO: Implement v0.2
-                                {(this.props.strayTables || []).length > 0 ? (
-                                    <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
-                                        Adopt Stray Tables ({this.props.strayTables.length})
-                                    </Button>
-                                ) : null} */}
-                                <Button icon="plus"
-                                        style={{verticalAlign: "top"}}
-                                        type="primary"
-                                        onClick={() => this.handleAdditionClick()}>
-                                    Add Table
-                                </Button>
-                            </div>
-                        ) : null}
-                    </Typography.Title>
-                    <Table bordered
-                           dataSource={this.state.tables.map(t => ({...t, name: t.name || null}))}
-                           rowKey="table_id"
-                           // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
-                           columns={this.tableListColumns}
-                           loading={this.props.isFetchingTables} />
-                </>
-            ),
+            tables: <DatasetTables dataset={this.state}
+                                   project={this.props.project}
+                                   isPrivate={isPrivate}
+                                   isFetchingTables={this.props.isFetchingTables}
+                                   onTableIngest={this.props.onTableIngest || nop} />,
             linked_field_sets: (
                 <>
                     <Typography.Title level={4}>
@@ -379,17 +269,6 @@ class Dataset extends Component {
             }>
                 {isPrivate ? (
                     <>
-                        <TableAdditionModal visible={this.state.additionModalVisible}
-                                            project={this.props.project}
-                                            dataset={this.state}
-                                            onSubmit={vs => this.handleAdditionSubmit(vs)}
-                                            onCancel={() => this.handleAdditionCancel()} />
-
-                        <TableDeletionModal visible={this.state.deletionModalVisible}
-                                            table={this.state.selectedTable}
-                                            onSubmit={() => this.handleTableDeletionSubmit()}
-                                            onCancel={() => this.handleTableDeletionCancel()} />
-
                         <LinkedFieldSetModal mode={FORM_MODE_ADD}
                                              dataset={this.state}
                                              visible={this.state.fieldSetAdditionModalVisible}
