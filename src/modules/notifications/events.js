@@ -3,7 +3,6 @@ import "antd/es/notification/style/css";
 
 import {addNotification, markNotificationAsRead} from "./actions";
 import {navigateToWESRun} from "../../notifications";
-import {urlPath} from "../../utils";
 
 const EVENT_NOTIFICATION = "notification";
 
@@ -11,10 +10,8 @@ const NOTIFICATION_WES_RUN_FAILED = "wes_run_failed";
 const NOTIFICATION_WES_RUN_COMPLETED = "wes_run_completed";
 
 export default {
-    [/^chord\.service\.notification$/.source]: (message, history) => async (dispatch, getState) => {
+    [/^chord\.service\.notification$/.source]: (message, history) => async dispatch => {
         if (message.type !== EVENT_NOTIFICATION) return;
-
-        const nodeBasePath = getState().nodeInfo.data.CHORD_URL ? urlPath(getState().nodeInfo.data.CHORD_URL) : "/";
 
         const messageData = message.data || {};
 
@@ -34,7 +31,7 @@ export default {
 
         const wesClickAction = () => {
             dispatch(markNotificationAsRead(notificationData.id));
-            dispatch(navigateToWESRun(notificationData.action_target, dispatch, history, nodeBasePath));
+            dispatch(navigateToWESRun(notificationData.action_target, dispatch, history));
         };
 
         switch (message.data.notification_type) {

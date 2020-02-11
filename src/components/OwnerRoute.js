@@ -9,7 +9,7 @@ import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 
 import {ROLE_OWNER, SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
-import {urlPath} from "../utils";
+import {BASE_PATH, withBasePath} from "../utils";
 
 const signInIcon = (
     <div style={{textAlign: "center"}}>
@@ -20,17 +20,17 @@ const signInIcon = (
 const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, basePath, path, ...rest}) => {
     const cleanedPath = path.length > 0 ? path.replace(/^\//, "") : path;
     return (
-        <Route {...rest} path={`${basePath}${cleanedPath}`} render={props => shouldRedirect
+        <Route {...rest} path={withBasePath(cleanedPath)} render={props => shouldRedirect
             ? (
                 <Layout.Content style={{background: "white", padding: "48px 24px"}}>
                     <Empty image={signInIcon}
                            imageStyle={{height: "auto", marginBottom: "16px"}}
                            description="You must sign in as an owner of this node to access this page.">
                         {isSignedIn
-                            ? <Button onClick={() => window.location.href = `${this.props.basePath}${SIGN_IN_URL}`}>
+                            ? <Button onClick={() => window.location.href = `${BASE_PATH}${SIGN_IN_URL}`}>
                                 Sign Out</Button>
                             : <Button type="primary" onClick={() =>
-                                window.location.href = `${this.props.basePath}${SIGN_OUT_URL}`}>Sign In</Button>}
+                                window.location.href = `${BASE_PATH}${SIGN_OUT_URL}`}>Sign In</Button>}
                     </Empty>
                 </Layout.Content>
             ) : <Component {...props} />} />
@@ -38,7 +38,6 @@ const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, basePath,
 };
 
 const mapStateToProps = state => ({
-    basePath: state.nodeInfo.data.CHORD_URL ? urlPath(state.nodeInfo.data.CHORD_URL) : "/",
     isSignedIn: state.auth.user !== null,
     shouldRedirect: state.auth.hasAttempted && (state.auth.user || {}).chord_user_role !== ROLE_OWNER
 });

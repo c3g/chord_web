@@ -1,4 +1,7 @@
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const BASE_PATH = process.env.CHORD_URL ? (new URL(process.env.CHORD_URL)).pathname : "/";
 
 module.exports = {
     entry: ["babel-polyfill", path.resolve(__dirname, "./src/index.js")],
@@ -20,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "dist"),
-        publicPath: "/",
+        publicPath: BASE_PATH,
         filename: "bundle.js",
         chunkFilename: "[name].bundle.js"
     },
@@ -28,5 +31,10 @@ module.exports = {
         splitChunks: {
             chunks: "all"
         }
-    }
+    },
+    plugins: [new HtmlWebpackPlugin({
+        title: "CHORD",
+        template: path.resolve(__dirname, "./src/template.html"),
+        hash: true
+    })]
 };

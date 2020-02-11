@@ -15,5 +15,6 @@
     <orderEntry type="library" name="@types/react-router-dom" level="application" />
     <orderEntry type="library" name="@types/react-dom" level="application" />
     <orderEntry type="library" name="@types/react-syntax-highlighter" level="application" />
+    <orderEntry type="library" name="@types/html-webpack-plugin" level="application" />
   </component>
 </module>

@@ -9,7 +9,6 @@ import "antd/es/list/style/css";
 import {hideNotificationDrawer, markNotificationAsRead} from "../../modules/notifications/actions";
 
 import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../notifications";
-import {urlPath} from "../../utils";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
@@ -79,9 +78,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
     markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
     hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
-    navigateToWESRun: async target =>
-        await navigateToWESRun(target, dispatch, ownProps.history,
-            ownProps.nodeInfo.CHORD_URL ? urlPath(ownProps.nodeInfo.CHORD_URL) : "/"),
+    navigateToWESRun: async target => await navigateToWESRun(target, dispatch, ownProps.history),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationList));

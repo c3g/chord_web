@@ -13,13 +13,11 @@ import "antd/es/menu/style/css";
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
 import {SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
-import {matchingMenuKeys, nodeInfoDataPropTypesShape, renderMenuItem, urlPath} from "../utils";
+import {BASE_PATH, matchingMenuKeys, nodeInfoDataPropTypesShape, renderMenuItem, withBasePath} from "../utils";
 
 
 class SiteHeader extends Component {
     render() {
-        const basePath = this.props.nodeInfo.CHORD_URL ? urlPath(this.props.nodeInfo.CHORD_URL) : "/";
-        const withBasePath = path => `${basePath}${path}`;
         const menuItems = [
             {
                 url: withBasePath("dashboard"),
@@ -79,7 +77,7 @@ class SiteHeader extends Component {
 
         return (
             <Layout.Header>
-                <Link to={basePath}><h1 style={{
+                <Link to={BASE_PATH}><h1 style={{
                     display: "inlineBlock",
                     color: "rgba(255, 255, 255, 0.95)",
                     margin: "0 30px 0 0",
@@ -87,7 +85,7 @@ class SiteHeader extends Component {
                 }}>CHORD</h1></Link>
                 <Menu theme="dark"
                       mode="horizontal"
-                      selectedKeys={matchingMenuKeys(menuItems, basePath)}
+                      selectedKeys={matchingMenuKeys(menuItems, BASE_PATH)}
                       style={{lineHeight: "64px"}}>
                     {menuItems.map(i => renderMenuItem(i))}
                 </Menu>
