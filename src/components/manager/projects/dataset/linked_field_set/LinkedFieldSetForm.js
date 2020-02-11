@@ -7,7 +7,7 @@ import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 
-import SchemaTreeSelect from "../../../../SchemaTreeSelect";
+import SchemaTreeSelect from "../../../../schema_trees/SchemaTreeSelect";
 import {FORM_MODE_ADD, FORM_MODE_EDIT, propTypesFormMode} from "../../../../../utils";
 import {getFieldSchema} from "../../../../../schema";
 

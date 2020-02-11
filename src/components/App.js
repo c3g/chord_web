@@ -14,14 +14,14 @@ import {SIGN_IN_URL} from "../constants";
 
 import OwnerRoute from "./OwnerRoute";
 
-import NotificationDrawer from "./NotificationDrawer";
+import NotificationDrawer from "./notifications/NotificationDrawer";
 import SiteHeader from "./SiteHeader";
 
 import DashboardContent from "./DashboardContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
 import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
-import NotificationsContent from "./NotificationsContent";
+import NotificationsContent from "./notifications/NotificationsContent";
 
 import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";

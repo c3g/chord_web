@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import {Icon, Input, Modal, Radio, Table, Tabs} from "antd";
 
-import SchemaTree from "../SchemaTree";
+import SchemaTree from "../schema_trees/SchemaTree";
 import {generateSchemaTreeData, generateSchemaTableData} from "../../schema";
 import {nop} from "../../utils";
 

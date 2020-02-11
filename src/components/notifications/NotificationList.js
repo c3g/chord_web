@@ -6,10 +6,10 @@ import {Button, List} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/list/style/css";
 
-import {hideNotificationDrawer, markNotificationAsRead} from "../modules/notifications/actions";
+import {hideNotificationDrawer, markNotificationAsRead} from "../../modules/notifications/actions";
 
-import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../notifications";
-import {urlPath} from "../utils";
+import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../notifications";
+import {urlPath} from "../../utils";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
