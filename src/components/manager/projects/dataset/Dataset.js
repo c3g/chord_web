@@ -1,8 +1,8 @@
-import React, {Component, Fragment} from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Spin, Statistic, Table, Typography} from "antd";
+import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
@@ -11,8 +11,6 @@ import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
-import "antd/es/spin/style/css";
-import "antd/es/statistic/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
