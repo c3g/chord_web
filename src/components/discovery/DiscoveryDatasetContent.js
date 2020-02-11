@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import {Skeleton} from "antd";
 import "antd/es/skeleton/style/css";
 
-import Dataset from "../manager/projects/Dataset";
+import Dataset from "../manager/projects/dataset/Dataset";
 import {projectPropTypesShape} from "../../utils";
 
 class DiscoveryDatasetContent extends Component {

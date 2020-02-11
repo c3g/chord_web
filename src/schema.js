@@ -54,12 +54,13 @@ export const generateSchemaTreeData = (
     isExcluded = getFalse
 ) => {
     const key = `${prefix}${name}`;
+    const displayType = (node.type instanceof Array) ? node.type.join(" or ") : node.type;
     const baseNode = {
         key,
         value: key,
         data: node,
         title: <span>
-            <Typography.Text code>{name}</Typography.Text> - {node.type}
+            <Typography.Text code>{name}</Typography.Text> - {displayType}
             {node.description ? (
                 <Popover overlayStyle={{zIndex: 1051, maxWidth: "400px"}}
                          content={node.description}
@@ -141,7 +142,8 @@ export const getFieldSchema = (schema, fieldString) => {
                 currentComponent++;
                 if (!currentSchema.hasOwnProperty("properties")
                         || !currentSchema.properties.hasOwnProperty(components[currentComponent])) {
-                    throw new Error("Invalid field specified in field string.");
+                    throw new Error(`Invalid field specified in field string (missing property, at ${
+                        components.slice(currentComponent)})`);
                 }
                 currentSchema = currentSchema.properties[components[currentComponent]];
                 break;
@@ -149,7 +151,8 @@ export const getFieldSchema = (schema, fieldString) => {
             case "array":
                 currentComponent++;
                 if (!currentSchema.hasOwnProperty("items") || components[currentComponent] !== ARRAY_ITEM_ID) {
-                    throw new Error("Invalid field specified in field string.");
+                    throw new Error(`Invalid field specified in field string (missing [item], at ${
+                        components.slice(currentComponent)})`);
                 }
                 currentSchema = currentSchema.items;
                 break;

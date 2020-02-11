@@ -14,6 +14,7 @@ import {
     DELETE_PROJECT_DATASET,
 
     ADD_DATASET_LINKED_FIELD_SET,
+    SAVE_DATASET_LINKED_FIELD_SET,
     DELETE_DATASET_LINKED_FIELD_SET,
 
     PROJECT_TABLE_ADDITION,
@@ -139,11 +140,13 @@ export const projects = (
 
         case SAVE_PROJECT_DATASET.REQUEST:
         case ADD_DATASET_LINKED_FIELD_SET.REQUEST:
+        case SAVE_DATASET_LINKED_FIELD_SET.REQUEST:
         case DELETE_DATASET_LINKED_FIELD_SET.REQUEST:
             return {...state, isSavingDataset: true};
 
         case SAVE_PROJECT_DATASET.RECEIVE:
         case ADD_DATASET_LINKED_FIELD_SET.RECEIVE:
+        case SAVE_DATASET_LINKED_FIELD_SET.RECEIVE:
         case DELETE_DATASET_LINKED_FIELD_SET.RECEIVE:
             const replaceDataset = d => d.identifier === action.data.identifier ? {...d, ...action.data} : d;
             return {
@@ -163,6 +166,7 @@ export const projects = (
 
         case SAVE_PROJECT_DATASET.FINISH:
         case ADD_DATASET_LINKED_FIELD_SET.FINISH:
+        case SAVE_DATASET_LINKED_FIELD_SET.FINISH:
         case DELETE_DATASET_LINKED_FIELD_SET.FINISH:
             return {...state, isSavingDataset: false};
 

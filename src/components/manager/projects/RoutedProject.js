@@ -4,12 +4,13 @@ import {connect} from "react-redux";
 import {Modal} from "antd";
 import "antd/es/modal/style/css";
 
-import DatasetFormModal from "./DatasetFormModal";
+import DatasetFormModal from "./dataset/DatasetFormModal";
 import Project from "./Project";
 import ProjectSkeleton from "./ProjectSkeleton";
 
 import {deleteProjectIfPossible, saveProjectIfPossible} from "../../../modules/metadata/actions";
 import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../utils";
 
 class RoutedProject extends Component {
     constructor(props) {
@@ -120,13 +121,13 @@ class RoutedProject extends Component {
 
             return (
                 <>
-                    <DatasetFormModal mode="add"
+                    <DatasetFormModal mode={FORM_MODE_ADD}
                                       project={project}
                                       visible={this.state.datasetAdditionModal}
                                       onCancel={this.hideDatasetAdditionModal}
                                       onOk={this.hideDatasetAdditionModal} />
 
-                    <DatasetFormModal mode="edit"
+                    <DatasetFormModal mode={FORM_MODE_EDIT}
                                       project={project}
                                       visible={this.state.datasetEditModal}
                                       initialValue={this.state.selectedDataset}

@@ -28,7 +28,6 @@ import SearchList from "./SearchList";
 
 import {
     performFullSearchIfPossible,
-    selectSearch,
 
     addDataTypeQueryForm,
     updateDataTypeQueryForm,
@@ -198,7 +197,6 @@ DiscoverySearchContent.propTypes = {
     selectDataType: PropTypes.func,
     updateSearchForm: PropTypes.func,
     requestSearch: PropTypes.func,
-    selectSearch: PropTypes.func,
 
     addDataTypeQueryForm: PropTypes.func,
     updateDataTypeQueryForm: PropTypes.func,
@@ -222,9 +220,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    selectSearch: (serviceInfo, dataTypeID, searchIndex) =>
-        dispatch(selectSearch(serviceInfo, dataTypeID, searchIndex)),
-
     performFullSearchIfPossible: () => dispatch(performFullSearchIfPossible()),
 
     addDataTypeQueryForm: dataType => dispatch(addDataTypeQueryForm(dataType)),

@@ -9,7 +9,7 @@ import "antd/es/modal/style/css";
 
 import TableForm from "./TableForm";
 
-import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../utils";
+import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../../utils";
 
 
 const modalTitle = (dataset, project) =>

@@ -7,7 +7,7 @@ import "antd/es/button/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/drawer/style/css";
 
-import {markNotificationAsRead, hideNotificationDrawer} from "../modules/notifications/actions";
+import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
 
 import NotificationList from "./NotificationList";
 
