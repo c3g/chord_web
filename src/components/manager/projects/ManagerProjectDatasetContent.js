@@ -18,7 +18,13 @@ import RoutedProject from "./RoutedProject";
 
 import {toggleProjectCreationModal} from "../../../modules/manager/actions";
 
-import {renderMenuItem, matchingMenuKeys, projectPropTypesShape} from "../../../utils";
+import {
+    renderMenuItem,
+    matchingMenuKeys,
+    projectPropTypesShape,
+    nodeInfoDataPropTypesShape,
+    urlPath
+} from "../../../utils";
 
 
 import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
@@ -59,7 +65,10 @@ class ManagerProjectDatasetContent extends Component {
                                 <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                                     <Menu style={{flex: 1, paddingTop: "8px"}}
                                           mode="inline"
-                                          selectedKeys={matchingMenuKeys(projectMenuItems, this.props.location)}>
+                                          selectedKeys={matchingMenuKeys(
+                                              projectMenuItems,
+                                              urlPath(this.props.nodeInfo.CHORD_URL),
+                                          )}>
                                         {projectMenuItems.map(renderMenuItem)}
                                     </Menu>
                                     <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
@@ -99,6 +108,8 @@ class ManagerProjectDatasetContent extends Component {
 }
 
 ManagerProjectDatasetContent.propTypes = {
+    nodeInfo: nodeInfoDataPropTypesShape,
+
     projects: PropTypes.arrayOf(projectPropTypesShape),
     projectsByID: PropTypes.objectOf(projectPropTypesShape),
     loadingAuthDependentData: PropTypes.bool,
@@ -107,6 +118,7 @@ ManagerProjectDatasetContent.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
     projects: state.projects.items,
     projectsByID: state.projects.itemsByID,
     loadingAuthDependentData: state.auth.isFetchingDependentData,

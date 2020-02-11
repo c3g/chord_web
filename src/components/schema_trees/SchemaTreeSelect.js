@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {TreeSelect} from "antd";
 import "antd/es/tree-select/style/css";
 
-import {ROOT_SCHEMA_ID, generateSchemaTreeData, getFieldSchema} from "../schema";
+import {ROOT_SCHEMA_ID, generateSchemaTreeData, getFieldSchema} from "../../schema";
 import PropTypes from "prop-types";
 
 class SchemaTreeSelect extends Component {
@@ -44,7 +44,8 @@ class SchemaTreeSelect extends Component {
                         treeDefaultExpandedKeys={this.props.schema ? [`${ROOT_SCHEMA_ID}`] : []}
                         treeData={this.props.schema ? [generateSchemaTreeData(this.props.schema, ROOT_SCHEMA_ID,
                             "", this.props.isExcluded)] : []}
-                        value={this.state.selected} onChange={this.onChange.bind(this)}
+                        value={this.state.selected}
+                        onChange={this.onChange.bind(this)}
                         treeNodeLabelProp="titleSelected" />
         );
     }

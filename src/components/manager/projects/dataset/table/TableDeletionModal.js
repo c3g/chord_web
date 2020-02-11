@@ -7,7 +7,7 @@ import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
 
-import {nop} from "../../../utils";
+import {nop} from "../../../../../utils";
 
 
 // TODO: Replace with Modal.confirm

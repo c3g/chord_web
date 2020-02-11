@@ -4,7 +4,7 @@
   "description": "CHORD web application front-end",
   "main": "src/index.js",
   "dependencies": {
-    "antd": "^3.26.7",
+    "antd": "^3.26.9",
     "cross-fetch": "^3.0.4",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
@@ -17,15 +17,15 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
     "css-loader": "^3.4.2",
     "style-loader": "^1.1.3",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

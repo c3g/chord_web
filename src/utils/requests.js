@@ -12,3 +12,9 @@ export const createURLSearchParams = obj => {
     Object.entries(obj).forEach(([k, v]) => usp.set(k, typeof v === "object" ? JSON.stringify(v) : v));
     return usp;
 };
+
+export const jsonRequest = (body, method="GET") => ({
+    method,
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body),
+});

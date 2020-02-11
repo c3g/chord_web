@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Table} from "antd";
 import "antd/es/table/style/css";
 
-import {linkedFieldSetPropTypesShape} from "../../../utils";
+import {linkedFieldSetPropTypesShape} from "../../../../../utils";
 
 const COLUMNS = [
     {dataIndex: "dataType", title: "Data Type"},
@@ -14,7 +14,9 @@ const COLUMNS = [
 class LinkedFieldSetTable extends Component {
     render() {
         const data = Object.entries(this.props.linkedFieldSet.fields)
-            .map(([dataType, field]) => ({dataType, field}));
+            .map(([dataType, field]) => ({dataType, field}))
+            .sort((a, b) =>
+                a.dataType.localeCompare(b.dataType));
         return <Table columns={COLUMNS}
                       dataSource={data}
                       rowKey="dataType"

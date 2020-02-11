@@ -7,7 +7,9 @@ import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 
-import SchemaTreeSelect from "../../SchemaTreeSelect";
+import SchemaTreeSelect from "../../../../schema_trees/SchemaTreeSelect";
+import {FORM_MODE_ADD, FORM_MODE_EDIT, propTypesFormMode} from "../../../../../utils";
+import {getFieldSchema} from "../../../../../schema";
 
 const FIELD_KEYS = "fieldKeys";
 let fieldKey = 0;
@@ -17,6 +19,8 @@ class LinkedFieldSetForm extends Component {
         super(props);
         this.addField = this.addField.bind(this);
         this.removeField = this.removeField.bind(this);
+        this.syncForm = this.syncForm.bind(this);
+        this.rootSchema = this.rootSchema.bind(this);
     }
 
     addField() {
@@ -28,22 +32,62 @@ class LinkedFieldSetForm extends Component {
                 .filter(k => k !== key)});
     }
 
-    componentDidMount() {
-        // TODO: If mode === add
-        this.addField();
-        this.addField();
+    syncForm(prevProps={}) {
+        if (!prevProps.mode && this.props.mode) {
+            if (this.props.mode === FORM_MODE_ADD) {
+                this.addField();
+                this.addField();
+            }
+        }
+
+        if (JSON.stringify(prevProps.initialValue || {}) !==
+                JSON.stringify(this.props.initialValue || {}) && this.props.mode === FORM_MODE_EDIT) {
+            const initialValueObj = this.props.initialValue || {};
+            fieldKey = Object.entries(initialValueObj.fields || {}).length;
+
+            this.props.form.getFieldDecorator("name", {initialValue: initialValueObj.name || ""});
+            this.props.form.setFieldsValue({[FIELD_KEYS]: [...(new Array(fieldKey)).keys()]});
+
+            const rootSchema = this.rootSchema();
+
+            Object.entries(initialValueObj.fields || {})
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .forEach(([dt, f], i) => {
+                    const selected = `[dataset item].${dt}.[item].${f.join(".")}`;
+                    try {
+                        this.props.form.getFieldDecorator(`fields[${i}]`, {
+                            initialValue: {selected, schema: getFieldSchema(rootSchema, selected)}
+                        });
+                    } catch {
+                        // Possibly invalid field (due to migration / data model change), skip it.
+                        console.log(`Encountered invalid field: ${selected}`);
+                    }
+                });
+        }
     }
 
-    render() {
-        const {getFieldDecorator, getFieldValue} = this.props.form;
+    componentDidMount() {
+        this.syncForm();
+    }
 
-        const joinedSchema = {
+    componentDidUpdate(prevProps) {
+        this.syncForm(prevProps);
+    }
+
+    rootSchema() {
+        return {
             "type": "object",
             "properties": Object.fromEntries(Object.entries(this.props.dataTypes).map(([k, v]) => [k, {
                 "type": "array",
                 "items": v.schema
             }]))
         };
+    }
+
+    render() {
+        const {getFieldDecorator, getFieldValue} = this.props.form;
+
+        const joinedSchema = this.rootSchema();
 
         // TODO: isExcluded
         // Initialize fieldKeys if needed  TODO: do this once?
@@ -63,6 +107,7 @@ class LinkedFieldSetForm extends Component {
             <Form>
                 <Form.Item label="Name">
                     {getFieldDecorator("name", {
+                        initialValue: (this.props.initialValue || {}).name || "",
                         rules: [{required: true}, {min: 3}]
                     })(<Input placeholder="Sample IDs" />)}
                 </Form.Item>
@@ -78,7 +123,12 @@ class LinkedFieldSetForm extends Component {
 }
 
 LinkedFieldSetForm.propTypes = {
-    dataTypes: PropTypes.object,
+    mode: propTypesFormMode,
+    dataTypes: PropTypes.objectOf(PropTypes.object),
+    initialValue: PropTypes.shape({
+        name: PropTypes.string,
+        fields: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
+    }),
 };
 
 export default Form.create({name: "linked_field_set_form"})(LinkedFieldSetForm);

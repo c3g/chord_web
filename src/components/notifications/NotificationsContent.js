@@ -6,9 +6,9 @@ import "antd/es/layout/style/css";
 import "antd/es/page-header/style/css";
 import "antd/es/typography/style/css";
 
-import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE} from "../styles/pageHeader";
+import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE} from "../../styles/pageHeader";
 
-import {markNotificationAsRead, hideNotificationDrawer} from "../modules/notifications/actions";
+import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
 
 
 import NotificationList from "./NotificationList";

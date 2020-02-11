@@ -18,7 +18,7 @@ import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
 import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
-import {renderMenuItem, matchingMenuKeys, projectPropTypesShape} from "../utils";
+import {renderMenuItem, matchingMenuKeys, projectPropTypesShape, nodeInfoDataPropTypesShape, urlPath} from "../utils";
 
 const PAGE_MENU = [
     {url: "/data/manager/projects", style: {marginLeft: "4px"}, text: "Projects and Datasets"},
@@ -42,7 +42,8 @@ class DataManagerContent extends Component {
     }
 
     render() {
-        const selectedKeys = matchingMenuKeys(PAGE_MENU, this.props.location);
+        if (!this.props.nodeInfo.CHORD_URL) return null;
+        const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
         return (
             <>
                 <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Manager</div>}
@@ -69,6 +70,7 @@ class DataManagerContent extends Component {
 }
 
 DataManagerContent.propTypes = {
+    nodeInfo: nodeInfoDataPropTypesShape,
     projects: PropTypes.arrayOf(projectPropTypesShape),
     runs: PropTypes.arrayOf(PropTypes.shape({
         run_id: PropTypes.string,
@@ -76,4 +78,8 @@ DataManagerContent.propTypes = {
     }))
 };
 
-export default connect()(DataManagerContent);
+const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
+});
+
+export default connect(mapStateToProps)(DataManagerContent);

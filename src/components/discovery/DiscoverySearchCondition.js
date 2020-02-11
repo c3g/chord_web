@@ -9,7 +9,7 @@ import "antd/es/select/style/css";
 
 import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search";
 
-import SchemaTreeSelect from "../SchemaTreeSelect";
+import SchemaTreeSelect from "../schema_trees/SchemaTreeSelect";
 import {constFn, id, nop} from "../../utils";
 
 

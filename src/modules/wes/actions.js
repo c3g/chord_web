@@ -2,7 +2,6 @@ import {message} from "antd";
 
 import "antd/es/message/style/css";
 
-import {urlPath} from "../../utils";
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 import {createFormData} from "../../utils/requests";
 
@@ -115,7 +114,8 @@ export const submitIngestionWorkflowRun = networkAction(
                 tags: {
                     workflow_id: workflow.id,
                     workflow_metadata: workflow,
-                    ingestion_path: `${urlPath(serviceInfo.url)}/private/ingest`,
+                    // Remove CHORD_URL from the start of the service URL to make a relative path
+                    ingestion_path: `${serviceInfo.url.replace(getState().nodeInfo.data.CHORD_URL, "")}/private/ingest`,
                     dataset_id: datasetID  // TODO
                 }
             })

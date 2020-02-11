@@ -19,6 +19,7 @@ import {
     terminateFlow,
 } from "../../utils/actions";
 import {nop, objectWithoutProps} from "../../utils";
+import {jsonRequest} from "../../utils/requests";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
@@ -33,6 +34,7 @@ export const ADD_PROJECT_DATASET = createNetworkActionTypes("ADD_PROJECT_DATASET
 export const SAVE_PROJECT_DATASET = createNetworkActionTypes("SAVE_PROJECT_DATASET");
 export const DELETE_PROJECT_DATASET = createNetworkActionTypes("DELETE_PROJECT_DATASET");
 export const ADD_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("ADD_DATASET_LINKED_FIELD_SET");
+export const SAVE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("SAVE_DATASET_LINKED_FIELD_SET");
 export const DELETE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("DELETE_DATASET_LINKED_FIELD_SET");
 
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
@@ -82,11 +84,7 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
 const createProject = networkAction((project, history) => (dispatch, getState) => ({
     types: CREATE_PROJECT,
     url: `${getState().services.metadataService.url}/api/projects`,
-    req: {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(project)
-    },
+    req: jsonRequest(project, "POST"),
     err: "Error creating project",
     onSuccess: async data => {
         if (history) history.push(`/data/manager/projects/${data.identifier}`);
@@ -120,11 +118,7 @@ export const deleteProjectIfPossible = project => async (dispatch, getState) => 
 const saveProject = networkAction(project => (dispatch, getState) => ({
     types: SAVE_PROJECT,
     url: `${getState().services.metadataService.url}/api/projects/${project.identifier}`,
-    req: {
-        method: "PUT",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(project)
-    },
+    req: jsonRequest(project, "PUT"),
     err: `Error saving project '${project.title}'`,  // TODO: More user-friendly error
     onSuccess: async () => {
         await dispatch(endProjectEditing());
@@ -141,11 +135,7 @@ export const saveProjectIfPossible = project => async (dispatch, getState) => {
 export const addProjectDataset = networkAction((project, dataset, onSuccess = nop) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
     url: `${getState().services.metadataService.url}/api/datasets`,
-    req: {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({...dataset, project: project.identifier})
-    },
+    req: jsonRequest({...dataset, project: project.identifier}, "POST"),
     err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
     onSuccess: async () => {
@@ -157,12 +147,9 @@ export const addProjectDataset = networkAction((project, dataset, onSuccess = no
 export const saveProjectDataset = networkAction((dataset, onSuccess = nop) => (dispatch, getState) => ({
     types: SAVE_PROJECT_DATASET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
-    req: {
-        method: "PUT",  // TODO: PATCH
-        headers: {"Content-Type": "application/json"},
-        // Filter out read-only props
-        body: JSON.stringify(objectWithoutProps(dataset, ["identifier", "created", "updated"]))
-    },
+    // Filter out read-only props
+    // TODO: PATCH
+    req: jsonRequest(objectWithoutProps(dataset, ["identifier", "created", "updated"]), "PUT"),
     err: `Error saving dataset '${dataset.title}'`,
     onSuccess: async () => {
         await onSuccess();
@@ -190,11 +177,7 @@ export const deleteProjectDatasetIfPossible = (project, dataset) => async (dispa
 const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, onSuccess) => (dispatch, getState) => ({
     types: ADD_DATASET_LINKED_FIELD_SET,
     url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
-    req: {
-        method: "PATCH",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({linked_field_sets: [...dataset.linked_field_sets, linkedFieldSet]})
-    },
+    req: jsonRequest({linked_field_sets: [...dataset.linked_field_sets, linkedFieldSet]}, "PATCH"),
     err: `Error adding linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`,
     onSuccess: async () => {
         await onSuccess();
@@ -211,17 +194,36 @@ export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, onSu
     };
 
 
+const saveDatasetLinkedFieldSet = networkAction((dataset, index, linkedFieldSet, onSuccess) =>
+    (dispatch, getState) => ({
+        types: SAVE_DATASET_LINKED_FIELD_SET,
+        url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+        req: jsonRequest({
+            linked_field_sets: dataset.linked_field_sets.map((l, i) => i === index ? linkedFieldSet : l)
+        }, "PATCH"),
+        err: `Error saving linked field set '${linkedFieldSet.name}' in dataset '${dataset.title}'`,
+        onSuccess: async () => {
+            await onSuccess();
+            message.success(`Saved linked field set '${linkedFieldSet.name}' in dataset '${dataset.title}'`);
+        }
+    }));
+
+export const saveDatasetLinkedFieldSetIfPossible = (dataset, index, linkedFieldSet, onSuccess = nop) =>
+    async (dispatch, getState) => {
+        if (getState().projects.isAddingDataset
+            || getState().projects.isSavingDataset
+            || getState().projects.isDeletingDataset) return;
+        await dispatch(saveDatasetLinkedFieldSet(dataset, index, linkedFieldSet, onSuccess));
+    };
+
+
 const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, linkedFieldSetIndex) =>
     (dispatch, getState) => ({
         types: DELETE_DATASET_LINKED_FIELD_SET,
         url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
-        req: {
-            method: "PATCH",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                linked_field_sets: dataset.linked_field_sets.filter((_, i) => i !== linkedFieldSetIndex)
-            })
-        },
+        req: jsonRequest({
+            linked_field_sets: dataset.linked_field_sets.filter((_, i) => i !== linkedFieldSetIndex)
+        }, "PATCH"),
         err: `Error deleting linked field set '${linkedFieldSet.name}' from dataset '${dataset.title}'`,
         onSuccess: () =>
             message.success(`Deleted linked field set '${linkedFieldSet.name}' from dataset '${dataset.title}'`)
@@ -253,14 +255,8 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
         await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`, {method: "OPTIONS"});
 
         try {
-            const serviceResponse = await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    name: tableName.trim(),
-                    metadata: {}
-                })
-            });
+            const serviceResponse = await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`,
+                jsonRequest({name: tableName.trim(), metadata: {}}, "POST"));
 
             if (!serviceResponse.ok) {
                 console.error(serviceResponse);
@@ -274,19 +270,15 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
             try {
                 const projectResponse = await fetch(
                     `${getState().services.metadataService.url}/api/table_ownership`,
-                    {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            table_id: serviceTable.id,
-                            service_id: serviceInfo.id,
-                            service_artifact: serviceInfo.type.split(":")[1],
-                            data_type: dataType,
+                    jsonRequest({
+                        table_id: serviceTable.id,
+                        service_id: serviceInfo.id,
+                        service_artifact: serviceInfo.type.split(":")[1],
+                        data_type: dataType,
 
-                            dataset: datasetID,
-                            sample: null  // TODO: Sample ID if wanted  // TODO: Deprecate?
-                        })
-                    }
+                        dataset: datasetID,
+                        sample: null  // TODO: Sample ID if wanted  // TODO: Deprecate?
+                    }, "POST")
                 );
 
                 if (!projectResponse.ok) {

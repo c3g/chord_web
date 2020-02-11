@@ -1,0 +1,64 @@
+import React, {Component, Fragment} from "react";
+import PropTypes from "prop-types";
+
+import {Col, Divider, Row, Spin, Statistic, Typography} from "antd";
+import "antd/es/col/style/css";
+import "antd/es/divider/style/css";
+import "antd/es/row/style/css";
+import "antd/es/spin/style/css";
+import "antd/es/statistic/style/css";
+import "antd/es/typography/style/css";
+
+import {datasetPropTypesShape, projectPropTypesShape} from "../../../../utils";
+
+class DatasetOverview extends Component {
+    render() {
+        const project = this.props.project || {};
+        const dataset = this.props.dataset || {};
+        return (
+            <>
+                {(dataset.description || "").length > 0
+                    ? (<>
+                        <Typography.Title level={4}>Description</Typography.Title>
+                        {dataset.description.split("\n").map((p, i) =>
+                            <Typography.Paragraph key={i}>{p}</Typography.Paragraph>)}
+                    </>) : null}
+                {(dataset.contact_info || "").length > 0
+                    ? (<>
+                        <Typography.Title level={4}>Contact Information</Typography.Title>
+                        <Typography.Paragraph>
+                            {dataset.contact_info.split("\n").map((p, i) =>
+                                <Fragment key={i}>{p}<br /></Fragment>)}
+                        </Typography.Paragraph>
+                    </>) : null}
+                {((dataset.description || "").length > 0 || (dataset.contact_info || "").length > 0)
+                    ? <Divider /> : null}
+                <Row gutter={16} style={{maxWidth: this.props.isPrivate ? "720px" : "1080px"}}>
+                    {this.props.isPrivate ? null : (
+                        <Col span={8}><Statistic title="Project" value={project.title || "—"} /></Col>
+                    )}
+                    <Col span={this.props.isPrivate ? 12 : 8}>
+                        <Statistic title="Created"
+                                   value={(new Date(Date.parse(dataset.created))).toLocaleString()} />
+                    </Col>
+                    <Col span={this.props.isPrivate ? 12 : 8}>
+                        <Spin spinning={this.props.isFetchingTables}>
+                            {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
+                            <Statistic title="Tables"
+                                       value={this.props.isFetchingTables ? "—" : dataset.tables.length + 1} />
+                        </Spin>
+                    </Col>
+                </Row>
+            </>
+        );
+    }
+}
+
+DatasetOverview.propTypes = {
+    isPrivate: PropTypes.bool,
+    project: projectPropTypesShape,
+    dataset: datasetPropTypesShape,
+    isFetchingTables: PropTypes.bool,
+};
+
+export default DatasetOverview;
