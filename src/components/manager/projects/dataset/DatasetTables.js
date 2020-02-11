@@ -9,9 +9,10 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../utils";
+
 import DatasetOverview from "./DatasetOverview";
-import TableAdditionModal from "./TableAdditionModal";
-import TableDeletionModal from "./TableDeletionModal";
+import TableAdditionModal from "./table/TableAdditionModal";
+import TableDeletionModal from "./table/TableDeletionModal";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);

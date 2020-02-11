@@ -10,7 +10,7 @@ import LinkedFieldSetForm from "./LinkedFieldSetForm";
 import {
     addDatasetLinkedFieldSetIfPossible,
     saveDatasetLinkedFieldSetIfPossible
-} from "../../../../modules/metadata/actions";
+} from "../../../../../modules/metadata/actions";
 
 import {
     datasetPropTypesShape,
@@ -19,7 +19,7 @@ import {
 
     FORM_MODE_ADD,
     propTypesFormMode
-} from "../../../../utils";
+} from "../../../../../utils";
 
 
 class LinkedFieldSetModal extends Component {

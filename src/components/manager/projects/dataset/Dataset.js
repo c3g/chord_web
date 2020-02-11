@@ -33,8 +33,8 @@ import {
     FORM_MODE_EDIT,
     FORM_MODE_ADD
 } from "../../../../utils";
-import LinkedFieldSetTable from "./LinkedFieldSetTable";
-import LinkedFieldSetModal from "./LinkedFieldSetModal";
+import LinkedFieldSetTable from "./linked_field_set/LinkedFieldSetTable";
+import LinkedFieldSetModal from "./linked_field_set/LinkedFieldSetModal";
 import DatasetOverview from "./DatasetOverview";
 import DatasetTables from "./DatasetTables";
 
