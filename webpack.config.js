@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 const BASE_PATH = process.env.CHORD_URL ? (new URL(process.env.CHORD_URL)).pathname : "/";
 
@@ -35,6 +36,6 @@ module.exports = {
     plugins: [new HtmlWebpackPlugin({
         title: "CHORD",
         template: path.resolve(__dirname, "./src/template.html"),
-        hash: true
-    })]
+        inlineSource: ".js$",
+    }), new HtmlWebpackInlineSourcePlugin()]
 };
