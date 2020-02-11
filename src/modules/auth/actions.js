@@ -18,14 +18,14 @@ import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
 import {fetchRuns} from "../wes/actions";
-import {nop} from "../../utils";
+import {nop, withBasePath} from "../../utils";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");
 
 export const fetchUser = networkAction(() => ({
     types: FETCH_USER,
-    url: "/api/auth/user"
+    url: withBasePath("api/auth/user")
 }));
 
 // TODO: Rename this (also fetches node info)
