@@ -1,4 +1,5 @@
 import {createNetworkActionTypes, networkAction} from "../../utils/actions"
+import {jsonRequest} from "../../utils/requests";
 
 
 export const PERFORM_SEARCH = createNetworkActionTypes("PERFORM_SEARCH");
@@ -21,14 +22,10 @@ export const selectSearch = searchIndex => ({
 const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispatch, getState) => ({
     types: PERFORM_SEARCH,
     url: `${getState().services.federationService.url}/federated-dataset-search`,
-    req: {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            data_type_queries: dataTypeQueries,
-            join_query: joinQuery
-        })
-    },
+    req: jsonRequest({
+        data_type_queries: dataTypeQueries,
+        join_query: joinQuery
+    }, "POST"),
     err: "Error performing search",
     onSuccess: () => dispatch(selectSearch(getState().discovery.searches.length - 1))
 }));
