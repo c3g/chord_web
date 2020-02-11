@@ -90,7 +90,7 @@ export const removeDataTypeQueryForm = dataType => ({
 // export const removeAllDataTypeQueryForms = basicAction(REMOVE_ALL_DATA_TYPE_QUERY_FORMS);
 
 
-export const updateJoinQueryForm = fields => ({
-    type: UPDATE_JOIN_QUERY_FORM,
-    fields
-});
+// export const updateJoinQueryForm = fields => ({
+//     type: UPDATE_JOIN_QUERY_FORM,
+//     fields
+// });
