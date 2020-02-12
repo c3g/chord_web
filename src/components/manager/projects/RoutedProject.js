@@ -10,7 +10,7 @@ import ProjectSkeleton from "./ProjectSkeleton";
 
 import {deleteProjectIfPossible, saveProjectIfPossible} from "../../../modules/metadata/actions";
 import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
-import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../utils";
+import {FORM_MODE_ADD, FORM_MODE_EDIT, withBasePath} from "../../../utils";
 
 class RoutedProject extends Component {
     constructor(props) {
@@ -32,12 +32,13 @@ class RoutedProject extends Component {
 
     componentDidUpdate() {
         if (!this.props.projectsByID[this.props.match.params.project] && !this.props.loadingProjects) {
-            this.props.history.push("/data/manager/projects/");
+            this.props.history.push(withBasePath("data/manager/projects/"));
         }
     }
 
     ingestIntoTable(p, t) {
-        this.props.history.push("/data/manager/ingestion", {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
+        this.props.history.push(withBasePath("data/manager/ingestion"),
+            {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
     }
 
     handleProjectSave(project) {

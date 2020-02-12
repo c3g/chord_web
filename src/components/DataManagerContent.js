@@ -14,16 +14,23 @@ import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
 import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
-import {renderMenuItem, matchingMenuKeys, projectPropTypesShape, nodeInfoDataPropTypesShape, urlPath} from "../utils";
+import {
+    renderMenuItem,
+    matchingMenuKeys,
+    projectPropTypesShape,
+    nodeInfoDataPropTypesShape,
+    urlPath,
+    withBasePath
+} from "../utils";
 import SitePageHeader from "./SitePageHeader";
 
 const PAGE_MENU = [
-    {url: "/data/manager/projects", style: {marginLeft: "4px"}, text: "Projects and Datasets"},
+    {url: withBasePath("data/manager/projects"), style: {marginLeft: "4px"}, text: "Projects and Datasets"},
     // {url: "/data/manager/access", text: "Access Management"},  // TODO: Re-enable for v0.2
-    {url: "/data/manager/files", text: "Files"},
-    {url: "/data/manager/ingestion", text: "Ingestion"},
-    {url: "/data/manager/workflows", text: "Workflows"},
-    {url: "/data/manager/runs", text: "Workflow Runs"},
+    {url: withBasePath("data/manager/files"), text: "Files"},
+    {url: withBasePath("data/manager/ingestion"), text: "Ingestion"},
+    {url: withBasePath("data/manager/workflows"), text: "Workflows"},
+    {url: withBasePath("data/manager/runs"), text: "Workflow Runs"},
 ];
 
 const MENU_STYLE = {
@@ -52,13 +59,17 @@ class DataManagerContent extends Component {
                                     </Menu>
                                 } />
                 <Switch>
-                    <Route path="/data/manager/projects" component={ManagerProjectDatasetContent} />
-                    <Route exact path="/data/manager/access" component={ManagerAccessContent} />
-                    <Route exact path="/data/manager/files" component={ManagerFilesContent} />
-                    <Route exact path="/data/manager/ingestion" component={ManagerIngestionContent} />
-                    <Route exact path="/data/manager/workflows" component={ManagerWorkflowsContent} />
-                    <Route path="/data/manager/runs" component={ManagerRunsContent} />
-                    <Redirect from="/data/manager" to="/data/manager/projects" />
+                    <Route path={withBasePath("data/manager/projects")}
+                           component={ManagerProjectDatasetContent} />
+                    <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
+                    <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
+                    <Route exact path={withBasePath("data/manager/ingestion")}
+                           component={ManagerIngestionContent} />
+                    <Route exact path={withBasePath("data/manager/workflows")}
+                           component={ManagerWorkflowsContent} />
+                    <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
+                    <Redirect from={withBasePath("data/manager")}
+                              to={withBasePath("data/manager/projects")} />
                 </Switch>
             </>
         );

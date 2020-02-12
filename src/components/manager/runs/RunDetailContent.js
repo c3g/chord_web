@@ -5,6 +5,7 @@ import {Skeleton} from "antd";
 import "antd/es/skeleton/style/css";
 
 import Run from "./Run";
+import {withBasePath} from "../../../utils";
 
 class RunDetailContent extends Component {
     render() {
@@ -15,8 +16,9 @@ class RunDetailContent extends Component {
             ? <div style={{marginTop: "12px", marginLeft: "24px", marginRight: "24px"}}><Skeleton /></div>
             : <Run run={run}
                    tab={this.props.match.params.tab}
-                   onChangeTab={key => this.props.history.push(`/data/manager/runs/${run.run_id}/${key}`)}
-                   onBack={() => this.props.history.push("/data/manager/runs")} />;
+                   onChangeTab={key =>
+                       this.props.history.push(withBasePath(`data/manager/runs/${run.run_id}/${key}`))}
+                   onBack={() => this.props.history.push(withBasePath("data/manager/runs"))} />;
     }
 }
 

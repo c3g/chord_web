@@ -7,9 +7,10 @@ import "antd/es/button/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/drawer/style/css";
 
-import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
-
 import NotificationList from "./NotificationList";
+
+import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
+import {withBasePath} from "../../utils";
 
 
 class NotificationDrawer extends Component {
@@ -20,7 +21,7 @@ class NotificationDrawer extends Component {
 
     seeAllNotifications() {
         this.props.hideNotificationDrawer();
-        this.props.history.push("/notifications");
+        this.props.history.push(withBasePath("notifications"));
     }
 
     render() {

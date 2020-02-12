@@ -18,11 +18,12 @@ import "antd/es/tag/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
-import {simpleDeepCopy} from "../../utils";
-
 import {submitIngestionWorkflowRun} from "../../modules/wes/actions";
 
 import {
+    simpleDeepCopy,
+    withBasePath,
+
     dropBoxTreeStateToPropsMixin,
     dropBoxTreeStateToPropsMixinPropTypes,
 
@@ -106,7 +107,7 @@ class ManagerIngestionContent extends Component {
         const tableID = this.state.selectedTable.split(":")[2];
 
         await this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
-            this.state.inputs, "/data/manager/runs", history);
+            this.state.inputs, withBasePath("data/manager/runs"), history);
     }
 
     getStepContents() {

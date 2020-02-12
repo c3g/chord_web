@@ -41,7 +41,9 @@ import {
     dropBoxTreeStateToPropsMixinPropTypes,
 
     workflowsStateToPropsMixin,
-    workflowsStateToPropsMixinPropTypes
+    workflowsStateToPropsMixinPropTypes,
+
+    withBasePath,
 } from "../../utils";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
@@ -105,7 +107,7 @@ class ManagerFilesContent extends Component {
     }
 
     ingestIntoTable(tableKey) {
-        this.props.history.push("/data/manager/ingestion", {
+        this.props.history.push(withBasePath("data/manager/ingestion"), {
             step: STEP_INPUT,
             selectedTable: tableKey,
             selectedWorkflow: this.state.selectedWorkflow,
