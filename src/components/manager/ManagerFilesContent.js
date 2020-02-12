@@ -221,7 +221,7 @@ class ManagerFilesContent extends Component {
                         visible={this.state.tableSelectionModal}
                         title={"Select a Table to Ingest Into"}
                         onCancel={() => this.hideTableSelectionModal()}
-                        onOk={() => this.ingestIntoTable()}
+                        onOk={tableKey => this.ingestIntoTable(tableKey)}
                     />
                     {/* TODO: v0.2: Don't hard-code replace */}
                     <Modal visible={this.state.fileContentsModal}
