@@ -9,6 +9,7 @@ import {
 } from "../../utils/actions";
 
 import {createURLSearchParams} from "../../utils/requests";
+import {withBasePath} from "../../utils";
 
 
 /**
@@ -56,13 +57,13 @@ export const endDeletingServiceTable = (serviceInfo, dataTypeID, tableID) => ({
 
 export const fetchCHORDServices = networkAction(() => ({
     types: FETCH_CHORD_SERVICES,
-    url: "/api/service-registry/chord-services",
+    url: withBasePath("api/service-registry/chord-services"),
     err: "Error fetching CHORD services"
 }));
 
 export const fetchServices = networkAction(() => ({
     types: FETCH_SERVICES,
-    url: "/api/service-registry/services",
+    url: withBasePath("api/service-registry/services"),
     err: "Error fetching services"
 }));
 
