@@ -14,6 +14,7 @@ import OwnerRoute from "./OwnerRoute";
 
 import NotificationDrawer from "./notifications/NotificationDrawer";
 import SiteHeader from "./SiteHeader";
+import SiteFooter from "./SiteFooter";
 
 import DashboardContent from "./DashboardContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
@@ -26,7 +27,6 @@ import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
 import {BASE_PATH, urlPath, withBasePath} from "../utils";
-import SiteFooter from "./SiteFooter";
 
 class App extends Component {
     constructor(props) {
