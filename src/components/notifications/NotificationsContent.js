@@ -1,25 +1,21 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Layout, PageHeader, Typography} from "antd";
+import {Layout, Typography} from "antd";
 import "antd/es/layout/style/css";
-import "antd/es/page-header/style/css";
 import "antd/es/typography/style/css";
-
-import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE} from "../../styles/pageHeader";
 
 import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
 
-
 import NotificationList from "./NotificationList";
+import SitePageHeader from "../SitePageHeader";
 
 
 class NotificationsContent extends Component {
     render() {
         return (
             <>
-                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Notifications</div>}
-                            style={PAGE_HEADER_STYLE} />
+                <SitePageHeader title="Notifications" />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "16px 24px"}}>
                         <Typography.Title level={3}>Unread</Typography.Title>

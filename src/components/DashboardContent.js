@@ -1,18 +1,17 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Col, Layout, PageHeader, Row, Spin, Statistic, Typography} from "antd";
+import {Col, Layout, Row, Spin, Statistic, Typography} from "antd";
 import "antd/es/col/style/css";
 import "antd/es/layout/style/css";
-import "antd/es/page-header/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/statistic/style/css";
 import "antd/es/typography/style/css";
 
+import SitePageHeader from "./SitePageHeader";
 import ServiceList from "./ServiceList";
 
-import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 import {EM_DASH} from "../utils";
 
 
@@ -24,9 +23,7 @@ class DashboardContent extends Component {
     render() {
         return (
             <>
-                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Dashboard</div>}
-                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Node status and health monitor</span>}
-                            style={PAGE_HEADER_STYLE}/>
+                <SitePageHeader title="Dashboard" subTitle="Node status and health monitor" />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <Typography.Title level={3}>Overview</Typography.Title>

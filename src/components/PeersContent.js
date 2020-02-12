@@ -1,13 +1,12 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Icon, Layout, PageHeader, Table} from "antd";
-
+import {Icon, Layout, Table} from "antd";
+import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
-import "antd/es/page-header/style/css";
 import "antd/es/table/style/css";
 
-import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
+import SitePageHeader from "./SitePageHeader";
 
 class PeersContent extends Component {
     constructor(props) {
@@ -44,9 +43,7 @@ class PeersContent extends Component {
     render() {
         return (
             <>
-                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Peers</div>}
-                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Other CHORD nodes</span>}
-                            style={PAGE_HEADER_STYLE}/>
+                <SitePageHeader title="Peers" subTitle="Other CHORD nodes" />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <Table dataSource={this.props.peers}

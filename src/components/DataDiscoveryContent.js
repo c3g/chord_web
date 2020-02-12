@@ -3,14 +3,12 @@ import {connect} from "react-redux";
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Layout, PageHeader} from "antd";
+import {Layout} from "antd";
 import "antd/es/layout/style/css";
-import "antd/es/page-header/style/css";
 
+import SitePageHeader from "./SitePageHeader";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 import DiscoveryDatasetContent from "./discovery/DiscoveryDatasetContent";
-
-import {PAGE_HEADER_STYLE, PAGE_HEADER_TITLE_STYLE, PAGE_HEADER_SUBTITLE_STYLE} from "../styles/pageHeader";
 
 
 class DataDiscoveryContent extends Component {
@@ -25,9 +23,7 @@ class DataDiscoveryContent extends Component {
     render() {
         return (
             <>
-                <PageHeader title={<div style={PAGE_HEADER_TITLE_STYLE}>Data Discovery</div>}
-                            subTitle={<span style={PAGE_HEADER_SUBTITLE_STYLE}>Federated data exploration</span>}
-                            style={PAGE_HEADER_STYLE} />
+                <SitePageHeader title="Data Discovery" subTitle="Federated data exploration" />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "24px 30px"}}>
                         <Switch>
