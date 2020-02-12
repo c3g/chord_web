@@ -85,7 +85,7 @@ class SiteHeader extends Component {
                 }}>CHORD</h1></Link>
                 <Menu theme="dark"
                       mode="horizontal"
-                      selectedKeys={matchingMenuKeys(menuItems, BASE_PATH)}
+                      selectedKeys={matchingMenuKeys(menuItems)}
                       style={{lineHeight: "64px"}}>
                     {menuItems.map(i => renderMenuItem(i))}
                 </Menu>

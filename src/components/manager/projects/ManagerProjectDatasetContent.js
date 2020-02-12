@@ -23,7 +23,7 @@ import {
     matchingMenuKeys,
     projectPropTypesShape,
     nodeInfoDataPropTypesShape,
-    urlPath
+    withBasePath
 } from "../../../utils";
 
 
@@ -33,7 +33,7 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 class ManagerProjectDatasetContent extends Component {
     render() {
         const projectMenuItems = this.props.projects.map(project => ({
-            url: `/data/manager/projects/${project.identifier}`,
+            url: withBasePath(`data/manager/projects/${project.identifier}`),
             text: project.title
         }));
 
@@ -65,10 +65,7 @@ class ManagerProjectDatasetContent extends Component {
                                 <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                                     <Menu style={{flex: 1, paddingTop: "8px"}}
                                           mode="inline"
-                                          selectedKeys={matchingMenuKeys(
-                                              projectMenuItems,
-                                              urlPath(this.props.nodeInfo.CHORD_URL),
-                                          )}>
+                                          selectedKeys={matchingMenuKeys(projectMenuItems)}>
                                         {projectMenuItems.map(renderMenuItem)}
                                     </Menu>
                                     <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
@@ -86,9 +83,11 @@ class ManagerProjectDatasetContent extends Component {
                                 {/* TODO: Fix project datasets */}
                                 {projectMenuItems.length > 0 ? (
                                     <Switch>
-                                        <Route path="/data/manager/projects/:project" component={RoutedProject} />
-                                        <Redirect from="/data/manager/projects"
-                                                  to={`/data/manager/projects/${this.props.projects[0].identifier}`} />
+                                        <Route path={withBasePath("data/manager/projects/:project")}
+                                               component={RoutedProject} />
+                                        <Redirect from={withBasePath("data/manager/projects")}
+                                                  to={withBasePath(`data/manager/projects/${
+                                                      this.props.projects[0].identifier}`)} />
                                     </Switch>
                                 ) : (
                                     this.props.loadingAuthDependentData ? (

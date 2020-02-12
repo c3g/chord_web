@@ -13,10 +13,6 @@ export const nop = () => {};
 export const constFn = x => () => x;  // constFn(null) creates a function that always returns null
 
 
-// https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript/3561711#3561711
-export const escapeRegex = s => (s || "").replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-
-
 export const urlPath = url => (new URL(url)).pathname;
 
 // Allow embedding of CHORD_URL at build time
@@ -63,9 +59,8 @@ export const renderMenuItem = i => {
     )
 };
 
-export const matchingMenuKeys = (menuItems, basePath) => menuItems
-    .filter(i => i.url && window.location.pathname
-        .replace(new RegExp(`^${escapeRegex(basePath)}`), "/").startsWith(i.url))
+export const matchingMenuKeys = menuItems => menuItems
+    .filter(i => i.url && window.location.pathname.startsWith(i.url))
     .map(i => i.key || i.url || "");
 
 
