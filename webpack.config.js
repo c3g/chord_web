@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -32,9 +33,12 @@ module.exports = {
             chunks: "all"
         }
     },
-    plugins: [new HtmlWebpackPlugin({
-        title: "CHORD",
-        template: path.resolve(__dirname, "./src/template.html"),
-        hash: true,
-    })]
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "CHORD",
+            template: path.resolve(__dirname, "./src/template.html"),
+            hash: true,
+        }),
+        new webpack.EnvironmentPlugin(["CHORD_URL"])
+    ]
 };
