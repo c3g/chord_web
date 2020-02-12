@@ -26,6 +26,7 @@ import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
 import {BASE_PATH, urlPath, withBasePath} from "../utils";
+import SiteFooter from "./SiteFooter";
 
 class App extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class App extends Component {
     render() {
         // noinspection HtmlUnknownTarget
         return (
-            <main>
+            <>
                 <Modal title="You have been signed out"
                        onOk={() => window.location.href = withBasePath(SIGN_IN_URL)}
                        onCancel={() => {
@@ -75,15 +76,9 @@ class App extends Component {
                             <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
                         </Switch>
                     </Layout.Content>
-                    <Layout.Footer style={{textAlign: "center"}}>
-                        Copyright &copy; 2019-2020 the <a href="http://computationalgenomics.ca">Canadian Centre for
-                        Computational Genomics</a>. <br/>
-                        <span style={{fontFamily: "monospace"}}>chord_web</span> is licensed under
-                        the <a href={withBasePath("public/LICENSE.txt")}>LGPLv3</a>. The source code is
-                        available <a href="https://github.com/c3g/chord_web">on GitHub</a>.
-                    </Layout.Footer>
+                    <SiteFooter />
                 </Layout>
-            </main>
+            </>
         );
     }
 
