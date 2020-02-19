@@ -115,7 +115,8 @@ export const submitIngestionWorkflowRun = networkAction(
                     workflow_id: workflow.id,
                     workflow_metadata: workflow,
                     // Remove CHORD_URL from the start of the service URL to make a relative path
-                    ingestion_path: `${serviceInfo.url.replace(getState().nodeInfo.data.CHORD_URL, "")}/private/ingest`,
+                    ingestion_path: `/${
+                        serviceInfo.url.replace(getState().nodeInfo.data.CHORD_URL, "")}/private/ingest`,
                     table_id: tableID  // TODO
                 }
             })
