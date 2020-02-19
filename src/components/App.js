@@ -88,8 +88,6 @@ class App extends Component {
     createEventRelayConnectionIfNecessary() {
         this.eventRelayConnection = (() => {
             if (this.eventRelayConnection) {
-                // Update existing event relay connection's reconnection option
-                this.eventRelayConnection.reconnection(!!this.props.user);
                 return this.eventRelayConnection;
             }
 
@@ -116,9 +114,12 @@ class App extends Component {
             if (this.lastUser !== null && this.props.user === null) {
                 // We got de-authenticated, so show a prompt...
                 this.setState({signedOutModal: true});
-                // ... and disable constant websocket pinging if necessary
-                if (this.eventRelayConnection) this.eventRelayConnection.reconnection(false);
-            } else if (this.lastUser === null && this.props.user && this.eventRelayConnection) {
+                // ... and disable constant websocket pinging if necessary by removing existing connections
+                if (this.eventRelayConnection) {
+                    this.eventRelayConnection.close();
+                    this.eventRelayConnection = null;
+                }
+            } else if (this.lastUser === null && this.props.user) {
                 // We got authenticated, so re-enable reconnection on the websocket
                 this.createEventRelayConnectionIfNecessary();
             }
