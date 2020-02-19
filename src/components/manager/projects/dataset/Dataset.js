@@ -128,7 +128,8 @@ class Dataset extends Component {
                                    {title: "Individual ID", dataIndex: "id"},
                                    {title: "Date of Birth", dataIndex: "date_of_birth"},
                                    {title: "Sex", dataIndex: "sex"},
-                                   {title: "# Biosamples", dataIndex: "n_of_biosamples"}  // TODO: Only relevant biosamples
+                                   // TODO: Only relevant biosamples
+                                   {title: "# Biosamples", dataIndex: "n_of_biosamples"}
                                ]}
                                expandedRowRender={i => (
                                    <div>

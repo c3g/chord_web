@@ -30,6 +30,7 @@ class DatasetTables extends Component {
         this.state = {
             additionModalVisible: false,
             deletionModalVisible: false,
+            selectedTable: null,
         };
 
         this.tableListColumns = [
@@ -88,7 +89,7 @@ class DatasetTables extends Component {
     async handleAdditionSubmit(values) {
         const [serviceArtifact, dataTypeID] = values.dataType.split(":");
         const serviceInfo = this.props.serviceInfoByArtifact[serviceArtifact];
-        await this.props.addProjectTable(this.state.identifier, serviceInfo, dataTypeID, values.name);
+        await this.props.addProjectTable(this.props.dataset.identifier, serviceInfo, dataTypeID, values.name);
 
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
 
