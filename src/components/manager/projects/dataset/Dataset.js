@@ -308,12 +308,9 @@ Dataset.propTypes = {
 
     onEdit: PropTypes.func,
     onTableIngest: PropTypes.func,
-
-    serviceInfoByArtifact: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    serviceInfoByArtifact: state.services.itemsByArtifact,
     isFetchingTables: state.services.isFetchingAll
         || state.projectTables.isFetching
         || state.projects.isFetchingWithTables,  // TODO: Hiccup

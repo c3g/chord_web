@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Col, Row, Table, Typography} from "antd";
@@ -156,8 +157,14 @@ DatasetOverview.propTypes = {
     isPrivate: PropTypes.bool,
     project: projectPropTypesShape,
     dataset: datasetPropTypesShape,
-    isFetchingTables: PropTypes.bool,
     onTableIngest: PropTypes.func,
+    isFetchingTables: PropTypes.bool,
+
+    serviceInfoByArtifact: PropTypes.object,
 };
 
-export default DatasetTables;
+const mapStateToProps = state => ({
+    serviceInfoByArtifact: state.services.itemsByArtifact,
+});
+
+export default connect(mapStateToProps)(DatasetTables);
