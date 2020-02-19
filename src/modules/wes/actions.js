@@ -98,9 +98,9 @@ export const fetchRunLogStreamsIfPossibleAndNeeded = runID => async (dispatch, g
 
 
 export const submitIngestionWorkflowRun = networkAction(
-    (serviceInfo, datasetID, workflow, inputs, redirect, hist) => (dispatch, getState) => ({
+    (serviceInfo, tableID, workflow, inputs, redirect, hist) => (dispatch, getState) => ({
         types: SUBMIT_INGESTION_RUN,
-        params: {serviceInfo, datasetID},
+        params: {serviceInfo, tableID},
         url: `${getState().services.wesService.url}/runs`,
         req: {
             method: "POST",
@@ -116,7 +116,7 @@ export const submitIngestionWorkflowRun = networkAction(
                     workflow_metadata: workflow,
                     // Remove CHORD_URL from the start of the service URL to make a relative path
                     ingestion_path: `${serviceInfo.url.replace(getState().nodeInfo.data.CHORD_URL, "")}/private/ingest`,
-                    dataset_id: datasetID  // TODO
+                    table_id: tableID  // TODO
                 }
             })
         },
