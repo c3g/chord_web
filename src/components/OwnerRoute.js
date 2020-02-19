@@ -8,8 +8,8 @@ import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 
-import {ROLE_OWNER, SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
-import {BASE_PATH, withBasePath} from "../utils";
+import {ROLE_OWNER, SIGN_OUT_URL} from "../constants";
+import {signInURLWithRedirect, withBasePath} from "../utils";
 
 const signInIcon = (
     <div style={{textAlign: "center"}}>
@@ -27,10 +27,10 @@ const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, basePath,
                            imageStyle={{height: "auto", marginBottom: "16px"}}
                            description="You must sign in as an owner of this node to access this page.">
                         {isSignedIn
-                            ? <Button onClick={() => window.location.href = `${BASE_PATH}${SIGN_IN_URL}`}>
+                            ? <Button onClick={() => window.location.href = withBasePath(SIGN_OUT_URL)}>
                                 Sign Out</Button>
                             : <Button type="primary" onClick={() =>
-                                window.location.href = `${BASE_PATH}${SIGN_OUT_URL}`}>Sign In</Button>}
+                                window.location.href = signInURLWithRedirect()}>Sign In</Button>}
                     </Empty>
                 </Layout.Content>
             ) : <Component {...props} />} />

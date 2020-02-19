@@ -1,7 +1,9 @@
+import React from "react";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {Menu} from "antd";
-import {Link} from "react-router-dom";
-import React from "react";
+
+import {SIGN_IN_URL} from "./constants";
 
 
 export const EM_DASH = "⁠—";
@@ -18,6 +20,8 @@ export const urlPath = url => (new URL(url)).pathname;
 // Allow embedding of CHORD_URL at build time
 export const BASE_PATH = process.env.CHORD_URL ? urlPath(process.env.CHORD_URL) : "/";
 export const withBasePath = path => `${BASE_PATH}${(path.length > 0 && path[0] === "/" ? path.slice(1) : path)}`;
+
+export const signInURLWithRedirect = () => withBasePath(`${SIGN_IN_URL}?redirect=${window.location.href}`);
 
 
 export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));

@@ -12,8 +12,15 @@ import "antd/es/menu/style/css";
 
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
-import {SIGN_IN_URL, SIGN_OUT_URL} from "../constants";
-import {BASE_PATH, matchingMenuKeys, nodeInfoDataPropTypesShape, renderMenuItem, withBasePath} from "../utils";
+import {SIGN_OUT_URL} from "../constants";
+import {
+    BASE_PATH,
+    matchingMenuKeys,
+    nodeInfoDataPropTypesShape,
+    renderMenuItem,
+    signInURLWithRedirect,
+    withBasePath
+} from "../utils";
 
 
 class SiteHeader extends Component {
@@ -56,7 +63,7 @@ class SiteHeader extends Component {
                 style: {float: "right"},
                 icon: <Icon type="login" />,
                 text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
-                onClick: () => window.location.href = withBasePath(SIGN_IN_URL),
+                onClick: () => window.location.href = signInURLWithRedirect(),
             }]),
             {
                 url: withBasePath("notifications"),

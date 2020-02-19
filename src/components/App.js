@@ -8,8 +8,6 @@ import {Layout, Modal} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/modal/style/css";
 
-import {SIGN_IN_URL} from "../constants";
-
 import OwnerRoute from "./OwnerRoute";
 
 import NotificationDrawer from "./notifications/NotificationDrawer";
@@ -26,7 +24,7 @@ import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
-import {BASE_PATH, urlPath, withBasePath} from "../utils";
+import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils";
 
 class App extends Component {
     constructor(props) {
@@ -51,14 +49,14 @@ class App extends Component {
         return (
             <>
                 <Modal title="You have been signed out"
-                       onOk={() => window.location.href = withBasePath(SIGN_IN_URL)}
+                       onOk={() => window.location.href = signInURLWithRedirect()}
                        onCancel={() => {
                            this.clearPingInterval();  // Stop pinging until the user decides to sign in again
                            this.setState({signedOutModal: false});  // Close the modal
                            // TODO: Set a new interval at a slower rate
                        }}
                        visible={this.state.signedOutModal}>
-                    Please <a href={withBasePath(SIGN_IN_URL)}>sign in</a> again to continue working.
+                    Please <a href={signInURLWithRedirect()}>sign in</a> again to continue working.
                 </Modal>
                 <Layout style={{minHeight: "100vh"}}>
                     <NotificationDrawer />
