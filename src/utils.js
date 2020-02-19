@@ -1,7 +1,9 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
+
 import {Menu} from "antd";
+import "antd/es/menu/style/css";
 
 import {SIGN_IN_URL} from "./constants";
 
