@@ -29,13 +29,18 @@ import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils"
 class App extends Component {
     constructor(props) {
         super(props);
+
+        /** @type {null|io.Manager} */
         this.eventRelayConnection = null;
+
         this.pingInterval = null;
         this.lastUser = null;
 
         this.state = {
             signedOutModal: false
         };
+
+        this.createEventRelayConnectionIfNecessary = this.createEventRelayConnectionIfNecessary.bind(this);
     }
 
     clearPingInterval() {
@@ -80,23 +85,42 @@ class App extends Component {
         );
     }
 
+    createEventRelayConnectionIfNecessary() {
+        this.eventRelayConnection = (() => {
+            if (this.eventRelayConnection) {
+                // Update existing event relay connection's reconnection option
+                this.eventRelayConnection.reconnection(!!this.props.user);
+                return this.eventRelayConnection;
+            }
+
+            // Don't bother trying to create the event relay connection if the user isn't authenticated
+            if (!this.props.user) return null;
+
+            const url = (this.props.eventRelay || {url: null}).url || null;
+            return url ? (() => io(BASE_PATH, {
+                path: `${urlPath(url)}/private/socket.io`,
+                reconnection: !!this.props.user  // Only try to reconnect if we're authenticated
+            }).on("events", message => eventHandler(message, this.props.history)))() : null;
+        })();
+    }
+
     async componentDidMount() {
         await this.props.dispatch(fetchUserAndDependentData(async () => {
             await this.props.dispatch(fetchPeersOrError());
-            this.eventRelayConnection = (() => {
-                if (this.eventRelayConnection) return this.eventRelayConnection;
-                const url = (this.props.eventRelay || {url: null}).url || null;
-                return url ? (() => io(BASE_PATH, {path: `${urlPath(url)}/private/socket.io`})
-                    .on("events", message => eventHandler(message, this.props.history)))() : null;
-            })();
+            this.createEventRelayConnectionIfNecessary();
         }));
 
         // TODO: Refresh other data
         this.pingInterval = setInterval(async () => {
             await this.props.dispatch(fetchUserAndDependentData());
             if (this.lastUser !== null && this.props.user === null) {
-                // We got de-authenticated, so show a prompt
+                // We got de-authenticated, so show a prompt...
                 this.setState({signedOutModal: true});
+                // ... and disable constant websocket pinging if necessary
+                if (this.eventRelayConnection) this.eventRelayConnection.reconnection(false);
+            } else if (this.lastUser === null && this.props.user && this.eventRelayConnection) {
+                // We got authenticated, so re-enable reconnection on the websocket
+                this.createEventRelayConnectionIfNecessary();
             }
             this.lastUser = this.props.user;
         }, 30000);  // TODO: Variable rate
