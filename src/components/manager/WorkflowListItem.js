@@ -49,7 +49,7 @@ class WorkflowListItem extends Component {
         const outputs = this.props.workflow.outputs.map(o => {
             let formattedOutput = o.value;
 
-            [...o.value.matchAll(/{(.*)}/)].forEach(([_, id]) => {
+            [...o.value.matchAll(/{(.*)}/g)].forEach(([_, id]) => {
                 formattedOutput = formattedOutput.replace(`{${id}}`, {
                     ...inputExtensions,
                     "": o.hasOwnProperty("map_from_input") ? inputExtensions[o.map_from_input] : undefined
