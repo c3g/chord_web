@@ -33,42 +33,6 @@ class DatasetTables extends Component {
             selectedTable: null,
         };
 
-        this.tableListColumns = [
-            {title: "ID", dataIndex: "table_id"},
-            {
-                title: "Name",
-                dataIndex: "name",
-                render: n => (n ? n : NA_TEXT),
-                defaultSortOrder: "ascend",
-                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
-            },
-            {title: "Data Type", dataIndex: "data_type"},
-            ...(this.props.mode === "private" ? [
-                {
-                    title: "Actions",
-                    key: "actions",
-                    width: 230, /*330,*/
-                    render: t => (
-                        <Row gutter={10}>
-                            <Col span={12}>
-                                <Button icon="import"
-                                        style={{width: "100%"}}
-                                        onClick={() => (this.props.onTableIngest || nop)(this.props.project, t)}>
-                                    Ingest
-                                </Button>
-                            </Col>
-                            {/* TODO: Edit Table Name: v0.2 */}
-                            {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
-                            <Col span={12}><Button type="danger"
-                                                   icon="delete"
-                                                   onClick={() => this.handleTableDeletionClick(t)}
-                                                   style={{width: "100%"}}>Delete</Button></Col>
-                        </Row>
-                    )
-                }
-            ] : [])
-        ];
-
         this.handleAdditionClick = this.handleAdditionClick.bind(this);
         this.handleAdditionCancel = this.handleAdditionCancel.bind(this);
         this.handleAdditionSubmit = this.handleAdditionSubmit.bind(this);
@@ -114,6 +78,42 @@ class DatasetTables extends Component {
     }
 
     render() {
+        const tableListColumns = [
+            {title: "ID", dataIndex: "table_id"},
+            {
+                title: "Name",
+                dataIndex: "name",
+                render: n => (n ? n : NA_TEXT),
+                defaultSortOrder: "ascend",
+                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
+            },
+            {title: "Data Type", dataIndex: "data_type"},
+            ...(this.props.isPrivate ? [
+                {
+                    title: "Actions",
+                    key: "actions",
+                    width: 230, /*330,*/
+                    render: t => (
+                        <Row gutter={10}>
+                            <Col span={12}>
+                                <Button icon="import"
+                                        style={{width: "100%"}}
+                                        onClick={() => (this.props.onTableIngest || nop)(this.props.project, t)}>
+                                    Ingest
+                                </Button>
+                            </Col>
+                            {/* TODO: Edit Table Name: v0.2 */}
+                            {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
+                            <Col span={12}><Button type="danger"
+                                                   icon="delete"
+                                                   onClick={() => this.handleTableDeletionClick(t)}
+                                                   style={{width: "100%"}}>Delete</Button></Col>
+                        </Row>
+                    )
+                }
+            ] : [])
+        ];
+
         const dataset = this.props.dataset || {};
         return (
             <>
@@ -141,7 +141,7 @@ class DatasetTables extends Component {
                        dataSource={(dataset.tables || []).map(t => ({...t, name: t.name || null}))}
                        rowKey="table_id"
                        // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
-                       columns={this.tableListColumns}
+                       columns={tableListColumns}
                        loading={this.props.isFetchingTables} />
 
                 <TableAdditionModal visible={this.state.additionModalVisible}
