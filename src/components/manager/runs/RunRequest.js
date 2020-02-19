@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 
 import {Descriptions, List} from "antd";
-
 import "antd/es/descriptions/style/css";
 import "antd/es/list/style/css";
 
@@ -28,10 +27,13 @@ class RunRequest extends Component {
                         {details.request.workflow_url}
                     </a>
                 </Descriptions.Item>
-                <Descriptions.Item label="Workflow">
+                <Descriptions.Item label="Workflow" span={3}>
                     <List itemLayout="vertical">
                         <WorkflowListItem workflow={details.request.tags.workflow_metadata} />
                     </List>
+                </Descriptions.Item>
+                <Descriptions.Item label="Tags">
+                    <pre style={{margin: 0}}>{JSON.stringify(details.request.tags, null, 4)}</pre>
                 </Descriptions.Item>
             </Descriptions>
         );
