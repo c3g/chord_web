@@ -18,10 +18,7 @@ import DataUseDisplay from "../../../DataUseDisplay";
 
 import {
     deleteProjectDatasetIfPossible,
-    addProjectTable,
     deleteDatasetLinkedFieldSetIfPossible,
-    deleteProjectTableIfPossible,
-    fetchProjectsWithDatasetsAndTables
 } from "../../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../../duo";
@@ -322,10 +319,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     deleteProjectDataset: async dataset => await dispatch(deleteProjectDatasetIfPossible(ownProps.project, dataset)),
     deleteLinkedFieldSet: async (dataset, linkedFieldSet, linkedFieldSetIndex) =>
         await dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
-    addProjectTable: async (datasetID, serviceID, dataTypeID, tableName) =>
-        await dispatch(addProjectTable(ownProps.project, datasetID, serviceID, dataTypeID, tableName)),
-    deleteProjectTable: async table => await dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
-    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dataset);

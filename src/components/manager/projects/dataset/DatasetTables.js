@@ -9,11 +9,16 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../utils";
-
 import DatasetOverview from "./DatasetOverview";
 import TableAdditionModal from "./table/TableAdditionModal";
 import TableDeletionModal from "./table/TableDeletionModal";
+
+import {
+    addProjectTable,
+    deleteProjectTableIfPossible,
+    fetchProjectsWithDatasetsAndTables
+} from "../../../../modules/metadata/actions";
+import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../utils";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -161,10 +166,21 @@ DatasetOverview.propTypes = {
     isFetchingTables: PropTypes.bool,
 
     serviceInfoByArtifact: PropTypes.object,
+
+    addProjectTable: PropTypes.func,
+    deleteProjectTable: PropTypes.func,
+    fetchProjectsWithDatasetsAndTables: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
     serviceInfoByArtifact: state.services.itemsByArtifact,
 });
 
-export default connect(mapStateToProps)(DatasetTables);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    addProjectTable: async (datasetID, serviceID, dataTypeID, tableName) =>
+        await dispatch(addProjectTable(ownProps.project, datasetID, serviceID, dataTypeID, tableName)),
+    deleteProjectTable: async table => await dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
+    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetTables);
