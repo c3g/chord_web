@@ -156,6 +156,7 @@ class DiscoverySearchCondition extends Component {
 
         if (!this.state.fieldSchema) return <div />;
 
+        // TODO: If required and there's only one of the type left, this should be true
         const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
             && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
 
