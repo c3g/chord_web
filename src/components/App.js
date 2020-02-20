@@ -120,8 +120,10 @@ class App extends Component {
                     this.eventRelayConnection = null;
                 }
             } else if (this.lastUser === null && this.props.user) {
-                // We got authenticated, so re-enable reconnection on the websocket
+                // We got authenticated, so re-enable reconnection on the websocket..
                 this.createEventRelayConnectionIfNecessary();
+                // ... and minimize the sign-in prompt modal if necessary
+                this.setState({signedOutModal: false});
             }
             this.lastUser = this.props.user;
         }, 30000);  // TODO: Variable rate
