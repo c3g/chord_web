@@ -1,28 +1,42 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
 
-import {Descriptions, List} from "antd";
+import {Descriptions, List, Tag} from "antd";
 import "antd/es/descriptions/style/css";
 import "antd/es/list/style/css";
+import "antd/es/tag/style/css";
 
 import WorkflowListItem from "../WorkflowListItem";
 
 class RunRequest extends Component {
     render() {
         const details = (this.props.run || {}).details || {};
+
+        const serviceID = details.request.tags.workflow_metadata.serviceID;
+        const tableDataType = details.request.tags.workflow_metadata.data_type;
+        const tableID = details.request.tags.table_id;
+        const tableName = ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[tableDataType]
+            || {}).tablesByID || {})[tableID] || {}).name;
+
+        // TODO: Link to some "table" page from the table description item here
+
         return (
             <Descriptions bordered>
-                <Descriptions.Item label={"Parameters"} span={3}>
+                <Descriptions.Item label="Table" span={3}>
+                    <Tag>{tableDataType}</Tag> {tableName ? `${tableName} (${tableID})` : tableID}
+                </Descriptions.Item>
+                <Descriptions.Item label="Parameters" span={3}>
                     <pre style={{margin: 0}}>{
                         JSON.stringify(details.request.workflow_params, null, 4)
                     }</pre>
                 </Descriptions.Item>
-                <Descriptions.Item label={"Workflow Type"}>
+                <Descriptions.Item label="Workflow Type">
                     {details.request.workflow_type}
                 </Descriptions.Item>
-                <Descriptions.Item label={"Workflow Type Version"}>
+                <Descriptions.Item label="Workflow Type Version">
                     {details.request.workflow_type_version}
                 </Descriptions.Item>
-                <Descriptions.Item label={"Workflow URL"}>
+                <Descriptions.Item label="Workflow URL">
                     <a href={details.request.workflow_url} target="_blank" rel="nofollow">
                         {details.request.workflow_url}
                     </a>
@@ -40,4 +54,8 @@ class RunRequest extends Component {
     }
 }
 
-export default RunRequest;
+const mapStateToProps = state => ({
+    tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+});
+
+export default connect(mapStateToProps)(RunRequest);
