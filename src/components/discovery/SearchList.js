@@ -141,7 +141,7 @@ class SearchList extends Component {
                               onChange={i => this.handleSearchSelect(i)}>
                         {[...this.props.searches].reverse().map((s, i) => {
                             const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
-                                r ? r.map(d => ({...d, node: n})) : []);
+                                r ? r.map(d => ({...d, node: n})) : []);  // TODO: Report node response errors
                             const title = `Search ${this.props.searches.length - i}: ${searchResults.length} result${
                                 searchResults.length === 1 ? "" : "s"}`;
                             return (
