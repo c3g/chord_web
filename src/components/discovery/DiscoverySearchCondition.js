@@ -133,13 +133,14 @@ class DiscoverySearchCondition extends Component {
 
     getRHSInput(valueWidth) {
         if (this.state.fieldSchema.hasOwnProperty("enum") || this.state.fieldSchema.type === "boolean") {
+            // Prefix select keys in case there's a "blank" item in the enum, which throws an error
             return (
                 <Select style={getInputStyle(valueWidth)} onChange={this.handleSearchSelectValue}
                         value={this.getSearchValue()} showSearch
                         filterOption={(i, o) =>
                             o.props.children.toLocaleLowerCase().includes(i.toLocaleLowerCase())}>
                     {(this.state.fieldSchema.type === "boolean" ? BOOLEAN_OPTIONS : this.state.fieldSchema.enum)
-                        .map(v => <Select.Option key={v}>{v}</Select.Option>)}
+                        .map(v => <Select.Option key={`_${v}`} value={v}>{v}</Select.Option>)}
                 </Select>
             );
         }
@@ -224,7 +225,7 @@ class DiscoverySearchCondition extends Component {
                         "fieldSchema2",
                         joinedSchema,
                         {...getInputStyle(valueWidth, 2), borderRadius: "0"}
-                    ): this.getRHSInput(valueWidth)}
+                    ) : this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
                     <Button type="danger" style={{width: `${CLOSE_WIDTH}px`}} disabled={this.props.removeDisabled}
                             onClick={this.props.onRemoveClick || nop} icon="close" />
