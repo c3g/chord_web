@@ -62,7 +62,7 @@ class SiteHeader extends Component {
                 key: "sign-in",
                 style: {float: "right"},
                 icon: <Icon type="login" />,
-                text: <span className="nav-text">{this.props.userFetching ? "Loading..." : "Sign In"}</span>,
+                text: <span className="nav-text">{this.props.authHasAttempted ? "Sign In" : "Loading..."}</span>,
                 onClick: () => window.location.href = signInURLWithRedirect(),
             }]),
             {
@@ -103,14 +103,14 @@ class SiteHeader extends Component {
 
 SiteHeader.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
+    unreadNotifications: PropTypes.array,
     user: PropTypes.shape({
         chord_user_role: PropTypes.string.isRequired,
         email_verified: PropTypes.bool,
         preferred_username: PropTypes.string,
         sub: PropTypes.string.isRequired,
     }),
-    userFetching: PropTypes.bool,
-    unreadNotifications: PropTypes.array,
+    authHasAttempted: PropTypes.bool,
     isOwner: PropTypes.bool,
 };
 
@@ -118,7 +118,7 @@ const mapStateToProps = state => ({
     nodeInfo: state.nodeInfo.data,
     unreadNotifications: state.notifications.items.filter(n => !n.read),
     user: state.auth.user,
-    userFetching: state.auth.isFetching,
+    authHasAttempted: state.auth.hasAttempted,
     isOwner: (state.auth.user || {}).chord_user_role === "owner"
 });
 
