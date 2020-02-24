@@ -146,7 +146,9 @@ class DiscoverySearchCondition extends Component {
         }
 
         return (
-            <Input style={getInputStyle(valueWidth)} placeholder="value" onChange={this.handleSearchValue}
+            <Input style={getInputStyle(valueWidth)}
+                   placeholder="value"
+                   onChange={this.handleSearchValue}
                    value={this.getSearchValue()} />
         );
     }
@@ -206,7 +208,8 @@ class DiscoverySearchCondition extends Component {
                     </Select>
                 ) : null}
                 {this.equalsOnly() ? null : (  // Operation select
-                    <Select style={{width: `${OPERATION_WIDTH}px`, float: "left"}} value={this.state.operation}
+                    <Select style={{width: `${OPERATION_WIDTH}px`, float: "left"}}
+                            value={this.state.operation}
                             onChange={this.handleOperation}>
                         {operationOptions}
                     </Select>
@@ -219,8 +222,11 @@ class DiscoverySearchCondition extends Component {
                         {...getInputStyle(valueWidth, 2), borderRadius: "0"}
                     ) : this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
-                    <Button type="danger" style={{width: `${CLOSE_WIDTH}px`}} disabled={this.props.removeDisabled}
-                            onClick={this.props.onRemoveClick || nop} icon="close" />
+                    <Button type="danger"
+                            icon="close"
+                            style={{width: `${CLOSE_WIDTH}px`}}
+                            disabled={this.props.removeDisabled}
+                            onClick={this.props.onRemoveClick || nop} />
                 ) : null}
             </Input.Group>
         );
