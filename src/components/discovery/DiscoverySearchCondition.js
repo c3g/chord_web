@@ -167,14 +167,6 @@ class DiscoverySearchCondition extends Component {
             + (this.equalsOnly() ? 0 : OPERATION_WIDTH - 1)
             + (canRemove ? CLOSE_WIDTH - 1 : 0);
 
-        const joinedSchema = {
-            "type": "object",
-            "properties": Object.fromEntries(Object.entries(this.props.dataTypes).map(([k, v]) => [k, {
-                "type": "array",
-                "items": v.schema
-            }]))
-        };
-
 
         const schemaTreeSelect = (fieldKey, fieldSchemaKey, schema, style) => (
             <SchemaTreeSelect
@@ -196,7 +188,7 @@ class DiscoverySearchCondition extends Component {
                 {schemaTreeSelect(  // LHS TODO: Redo base level name
                     "field",
                     "fieldSchema",
-                    conditionType === "join" ? joinedSchema : (this.state.dataType || {}).schema,
+                    conditionType === "join" ? this.props.joinedSchema : (this.state.dataType || {}).schema,
                     {
                         ...(conditionType === "join"
                             ? getInputStyle(valueWidth,2)
@@ -223,7 +215,7 @@ class DiscoverySearchCondition extends Component {
                     schemaTreeSelect(
                         "field2",
                         "fieldSchema2",
-                        joinedSchema,
+                        this.props.joinedSchema,
                         {...getInputStyle(valueWidth, 2), borderRadius: "0"}
                     ) : this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
@@ -238,7 +230,7 @@ class DiscoverySearchCondition extends Component {
 DiscoverySearchCondition.propTypes = {
     conditionType: PropTypes.oneOf(["data-type", "join"]),
     dataType: PropTypes.object,
-    dataTypes: PropTypes.object,
+    joinedSchema: PropTypes.object,
     isExcluded: PropTypes.func,
     value: PropTypes.object,
     onFieldChange: PropTypes.func,
@@ -248,7 +240,13 @@ DiscoverySearchCondition.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    dataTypes: state.serviceDataTypes.itemsByID
+    joinedSchema: {
+        type: "object",
+        properties: Object.fromEntries(Object.entries(state.serviceDataTypes.itemsByID).map(([k, v]) => [k, {
+            type: "array",
+            items: v.schema
+        }]))
+    },
 });
 
 export default connect(mapStateToProps, null, null, {forwardRef: true})(DiscoverySearchCondition);
