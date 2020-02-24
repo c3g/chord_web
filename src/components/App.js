@@ -41,6 +41,7 @@ class App extends Component {
         };
 
         this.createEventRelayConnectionIfNecessary = this.createEventRelayConnectionIfNecessary.bind(this);
+        this.refreshUserAndDependentData = this.refreshUserAndDependentData.bind(this);
     }
 
     clearPingInterval() {
@@ -102,6 +103,26 @@ class App extends Component {
         })();
     }
 
+    // TODO: Don't execute on focus if it's been checked recently
+    async refreshUserAndDependentData() {
+        await this.props.dispatch(fetchUserAndDependentData());
+        if (this.lastUser !== null && this.props.user === null) {
+            // We got de-authenticated, so show a prompt...
+            this.setState({signedOutModal: true});
+            // ... and disable constant websocket pinging if necessary by removing existing connections
+            if (this.eventRelayConnection) {
+                this.eventRelayConnection.close();
+                this.eventRelayConnection = null;
+            }
+        } else if (this.lastUser === null && this.props.user) {
+            // We got authenticated, so re-enable reconnection on the websocket..
+            this.createEventRelayConnectionIfNecessary();
+            // ... and minimize the sign-in prompt modal if necessary
+            this.setState({signedOutModal: false});
+        }
+        this.lastUser = this.props.user;
+    }
+
     async componentDidMount() {
         await this.props.dispatch(fetchUserAndDependentData(async () => {
             await this.props.dispatch(fetchPeersOrError());
@@ -109,24 +130,9 @@ class App extends Component {
         }));
 
         // TODO: Refresh other data
-        this.pingInterval = setInterval(async () => {
-            await this.props.dispatch(fetchUserAndDependentData());
-            if (this.lastUser !== null && this.props.user === null) {
-                // We got de-authenticated, so show a prompt...
-                this.setState({signedOutModal: true});
-                // ... and disable constant websocket pinging if necessary by removing existing connections
-                if (this.eventRelayConnection) {
-                    this.eventRelayConnection.close();
-                    this.eventRelayConnection = null;
-                }
-            } else if (this.lastUser === null && this.props.user) {
-                // We got authenticated, so re-enable reconnection on the websocket..
-                this.createEventRelayConnectionIfNecessary();
-                // ... and minimize the sign-in prompt modal if necessary
-                this.setState({signedOutModal: false});
-            }
-            this.lastUser = this.props.user;
-        }, 30000);  // TODO: Variable rate
+        // TODO: Variable rate
+        this.pingInterval = setInterval(this.refreshUserAndDependentData, 30000);
+        window.addEventListener("focus", () => this.refreshUserAndDependentData());
     }
 
     componentWillUnmount() {
