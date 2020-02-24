@@ -26,7 +26,7 @@ const getInputStyle = (valueWidth, div=1) => ({width: `calc(${100 / div}% - ${va
 
 const toStringOrNull = x => x === null ? null : x.toString();
 
-const getSchemaTypeTransformer = type => {
+export const getSchemaTypeTransformer = type => {
     switch (type) {
         case "integer":
             return [s => parseInt(s, 10), toStringOrNull];
@@ -156,7 +156,6 @@ class DiscoverySearchCondition extends Component {
 
         if (!this.state.fieldSchema) return <div />;
 
-        // TODO: If required and there's only one of the type left, this should be true
         const canRemove = !(this.state.fieldSchema.search.hasOwnProperty("type")
             && this.state.fieldSchema.search.type === "single" && this.state.fieldSchema.search.required);
 

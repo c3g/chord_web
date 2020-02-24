@@ -52,6 +52,8 @@ class DiscoverySearchContent extends Component {
 
         this.handleAddDataTypeQueryForm = this.handleAddDataTypeQueryForm.bind(this);
         this.handleTabsEdit = this.handleTabsEdit.bind(this);
+
+        this.forms = {};
     }
 
     handleFormChange(dataType, fields) {
@@ -59,7 +61,16 @@ class DiscoverySearchContent extends Component {
     }
 
     handleSubmit() {
-        this.props.performFullSearchIfPossible();
+        Object.entries(this.forms).filter(f => f[1]).forEach(([_dt, f]) => {
+            f.props.form.validateFields({force: true}, err => {
+                if (err) {
+                    console.error(err);
+                    // TODO: If error, switch to errored tab
+                    return;
+                }
+                this.props.performFullSearchIfPossible();
+            });
+        });
     }
 
     handleSchemasToggle() {
@@ -92,6 +103,7 @@ class DiscoverySearchContent extends Component {
                                      dataType={d.dataType}
                                      formValues={d.formValues}
                                      loading={this.props.searchLoading}
+                                     wrappedComponentRef={form => this.forms[d.dataType.id] = form}
                                      onChange={fields => this.handleFormChange(d.dataType, fields)} />
             </Tabs.TabPane>
         ));

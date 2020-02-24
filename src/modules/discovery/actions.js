@@ -32,20 +32,22 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
 
 
 
-const conditionsToQuery = conditions => conditions
-    .filter(c => c.value && c.value.field)
-    .map(({value}) =>
-        (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
-            [`#${value.operation}`,
-                ["#resolve", ...value.field.split(".").slice(1)],
-                value.field2 ? ["#resolve", ...value.field2.split(".").slice(1)] : value.searchValue]
-        ))
-    .reduce((se, v) => ["#and", se, v]);
+const conditionsToQuery = conditions => {
+    const filteredConditions = conditions.filter(c => c.value && c.value.field);
+    if (filteredConditions.length === 0) return null;
+
+    return filteredConditions
+        .map(({value}) =>
+            (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
+                [`#${value.operation}`,
+                    ["#resolve", ...value.field.split(".").slice(1)],
+                    value.field2 ? ["#resolve", ...value.field2.split(".").slice(1)] : value.searchValue]
+            ))
+        .reduce((se, v) => ["#and", se, v]);
+};
 
 export const performFullSearchIfPossible = () => async (dispatch, getState) => {
     if (getState().discovery.isFetching) return;
-
-    // TODO: Check that forms are valid first (via refs somehow - passed as arguments?)
 
     // TODO: Map keys to avoid issues!!! Otherwise "deleted" conditions show up
 
@@ -54,7 +56,9 @@ export const performFullSearchIfPossible = () => async (dispatch, getState) => {
             (((d.formValues || {keys: {value: []}}).keys || {value: []}).value || [])
                 .map(k => ((d.formValues || {conditions: []}).conditions || [])[k] || null)
                 .filter(c => c !== null)
-        )]));
+        )]).filter(c => c[1] !== null));
+
+    if (dataTypeQueries.length === 0) return;  // TODO: Report this; blank data type query (should be caught earlier)
 
     // TODO: Add data types and [item] to resolve...
 

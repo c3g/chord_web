@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Button, Form, Icon} from "antd";
 import "antd/es/button/style/css";
@@ -8,13 +9,39 @@ import "antd/es/icon/style/css";
 import {getFieldSchema, getFields} from "../../schema";
 import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS} from "../../search";
 
-import DiscoverySearchCondition from "./DiscoverySearchCondition";
+import DiscoverySearchCondition, {getSchemaTypeTransformer} from "./DiscoverySearchCondition";
+
+
+// noinspection JSUnusedGlobalSymbols
+const CONDITION_RULES = [
+    {
+        validator: (rule, value, cb) => {
+            if (value.field === undefined) {
+                cb("A field must be specified for this search condition.");
+            }
+
+            const searchValue = getSchemaTypeTransformer(value.fieldSchema.type)[1](value.searchValue);
+            const isEnum = value.fieldSchema.hasOwnProperty("enum");
+
+            // noinspection JSCheckFunctionSignatures
+            if (searchValue === null
+                    || (!isEnum && !searchValue)
+                    || (isEnum && !value.fieldSchema.enum.includes(searchValue))) {
+                cb("This field is required.");
+            }
+
+            cb();
+        }
+    }
+
+];
+
 
 class DiscoverySearchForm extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {conditionsHelp: {}};
+        this.state = {conditionsHelp: {}, fieldSchemas: {}};
         this.initialValues = {};
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -50,7 +77,7 @@ class DiscoverySearchForm extends Component {
         this.setState({
             conditionsHelp: {
                 ...this.state.conditionsHelp,
-                [k]: change.fieldSchema.description || undefined
+                [k]: change.fieldSchema.description || undefined,
             }
         })
     }
@@ -107,7 +134,9 @@ class DiscoverySearchForm extends Component {
 
         // Initialize new condition, otherwise the state won't get it
         this.props.form.getFieldDecorator(`conditions[${newKey}]`, {
-            initialValue: this.initialValues[`conditions[${newKey}]`]
+            initialValue: this.initialValues[`conditions[${newKey}]`],
+            validateTrigger: false,  // only when called manually
+            rules: CONDITION_RULES,
         });
 
         this.props.form.setFieldsValue({
@@ -130,11 +159,13 @@ class DiscoverySearchForm extends Component {
     }
 
     render() {
+        const getCondition = ck => this.props.form.getFieldValue(`conditions[${ck}]`);
+
         this.props.form.getFieldDecorator("keys", {initialValue: []}); // Initialize keys if needed
         const keys = this.props.form.getFieldValue("keys");
         const existingUniqueFields = keys
             .filter(k => k !== undefined)
-            .map(k => this.props.form.getFieldValue(`conditions[${k}]`).field)
+            .map(k => getCondition(k).field)
             .filter(f => f !== undefined && this.cannotBeUsed(f));
 
         const formItems = keys.map((k, i) => (
@@ -149,23 +180,27 @@ class DiscoverySearchForm extends Component {
             }} label={`Condition ${i+1}`} help={this.state.conditionsHelp[k] || undefined}>
                 {this.props.form.getFieldDecorator(`conditions[${k}]`, {
                     initialValue: this.initialValues[`conditions[${k}]`],
-                    rules: [
-                        {
-                            validator: (rule, value, cb) => {
-                                cb(value.field === undefined
-                                    ? "A field must be specified for this search condition."
-                                    : []);
-                            }
-                        }
-
-                    ]
+                    validateTrigger: false,  // only when called manually
+                    rules: CONDITION_RULES
                 })(
                     <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
                                               dataType={this.props.dataType}
                                               isExcluded={f => existingUniqueFields.includes(f) || this.isNotPublic(f)}
                                               onFieldChange={change => this.handleFieldChange(k, change)}
                                               onRemoveClick={() => this.removeCondition(k)}
-                                              removeDisabled={keys.length <= 1 && this.props.conditionType !== "join"}/>
+                                              removeDisabled={(() => {
+                                                  if (this.props.conditionType === "join") return false;
+                                                  if (keys.length <= 1) return true;
+
+                                                  const conditionValue = getCondition(k);
+
+                                                  // If no field has been selected, it's removable
+                                                  if (!conditionValue.field) return false;
+
+                                                  return keys.map(getCondition)
+                                                      .filter(cv => ((cv.fieldSchema || {}).search || {}).required
+                                                          && cv.field === conditionValue.field).length <= 1;
+                                              })()} />
                 )}
             </Form.Item>
         ));
@@ -185,6 +220,12 @@ class DiscoverySearchForm extends Component {
         );
     }
 }
+
+DiscoverySearchForm.propTypes = {
+    conditionType: PropTypes.oneOf(["data-type", "join"]),
+    dataType: PropTypes.object,  // TODO: Shape?
+    // TODO
+};
 
 export default Form.create({
     mapPropsToFields: ({formValues}) => ({
