@@ -39,6 +39,8 @@ module.exports = {
             template: path.resolve(__dirname, "./src/template.html"),
             hash: true,
         }),
-        new webpack.EnvironmentPlugin(["CHORD_URL"])
+        new webpack.EnvironmentPlugin({
+            CHORD_URL: null,
+        })
     ]
 };
