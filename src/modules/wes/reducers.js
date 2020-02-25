@@ -9,7 +9,16 @@ import {
 } from "./actions";
 
 
-const streamRequest = (state, action, stream) => {
+const INITIAL_RUNS_STATE = {
+    isFetching: false,
+    isSubmittingIngestionRun: false,
+    items: [],
+    itemsByID: {},
+    streamsByID: {},
+};
+
+
+const streamRequest = (state = INITIAL_RUNS_STATE, action, stream) => {
     const existingRun = (state.streamsByID[action.runID] || {});
     const existingStreamData = (existingRun[stream] || {}).data;
     return {
@@ -24,7 +33,7 @@ const streamRequest = (state, action, stream) => {
     };
 };
 
-const streamReceive = (state, action, stream) => ({
+const streamReceive = (state = INITIAL_RUNS_STATE, action, stream) => ({
     ...state,
     streamsByID: {
         ...state.streamsByID,
@@ -35,7 +44,7 @@ const streamReceive = (state, action, stream) => ({
     }
 });
 
-const streamError = (state, action, stream) => {
+const streamError = (state = INITIAL_RUNS_STATE, action, stream) => {
     const existingRun = (state.streamsByID[action.runID] || {});
     const existingStreamData = (existingRun[stream] || {}).data;
     return {
@@ -52,13 +61,7 @@ const streamError = (state, action, stream) => {
 
 
 export const runs = (
-    state = {
-        isFetching: false,
-        isSubmittingIngestionRun: false,
-        items: [],
-        itemsByID: {},
-        streamsByID: {},
-    },
+    state = INITIAL_RUNS_STATE,
     action
 ) => {
     switch (action.type) {

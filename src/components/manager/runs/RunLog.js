@@ -11,7 +11,15 @@ import {fetchRunLogStreamsIfPossibleAndNeeded} from "../../../modules/wes/action
 
 class RunLog extends Component {
     componentDidMount() {
-        this.props.fetchRunLogStreamsIfPossibleAndNeeded(this.props.run.run_id);
+        if (!this.props.isFetchingRuns) {
+            this.props.fetchRunLogStreamsIfPossibleAndNeeded(this.props.run.run_id);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.isFetchingRuns && !this.props.isFetchingRuns) {
+            this.props.fetchRunLogStreamsIfPossibleAndNeeded(this.props.run.run_id);
+        }
     }
 
     render() {
@@ -57,7 +65,8 @@ RunLog.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    runLogStreams: state.runs.streamsByID
+    isFetchingRuns: state.runs.isFetching,
+    runLogStreams: state.runs.streamsByID,
 });
 
 const mapDispatchToProps = dispatch => ({
