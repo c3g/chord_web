@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 
-import {Checkbox, List, Icon, Radio, Typography} from "antd";
+import { StopOutlined } from '@ant-design/icons';
+
+import { Checkbox, List, Radio, Typography } from "antd";
 
 import "antd/es/checkbox/style/css";
 import "antd/es/list/style/css";
@@ -135,27 +137,33 @@ export default class DataUseInput extends Component {
                     </Typography.Title>
                     <List itemLayout="horizontal" style={{maxWidth: "600px"}}
                           dataSource={DATA_USE_KEYS}
-                          renderItem={u => (
-                              <List.Item>
-                                  <List.Item.Meta avatar={
-                                      u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
-                                          // Special case for non-profit use; stack two icons (dollar + stop) to
-                                          // create a custom synthetic icon.
-                                          <div style={{opacity: 0.65}}>
-                                              <Icon style={{fontSize: "24px", color: "black"}}
-                                                    type={DATA_USE_INFO[u].icon} />
-                                              <Icon style={{fontSize: "24px", marginLeft: "-24px", color: "black"}}
-                                                    type="stop" />
-                                          </div>
-                                      ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
-                                  } title={
-                                      <Checkbox checked={this.state.data_use_requirements.map(c => c.code).includes(u)}
-                                                onChange={e => this.handleDURChange(e, u)}>
-                                          {DATA_USE_INFO[u].title}
-                                      </Checkbox>
-                                  } description={DATA_USE_INFO[u].content} />
-                              </List.Item>
-                          )} />
+                          renderItem={u => {
+                              const DataUseIcon = DATA_USE_INFO[u].icon;
+                              return (
+                                  <List.Item>
+                                      <List.Item.Meta avatar={
+                                          u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
+                                              // Special case for non-profit use; stack two icons (dollar + stop) to
+                                              // create a custom synthetic icon.
+                                              <div style={{opacity: 0.65}}>
+                                                  <DataUseIcon style={{fontSize: "24px", color: "black"}} />
+                                                  <StopOutlined style={{
+                                                      fontSize: "24px",
+                                                      marginLeft: "-24px",
+                                                      color: "black"
+                                                  }} />
+                                              </div>
+                                          ) : <DataUseIcon style={{fontSize: "24px"}} />
+                                      } title={
+                                          <Checkbox checked={this.state.data_use_requirements.map(c => c.code)
+                                              .includes(u)}
+                                                    onChange={e => this.handleDURChange(e, u)}>
+                                              {DATA_USE_INFO[u].title}
+                                          </Checkbox>
+                                      } description={DATA_USE_INFO[u].content} />
+                                  </List.Item>
+                              )
+                          }} />
                 </div>
             </>
         );

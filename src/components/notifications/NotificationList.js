@@ -6,6 +6,8 @@ import {Button, List} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/list/style/css";
 
+import {ReadOutlined} from "@ant-design/icons";
+
 import {hideNotificationDrawer, markNotificationAsRead} from "../../modules/notifications/actions";
 
 import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../notifications";
@@ -55,7 +57,7 @@ class NotificationList extends Component {
                       <List.Item key={n.id} actions={[
                           ...this.getNotificationActions(n),
                           <Button type="link"
-                                  icon="read"
+                                  icon={<ReadOutlined />}
                                   style={{padding: 0}}
                                   onClick={() => this.props.markNotificationAsRead(n.id)}>
                               Mark as Read

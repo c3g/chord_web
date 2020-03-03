@@ -3,10 +3,19 @@ import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Badge, Icon, Layout, Menu} from "antd";
+import {
+    ApartmentOutlined,
+    BellOutlined,
+    DashboardOutlined,
+    FileSearchOutlined,
+    FolderOpenOutlined,
+    LoginOutlined,
+    LogoutOutlined,
+    UserOutlined,
+} from '@ant-design/icons';
 
+import {Badge, Layout, Menu} from "antd";
 import "antd/es/badge/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 
@@ -28,40 +37,40 @@ class SiteHeader extends Component {
         const menuItems = [
             {
                 url: withBasePath("dashboard"),
-                icon: <Icon type="dashboard" />,
+                icon: <DashboardOutlined />,
                 text: <span className="nav-text">Dashboard</span>,
             },
             {
                 url: withBasePath("data/discovery"),
-                icon: <Icon type="file-search" />,
+                icon: <FileSearchOutlined />,
                 text: <span className="nav-text">Data Discovery</span>,
             },
             {
                 url: withBasePath("data/manager"),
-                icon: <Icon type="folder-open" />,
+                icon: <FolderOpenOutlined />,
                 text: <span className="nav-text">Data Manager</span>,
                 disabled: !this.props.isOwner,
             },
             {
                 url: withBasePath("peers"),
-                icon: <Icon type="apartment" />,
+                icon: <ApartmentOutlined />,
                 text: <span className="nav-text">Peers</span>,
             },
             ...(this.props.user ? [{
                 key: "user-menu",
                 style: {float: "right"},
-                icon: <Icon type="user" />,
+                icon: <UserOutlined />,
                 text: this.props.user.preferred_username,
                 children: [{
                     key: "sign-out-link",
                     onClick: () => window.location.href = withBasePath(SIGN_OUT_URL),
-                    icon: <Icon type="logout" />,
+                    icon: <LogoutOutlined />,
                     text: <span className="nav-text">Sign Out</span>,
                 }]
             }] : [{
                 key: "sign-in",
                 style: {float: "right"},
-                icon: <Icon type="login" />,
+                icon: <LoginOutlined />,
                 text: <span className="nav-text">{this.props.authHasAttempted ? "Sign In" : "Loading..."}</span>,
                 onClick: () => window.location.href = signInURLWithRedirect(),
             }]),
@@ -70,7 +79,7 @@ class SiteHeader extends Component {
                 style: {float: "right"},
                 disabled: !this.props.isOwner,
                 icon: <Badge dot count={this.props.unreadNotifications.length}>
-                    <Icon type="bell" style={{marginRight: "0"}}/>
+                    <BellOutlined style={{marginRight: "0"}} />
                 </Badge>,
                 text: <span className="nav-text" style={{marginLeft: "10px"}}>
                     Notifications

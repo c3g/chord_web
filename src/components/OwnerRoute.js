@@ -2,7 +2,9 @@ import React from "react";
 import {connect} from "react-redux";
 import {Route} from "react-router-dom";
 
-import {Button, Empty, Icon, Layout} from "antd";
+import { LoginOutlined } from '@ant-design/icons';
+
+import { Button, Empty, Layout } from "antd";
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
@@ -13,7 +15,7 @@ import {signInURLWithRedirect, withBasePath} from "../utils";
 
 const signInIcon = (
     <div style={{textAlign: "center"}}>
-        <Icon type="login" style={{fontSize: 48}} />
+        <LoginOutlined style={{fontSize: 48}} />
     </div>
 );
 

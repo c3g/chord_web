@@ -7,6 +7,8 @@ import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/typography/style/css";
 
+import {DeleteOutlined} from "@ant-design/icons";
+
 import {nop} from "../../../../../utils";
 
 
@@ -19,7 +21,7 @@ class TableDeletionModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={() => (this.props.onCancel || nop)()}>Cancel</Button>,
                        <Button key="confirm"
-                               icon="delete"
+                               icon={<DeleteOutlined />}
                                type="danger"
                                onClick={() => (this.props.onSubmit || nop)()}
                                loading={this.props.isDeletingTable}>
@@ -33,7 +35,7 @@ class TableDeletionModal extends Component {
                     {/* TODO: Real terms and conditions */}
                 </Typography.Paragraph>
             </Modal>
-        )
+        );
     }
 }
 

@@ -1,12 +1,14 @@
 import React, {Component} from "react";
 
-import {Col, List, Icon, Row, Tag, Typography, Popover} from "antd";
-
+import {Col, List, Popover, Row, Tag, Typography} from "antd";
 import "antd/es/col/style/css";
-import "antd/es/icon/style/css";
+import "antd/es/list/style/css";
+import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/typography/style/css";
+
+import {StopOutlined} from '@ant-design/icons';
 
 import {
     DUO_NOT_FOR_PROFIT_USE_ONLY,
@@ -56,9 +58,9 @@ class DataUseDisplay extends Component {
                             {this.props.dataUse.consent_code.secondary_categories.length > 0
                                 ? this.props.dataUse.consent_code.secondary_categories.map(sc =>
                                     <Popover {...SECONDARY_CONSENT_CODE_INFO[sc.code]}
-                                             overlayStyle={{maxWidth: "576px"}}>
-                                        <Tag style={TAG_STYLING}
-                                             key={sc.code}>{sc.code}</Tag>
+                                             overlayStyle={{maxWidth: "576px"}}
+                                             key={sc.code}>
+                                        <Tag style={TAG_STYLING}>{sc.code}</Tag>
                                     </Popover>)
                                 : <Tag style={{...TAG_STYLING, background: "white", borderStyle: "dashed"}}>N/A</Tag>}
                         </Col>
@@ -71,22 +73,28 @@ class DataUseDisplay extends Component {
                     {/* TODO: Empty display when no restrictions present */}
                     <List itemLayout="horizontal" style={{maxWidth: "600px"}}
                           dataSource={DATA_USE_KEYS.filter(u => uses.includes(u))}
-                          renderItem={u => (
-                              <List.Item>
-                                  <List.Item.Meta avatar={
-                                      u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
-                                          // Special case for non-profit use; stack two icons (dollar + stop) to
-                                          // create a custom synthetic icon.
-                                          <div style={{opacity: 0.65}}>
-                                              <Icon style={{fontSize: "24px", color: "black"}}
-                                                    type={DATA_USE_INFO[u].icon} />
-                                              <Icon style={{fontSize: "24px", marginLeft: "-24px", color: "black"}}
-                                                    type="stop" />
-                                          </div>
-                                      ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
-                                  } title={DATA_USE_INFO[u].title} description={DATA_USE_INFO[u].content} />
-                              </List.Item>
-                          )} />
+                          renderItem={u => {
+                              const DataUseIcon = DATA_USE_INFO[u].icon;
+                              return (
+                                  <List.Item>
+                                      <List.Item.Meta avatar={
+                                          u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
+                                              // Special case for non-profit use; stack two icons (dollar + stop) to
+                                              // create a custom synthetic icon.
+                                              <div style={{opacity: 0.65}}>
+                                                  <DataUseIcon style={{fontSize: "24px", color: "black"}}
+                                                               type={DATA_USE_INFO[u].icon} />
+                                                  <StopOutlined style={{
+                                                      fontSize: "24px",
+                                                      marginLeft: "-24px",
+                                                      color: "black"
+                                                  }} />
+                                              </div>
+                                          ) : <DataUseIcon style={{fontSize: "24px"}} />
+                                      } title={DATA_USE_INFO[u].title} description={DATA_USE_INFO[u].content} />
+                                  </List.Item>
+                              )
+                          }} />
                 </div>
             </>
         );

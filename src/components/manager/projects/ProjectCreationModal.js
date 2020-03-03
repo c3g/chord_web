@@ -7,6 +7,8 @@ import {Button, Modal} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
 
+import {PlusOutlined} from "@ant-design/icons";
+
 import ProjectForm from "./ProjectForm";
 
 import {toggleProjectCreationModal} from "../../../modules/manager/actions";
@@ -42,12 +44,12 @@ class ProjectCreationModal extends Component {
         return (
             <Modal visible={this.props.showCreationModal} title="Create Project" width={600} footer={[
                 <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
-                <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}
+                <Button key="create" icon={<PlusOutlined />} type="primary" onClick={this.handleCreateSubmit}
                         loading={this.props.isCreatingProject}>Create</Button>
             ]} onCancel={this.handleCreateCancel}>
                 <ProjectForm ref={form => this.form = form} />
             </Modal>
-        )
+        );
     }
 }
 

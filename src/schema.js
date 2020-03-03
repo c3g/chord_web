@@ -1,8 +1,11 @@
 import React from "react";
 
 import {Button, Popover, Typography} from "antd";
+import "antd/es/button/style/css";
 import "antd/es/popover/style/css";
 import "antd/es/typography/style/css";
+
+import {QuestionCircleOutlined} from "@ant-design/icons";
 
 
 export const ROOT_SCHEMA_ID = "[dataset item]";
@@ -67,7 +70,7 @@ export const generateSchemaTreeData = (
                          title={<span style={{fontFamily: "monospace"}}>
                              {key.replace(`${ROOT_SCHEMA_ID}.`, "")}
                          </span>}>
-                    <Button icon="question-circle" type="link" size="small" style={{marginLeft: "8px"}}/>
+                    <Button icon={<QuestionCircleOutlined />} type="link" size="small" style={{marginLeft: "8px"}}/>
                 </Popover>
             ) : null}
         </span>,

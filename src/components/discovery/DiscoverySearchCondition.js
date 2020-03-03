@@ -7,6 +7,8 @@ import "antd/es/button/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
+import {CloseOutlined} from '@ant-design/icons';
+
 import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search";
 
 import SchemaTreeSelect from "../schema_trees/SchemaTreeSelect";
@@ -223,7 +225,7 @@ class DiscoverySearchCondition extends Component {
                     ) : this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
                     <Button type="danger"
-                            icon="close"
+                            icon={<CloseOutlined />}
                             style={{width: `${CLOSE_WIDTH}px`}}
                             disabled={this.props.removeDisabled}
                             onClick={this.props.onRemoveClick || nop} />

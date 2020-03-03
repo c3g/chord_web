@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 
-import {Button, Form, Icon, Input, Select, TreeSelect} from "antd";
-
+import {Button, Form, Input, Select, TreeSelect} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 import "antd/es/tree-select/style/css";
+
+import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 
 import {
     FORM_LABEL_COL,
@@ -29,16 +29,20 @@ const generateFileTree = (directory, valid) => [...directory].sort(sortByName).m
 class IngestionInputForm extends Component {
     constructor(props) {
         super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFinish = this.handleFinish.bind(this);
         this.getInputComponent = this.getInputComponent.bind(this);
+
+        this.form = React.createRef();
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        this.props.form.validateFieldsAndScroll((err, values) => {
-            if (err) return;
+    async handleFinish() {
+        try {
+            const values = await this.form.current.validateFields();
             (this.props.onSubmit || nop)(values);
-        })
+        } catch (e) {
+            console.error(e);
+            // Ignore errors
+        }
     }
 
     getInputComponent(input) {
@@ -78,23 +82,24 @@ class IngestionInputForm extends Component {
 
     render() {
         return (
-            <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL} onSubmit={this.handleSubmit}>
+            <Form ref={this.form}
+                  labelCol={FORM_LABEL_COL}
+                  wrapperCol={FORM_WRAPPER_COL}
+                  initialValues={this.props.initialValues}
+                  rules={[{required: true}]}
+                  onFieldsChange={(_, allFields) => (this.props.onChange || nop)({...allFields})}
+                  onFinish={this.handleFinish}>
                 {[
                     ...this.props.workflow.inputs.map(i => (
-                        <Form.Item label={i.id} key={i.id}>
-                            {this.props.form.getFieldDecorator(i.id, {
-                                initialValue: this.props.initialValues[i.id],  // undefined if not set
-                                rules: [{required: true}]
-                            })(this.getInputComponent(i))}
-                        </Form.Item>
+                        <Form.Item label={i.id} key={i.id} name={i.id}>{this.getInputComponent(i)}</Form.Item>
                     )),
 
                     <Form.Item key="_submit" wrapperCol={FORM_BUTTON_COL}>
                         {this.props.onBack
-                            ? <Button icon="left" onClick={() => this.props.onBack()}>Back</Button>
+                            ? <Button icon={<LeftOutlined />} onClick={() => this.props.onBack()}>Back</Button>
                             : null}
                         <Button type="primary" htmlType="submit" style={{float: "right"}}>
-                            Next <Icon type="right" />
+                            Next <RightOutlined />
                         </Button>
                     </Form.Item>
                 ]}
@@ -103,11 +108,4 @@ class IngestionInputForm extends Component {
     }
 }
 
-export default Form.create({
-    name: "ingestion_input_form",
-    mapPropsToFields: ({workflow, formValues}) =>
-        Object.fromEntries(workflow.inputs.map(i => [i.id, Form.createFormField({...formValues[i.id]})])),
-    onFieldsChange: ({onChange}, _, allFields) => {
-        onChange({...allFields});
-    }
-})(IngestionInputForm);
+export default IngestionInputForm;

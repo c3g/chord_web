@@ -4,6 +4,8 @@
   "description": "CHORD web application front-end",
   "main": "src/index.js",
   "dependencies": {
+    "@ant-design/compatible": "^1.0.0",
+    "@ant-design/icons": "^4.0.2",
     "antd": "^4.0.0",
     "cross-fetch": "^3.0.4",
     "prop-types": "^15.7.2",

@@ -24,16 +24,16 @@ const LANGUAGE_HIGHLIGHTERS = {
     "CHANGELOG": "plaintext",
 };
 
-import {Button, Dropdown, Icon, Layout, Menu, Modal, Spin, Tree} from "antd";
-
+import {Button, Dropdown, Layout, Menu, Modal, Spin, Tree} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/dropdown/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/tree/style/css";
+
+import {FileTextOutlined, ImportOutlined} from "@ant-design/icons";
 
 
 import {
@@ -246,9 +246,9 @@ class ManagerFilesContent extends Component {
                                              if (workflowsSupported.length !== 1) return;
                                              this.showTableSelectionModal(workflowsSupported[0])
                                          }}>
-                            <Icon type="import" /> Ingest
+                            <ImportOutlined /> Ingest
                         </Dropdown.Button>
-                        <Button icon="file-text"
+                        <Button icon={<FileTextOutlined />}
                                 onClick={() => this.handleViewFile()}
                                 style={{marginRight: "12px"}}
                                 disabled={!selectedFileViewable}

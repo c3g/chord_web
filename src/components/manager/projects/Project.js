@@ -2,12 +2,13 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 
 import {Button, Col, Empty, Row, Typography} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/row/style/css";
 import "antd/es/typography/style/css";
+
+import {CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 
 import Dataset from "./dataset/Dataset";
 import ProjectForm from "./ProjectForm";
@@ -76,18 +77,18 @@ class Project extends Component {
                     {this.props.editing ? (
                         <>
                             <Button type="primary"
-                                    icon="check"
+                                    icon={<CheckOutlined />}
                                     loading={this.props.saving}
                                     onClick={() => this.handleSave()}>Save</Button>
-                            <Button icon="close"
+                            <Button icon={<CloseOutlined />}
                                     style={{marginLeft: "10px"}}
                                     disabled={this.props.saving}
                                     onClick={() => this.handleCancelEdit()}>Cancel</Button>
                         </>
                     ) : (
                         <>
-                            <Button icon="edit" onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                            <Button type="danger" icon="delete"
+                            <Button icon={<EditOutlined />} onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
+                            <Button type="danger" icon={<DeleteOutlined />}
                                     style={{marginLeft: "10px"}}
                                     onClick={() => (this.props.onDelete || nop)()}>Delete</Button>
                         </>
@@ -114,7 +115,7 @@ class Project extends Component {
                 <Typography.Title level={3} style={{marginTop: "1.2em"}}>
                     Datasets
                     <div style={{float: "right"}}>
-                        <Button icon="plus"
+                        <Button icon={<PlusOutlined />}
                                 style={{verticalAlign: "top"}}
                                 onClick={() => (this.props.onAddDataset || nop)()}>
                             Add Dataset
@@ -142,11 +143,11 @@ class Project extends Component {
                         </Row>
                     ) : (
                         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
-                            <Button icon="plus" onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
+                            <Button icon={<PlusOutlined />} onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
                         </Empty>
                     )}
             </div>
-        )
+        );
     }
 }
 

@@ -2,38 +2,38 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Table, Typography, Icon, Tag} from "antd";
+import {Table, Typography, Tag} from "antd";
 import "antd/es/table/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
 
 import {chordServicePropTypesMixin, serviceInfoPropTypesShape} from "../utils";
+import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
 const SERVICE_COLUMNS = [
     {
         title: "Artifact",
-        dataIndex: "type.artifact",
+        dataIndex: ["type", "artifact"],
         render: artifact => artifact ? <span style={{fontFamily: "monospace"}}>{artifact}</span> : ""
     },
     {
         title: "Name",
-        dataIndex: "serviceInfo.name",
+        dataIndex: ["serviceInfo", "name"],
     },
     {
         title: "Version",
-        dataIndex: "serviceInfo.version",
+        dataIndex: ["serviceInfo", "version"],
         render: version => <Typography.Text>{version || "-"}</Typography.Text>
     },
     {
         title: "URL",
-        dataIndex: "serviceInfo.url",
+        dataIndex: ["serviceInfo", "url"],
         render: url => <a href={url}>{url}</a>
     },
     {
         title: "Data Service?",
         dataIndex: "data_service",
-        render: dataService => <Icon type={dataService ? "check" : "close"} />
+        render: dataService => dataService ? <CheckOutlined /> : <CloseOutlined />
     },
     {
         title: "Status",

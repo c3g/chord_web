@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Icon, Layout, Table} from "antd";
-import "antd/es/icon/style/css";
+import {Layout, Table} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/table/style/css";
+
+import {HomeOutlined, GlobalOutlined} from "@ant-design/icons";
 
 import SitePageHeader from "./SitePageHeader";
 
@@ -18,7 +19,7 @@ class PeersContent extends Component {
                 width: 75,
                 render: (_, peer) => (
                     <div style={{width: "100%", textAlign: "center"}}>
-                        <Icon type={this.props.nodeInfo.CHORD_URL === peer.url ? "home" : "global"} />
+                        {this.props.nodeInfo.CHORD_URL === peer.url ? <HomeOutlined /> : <GlobalOutlined/>}
                     </div>
                 )
             },

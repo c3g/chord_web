@@ -9,6 +9,8 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
+import {DeleteOutlined, ImportOutlined, PlusOutlined} from "@ant-design/icons";
+
 import DatasetOverview from "./DatasetOverview";
 import TableAdditionModal from "./table/TableAdditionModal";
 import TableDeletionModal from "./table/TableDeletionModal";
@@ -96,7 +98,7 @@ class DatasetTables extends Component {
                     render: t => (
                         <Row gutter={10}>
                             <Col span={12}>
-                                <Button icon="import"
+                                <Button icon={<ImportOutlined />}
                                         style={{width: "100%"}}
                                         onClick={() => (this.props.onTableIngest || nop)(this.props.project, t)}>
                                     Ingest
@@ -105,7 +107,7 @@ class DatasetTables extends Component {
                             {/* TODO: Edit Table Name: v0.2 */}
                             {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
                             <Col span={12}><Button type="danger"
-                                                   icon="delete"
+                                                   icon={<DeleteOutlined />}
                                                    onClick={() => this.handleTableDeletionClick(t)}
                                                    style={{width: "100%"}}>Delete</Button></Col>
                         </Row>
@@ -127,7 +129,7 @@ class DatasetTables extends Component {
                                         Adopt Stray Tables ({this.props.strayTables.length})
                                     </Button>
                                 ) : null} */}
-                            <Button icon="plus"
+                            <Button icon={<PlusOutlined />}
                                     style={{verticalAlign: "top"}}
                                     type="primary"
                                     onClick={() => this.handleAdditionClick()}>
@@ -155,7 +157,7 @@ class DatasetTables extends Component {
                                     onSubmit={() => this.handleTableDeletionSubmit()}
                                     onCancel={() => this.handleTableDeletionCancel()} />
             </>
-        )
+        );
     }
 }
 

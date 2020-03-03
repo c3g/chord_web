@@ -5,12 +5,13 @@ import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Empty, Layout, Menu, Typography} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/typography/style/css";
+
+import {PlusOutlined} from "@ant-design/icons";
 
 import ProjectCreationModal from "./ProjectCreationModal";
 import ProjectSkeleton from "./ProjectSkeleton";
@@ -55,7 +56,7 @@ class ManagerProjectDatasetContent extends Component {
                                     datasets together. You can then specify project-wide consent codes and data use
                                     restrictions to control data access.
                                 </Typography.Paragraph>
-                                <Button type="primary" icon="plus"
+                                <Button type="primary" icon={<PlusOutlined />}
                                         onClick={() => this.props.toggleProjectCreationModal()}>Create Project</Button>
                             </Empty>
                         </Layout.Content>
@@ -73,7 +74,7 @@ class ManagerProjectDatasetContent extends Component {
                                                 onClick={() => this.props.toggleProjectCreationModal()}
                                                 loading={this.props.loadingAuthDependentData}
                                                 disabled={this.props.loadingAuthDependentData}
-                                                icon="plus">
+                                                icon={<PlusOutlined />}>
                                             Create Project
                                         </Button>
                                     </div>

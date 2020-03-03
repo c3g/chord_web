@@ -1,38 +1,37 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Icon, List, Tag} from "antd";
-
-import "antd/es/icon/style/css";
+import {List, Tag} from "antd";
 import "antd/es/list/style/css";
 import "antd/es/tag/style/css";
+
+import {FileOutlined, FontSizeOutlined, MenuOutlined, NumberOutlined, RightOutlined} from "@ant-design/icons";
 
 import {nop, workflowPropTypesShape} from "../../utils";
 
 const TYPE_TAG_DISPLAY = {
     file: {
         color: "volcano",
-        icon: "file"
+        icon: <FileOutlined />
     },
     enum: {
         color: "blue",
-        icon: "menu"
+        icon: <MenuOutlined />
     },
     number: { // TODO: Break into int and float?
         color: "green",
-        icon: "number"
+        icon: <NumberOutlined />
     },
     string: {
         color: "purple",
-        icon: "font-size"
+        icon: <FontSizeOutlined />
     }
 };
 
-const ioTagWithType = (key, ioType, content) => (
-    <Tag key={key} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color}>
-        <Icon type={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].icon} /> {content}
-    </Tag>
-);
+const ioTagWithType = (key, ioType, content) => {
+    const tagDisplay = TYPE_TAG_DISPLAY[ioType.replace("[]", "")];
+    return <Tag key={key} color={tagDisplay.color}>{tagDisplay.icon} {content}</Tag>;
+};
 
 class WorkflowListItem extends Component {
     render() {
@@ -66,7 +65,7 @@ class WorkflowListItem extends Component {
                         this.props.selectable
                             ? <a onClick={() => (this.props.onClick || nop)()}>
                                 {typeTag} {this.props.workflow.name}
-                                <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
+                                <RightOutlined style={{marginLeft: "0.3rem"}} /></a>
                             : <span>{typeTag} {this.props.workflow.name}</span>}
                     description={this.props.workflow.description || ""} />
 

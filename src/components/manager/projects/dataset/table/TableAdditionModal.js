@@ -3,9 +3,10 @@ import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Modal} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
+
+import {PlusOutlined} from "@ant-design/icons";
 
 import TableForm from "./TableForm";
 
@@ -39,7 +40,7 @@ class TableAdditionModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="add"
-                               icon="plus"
+                               icon={<PlusOutlined />}
                                type="primary"
                                onClick={() => this.handleSubmit()}
                                loading={this.props.projectsFetchingWithTables ||

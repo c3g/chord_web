@@ -2,17 +2,18 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Table, Typography} from "antd";
+import {Button, Card, Col, Divider, Empty, Modal, Row, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
 import "antd/es/divider/style/css";
 import "antd/es/empty/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
+
+import {DeleteOutlined, EditOutlined, ImportOutlined, PlusOutlined} from "@ant-design/icons";
 
 import DataUseDisplay from "../../../DataUseDisplay";
 
@@ -153,7 +154,7 @@ class Dataset extends Component {
                         Linked Field Sets
                         {isPrivate ? (
                             <div style={{float: "right"}}>
-                                <Button icon="plus"
+                                <Button icon={<PlusOutlined />}
                                         style={{verticalAlign: "top"}}
                                         type="primary"
                                         onClick={() => this.setState({fieldSetAdditionModalVisible: true})}>
@@ -178,7 +179,7 @@ class Dataset extends Component {
                                 <Divider />
                                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Field Link Sets">
                                     {isPrivate ? (
-                                        <Button icon="plus"
+                                        <Button icon={<PlusOutlined />}
                                                 type="primary"
                                                 onClick={() =>
                                                     this.setState({fieldSetAdditionModalVisible: true})}>
@@ -199,13 +200,11 @@ class Dataset extends Component {
                                                     index: i
                                                 }
                                             })}>
-                                                <Icon type="edit"
-                                                      style={{width: "auto", display: "inline"}}
-                                                      key="edit_field_sets" /> Manage Fields</span>,
+                                                <EditOutlined style={{width: "auto", display: "inline"}}
+                                                              key="edit_field_sets" /> Manage Fields</span>,
                                             <span onClick={() => this.handleFieldSetDeletion(fieldSet, i)}>
-                                                <Icon type="delete"
-                                                      style={{width: "auto", display: "inline"}}
-                                                      key="delete_field_set" /> Delete Set</span>,
+                                                <DeleteOutlined style={{width: "auto", display: "inline"}}
+                                                                key="delete_field_set" /> Delete Set</span>,
                                         ] : []}>
                                             <LinkedFieldSetTable linkedFieldSet={fieldSet} />
                                         </Card>
@@ -228,7 +227,7 @@ class Dataset extends Component {
             ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={
                 isPrivate ? (
                     <>
-                        <Button icon="import" style={{marginRight: "16px"}}
+                        <Button icon={<ImportOutlined />} style={{marginRight: "16px"}}
                                 onClick={() => (this.props.onTableIngest || nop)(this.props.project, {
                                     // Map dataset to metadata table  TODO: Remove all these hacks
                                     id: this.state.identifier,
@@ -236,10 +235,10 @@ class Dataset extends Component {
                                 })}>
                             Ingest Metadata
                         </Button>
-                        <Button icon="edit"
+                        <Button icon={<EditOutlined />}
                                 style={{marginRight: "8px"}}
                                 onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                        <Button type="danger" icon="delete" onClick={() => {
+                        <Button type="danger" icon={<DeleteOutlined />} onClick={() => {
                             const deleteModal = Modal.confirm({
                                 title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
                                 content: <>

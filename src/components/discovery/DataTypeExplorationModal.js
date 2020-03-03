@@ -1,7 +1,14 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Icon, Input, Modal, Radio, Table, Tabs} from "antd";
+import {Input, Modal, Radio, Table, Tabs} from "antd";
+import "antd/es/input/style/css";
+import "antd/es/modal/style/css";
+import "antd/es/radio/style/css";
+import "antd/es/table/style/css";
+import "antd/es/tabs/style/css";
+
+import {ShareAltOutlined, TableOutlined} from '@ant-design/icons';
 
 import SchemaTree from "../schema_trees/SchemaTree";
 import {generateSchemaTreeData, generateSchemaTableData} from "../../schema";
@@ -11,8 +18,8 @@ import {nop} from "../../utils";
 const FIELD_COLUMNS = [
     {title: "Key", dataIndex: "key", render: t =>
             <span style={{fontFamily: "monospace", fontSize: "12px", whiteSpace: "nowrap"}}>{t}</span>},
-    {title: "JSON Type", dataIndex: "data.type"},
-    {title: "Description", dataIndex: "data.description"},
+    {title: "JSON Type", dataIndex: ["data", "type"]},
+    {title: "Description", dataIndex: ["data", "description"]},
 ];
 
 class DataTypeExplorationModal extends Component {
@@ -45,8 +52,8 @@ class DataTypeExplorationModal extends Component {
                              onChange={e => this.setState({view: e.target.value})}
                              buttonStyle="solid"
                              style={{position: "absolute", top: "73px", right: "24px", zIndex: "50"}}>
-                    <Radio.Button value="tree"><Icon type="share-alt" /> Tree View</Radio.Button>
-                    <Radio.Button value="table"><Icon type="table" /> Table Detail View</Radio.Button>
+                    <Radio.Button value="tree"><ShareAltOutlined /> Tree View</Radio.Button>
+                    <Radio.Button value="table"><TableOutlined /> Table Detail View</Radio.Button>
                 </Radio.Group>
                 <Tabs>
                     {Object.values(this.props.dataTypes).flatMap(ds => (ds.items || []).map(d => (

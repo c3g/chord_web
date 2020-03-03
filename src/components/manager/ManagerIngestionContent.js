@@ -4,7 +4,6 @@ import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Button, Empty, Form, Layout, List, Skeleton, Spin, Steps, Table, Tag} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/empty/style/css";
 import "antd/es/form/style/css";

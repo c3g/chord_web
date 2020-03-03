@@ -2,17 +2,18 @@ import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Col, Collapse, Empty, Icon, Modal, Popover, Row, Spin, Table} from "antd";
+import {Button, Col, Collapse, Empty, Modal, Popover, Row, Spin, Table} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
 import "antd/es/empty/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
+
+import {GlobalOutlined, HomeOutlined} from "@ant-design/icons";
 
 import DataUseDisplay from "../DataUseDisplay";
 import {selectSearch} from "../../modules/discovery/actions";
@@ -46,7 +47,7 @@ class SearchList extends Component {
                             ? <span style={{marginLeft: "0.5em"}}>(current node)</span> : null}
                     </>}>
                         <div style={{width: "100%", textAlign: "center"}}>
-                            <Icon type={this.props.nodeInfo.CHORD_URL === node ? "home" : "global"} />
+                            {this.props.nodeInfo.CHORD_URL === node ? <HomeOutlined /> : <GlobalOutlined />}
                         </div>
                     </Popover>
                 )

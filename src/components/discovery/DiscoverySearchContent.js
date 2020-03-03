@@ -2,26 +2,17 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {
-    Button,
-    Card,
-    Dropdown,
-    Empty,
-    Icon,
-    Menu,
-    Modal,
-    Tabs,
-    Typography
-} from "antd";
+import {Button, Card, Dropdown, Empty, Menu, Modal, Tabs, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/dropdown/style/css";
 import "antd/es/empty/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/menu/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/tabs/style/css";
 import "antd/es/typography/style/css";
+
+import {DownOutlined, QuestionCircleOutlined, SearchOutlined, TableOutlined} from "@ant-design/icons";
 
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import SearchList from "./SearchList";
@@ -111,7 +102,7 @@ class DiscoverySearchContent extends Component {
         const addConditionsOnDataType = (buttonProps = {style: {float: "right"}}) => (
             <Dropdown overlay={dataTypeMenu}
                       disabled={this.props.dataTypesLoading || this.props.searchLoading}>
-                <Button {...buttonProps}>Add Conditions on Data Type <Icon type="down" /></Button>
+                <Button {...buttonProps}>Add Conditions on Data Type <DownOutlined /></Button>
             </Dropdown>
         );
 
@@ -122,7 +113,7 @@ class DiscoverySearchContent extends Component {
                         Data Type Queries
                         {addConditionsOnDataType()}
                         <Button style={{float: "right", marginRight: "1em"}}
-                                onClick={this.handleSchemasToggle}><Icon type="table" /> Explore Data Types</Button>
+                                onClick={this.handleSchemasToggle}><TableOutlined /> Explore Data Types</Button>
                         <Button style={{float: "right", marginRight: "1em"}} onClick={() => {
                             const helpModal = Modal.info({
                                 title: "Help",
@@ -153,7 +144,7 @@ class DiscoverySearchContent extends Component {
                                 maskClosable: true,
                                 width: 720
                             })
-                        }}><Icon type="question-circle" /> Help</Button>
+                        }}><QuestionCircleOutlined /> Help</Button>
                     </Typography.Title>
 
                     {this.props.dataTypeForms.length > 0
@@ -176,7 +167,7 @@ class DiscoverySearchContent extends Component {
                     */}
 
                     <Button type="primary"
-                            icon="search"
+                            icon={<SearchOutlined />}
                             loading={this.props.searchLoading}
                             disabled={this.props.dataTypeForms.length === 0}
                             onClick={this.handleSubmit}>Search</Button>
