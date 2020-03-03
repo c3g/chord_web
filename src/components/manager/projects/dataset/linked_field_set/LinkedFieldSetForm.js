@@ -1,14 +1,15 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Form, Icon, Input} from "antd";
+import {Button, Form, Input} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
-import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 
+import {CloseOutlined, PlusOutlined} from "@ant-design/icons";
+
 import SchemaTreeSelect from "../../../../schema_trees/SchemaTreeSelect";
-import {FORM_MODE_ADD, FORM_MODE_EDIT, propTypesFormMode} from "../../../../../utils";
+import {FORM_MODE_EDIT, propTypesFormMode} from "../../../../../utils";
 import {getFieldSchema} from "../../../../../schema";
 
 const FIELD_KEYS = "fieldKeys";
@@ -17,36 +18,20 @@ let fieldKey = 0;
 class LinkedFieldSetForm extends Component {
     constructor(props) {
         super(props);
-        this.addField = this.addField.bind(this);
-        this.removeField = this.removeField.bind(this);
         this.syncForm = this.syncForm.bind(this);
         this.rootSchema = this.rootSchema.bind(this);
-    }
 
-    addField() {
-        this.props.form.setFieldsValue({[FIELD_KEYS]: [...this.props.form.getFieldValue(FIELD_KEYS), fieldKey++]});
-    }
-
-    removeField(key) {
-        this.props.form.setFieldsValue({[FIELD_KEYS]: this.props.form.getFieldValue(FIELD_KEYS)
-                .filter(k => k !== key)});
+        this.form = React.createRef();
     }
 
     syncForm(prevProps={}) {
-        if (!prevProps.mode && this.props.mode) {
-            if (this.props.mode === FORM_MODE_ADD) {
-                this.addField();
-                this.addField();
-            }
-        }
-
         if (JSON.stringify(prevProps.initialValue || {}) !==
                 JSON.stringify(this.props.initialValue || {}) && this.props.mode === FORM_MODE_EDIT) {
             const initialValueObj = this.props.initialValue || {};
             fieldKey = Object.entries(initialValueObj.fields || {}).length;
 
-            this.props.form.getFieldDecorator("name", {initialValue: initialValueObj.name || ""});
-            this.props.form.setFieldsValue({[FIELD_KEYS]: [...(new Array(fieldKey)).keys()]});
+            // this.form.current.getFieldDecorator("name", {initialValue: initialValueObj.name || ""});
+            this.form.current.setFieldsValue({[FIELD_KEYS]: [...(new Array(fieldKey)).keys()]});
 
             const rootSchema = this.rootSchema();
 
@@ -55,14 +40,20 @@ class LinkedFieldSetForm extends Component {
                 .forEach(([dt, f], i) => {
                     const selected = `[dataset item].${dt}.[item].${f.join(".")}`;
                     try {
-                        this.props.form.getFieldDecorator(`fields[${i}]`, {
-                            initialValue: {selected, schema: getFieldSchema(rootSchema, selected)}
-                        });
+                        this.form.current.setFieldsValue({
+                            [`fields[${i}]`]: {selected, schema: getFieldSchema(rootSchema, selected)}
+                        })
+                        // this.props.form.getFieldDecorator(`fields[${i}]`, {
+                        //     initialValue: {selected, schema: getFieldSchema(rootSchema, selected)}
+                        // });
                     } catch {
                         // Possibly invalid field (due to migration / data model change), skip it.
                         console.log(`Encountered invalid field: ${selected}`);
                     }
                 });
+
+            // TODO: Shouldn't need these
+            this.forceUpdate();
         }
     }
 
@@ -85,38 +76,41 @@ class LinkedFieldSetForm extends Component {
     }
 
     render() {
-        const {getFieldDecorator, getFieldValue} = this.props.form;
-
         const joinedSchema = this.rootSchema();
 
         // TODO: isExcluded
-        // Initialize fieldKeys if needed  TODO: do this once?
-        getFieldDecorator("fieldKeys", {initialValue: []});
-        const fieldItems = getFieldValue(FIELD_KEYS).map((k, i) => (
-            <Form.Item required={i < 2} key={k} label={`Field ${i+1}`}>
-                <Input.Group compact={true}>
-                    {getFieldDecorator(`fields[${k}]`, {
-                        rules: [{required: true, message: "Please specify a field"}]
-                    })(<SchemaTreeSelect schema={joinedSchema} style={{width: "calc(100% - 33px)"}} /> )}
-                    <Button icon="close" type="danger" disabled={i < 2} onClick={() => this.removeField(k)} />
-                </Input.Group>
-            </Form.Item>
-        ));
 
         return (
-            <Form>
-                <Form.Item label="Name">
-                    {getFieldDecorator("name", {
-                        initialValue: (this.props.initialValue || {}).name || "",
-                        rules: [{required: true}, {min: 3}]
-                    })(<Input placeholder="Sample IDs" />)}
+            <Form ref={this.form} layout="vertical" initialValues={{
+                fields: [{selected: null, schema: null}, {selected: null, schema: null}],
+                ...(this.props.initialValue || {}),
+            }}>
+                <Form.Item label="Name" name="name" rules={[{required: true}, {min: 3}]}>
+                    <Input placeholder="Sample IDs" />
                 </Form.Item>
-                {fieldItems}
-                <Form.Item>
-                    <Button type="dashed" onClick={() => this.addField()} block={true}>
-                        <Icon type="plus" /> Add Linked Field
-                    </Button>
-                </Form.Item>
+                <Form.List name="fields">
+                    {(fields, {add, remove}) => (
+                        <>
+                            {fields.map((field, index) => (
+                                <Form.Item {...field} required={index < 2} label={`Field ${index + 1}`}>
+                                    <Input.Group compact={true}
+                                                 rules={[{required: true, message: "Please specify a field"}]}>
+                                        <SchemaTreeSelect schema={joinedSchema} style={{width: "calc(100% - 33px)"}} />
+                                        <Button icon={<CloseOutlined />}
+                                                danger={true}
+                                                disabled={index < 2}
+                                                onClick={() => remove(field.name)} />
+                                    </Input.Group>
+                                </Form.Item>
+                            ))}
+                            <Form.Item>
+                                <Button type="dashed" onClick={() => add()} block={true}>
+                                    <PlusOutlined /> Add Linked Field
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
             </Form>
         );
     }
@@ -131,4 +125,4 @@ LinkedFieldSetForm.propTypes = {
     }),
 };
 
-export default Form.create({name: "linked_field_set_form"})(LinkedFieldSetForm);
+export default LinkedFieldSetForm;

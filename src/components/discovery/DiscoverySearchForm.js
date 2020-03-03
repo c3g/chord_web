@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 
-import {Button, Form, Icon} from "antd";
+import {Button, Form} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
-import "antd/es/icon/style/css";
+
+import {PlusOutlined} from "@ant-design/icons";
 
 import {getFieldSchema, getFields} from "../../schema";
 import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS} from "../../search";
@@ -42,17 +43,19 @@ class DiscoverySearchForm extends Component {
         super(props);
 
         this.state = {conditionsHelp: {}, fieldSchemas: {}};
-        this.initialValues = {};
+        this.initialValues = {keys: []};
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.getDataTypeFieldSchema = this.getDataTypeFieldSchema.bind(this);
         this.addCondition = this.addCondition.bind(this);
         this.removeCondition = this.removeCondition.bind(this);
+
+        this.form = React.createRef();
     }
 
     componentDidMount() {
         // TODO: MAKE THIS WORK this.addCondition(); // Make sure there's one condition at least
-        if (this.props.form.getFieldValue("keys").length !== 0) return;
+        if (this.form.current.getFieldValue("keys").length !== 0) return;
 
         const requiredFields = this.props.dataType
             ? getFields(this.props.dataType.schema).filter(f =>
@@ -83,8 +86,8 @@ class DiscoverySearchForm extends Component {
     }
 
     removeCondition(k) {
-        this.props.form.setFieldsValue({
-            keys: this.props.form.getFieldValue("keys").filter(key => key !== k)
+        this.form.current.setFieldsValue({
+            keys: this.form.current.getFieldValue("keys").filter(key => key !== k)
         });
     }
 
@@ -102,7 +105,7 @@ class DiscoverySearchForm extends Component {
     addCondition(field = undefined, field2 = undefined, didMount = false) {
         const conditionType = this.props.conditionType || "data-type";
 
-        const newKey = this.props.form.getFieldValue("keys").length;
+        const newKey = this.form.current.getFieldValue("keys").length;
 
         // TODO: What if operations is an empty list?
 
@@ -119,8 +122,8 @@ class DiscoverySearchForm extends Component {
 
         if (!didMount) this.setState(stateUpdate);  // Won't fire properly in componentDidMount
 
-        this.initialValues = {
-            ...this.initialValues,
+        this.form.current.setFieldsValue({
+            keys: this.form.current.getFieldValue("keys").concat(newKey),
             [`conditions[${newKey}]`]: {
                 field,
                 ...(conditionType === "data-type" ? {} : {field2}),
@@ -129,18 +132,6 @@ class DiscoverySearchForm extends Component {
                 operation: ((fieldSchema || {search: {}}).search.operations || [OP_EQUALS])[0] || OP_EQUALS,
                 ...(conditionType === "data-type" ? {searchValue: ""} : {})
             }
-        };
-
-
-        // Initialize new condition, otherwise the state won't get it
-        this.props.form.getFieldDecorator(`conditions[${newKey}]`, {
-            initialValue: this.initialValues[`conditions[${newKey}]`],
-            validateTrigger: false,  // only when called manually
-            rules: CONDITION_RULES,
-        });
-
-        this.props.form.setFieldsValue({
-            keys: this.props.form.getFieldValue("keys").concat(newKey)
         });
 
         return stateUpdate;
@@ -159,30 +150,26 @@ class DiscoverySearchForm extends Component {
     }
 
     render() {
-        const getCondition = ck => this.props.form.getFieldValue(`conditions[${ck}]`);
+        const getCondition = ck => this.form.current.getFieldValue(`conditions[${ck}]`);
 
-        this.props.form.getFieldDecorator("keys", {initialValue: []}); // Initialize keys if needed
-        const keys = this.props.form.getFieldValue("keys");
-        const existingUniqueFields = keys
-            .filter(k => k !== undefined)
-            .map(k => getCondition(k).field)
-            .filter(f => f !== undefined && this.cannotBeUsed(f));
+        let formItems = [];
 
-        const formItems = keys.map((k, i) => (
-            <Form.Item key={k} labelCol={{
-                lg: {span: 24},
-                xl: {span: 4},
-                xxl: {span: 3}
-            }} wrapperCol={{
-                lg: {span: 24},
-                xl: {span: 20},
-                xxl: {span: 18}
-            }} label={`Condition ${i+1}`} help={this.state.conditionsHelp[k] || undefined}>
-                {this.props.form.getFieldDecorator(`conditions[${k}]`, {
-                    initialValue: this.initialValues[`conditions[${k}]`],
-                    validateTrigger: false,  // only when called manually
-                    rules: CONDITION_RULES
-                })(
+        if (this.form.current) {
+            const keys = this.form.current.getFieldValue("keys");
+            const existingUniqueFields = keys
+                .filter(k => k !== undefined)
+                .map(k => getCondition(k).field)
+                .filter(f => f !== undefined && this.cannotBeUsed(f));
+
+            formItems = keys.map((k, i) => (
+                <Form.Item key={k}
+                           labelCol={{lg: {span: 24}, xl: {span: 4}, xxl: {span: 3}}}
+                           wrapperCol={{lg: {span: 24}, xl: {span: 20}, xxl: {span: 18}}}
+                           label={`Condition ${i + 1}`}
+                           help={this.state.conditionsHelp[k] || undefined}
+                           name={`conditions[${k}]`}
+                           validateTrigger={false}
+                           rules={CONDITION_RULES}>
                     <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
                                               dataType={this.props.dataType}
                                               isExcluded={f => existingUniqueFields.includes(f) || this.isNotPublic(f)}
@@ -200,20 +187,31 @@ class DiscoverySearchForm extends Component {
                                                   return keys.map(getCondition)
                                                       .filter(cv => ((cv.fieldSchema || {}).search || {}).required
                                                           && cv.field === conditionValue.field).length <= 1;
-                                              })()} />
-                )}
-            </Form.Item>
-        ));
+                                              })()}/>
+                </Form.Item>
+            ));
+        }
 
         return (
-            <Form onSubmit={this.onSubmit}>
-                {formItems}
+            <Form ref={this.form}
+                  onFieldsChange={({onChange}, _, allFields) => {onChange({...allFields})}}
+                  // mapPropsToFields={({formValues}) => ({
+                  //     keys: Form.createFormField({...formValues.keys}),
+                  //     ...Object.assign({}, ...(formValues["conditions"] || [])
+                  //         .filter(c => c !== null)  // TODO: Why does this happen?
+                  //         .map(c => ({[c.name]: Form.createFormField({...c})})))
+                  // })}
+                  onFinish={this.onFinish}
+                  initialValues={this.initialValues}>
+                <Form.List>
+                    {formItems}
+                </Form.List>
                 <Form.Item wrapperCol={{
                     xl: {span: 24},
                     xxl: {offset: 3, span: 18}
                 }}>
                     <Button type="dashed" onClick={() => this.addCondition()} style={{width: "100%"}}>
-                        <Icon type="plus" /> Add condition
+                        <PlusOutlined /> Add condition
                     </Button>
                 </Form.Item>
             </Form>
@@ -227,14 +225,4 @@ DiscoverySearchForm.propTypes = {
     // TODO
 };
 
-export default Form.create({
-    mapPropsToFields: ({formValues}) => ({
-        keys: Form.createFormField({...formValues.keys}),
-        ...Object.assign({}, ...(formValues["conditions"] || [])
-            .filter(c => c !== null)  // TODO: Why does this happen?
-            .map(c => ({[c.name]: Form.createFormField({...c})})))
-    }),
-    onFieldsChange: ({onChange}, _, allFields) => {
-        onChange({...allFields});
-    },
-})(DiscoverySearchForm);
+export default DiscoverySearchForm;

@@ -106,7 +106,7 @@ class DatasetTables extends Component {
                             </Col>
                             {/* TODO: Edit Table Name: v0.2 */}
                             {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
-                            <Col span={12}><Button type="danger"
+                            <Col span={12}><Button danger={true}
                                                    icon={<DeleteOutlined />}
                                                    onClick={() => this.handleTableDeletionClick(t)}
                                                    style={{width: "100%"}}>Delete</Button></Col>

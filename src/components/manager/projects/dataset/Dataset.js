@@ -238,7 +238,7 @@ class Dataset extends Component {
                         <Button icon={<EditOutlined />}
                                 style={{marginRight: "8px"}}
                                 onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                        <Button type="danger" icon={<DeleteOutlined />} onClick={() => {
+                        <Button danger={true} icon={<DeleteOutlined />} onClick={() => {
                             const deleteModal = Modal.confirm({
                                 title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
                                 content: <>
@@ -251,7 +251,7 @@ class Dataset extends Component {
                                 width: 572,
                                 autoFocusButton: "cancel",
                                 okText: "Delete",
-                                okType: "danger",
+                                okButtonProps: {danger: true},
                                 maskClosable: true,
                                 onOk: async () => {
                                     deleteModal.update({okButtonProps: {loading: true}});

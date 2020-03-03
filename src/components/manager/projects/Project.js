@@ -88,7 +88,8 @@ class Project extends Component {
                     ) : (
                         <>
                             <Button icon={<EditOutlined />} onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                            <Button type="danger" icon={<DeleteOutlined />}
+                            <Button danger={true}
+                                    icon={<DeleteOutlined />}
                                     style={{marginLeft: "10px"}}
                                     onClick={() => (this.props.onDelete || nop)()}>Delete</Button>
                         </>

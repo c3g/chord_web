@@ -1,9 +1,7 @@
 import React, {Component} from "react";
-
 import {connect} from "react-redux";
 
 import {Form, Input, Select} from "antd";
-
 import "antd/es/form/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
@@ -17,18 +15,12 @@ class TableForm extends Component {
         ));
 
         return (
-            <Form style={this.props.style || {}}>
-                <Form.Item label="Name">
-                    {this.props.form.getFieldDecorator("name", {
-                        initialValue: (this.props.initialValue || {name: ""}).name || "",
-                        rules: [{required: true}, {min: 3}]
-                    })(<Input placeholder="My Variant Dataset" size="large" />)}
+            <Form style={this.props.style || {}} initialValues={this.props.initialValue} layout="vertical">
+                <Form.Item label="Name" name="name" rules={[{required: true}, {min: 3}]}>
+                    <Input placeholder="My Variant Dataset" size="large" />
                 </Form.Item>
-                <Form.Item label="Data Type">
-                    {this.props.form.getFieldDecorator("dataType", {
-                        initialValue: (this.props.initialValue || {dataType: null}).dataType || null,
-                        rules: [{required: true}]
-                    })(<Select style={{width: "100%"}}>{dataTypeOptions}</Select>)}
+                <Form.Item label="Data Type" name="dataType" rules={[{required: true}]}>
+                    <Select style={{width: "100%"}}>{dataTypeOptions}</Select>
                 </Form.Item>
             </Form>
         );
@@ -41,5 +33,4 @@ const mapStateToProps = state => ({
         .flatMap(([a, dts]) => (dts.items || []).map(dt => ({dt, a})))
 });
 
-export default connect(mapStateToProps, null, null, {forwardRef: true})(
-    Form.create({name: "table_form"})(TableForm));
+export default connect(mapStateToProps, null, null, {forwardRef: true})(TableForm);

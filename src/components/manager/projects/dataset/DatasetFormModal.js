@@ -3,9 +3,10 @@ import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
 import {Button, Modal} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/modal/style/css";
+
+import {PlusOutlined, SaveOutlined} from "@ant-design/icons";
 
 import DatasetForm from "./DatasetForm";
 
@@ -25,22 +26,25 @@ import {
 
 
 class DatasetFormModal extends Component {
-    componentDidMount() {
+    constructor(props) {
+        super(props);
+
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSuccess = this.handleSuccess.bind(this);
+
+        this.form = React.createRef();
     }
 
     handleCancel() {
         (this.props.onCancel || nop)();
     }
 
-    handleSubmit() {
-        this.form.validateFields(async (err, values) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
+    async handleSubmit() {
+        try {
+            console.log(this.form.current);
+
+            const values = await this.form.current.validateFields();
 
             const mode = this.props.mode || FORM_MODE_ADD;
 
@@ -55,13 +59,16 @@ class DatasetFormModal extends Component {
                     description: (values.description || "").trim(),
                     contact_info: (values.contact_info || "").trim(),
                 }, onSuccess));
-        })
+        } catch (err) {
+            console.error(err);
+            // Don't submit
+        }
     }
 
     async handleSuccess(values) {
         await this.props.fetchProjectsWithDatasetsAndTables();  // TODO: If needed / only this project...
         await (this.props.onOk || nop)({...(this.props.initialValue || {}), values});
-        if ((this.props.mode || FORM_MODE_ADD) === FORM_MODE_ADD) this.form.resetFields();
+        if ((this.props.mode || FORM_MODE_ADD) === FORM_MODE_ADD) this.form.current.resetFields();
     }
 
     render() {
@@ -75,7 +82,7 @@ class DatasetFormModal extends Component {
                    footer={[
                        <Button key="cancel" onClick={this.handleCancel}>Cancel</Button>,
                        <Button key="save"
-                               icon={mode === FORM_MODE_ADD ? "plus" : "save"}
+                               icon={mode === FORM_MODE_ADD ? <PlusOutlined /> : <SaveOutlined />}
                                type="primary"
                                onClick={this.handleSubmit}
                                loading={this.props.projectsFetching || this.props.projectDatasetsAdding ||
@@ -84,7 +91,7 @@ class DatasetFormModal extends Component {
                        </Button>
                    ]}
                    onCancel={this.handleCancel}>
-                <DatasetForm ref={form => this.form = form}
+                <DatasetForm ref={this.form}
                              initialValue={mode === FORM_MODE_ADD ? null : this.props.initialValue} />
             </Modal>
         ) : null;

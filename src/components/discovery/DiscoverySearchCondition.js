@@ -224,7 +224,7 @@ class DiscoverySearchCondition extends Component {
                         {...getInputStyle(valueWidth, 2), borderRadius: "0"}
                     ) : this.getRHSInput(valueWidth)}
                 {canRemove ? (  // Condition removal button
-                    <Button type="danger"
+                    <Button danger={true}
                             icon={<CloseOutlined />}
                             style={{width: `${CLOSE_WIDTH}px`}}
                             disabled={this.props.removeDisabled}

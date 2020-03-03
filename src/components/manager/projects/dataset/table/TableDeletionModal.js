@@ -22,7 +22,7 @@ class TableDeletionModal extends Component {
                        <Button key="cancel" onClick={() => (this.props.onCancel || nop)()}>Cancel</Button>,
                        <Button key="confirm"
                                icon={<DeleteOutlined />}
-                               type="danger"
+                               danger={true}
                                onClick={() => (this.props.onSubmit || nop)()}
                                loading={this.props.isDeletingTable}>
                            Delete

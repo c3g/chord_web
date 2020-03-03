@@ -62,24 +62,24 @@ export const generateSchemaTreeData = (
         key,
         value: key,
         data: node,
-        title: <span>
+        titleSelected: <span style={{whiteSpace: "nowrap"}}>
             <Typography.Text code>{name}</Typography.Text> - {displayType}
             {node.description ? (
                 <Popover overlayStyle={{zIndex: 1051, maxWidth: "400px"}}
                          content={node.description}
-                         title={<span style={{fontFamily: "monospace"}}>
+                         title={<span style={{fontFamily: "monospace", textAlign: "left"}}>
                              {key.replace(`${ROOT_SCHEMA_ID}.`, "")}
                          </span>}>
                     <Button icon={<QuestionCircleOutlined />} type="link" size="small" style={{marginLeft: "8px"}}/>
                 </Popover>
             ) : null}
         </span>,
-        titleSelected: <Typography.Text style={{
-            float: "right",
-            fontFamily: "monospace",
-            fontSize: "0.7rem",
-            marginRight: "0.4rem"
-        }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
+        // titleSelected: <Typography.Text style={{
+        //     float: "right",
+        //     fontFamily: "monospace",
+        //     fontSize: "0.7rem",
+        //     marginRight: "0.4rem"
+        // }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
         selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
             && node.search.operations.length > 0 && !isExcluded(key),
         disabled: isExcluded(key)
