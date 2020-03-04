@@ -16,5 +16,6 @@
     <orderEntry type="library" name="@types/react-dom" level="application" />
     <orderEntry type="library" name="@types/react-syntax-highlighter" level="application" />
     <orderEntry type="library" name="@types/html-webpack-plugin" level="application" />
+    <orderEntry type="library" name="@types/victory" level="application" />
   </component>
 </module>

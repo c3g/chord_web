@@ -19,6 +19,8 @@ import {
     fetchProjectsWithDatasetsAndTables
 } from "../../../../modules/metadata/actions";
 import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../utils";
+import {fetchTableSummaryIfPossible} from "../../../../modules/tables/actions";
+import TableSummaryModal from "./table/TableSummaryModal";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);
@@ -30,6 +32,7 @@ class DatasetTables extends Component {
         this.state = {
             additionModalVisible: false,
             deletionModalVisible: false,
+            tableSummaryModalVisible: false,
             selectedTable: null,
         };
 
@@ -40,6 +43,8 @@ class DatasetTables extends Component {
         this.handleTableDeletionClick = this.handleTableDeletionClick.bind(this);
         this.handleTableDeletionCancel = this.handleTableDeletionCancel.bind(this);
         this.handleTableDeletionSubmit = this.handleTableDeletionSubmit.bind(this);
+
+        this.showTableSummaryModal = this.showTableSummaryModal.bind(this);
     }
 
     handleAdditionClick() {
@@ -77,15 +82,29 @@ class DatasetTables extends Component {
         this.setState({deletionModalVisible: false});
     }
 
+    showTableSummaryModal(table) {
+        this.props.fetchTableSummary(this.props.chordServicesByArtifact[table.service_artifact],
+            this.props.serviceInfoByArtifact[table.service_artifact], table.table_id);  // TODO
+        this.setState({tableSummaryModalVisible: true, selectedTable: table});
+    }
+
     render() {
         const tableListColumns = [
-            {title: "ID", dataIndex: "table_id"},
+            {
+                title: "ID",
+                dataIndex: "table_id",
+                render: (tableID, t) => this.props.isPrivate
+                    ? <a onClick={() => this.showTableSummaryModal(t)}>{tableID}</a>
+                    : tableID,
+            },
             {
                 title: "Name",
                 dataIndex: "name",
                 render: n => (n ? n : NA_TEXT),
                 defaultSortOrder: "ascend",
-                sorter: (a, b) => (a.name && b.name) ? a.name.localeCompare(b.name) : a.id.localeCompare(b.id)
+                sorter: (a, b) => (a.name && b.name)
+                    ? a.name.localeCompare(b.name)
+                    : a.table_id.localeCompare(b.table_id)
             },
             {title: "Data Type", dataIndex: "data_type"},
             ...(this.props.isPrivate ? [
@@ -104,10 +123,12 @@ class DatasetTables extends Component {
                             </Col>
                             {/* TODO: Edit Table Name: v0.2 */}
                             {/*<Col span={8}><Button icon="edit" style={{width: "100%"}}>Edit</Button></Col>*/}
-                            <Col span={12}><Button type="danger"
-                                                   icon="delete"
-                                                   onClick={() => this.handleTableDeletionClick(t)}
-                                                   style={{width: "100%"}}>Delete</Button></Col>
+                            {t.manageable !== false ? (
+                                <Col span={12}><Button type="danger"
+                                                       icon="delete"
+                                                       onClick={() => this.handleTableDeletionClick(t)}
+                                                       style={{width: "100%"}}>Delete</Button></Col>
+                            ) : null}
                         </Row>
                     )
                 }
@@ -115,6 +136,16 @@ class DatasetTables extends Component {
         ];
 
         const dataset = this.props.dataset || {};
+        const tables = [
+            ...(dataset ? [{  // TODO: Not hard-coded
+                table_id: dataset.identifier,
+                name: `${dataset.title} Metadata`,
+                data_type: "phenopacket",
+                service_artifact: "metadata",
+                manageable: false,
+            }] : []),
+            ...(dataset.tables || [])
+        ].map(t => ({...t, name: t.name || null}));
         return (
             <>
                 <Typography.Title level={4}>
@@ -138,11 +169,15 @@ class DatasetTables extends Component {
                 </Typography.Title>
 
                 <Table bordered
-                       dataSource={(dataset.tables || []).map(t => ({...t, name: t.name || null}))}
+                       dataSource={tables}
                        rowKey="table_id"
                        // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
                        columns={tableListColumns}
                        loading={this.props.isFetchingTables} />
+
+                <TableSummaryModal visible={this.state.tableSummaryModalVisible}
+                                   table={this.state.selectedTable}
+                                   onCancel={() => this.setState({tableSummaryModalVisible: false})} />
 
                 <TableAdditionModal visible={this.state.additionModalVisible}
                                     project={this.props.project}
@@ -174,14 +209,15 @@ DatasetOverview.propTypes = {
 };
 
 const mapStateToProps = state => ({
+    chordServicesByArtifact: state.chordServices.itemsByArtifact,
     serviceInfoByArtifact: state.services.itemsByArtifact,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addProjectTable: async (datasetID, serviceID, dataTypeID, tableName) =>
-        await dispatch(addProjectTable(ownProps.project, datasetID, serviceID, dataTypeID, tableName)),
+    addProjectTable: async (ds, s, dt, name) => await dispatch(addProjectTable(ownProps.project, ds, s, dt, name)),
     deleteProjectTable: async table => await dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
     fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
+    fetchTableSummary: (cs, si, t) => dispatch(fetchTableSummaryIfPossible(cs, si, t))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetTables);

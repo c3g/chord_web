@@ -187,7 +187,7 @@ export const serviceTables = (
         isCreating: false,
         isDeleting: false,
         items: [],
-        itemsByServiceAndDataTypeID: {}
+        itemsByServiceAndDataTypeID: {},
     },
     action
 ) => {
