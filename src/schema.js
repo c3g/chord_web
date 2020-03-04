@@ -62,7 +62,7 @@ export const generateSchemaTreeData = (
         key,
         value: key,
         data: node,
-        titleSelected: <span style={{whiteSpace: "nowrap"}}>
+        title: <span style={{whiteSpace: "nowrap"}}>
             <Typography.Text code>{name}</Typography.Text> - {displayType}
             {node.description ? (
                 <Popover overlayStyle={{zIndex: 1051, maxWidth: "400px"}}
@@ -74,12 +74,12 @@ export const generateSchemaTreeData = (
                 </Popover>
             ) : null}
         </span>,
-        // titleSelected: <Typography.Text style={{
-        //     float: "right",
-        //     fontFamily: "monospace",
-        //     fontSize: "0.7rem",
-        //     marginRight: "0.4rem"
-        // }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
+        titleSelected: <Typography.Text style={{
+            float: "right",
+            fontFamily: "monospace",
+            fontSize: "0.7rem",
+            marginRight: "0.4rem"
+        }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
         selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
             && node.search.operations.length > 0 && !isExcluded(key),
         disabled: isExcluded(key)
