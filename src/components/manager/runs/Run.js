@@ -30,7 +30,7 @@ class Run extends Component {
         const Content = TABS[tab];
         return (
             <>
-                <PageHeader title={`Run ${run.run_id}`}
+                <PageHeader title={<>Run <span style={{fontFamily: "monospace"}}>{run.run_id}</span></>}
                             tags={<Tag color={RUN_STATE_TAG_COLORS[run.state]}>{run.state}</Tag>}
                             footer={
                                 <Tabs activeKey={tab} onChange={this.props.onChangeTab || nop}>

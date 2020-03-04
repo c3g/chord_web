@@ -20,10 +20,12 @@ class RunRequest extends Component {
 
         // TODO: Link to some "table" page from the table description item here
 
+        const idFragment = <span style={{fontFamily: "monospace"}}>{tableID}</span>;
+
         return (
             <Descriptions bordered>
                 <Descriptions.Item label="Table" span={3}>
-                    <Tag>{tableDataType}</Tag> {tableName ? `${tableName} (${tableID})` : tableID}
+                    <Tag>{tableDataType}</Tag> {tableName ? <>{tableName} ({idFragment})</> : idFragment}
                 </Descriptions.Item>
                 <Descriptions.Item label="Parameters" span={3}>
                     <pre style={{margin: 0}}>{

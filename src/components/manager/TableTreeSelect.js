@@ -55,21 +55,19 @@ class TableTreeSelect extends Component {
                     // Add the dataset metadata table in manually -- it's not "owned" per se
                     // TODO: Don't hard-code data type name here, fetch from serviceTables
                     {
-                        title: `${d.title} Metadata (${d.identifier})`,
+                        title: `${d.title} Metadata`,
                         data_type: "phenopacket",
                         table_id: d.identifier,
                     },
                     ...(this.props.projectTables[p.identifier] || [])
                         .filter(t => t.dataset === d.identifier &&
                             this.props.tablesByServiceAndDataTypeID.hasOwnProperty(t.service_id))
-                        .map(t => ({
-                            ...t,
-                            title: getTableName(t.service_id, t.data_type, t.table_id)
-                                ? `${getTableName(t.service_id, t.data_type, t.table_id)} (${t.table_id})`
-                                : t.table_id
-                        }))
+                        .map(t => ({...t, title: getTableName(t.service_id, t.data_type, t.table_id) || ""}))
                 ].map(t => ({
-                    title: (<><Tag style={{marginRight: "1em"}}>{t.data_type}</Tag> {t.title}</>),
+                    title: (<>
+                        <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
+                        {t.title} (<span style={{fontFamily: "monospace"}}>{t.table_id}</span>)
+                    </>),
                     disabled: !(dataType === null || dataType === t.data_type),
                     isLeaf: true,
                     key: `${p.identifier}:${t.data_type}:${t.table_id}`,

@@ -94,8 +94,8 @@ class DatasetTables extends Component {
                 title: "ID",
                 dataIndex: "table_id",
                 render: (tableID, t) => this.props.isPrivate
-                    ? <a onClick={() => this.showTableSummaryModal(t)}>{tableID}</a>
-                    : tableID,
+                    ? <a style={{fontFamily: "monospace"}} onClick={() => this.showTableSummaryModal(t)}>{tableID}</a>
+                    : <span style={{fontFamily: "monospace"}}>tableID</span>,
             },
             {
                 title: "Name",
