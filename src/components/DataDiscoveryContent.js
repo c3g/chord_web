@@ -24,7 +24,7 @@ class DataDiscoveryContent extends Component {
     render() {
         return (
             <>
-                <SitePageHeader title="Data Discovery" subTitle="Federated data exploration" />
+                <SitePageHeader title="Data Discovery" subTitle="Federated, censored dataset search" />
                 <Layout>
                     <Layout.Content style={{background: "white", padding: "24px 30px"}}>
                         <Switch>
