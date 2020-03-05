@@ -37,6 +37,11 @@ class SiteHeader extends Component {
                 text: <span className="nav-text">Data Discovery</span>,
             },
             {
+                url: withBasePath("data/explorer"),
+                icon: <Icon type="bar-chart" />,
+                text: <span className="nav-text">Data Explorer</span>,
+            },
+            {
                 url: withBasePath("data/manager"),
                 icon: <Icon type="folder-open" />,
                 text: <span className="nav-text">Data Manager</span>,

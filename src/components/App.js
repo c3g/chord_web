@@ -16,6 +16,7 @@ import SiteFooter from "./SiteFooter";
 
 import DashboardContent from "./DashboardContent";
 import DataDiscoveryContent from "./DataDiscoveryContent";
+import DataExplorerContent from "./DataExplorerContent";
 import DataManagerContent from "./DataManagerContent";
 import PeersContent from "./PeersContent";
 import NotificationsContent from "./notifications/NotificationsContent";
@@ -71,6 +72,7 @@ class App extends Component {
                         <Switch>
                             <Route path={withBasePath("dashboard")} component={DashboardContent} />
                             <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
+                            <Route path={withBasePath("data/explorer")} component={DataExplorerContent} />
                             <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
                             <Route path={withBasePath("peers")} component={PeersContent} />
                             <OwnerRoute path={withBasePath("notifications")} component={NotificationsContent} />
