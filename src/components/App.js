@@ -70,13 +70,10 @@ class App extends Component {
                     <Layout.Content style={{margin: "50px"}}>
                         <Switch>
                             <Route path={withBasePath("dashboard")} component={DashboardContent} />
-                            <Route path={withBasePath("data/discovery")}
-                                   component={DataDiscoveryContent} />
-                            <OwnerRoute path={withBasePath("data/manager")}
-                                        component={DataManagerContent} />
+                            <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
+                            <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
                             <Route path={withBasePath("peers")} component={PeersContent} />
-                            <OwnerRoute path={withBasePath("notifications")}
-                                        component={NotificationsContent} />
+                            <OwnerRoute path={withBasePath("notifications")} component={NotificationsContent} />
                             <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
                         </Switch>
                     </Layout.Content>
