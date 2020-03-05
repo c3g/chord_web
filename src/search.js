@@ -19,5 +19,6 @@ export const DEFAULT_SEARCH_PARAMETERS = {
         OP_CONTAINING],
     canNegate: true,
     required: false,
-    type: "unlimited"
+    type: "unlimited",
+    queryable: "all",
 };
