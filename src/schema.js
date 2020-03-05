@@ -55,7 +55,31 @@ export const generateSchemaTreeData = (
 ) => {
     const key = `${prefix}${name}`;
     const displayType = (node.type instanceof Array) ? node.type.join(" or ") : node.type;
-    const baseNode = {
+
+    const selectable = node.hasOwnProperty("search")
+        && node.search.hasOwnProperty("operations")
+        && node.search.operations.length > 0
+        && node.search.queryable === "all"  // TODO: Check internal if we have the permission
+        && !isExcluded(key);
+
+    let children = [];
+
+    // Only include fields that are searchable, objects that have all searchable properties, and arrays that have items
+    // that are searchable in some way. This is done using searchFragment, which returns [] if a node and all its
+    // children are not searchable.
+    switch (node.type) {
+        case "object":
+            children = Object.entries(node.properties || {})
+                .sort(sortSchemaEntries)
+                .flatMap(([name, node]) => searchFragment(node, name, `${key}.`, isExcluded));
+            break;
+
+        case "array":
+            children = searchFragment(node.items, ARRAY_ITEM_ID, `${key}.`, isExcluded);
+            break;
+    }
+
+    return {
         key,
         value: key,
         data: node,
@@ -77,32 +101,11 @@ export const generateSchemaTreeData = (
             fontSize: "0.7rem",
             marginRight: "0.4rem"
         }}>{key.split(".").slice(1).join(".")}</Typography.Text>,
-        selectable: node.hasOwnProperty("search") && node.search.hasOwnProperty("operations")
-            && node.search.operations.length > 0 && !isExcluded(key),
-        disabled: isExcluded(key)
+        selectable,
+        disabled: !selectable && (!["object", "array"].includes(node.type)
+            || children.filter(c => !c.disabled).length === 0),
+        children
     };
-
-    // Only include fields that are searchable, objects that have all searchable properties, and arrays that have items
-    // that are searchable in some way. This is done using searchFragment, which returns [] if a node and all its
-    // children are not searchable.
-    switch (node.type) {
-        case "object":
-            return {
-                ...baseNode,
-                children: Object.entries(node.properties || {})
-                    .sort(sortSchemaEntries)
-                    .flatMap(([name, node]) => searchFragment(node, name, `${key}.`, isExcluded))
-            };
-
-        case "array":
-            return {
-                ...baseNode,
-                children: searchFragment(node.items, ARRAY_ITEM_ID, `${key}.`, isExcluded)
-            };
-
-        default:
-            return {...baseNode, children: []};
-    }
 };
 
 /**
