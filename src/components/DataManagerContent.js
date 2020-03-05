@@ -51,7 +51,6 @@ class DataManagerContent extends Component {
         return (
             <>
                 <SitePageHeader title="Data Manager"
-                                subTitle="Share data with the CHORD federation"
                                 withTabBar={true}
                                 footer={
                                     <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
