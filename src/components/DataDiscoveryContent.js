@@ -26,7 +26,7 @@ class DataDiscoveryContent extends Component {
             <>
                 <SitePageHeader title="Data Discovery" subTitle="Federated, censored dataset search" />
                 <Layout>
-                    <Layout.Content style={{background: "white", padding: "24px 30px"}}>
+                    <Layout.Content style={{background: "white", padding: "24px"}}>
                         <Switch>
                             <Route exact path={withBasePath("data/discovery/search")}
                                    component={DiscoverySearchContent} />
