@@ -2,7 +2,7 @@ import React, {Component, Fragment} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Col, Collapse, Empty, Icon, Modal, Popover, Row, Spin, Table} from "antd";
+import {Button, Col, Collapse, Empty, Icon, Modal, Popover, Row, Spin, Table, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/col/style/css";
 import "antd/es/collapse/style/css";
@@ -13,6 +13,7 @@ import "antd/es/popover/style/css";
 import "antd/es/row/style/css";
 import "antd/es/spin/style/css";
 import "antd/es/table/style/css";
+import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
 import {selectSearch} from "../../modules/discovery/actions";
@@ -147,6 +148,14 @@ class SearchList extends Component {
                             return (
                                 <Collapse.Panel header={title}
                                                 key={(this.props.searches.length - i - 1).toString(10)}>
+                                    <Typography.Title level={4}>
+                                        Nodes Responded:&nbsp;
+                                        <span style={{fontWeight: "normal"}}>
+                                            {Object.values(s.results).filter(r => r !== null).length}
+                                            &nbsp;/&nbsp;
+                                            {Object.keys(s.results).length}</span>
+                                    </Typography.Title>
+                                    <Typography.Title level={4}>Results</Typography.Title>
                                     <Table bordered={true}
                                            columns={this.searchResultColumns}
                                            dataSource={searchResults}
