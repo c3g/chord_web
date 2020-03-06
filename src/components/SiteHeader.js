@@ -40,6 +40,7 @@ class SiteHeader extends Component {
                 url: withBasePath("data/explorer"),
                 icon: <Icon type="bar-chart" />,
                 text: <span className="nav-text">Data Explorer</span>,
+                disabled: !this.props.isOwner,
             },
             {
                 url: withBasePath("data/manager"),

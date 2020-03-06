@@ -91,7 +91,7 @@ class TableTreeSelect extends Component {
                             onChange={this.props.onChange || nop}
                             value={this.state.selected}
                             treeData={selectTreeData}
-                            treeDefaultExpandAll={true}/>
+                            treeDefaultExpandAll={true} />
             </Spin>
         )
     }
