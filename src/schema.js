@@ -59,7 +59,6 @@ export const generateSchemaTreeData = (
     const selectable = node.hasOwnProperty("search")
         && node.search.hasOwnProperty("operations")
         && node.search.operations.length > 0
-        && node.search.queryable === "all"  // TODO: Check internal if we have the permission
         && !isExcluded(key);
 
     let children = [];

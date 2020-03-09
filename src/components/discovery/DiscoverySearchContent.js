@@ -22,7 +22,8 @@ import DiscoveryQueryBuilder from "./DiscoveryQueryBuilder";
 class DiscoverySearchContent extends Component {
     render() {
         return <>
-            <DiscoveryQueryBuilder dataTypeForms={this.props.dataTypeForms}
+            <DiscoveryQueryBuilder isInternal={false}
+                                   dataTypeForms={this.props.dataTypeForms}
                                    addDataTypeQueryForm={this.props.addDataTypeQueryForm}
                                    updateDataTypeQueryForm={this.props.updateDataTypeQueryForm}
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm}

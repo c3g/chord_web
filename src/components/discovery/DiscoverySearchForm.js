@@ -185,7 +185,8 @@ class DiscoverySearchForm extends Component {
                 })(
                     <DiscoverySearchCondition conditionType={this.props.conditionType || "data-type"}
                                               dataType={this.props.dataType}
-                                              isExcluded={f => existingUniqueFields.includes(f) || this.isNotPublic(f)}
+                                              isExcluded={f => existingUniqueFields.includes(f) ||
+                                                  (!this.props.isInternal && this.isNotPublic(f))}
                                               onFieldChange={change => this.handleFieldChange(k, change)}
                                               onRemoveClick={() => this.removeCondition(k)}
                                               removeDisabled={(() => {
@@ -224,6 +225,7 @@ class DiscoverySearchForm extends Component {
 DiscoverySearchForm.propTypes = {
     conditionType: PropTypes.oneOf(["data-type", "join"]),
     dataType: PropTypes.object,  // TODO: Shape?
+    isInternal: PropTypes.bool,
     // TODO
 };
 

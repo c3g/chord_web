@@ -81,6 +81,7 @@ class DiscoveryQueryBuilder extends Component {
         const dataTypeTabPanes = this.props.dataTypeForms.map(d => (
             <Tabs.TabPane tab={d.dataType.id} key={d.dataType.id}>
                 <DiscoverySearchForm conditionType="data-type"
+                                     isInternal={this.props.isInternal || false}
                                      dataType={d.dataType}
                                      formValues={d.formValues}
                                      loading={this.props.searchLoading}
@@ -174,6 +175,7 @@ class DiscoveryQueryBuilder extends Component {
 }
 
 DiscoveryQueryBuilder.propTypes = {
+    isInternal: PropTypes.bool,
     onSearchSelect: PropTypes.func,
     servicesInfo: PropTypes.arrayOf(PropTypes.object),
     dataTypes: PropTypes.object,
