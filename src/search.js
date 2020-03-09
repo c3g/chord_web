@@ -1,3 +1,5 @@
+import {simpleDeepCopy} from "./utils";
+
 export const OP_EQUALS = "eq";
 export const OP_LESS_THAN = "lt";
 export const OP_LESS_THAN_OR_EQUAL = "le";
@@ -22,3 +24,15 @@ export const DEFAULT_SEARCH_PARAMETERS = {
     type: "unlimited",
     queryable: "all",
 };
+
+export const addDataTypeFormIfPossible = (dataTypeForms, dataType) =>
+    (dataTypeForms.map(d => d.dataType.id).includes(dataType.id))
+        ? dataTypeForms
+        : [...(dataTypeForms || []), {dataType, formValues: {}}];
+
+export const updateDataTypeFormIfPossible = (dataTypeForms, dataType, fields) =>
+    dataTypeForms.map(d => d.dataType.id === dataType.id
+        ? {...d, formValues: simpleDeepCopy(fields)} : d);  // TODO: Hack-y deep clone
+
+export const removeDataTypeFormIfPossible = (dataTypeForms, dataType) =>
+    dataTypeForms.filter(d => d.dataType.id !== dataType.id);
