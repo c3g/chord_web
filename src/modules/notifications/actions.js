@@ -27,6 +27,6 @@ export const markNotificationAsRead = networkAction(notificationID => (dispatch,
     types: MARK_NOTIFICATION_AS_READ,
     params: {notificationID},
     url: `${getState().services.notificationService.url}/notifications/${notificationID}/read`,
-    req: {method: "POST"},
+    req: {method: "PUT"},
     err: "Error marking notification as read"
 }));
