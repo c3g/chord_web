@@ -55,6 +55,7 @@ export const services = (
 
         dropBoxService: null,
         eventRelay: null,
+        federationService: null,
         metadataService: null,
         notificationService: null,
         wesService: null,
