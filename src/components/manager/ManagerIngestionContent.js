@@ -118,49 +118,44 @@ class ManagerIngestionContent extends Component {
         const formatWithNameIfPossible = (name, id) => name ? `${name} (${id})` : id;
 
         switch (this.state.step) {
-            case STEP_WORKFLOW_SELECTION:
+            case STEP_WORKFLOW_SELECTION: {
                 const workflows = this.props.workflows
                     .filter(w => w.data_type === (this.state.selectedTable
                         ? this.state.selectedTable.split(":")[1] : null))
-                    .map(w => (
-                        <WorkflowListItem key={w.id}
-                                          workflow={w}
-                                          selectable={true}
-                                          onClick={() => this.handleWorkflowClick(w)} />
-                    ));
+                    .map(w => <WorkflowListItem key={w.id}
+                                                workflow={w}
+                                                selectable={true}
+                                                onClick={() => this.handleWorkflowClick(w)} />);
 
-                return (
-                    <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
-                        <Form.Item label="Table">
-                            <TableTreeSelect onChange={table => this.setState({selectedTable: table})}
-                                             value={this.state.selectedTable} />
-                        </Form.Item>
-                        <Form.Item label="Workflows">
-                            {this.state.selectedTable
-                                ? <Spin spinning={this.props.workflowsLoading}>
-                                    {this.props.workflowsLoading
-                                        ? <Skeleton/>
-                                        : <List itemLayout="vertical">{workflows}</List>}
-                                </Spin>
-                                : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                         description="Select a table to see available workflows" />
-                            }
-                        </Form.Item>
-                    </Form>
-                );
+                return <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
+                    <Form.Item label="Table">
+                        <TableTreeSelect onChange={table => this.setState({selectedTable: table})}
+                                         value={this.state.selectedTable}/>
+                    </Form.Item>
+                    <Form.Item label="Workflows">
+                        {this.state.selectedTable
+                            ? <Spin spinning={this.props.workflowsLoading}>
+                                {this.props.workflowsLoading
+                                    ? <Skeleton/>
+                                    : <List itemLayout="vertical">{workflows}</List>}
+                            </Spin>
+                            : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                     description="Select a table to see available workflows"/>
+                        }
+                    </Form.Item>
+                </Form>;
+            }
 
             case STEP_INPUT:
-                return (
-                    <IngestionInputForm workflow={this.state.selectedWorkflow}
-                                        tree={this.props.tree}
-                                        initialValues={this.state.initialInputValues}
-                                        formValues={this.state.inputFormFields}
-                                        onChange={formValues => this.setState({inputFormFields: formValues})}
-                                        onSubmit={this.handleInputSubmit}
-                                        onBack={() => this.handleStepChange(0)} />
-                );
+                return <IngestionInputForm workflow={this.state.selectedWorkflow}
+                                           tree={this.props.tree}
+                                           initialValues={this.state.initialInputValues}
+                                           formValues={this.state.inputFormFields}
+                                           onChange={formValues => this.setState({inputFormFields: formValues})}
+                                           onSubmit={this.handleInputSubmit}
+                                           onBack={() => this.handleStepChange(0)} />;
 
-            case STEP_CONFIRM:
+            case STEP_CONFIRM: {
                 const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
                 const projectTitle = (this.props.projectsByID[projectID] || {title: null}).title || null;
                 const tableName = getTableName(this.state.selectedWorkflow.serviceID,
@@ -179,19 +174,23 @@ class ManagerIngestionContent extends Component {
                         </Form.Item>
                         <Form.Item label="Workflow">
                             <List itemLayout="vertical" style={{marginBottom: "14px"}}>
-                                <WorkflowListItem workflow={this.state.selectedWorkflow} />
+                                <WorkflowListItem workflow={this.state.selectedWorkflow}/>
                             </List>
                         </Form.Item>
                         <Form.Item label="Inputs">
                             <Table size="small" bordered={true} showHeader={false} pagination={false} columns={[
-                                {title: "ID", dataIndex: "id", render: iID =>
-                                        <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>},
-                                {title: "Value", dataIndex: "value", render: value =>
+                                {
+                                    title: "ID", dataIndex: "id", render: iID =>
+                                        <span style={{fontWeight: "bold", marginRight: "0.5em"}}>{iID}</span>
+                                },
+                                {
+                                    title: "Value", dataIndex: "value", render: value =>
                                         value instanceof Array
                                             ? <ul>{value.map(v => <li key={v.toString()}>{v.toString()}</li>)}</ul>
-                                            : value.toString()}
+                                            : value.toString()
+                                }
                             ]} rowKey="id" dataSource={this.state.selectedWorkflow.inputs.map(i =>
-                                ({id: i.id, value: this.state.inputs[i.id]}))} />
+                                ({id: i.id, value: this.state.inputs[i.id]}))}/>
                         </Form.Item>
                         <Form.Item wrapperCol={FORM_BUTTON_COL}>
                             {/* TODO: Back button like the last one */}
@@ -204,32 +203,31 @@ class ManagerIngestionContent extends Component {
                         </Form.Item>
                     </Form>
                 );
+            }
         }
     }
 
     render() {
-        return (
-            <Layout>
-                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <Steps current={this.state.step} onChange={this.handleStepChange}>
-                        <Steps.Step title="Table & Workflow"
-                                    description={<span style={{letterSpacing: "-0.1px"}}>
-                                        Choose a table and ingestion workflow.
-                                    </span>}>
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <Steps current={this.state.step} onChange={this.handleStepChange}>
+                    <Steps.Step title="Table & Workflow"
+                                description={<span style={{letterSpacing: "-0.1px"}}>
+                                    Choose a table and ingestion workflow.
+                                </span>}>
 
-                        </Steps.Step>
-                        <Steps.Step title="Input"
-                                    description="Select input data for the workflow."
-                                    disabled={this.state.step < STEP_INPUT &&
-                                        Object.keys(this.state.inputs).length === 0} />
-                        <Steps.Step title="Run" description="Confirm details and run the workflow."
-                                    disabled={this.state.step < STEP_CONFIRM && (this.state.selectedWorkflow === null ||
-                                        Object.keys(this.state.inputs).length === 0)} />
-                    </Steps>
-                    <div style={{marginTop: "16px"}}>{this.getStepContents()}</div>
-                </Layout.Content>
-            </Layout>
-        )
+                    </Steps.Step>
+                    <Steps.Step title="Input"
+                                description="Select input data for the workflow."
+                                disabled={this.state.step < STEP_INPUT &&
+                                    Object.keys(this.state.inputs).length === 0} />
+                    <Steps.Step title="Run" description="Confirm details and run the workflow."
+                                disabled={this.state.step < STEP_CONFIRM && (this.state.selectedWorkflow === null ||
+                                    Object.keys(this.state.inputs).length === 0)} />
+                </Steps>
+                <div style={{marginTop: "16px"}}>{this.getStepContents()}</div>
+            </Layout.Content>
+        </Layout>;
     }
 }
 

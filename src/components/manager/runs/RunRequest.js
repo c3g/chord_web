@@ -39,7 +39,7 @@ class RunRequest extends Component {
                     {details.request.workflow_type_version}
                 </Descriptions.Item>
                 <Descriptions.Item label="Workflow URL">
-                    <a href={details.request.workflow_url} target="_blank" rel="nofollow">
+                    <a href={details.request.workflow_url} target="_blank" rel="noopener noreferrer">
                         {details.request.workflow_url}
                     </a>
                 </Descriptions.Item>

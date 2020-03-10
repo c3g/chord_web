@@ -50,7 +50,7 @@ export default {
                 break;
 
             default:
-                notification.open(notificationBasics)
+                notification.open(notificationBasics);
         }
     }
 };

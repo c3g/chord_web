@@ -62,7 +62,7 @@ export const renderMenuItem = i => {
                     {i.text || null}
                 </span>}
         </Menu.Item>
-    )
+    );
 };
 
 export const matchingMenuKeys = menuItems => menuItems

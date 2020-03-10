@@ -25,14 +25,14 @@ class NotificationList extends Component {
             case NOTIFICATION_WES_RUN_COMPLETED:
             case NOTIFICATION_WES_RUN_FAILED:
                 return [
-                    <Button onClick={() => this.props.navigateToWESRun(notification.action_target)}>
+                    <Button key="run-details" onClick={() => this.props.navigateToWESRun(notification.action_target)}>
                         Run Details
                     </Button>
                 ];
             default:
                 return [];
         }
-    };
+    }
 
     render() {
         const processedNotifications = this.props.notifications.map(n => ({
@@ -54,7 +54,8 @@ class NotificationList extends Component {
                   renderItem={n => (
                       <List.Item key={n.id} actions={[
                           ...this.getNotificationActions(n),
-                          <Button type="link"
+                          <Button key="mark-as-read"
+                                  type="link"
                                   icon="read"
                                   style={{padding: 0}}
                                   onClick={() => this.props.markNotificationAsRead(n.id)}>
@@ -72,7 +73,6 @@ class NotificationList extends Component {
 
 const mapStateToProps = state => ({
     fetchingNotifications: state.services.isFetchingAll || state.notifications.isFetching,
-    nodeInfo: state.nodeInfo.data,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

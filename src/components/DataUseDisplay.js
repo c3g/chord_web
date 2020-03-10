@@ -56,9 +56,9 @@ class DataUseDisplay extends Component {
                             {this.props.dataUse.consent_code.secondary_categories.length > 0
                                 ? this.props.dataUse.consent_code.secondary_categories.map(sc =>
                                     <Popover {...SECONDARY_CONSENT_CODE_INFO[sc.code]}
+                                             key={sc.code}
                                              overlayStyle={{maxWidth: "576px"}}>
-                                        <Tag style={TAG_STYLING}
-                                             key={sc.code}>{sc.code}</Tag>
+                                        <Tag style={TAG_STYLING}>{sc.code}</Tag>
                                     </Popover>)
                                 : <Tag style={{...TAG_STYLING, background: "white", borderStyle: "dashed"}}>N/A</Tag>}
                         </Col>

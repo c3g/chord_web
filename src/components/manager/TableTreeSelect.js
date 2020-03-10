@@ -93,7 +93,7 @@ class TableTreeSelect extends Component {
                             treeData={selectTreeData}
                             treeDefaultExpandAll={true} />
             </Spin>
-        )
+        );
     }
 }
 

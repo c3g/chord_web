@@ -58,9 +58,10 @@ class LinkedFieldSetForm extends Component {
                         this.props.form.getFieldDecorator(`fields[${i}]`, {
                             initialValue: {selected, schema: getFieldSchema(rootSchema, selected)}
                         });
-                    } catch {
+                    } catch (err) {
                         // Possibly invalid field (due to migration / data model change), skip it.
                         console.log(`Encountered invalid field: ${selected}`);
+                        console.error(err);
                     }
                 });
         }

@@ -18,4 +18,4 @@ export default async (message, history) => {
     for (const handler of handlers) {
         await store.dispatch(handler(message, history));
     }
-}
+};

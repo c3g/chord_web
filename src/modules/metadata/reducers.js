@@ -147,7 +147,7 @@ export const projects = (
         case SAVE_PROJECT_DATASET.RECEIVE:
         case ADD_DATASET_LINKED_FIELD_SET.RECEIVE:
         case SAVE_DATASET_LINKED_FIELD_SET.RECEIVE:
-        case DELETE_DATASET_LINKED_FIELD_SET.RECEIVE:
+        case DELETE_DATASET_LINKED_FIELD_SET.RECEIVE: {
             const replaceDataset = d => d.identifier === action.data.identifier ? {...d, ...action.data} : d;
             return {
                 ...state,
@@ -163,6 +163,7 @@ export const projects = (
                     }
                 }
             };
+        }
 
         case SAVE_PROJECT_DATASET.FINISH:
         case ADD_DATASET_LINKED_FIELD_SET.FINISH:
@@ -174,7 +175,7 @@ export const projects = (
         case DELETE_PROJECT_DATASET.REQUEST:
             return {...state, isDeletingDataset: true};
 
-        case DELETE_PROJECT_DATASET.RECEIVE:
+        case DELETE_PROJECT_DATASET.RECEIVE: {
             const deleteDataset = d => d.identifier !== action.dataset.identifier;
             return {
                 ...state,
@@ -191,6 +192,7 @@ export const projects = (
                     }
                 }
             };
+        }
 
         case DELETE_PROJECT_DATASET.FINISH:
             return {...state, isDeletingDataset: false};

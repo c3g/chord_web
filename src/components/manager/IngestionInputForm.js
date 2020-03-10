@@ -38,7 +38,7 @@ class IngestionInputForm extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
             (this.props.onSubmit || nop)(values);
-        })
+        });
     }
 
     getInputComponent(input) {

@@ -79,7 +79,7 @@ class DiscoverySearchForm extends Component {
                 ...this.state.conditionsHelp,
                 [k]: change.fieldSchema.description || undefined,
             }
-        })
+        });
     }
 
     removeCondition(k) {
@@ -206,19 +206,17 @@ class DiscoverySearchForm extends Component {
             </Form.Item>
         ));
 
-        return (
-            <Form onSubmit={this.onSubmit}>
-                {formItems}
-                <Form.Item wrapperCol={{
-                    xl: {span: 24},
-                    xxl: {offset: 3, span: 18}
-                }}>
-                    <Button type="dashed" onClick={() => this.addCondition()} style={{width: "100%"}}>
-                        <Icon type="plus" /> Add condition
-                    </Button>
-                </Form.Item>
-            </Form>
-        );
+        return <Form onSubmit={this.onSubmit}>
+            {formItems}
+            <Form.Item wrapperCol={{
+                xl: {span: 24},
+                xxl: {offset: 3, span: 18}
+            }}>
+                <Button type="dashed" onClick={() => this.addCondition()} style={{width: "100%"}}>
+                    <Icon type="plus" /> Add condition
+                </Button>
+            </Form.Item>
+        </Form>;
     }
 }
 

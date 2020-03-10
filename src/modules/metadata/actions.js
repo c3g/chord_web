@@ -88,7 +88,7 @@ const createProject = networkAction((project, history) => (dispatch, getState) =
     err: "Error creating project",
     onSuccess: async data => {
         if (history) history.push(withBasePath(`data/manager/projects/${data.identifier}`));
-        message.success(`Project '${data.title}' created!`)
+        message.success(`Project '${data.title}' created!`);
     }
 }));
 
@@ -140,7 +140,7 @@ export const addProjectDataset = networkAction((project, dataset, onSuccess = no
     // TODO: END ACTION?
     onSuccess: async () => {
         await onSuccess();
-        message.success(`Added dataset '${dataset.title}' to project ${project.title}!`)
+        message.success(`Added dataset '${dataset.title}' to project ${project.title}!`);
     }
 }));
 

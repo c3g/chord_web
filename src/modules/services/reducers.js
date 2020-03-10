@@ -73,7 +73,7 @@ export const services = (
         case FETCH_SERVICES.REQUEST:
             return {...state, isFetching: true};
 
-        case FETCH_SERVICES.RECEIVE:
+        case FETCH_SERVICES.RECEIVE: {
             const itemsByArtifact = Object.fromEntries(action.data.map(s => [s.type.split(":")[1], s]));
             return {
                 ...state,
@@ -91,6 +91,7 @@ export const services = (
 
                 lastUpdated: action.receivedAt
             };
+        }
 
         case FETCH_SERVICES.FINISH:
             return {...state, isFetching: false};
@@ -138,7 +139,7 @@ export const serviceDataTypes = (
                 }
             };
 
-        case FETCH_SERVICE_DATA_TYPES.RECEIVE:
+        case FETCH_SERVICE_DATA_TYPES.RECEIVE: {
             const itemsByID = Object.fromEntries(action.data.map(d => [d.id, d]));
             return {
                 ...state,
@@ -156,6 +157,7 @@ export const serviceDataTypes = (
                 },
                 lastUpdated: action.receivedAt
             };
+        }
 
         case FETCH_SERVICE_DATA_TYPES.ERROR:
             return {
@@ -216,8 +218,9 @@ export const serviceTables = (
                 }
             };
 
-        case FETCH_SERVICE_TABLES.RECEIVE:
-            const newTables = action.data.map(t => ({...t,
+        case FETCH_SERVICE_TABLES.RECEIVE: {
+            const newTables = action.data.map(t => ({
+                ...t,
                 service_id: action.serviceInfo.id,
                 data_type: action.dataTypeID
             }));
@@ -237,6 +240,7 @@ export const serviceTables = (
                     }
                 }
             };
+        }
 
         case FETCH_SERVICE_TABLES.ERROR:
             return {

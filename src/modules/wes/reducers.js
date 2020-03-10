@@ -107,7 +107,7 @@ export const runs = (
                     ...state.itemsByID,
                     [action.runID]: {
                         ...(state.itemsByID[action.runID] || {}),
-                        state: action.data.state || r.state,
+                        state: action.data.state,
                         details: action.data
                     }
                 }

@@ -8,4 +8,4 @@ export default {
             await dispatch(receiveRunDetails(message.data.run_id, message.data));
         }
     }
-}
+};

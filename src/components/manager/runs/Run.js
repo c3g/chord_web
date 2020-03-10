@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 
 import {PageHeader, Row, Statistic, Tabs, Tag} from "antd";
-
 import "antd/es/page-header/style/css";
 import "antd/es/row/style/css";
 import "antd/es/statistic/style/css";

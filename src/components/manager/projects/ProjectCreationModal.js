@@ -39,15 +39,14 @@ class ProjectCreationModal extends Component {
     }
 
     render() {
-        return (
-            <Modal visible={this.props.showCreationModal} title="Create Project" width={600} footer={[
-                <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
-                <Button key="create" icon="plus" type="primary" onClick={this.handleCreateSubmit}
-                        loading={this.props.isCreatingProject}>Create</Button>
-            ]} onCancel={this.handleCreateCancel}>
-                <ProjectForm ref={form => this.form = form} />
-            </Modal>
-        )
+        return <Modal visible={this.props.showCreationModal} title="Create Project" width={600} footer={[
+            <Button key="cancel" onClick={this.handleCreateCancel}>Cancel</Button>,
+            <Button key="create"
+                    icon="plus"
+                    type="primary"
+                    onClick={this.handleCreateSubmit}
+                    loading={this.props.isCreatingProject}>Create</Button>
+        ]} onCancel={this.handleCreateCancel}><ProjectForm ref={form => this.form = form} /></Modal>;
     }
 }
 

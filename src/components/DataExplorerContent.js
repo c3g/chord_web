@@ -3,8 +3,7 @@ import {connect} from "react-redux";
 
 import {Redirect, Route, Switch} from "react-router-dom";
 
-import {Layout, Menu} from "antd";
-import "antd/es/layout/style/css";
+import {Menu} from "antd";
 import "antd/es/menu/style/css";
 
 import ExplorerSearchContent from "./explorer/ExplorerSearchContent";

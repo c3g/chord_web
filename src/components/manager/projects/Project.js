@@ -49,7 +49,7 @@ class Project extends Component {
             title: value.title || "",
             description: value.description || "",
             datasets: value.datasets || [],
-        }
+        };
     }
 
     handleSave() {
@@ -66,7 +66,7 @@ class Project extends Component {
                 description: values.description || this.state.description,
                 data_use: values.data_use || this.state.data_use
             });
-        })
+        });
     }
 
     render() {
@@ -146,7 +146,7 @@ class Project extends Component {
                         </Empty>
                     )}
             </div>
-        )
+        );
     }
 }
 

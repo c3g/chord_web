@@ -1,5 +1,5 @@
 import {conditionsToQuery, extractQueriesFromDataTypeForms, extractQueryConditionsFromFormValues} from "../../search";
-import {createNetworkActionTypes, networkAction} from "../../utils/actions"
+import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 import {jsonRequest} from "../../utils/requests";
 
 

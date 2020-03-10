@@ -88,22 +88,20 @@ class SiteHeader extends Component {
             }
         ];
 
-        return (
-            <Layout.Header>
-                <Link to={BASE_PATH}><h1 style={{
-                    display: "inlineBlock",
-                    color: "rgba(255, 255, 255, 0.95)",
-                    margin: "0 30px 0 0",
-                    float: "left"
-                }}>CHORD</h1></Link>
-                <Menu theme="dark"
-                      mode="horizontal"
-                      selectedKeys={matchingMenuKeys(menuItems)}
-                      style={{lineHeight: "64px"}}>
-                    {menuItems.map(i => renderMenuItem(i))}
-                </Menu>
-            </Layout.Header>
-        );
+        return <Layout.Header>
+            <Link to={BASE_PATH}><h1 style={{
+                display: "inlineBlock",
+                color: "rgba(255, 255, 255, 0.95)",
+                margin: "0 30px 0 0",
+                float: "left"
+            }}>CHORD</h1></Link>
+            <Menu theme="dark"
+                  mode="horizontal"
+                  selectedKeys={matchingMenuKeys(menuItems)}
+                  style={{lineHeight: "64px"}}>
+                {menuItems.map(i => renderMenuItem(i))}
+            </Menu>
+        </Layout.Header>;
     }
 }
 
@@ -118,6 +116,8 @@ SiteHeader.propTypes = {
     }),
     authHasAttempted: PropTypes.bool,
     isOwner: PropTypes.bool,
+
+    showNotificationDrawer: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -128,4 +128,8 @@ const mapStateToProps = state => ({
     isOwner: (state.auth.user || {}).chord_user_role === "owner"
 });
 
-export default withRouter(connect(mapStateToProps)(SiteHeader));
+const mapDispatchToProps = dispatch => ({
+    showNotificationDrawer: () => dispatch(showNotificationDrawer())
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SiteHeader));

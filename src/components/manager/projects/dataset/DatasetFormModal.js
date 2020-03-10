@@ -55,7 +55,7 @@ class DatasetFormModal extends Component {
                     description: (values.description || "").trim(),
                     contact_info: (values.contact_info || "").trim(),
                 }, onSuccess));
-        })
+        });
     }
 
     async handleSuccess(values) {

@@ -33,7 +33,7 @@ class TableDeletionModal extends Component {
                     {/* TODO: Real terms and conditions */}
                 </Typography.Paragraph>
             </Modal>
-        )
+        );
     }
 }
 

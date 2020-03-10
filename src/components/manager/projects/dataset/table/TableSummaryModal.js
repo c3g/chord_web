@@ -122,7 +122,7 @@ class TableSummaryModal extends Component {
             <Modal {...this.props}
                    title={<>
                        <Tag style={{marginRight: "24px"}}>{table.data_type}</Tag>
-                       <span>Table "{table.name || table.table_id || ""}": Summary</span>
+                       <span>Table &ldquo;{table.name || table.table_id || ""}&rdquo;: Summary</span>
                    </>}
                    footer={null}
                    width={754}

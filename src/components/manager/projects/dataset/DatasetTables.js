@@ -146,51 +146,49 @@ class DatasetTables extends Component {
             }] : []),
             ...(dataset.tables || [])
         ].map(t => ({...t, name: t.name || null}));
-        return (
-            <>
-                <Typography.Title level={4}>
-                    Tables
-                    {this.props.isPrivate ? (
-                        <div style={{float: "right"}}>
-                            {/* TODO: Implement v0.2
-                                {(this.props.strayTables || []).length > 0 ? (
-                                    <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
-                                        Adopt Stray Tables ({this.props.strayTables.length})
-                                    </Button>
-                                ) : null} */}
-                            <Button icon="plus"
-                                    style={{verticalAlign: "top"}}
-                                    type="primary"
-                                    onClick={() => this.handleAdditionClick()}>
-                                Add Table
-                            </Button>
-                        </div>
-                    ) : null}
-                </Typography.Title>
+        return <>
+            <Typography.Title level={4}>
+                Tables
+                {this.props.isPrivate ? (
+                    <div style={{float: "right"}}>
+                        {/* TODO: Implement v0.2
+                            {(this.props.strayTables || []).length > 0 ? (
+                                <Button icon="import" style={{verticalAlign: "top", marginRight: "10px"}}>
+                                    Adopt Stray Tables ({this.props.strayTables.length})
+                                </Button>
+                            ) : null} */}
+                        <Button icon="plus"
+                                style={{verticalAlign: "top"}}
+                                type="primary"
+                                onClick={() => this.handleAdditionClick()}>
+                            Add Table
+                        </Button>
+                    </div>
+                ) : null}
+            </Typography.Title>
 
-                <Table bordered
-                       dataSource={tables}
-                       rowKey="table_id"
-                       // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
-                       columns={tableListColumns}
-                       loading={this.props.isFetchingTables} />
+            <Table bordered
+                   dataSource={tables}
+                   rowKey="table_id"
+                   // expandedRowRender={() => (<span>TODO: List of files</span>)} TODO: Implement v0.2
+                   columns={tableListColumns}
+                   loading={this.props.isFetchingTables} />
 
-                <TableSummaryModal visible={this.state.tableSummaryModalVisible}
-                                   table={this.state.selectedTable}
-                                   onCancel={() => this.setState({tableSummaryModalVisible: false})} />
+            <TableSummaryModal visible={this.state.tableSummaryModalVisible}
+                               table={this.state.selectedTable}
+                               onCancel={() => this.setState({tableSummaryModalVisible: false})} />
 
-                <TableAdditionModal visible={this.state.additionModalVisible}
-                                    project={this.props.project}
-                                    dataset={dataset}
-                                    onSubmit={vs => this.handleAdditionSubmit(vs)}
-                                    onCancel={() => this.handleAdditionCancel()} />
+            <TableAdditionModal visible={this.state.additionModalVisible}
+                                project={this.props.project}
+                                dataset={dataset}
+                                onSubmit={vs => this.handleAdditionSubmit(vs)}
+                                onCancel={() => this.handleAdditionCancel()} />
 
-                <TableDeletionModal visible={this.state.deletionModalVisible}
-                                    table={dataset}
-                                    onSubmit={() => this.handleTableDeletionSubmit()}
-                                    onCancel={() => this.handleTableDeletionCancel()} />
-            </>
-        )
+            <TableDeletionModal visible={this.state.deletionModalVisible}
+                                table={dataset}
+                                onSubmit={() => this.handleTableDeletionSubmit()}
+                                onCancel={() => this.handleTableDeletionCancel()} />
+        </>;
     }
 }
 
