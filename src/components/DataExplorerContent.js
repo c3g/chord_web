@@ -43,18 +43,14 @@ class DataExplorerContent extends Component {
                         {PAGE_MENU.map(renderMenuItem)}
                     </Menu>
                 } />
-                <Layout>
-                    <Layout.Content style={{background: "white", padding: "24px"}}>
-                        <Switch>
-                            <Route path={withBasePath("data/explorer/search")}
-                                   component={ExplorerSearchContent} />
-                            <Route path={withBasePath("data/explorer/genome")}
-                                   component={ExplorerGenomeBrowserContent} />
-                            <Redirect from={withBasePath("data/explorer")}
-                                      to={withBasePath("data/explorer/search")} />
-                        </Switch>
-                    </Layout.Content>
-                </Layout>
+                <Switch>
+                    <Route path={withBasePath("data/explorer/search")}
+                           component={ExplorerSearchContent} />
+                    <Route path={withBasePath("data/explorer/genome")}
+                           component={ExplorerGenomeBrowserContent} />
+                    <Redirect from={withBasePath("data/explorer")}
+                              to={withBasePath("data/explorer/search")} />
+                </Switch>
             </>
         );
     }

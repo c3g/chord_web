@@ -1,6 +1,11 @@
 import React, {Component} from "react";
 
+import {Layout} from "antd";
+import "antd/es/layout/style/css";
+
 import igv from "igv";
+
+import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ExplorerGenomeBrowserContent extends Component {
     constructor(props) {
@@ -19,7 +24,11 @@ class ExplorerGenomeBrowserContent extends Component {
     }
 
     render() {
-        return <div id="igv-container" />;
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <div id="igv-container" />
+            </Layout.Content>
+        </Layout>;
     }
 }
 

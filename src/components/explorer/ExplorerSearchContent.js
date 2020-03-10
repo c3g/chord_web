@@ -1,9 +1,71 @@
 import React, {Component} from "react";
+import {connect} from "react-redux";
+import {Redirect, Route, Switch} from "react-router-dom";
+import PropTypes from "prop-types";
+
+import {Layout, Menu, Skeleton} from "antd";
+import "antd/es/layout/style/css";
+import "antd/es/menu/style/css";
+
+import {
+    matchingMenuKeys,
+    projectPropTypesShape,
+    renderMenuItem,
+    serviceInfoPropTypesShape,
+    withBasePath
+} from "../../utils";
+import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import ExplorerDatasetSearch from "./ExplorerDatasetSearch";
 
 class ExplorerSearchContent extends Component {
     render() {
-        return "TODO";
+        const menuItems = this.props.projects.map(project => ({
+            // url: withBasePath(`data/explorer/projects/${project.identifier}`),
+            key: project.identifier,
+            text: project.title,
+            children: project.datasets.map(dataset => ({
+                url: withBasePath(`data/explorer/search/${dataset.identifier}`),
+                text: dataset.title
+            }))
+        }));
+
+        const datasets = this.props.projects.flatMap(p => p.datasets);
+
+        return <Layout>
+            <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
+                <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                <Menu mode="inline"
+                      style={{flex: 1, paddingTop: "8px"}}
+                      defaultOpenKeys={menuItems.map(p => p.key)}
+                      selectedKeys={matchingMenuKeys(menuItems)}>
+                    {menuItems.map(renderMenuItem)}
+                </Menu>
+                </div>
+            </Layout.Sider>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                {datasets.length > 0 ? (
+                    <Switch>
+                        <Route path={withBasePath("data/explorer/search/:dataset")}
+                               component={ExplorerDatasetSearch} />
+                        <Redirect from={withBasePath("data/explorer/search")}
+                                  to={withBasePath(`data/explorer/search/${datasets[0].identifier}`)} />
+                    </Switch>
+                ) : (this.props.isFetchingDependentData ? <Skeleton /> : "No datasets available")}
+            </Layout.Content>
+        </Layout>;
     }
 }
 
-export default ExplorerSearchContent;
+ExplorerSearchContent.propTypes = {
+    federationServiceInfo: serviceInfoPropTypesShape,
+    projects: PropTypes.arrayOf(projectPropTypesShape),
+    isFetchingDependentData: PropTypes.bool,
+};
+
+const mapStateToProps = state => ({
+    federationServiceInfo: state.services.federationService,
+    projects: state.projects.items,
+    isFetchingDependentData: state.auth.isFetchingDependentData,
+});
+
+export default connect(mapStateToProps)(ExplorerSearchContent);
