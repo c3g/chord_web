@@ -36,3 +36,27 @@ export const updateDataTypeFormIfPossible = (dataTypeForms, dataType, fields) =>
 
 export const removeDataTypeFormIfPossible = (dataTypeForms, dataType) =>
     dataTypeForms.filter(d => d.dataType.id !== dataType.id);
+
+
+export const extractQueryConditionsFromFormValues = formValues =>
+    (((formValues || {keys: {value: []}}).keys || {value: []}).value || [])
+        .map(k => ((formValues || {conditions: []}).conditions || [])[k] || null)
+        .filter(c => c !== null);
+
+export const conditionsToQuery = conditions => {
+    const filteredConditions = conditions.filter(c => c.value && c.value.field);
+    if (filteredConditions.length === 0) return null;
+
+    return filteredConditions
+        .map(({value}) =>
+            (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
+                [`#${value.operation}`,
+                    ["#resolve", ...value.field.split(".").slice(1)],
+                    value.field2 ? ["#resolve", ...value.field2.split(".").slice(1)] : value.searchValue]
+            ))
+        .reduce((se, v) => ["#and", se, v]);
+};
+
+export const extractQueriesFromDataTypeForms = dataTypeForms => Object.fromEntries(dataTypeForms
+    .map(d => [d.dataType.id, conditionsToQuery(extractQueryConditionsFromFormValues(d.formValues))])
+    .filter(c => c[1] !== null));

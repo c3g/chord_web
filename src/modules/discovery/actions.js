@@ -1,3 +1,4 @@
+import {conditionsToQuery, extractQueriesFromDataTypeForms, extractQueryConditionsFromFormValues} from "../../search";
 import {createNetworkActionTypes, networkAction} from "../../utils/actions"
 import {jsonRequest} from "../../utils/requests";
 
@@ -31,41 +32,16 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
 }));
 
 
-
-const conditionsToQuery = conditions => {
-    const filteredConditions = conditions.filter(c => c.value && c.value.field);
-    if (filteredConditions.length === 0) return null;
-
-    return filteredConditions
-        .map(({value}) =>
-            (exp => value.negated ? ["#not", exp] : exp)(  // Negate expression if needed
-                [`#${value.operation}`,
-                    ["#resolve", ...value.field.split(".").slice(1)],
-                    value.field2 ? ["#resolve", ...value.field2.split(".").slice(1)] : value.searchValue]
-            ))
-        .reduce((se, v) => ["#and", se, v]);
-};
-
 export const performFullSearchIfPossible = () => async (dispatch, getState) => {
     if (getState().discovery.isFetching) return;
 
     // TODO: Map keys to avoid issues!!! Otherwise "deleted" conditions show up
 
-    const dataTypeQueries = Object.fromEntries(getState().discovery.dataTypeForms.map(d =>
-        [d.dataType.id, conditionsToQuery(
-            (((d.formValues || {keys: {value: []}}).keys || {value: []}).value || [])
-                .map(k => ((d.formValues || {conditions: []}).conditions || [])[k] || null)
-                .filter(c => c !== null)
-        )]).filter(c => c[1] !== null));
-
+    const dataTypeQueries = extractQueriesFromDataTypeForms(getState().discovery.dataTypeForms);
     if (dataTypeQueries.length === 0) return;  // TODO: Report this; blank data type query (should be caught earlier)
 
-    // TODO: Add data types and [item] to resolve...
-
     const joinFormValues = getState().discovery.joinFormValues;
-    const joinQueryConditions = (((joinFormValues || {keys: {value: []}}).keys || {value: []}).value || [])
-        .map(k => ((joinFormValues || {conditions: []}).conditions || [])[k] || null)
-        .filter(c => c !== null);
+    const joinQueryConditions = extractQueryConditionsFromFormValues(joinFormValues);
     const joinQuery = joinQueryConditions.length > 0 ? conditionsToQuery(joinQueryConditions) : null;
 
     await dispatch(performSearch(dataTypeQueries, joinQuery));
