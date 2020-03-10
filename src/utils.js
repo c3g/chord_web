@@ -66,8 +66,8 @@ export const renderMenuItem = i => {
 };
 
 export const matchingMenuKeys = menuItems => menuItems
-    .filter(i => i.url && window.location.pathname.startsWith(i.url))
-    .map(i => i.key || i.url || "");
+    .filter(i => (i.url && window.location.pathname.startsWith(i.url)) || (i.children || []).length > 0)
+    .flatMap(i => [i.key || i.url || "", ...matchingMenuKeys(i.children || [])]);
 
 
 export const FORM_MODE_ADD = "add";
