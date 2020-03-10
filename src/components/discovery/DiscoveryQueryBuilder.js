@@ -37,17 +37,23 @@ class DiscoveryQueryBuilder extends Component {
         this.forms = {};
     }
 
-    handleSubmit() {
-        Object.entries(this.forms).filter(f => f[1]).forEach(([_dt, f]) => {
-            f.props.form.validateFields({force: true}, err => {
-                if (err) {
-                    console.error(err);
-                    // TODO: If error, switch to errored tab
-                    return;
-                }
-                (this.props.onSubmit || nop)();
-            });
-        });
+    async handleSubmit() {
+        try {
+            await Promise.all(Object.entries(this.forms).filter(f => f[1]).map(([_dt, f]) =>
+                new Promise((resolve, reject) => {
+                    f.props.form.validateFields({force: true}, err => {
+                        if (err) {
+                            // TODO: If error, switch to errored tab
+                            reject(err);
+                        }
+                        resolve();  // TODO: data?
+                    });
+                })));
+
+            (this.props.onSubmit || nop)();
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     handleFormChange(dataType, fields) {
