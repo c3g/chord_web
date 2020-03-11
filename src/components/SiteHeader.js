@@ -17,8 +17,10 @@ import {
     BASE_PATH,
     matchingMenuKeys,
     nodeInfoDataPropTypesShape,
+    notificationPropTypesShape,
     renderMenuItem,
     signInURLWithRedirect,
+    userPropTypesShape,
     withBasePath
 } from "../utils";
 
@@ -84,7 +86,7 @@ class SiteHeader extends Component {
                         <span> ({this.props.unreadNotifications.length})</span>
                     ) : null}
                 </span>,
-                onClick: () => this.props.dispatch(showNotificationDrawer()),
+                onClick: () => this.props.showNotificationDrawer(),
             }
         ];
 
@@ -107,13 +109,8 @@ class SiteHeader extends Component {
 
 SiteHeader.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
-    unreadNotifications: PropTypes.array,
-    user: PropTypes.shape({
-        chord_user_role: PropTypes.string.isRequired,
-        email_verified: PropTypes.bool,
-        preferred_username: PropTypes.string,
-        sub: PropTypes.string.isRequired,
-    }),
+    unreadNotifications: PropTypes.arrayOf(notificationPropTypesShape),
+    user: userPropTypesShape,
     authHasAttempted: PropTypes.bool,
     isOwner: PropTypes.bool,
 

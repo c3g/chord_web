@@ -32,6 +32,10 @@ const MENU_STYLE = {
 
 
 class DataExplorerContent extends Component {
+    componentDidMount() {
+        document.title = "CHORD - Explore Your Data";
+    }
+
     render() {
         if (!this.props.nodeInfo.CHORD_URL) return null;
         const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));

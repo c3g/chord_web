@@ -9,7 +9,6 @@ import "antd/es/row/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
-import DatasetOverview from "./DatasetOverview";
 import TableAdditionModal from "./table/TableAdditionModal";
 import TableDeletionModal from "./table/TableDeletionModal";
 
@@ -18,7 +17,7 @@ import {
     deleteProjectTableIfPossible,
     fetchProjectsWithDatasetsAndTables
 } from "../../../../modules/metadata/actions";
-import {datasetPropTypesShape, nop, projectPropTypesShape} from "../../../../utils";
+import {datasetPropTypesShape, nop, projectPropTypesShape, serviceInfoPropTypesShape} from "../../../../utils";
 import {fetchTableSummaryIfPossible} from "../../../../modules/tables/actions";
 import TableSummaryModal from "./table/TableSummaryModal";
 
@@ -192,18 +191,20 @@ class DatasetTables extends Component {
     }
 }
 
-DatasetOverview.propTypes = {
+DatasetTables.propTypes = {
     isPrivate: PropTypes.bool,
     project: projectPropTypesShape,
     dataset: datasetPropTypesShape,
     onTableIngest: PropTypes.func,
     isFetchingTables: PropTypes.bool,
 
-    serviceInfoByArtifact: PropTypes.object,
+    chordServicesByArtifact: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
+    serviceInfoByArtifact: PropTypes.objectOf(serviceInfoPropTypesShape),
 
     addProjectTable: PropTypes.func,
     deleteProjectTable: PropTypes.func,
     fetchProjectsWithDatasetsAndTables: PropTypes.func,
+    fetchTableSummary: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

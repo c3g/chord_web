@@ -1,7 +1,7 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Checkbox, List, Icon, Radio, Typography} from "antd";
-
 import "antd/es/checkbox/style/css";
 import "antd/es/list/style/css";
 import "antd/es/icon/style/css";
@@ -15,6 +15,7 @@ import {
     SECONDARY_CONSENT_CODE_KEYS,
     SECONDARY_CONSENT_CODE_INFO,
 
+    DATA_USE_PROP_TYPE_SHAPE,
     DATA_USE_KEYS,
     DATA_USE_INFO,
     DUO_NOT_FOR_PROFIT_USE_ONLY
@@ -23,7 +24,7 @@ import {
 const sortSCC = (a, b) => SECONDARY_CONSENT_CODE_KEYS.indexOf(a.code) - SECONDARY_CONSENT_CODE_KEYS.indexOf(b.code);
 const sortDUR = (a, b) => DATA_USE_KEYS.indexOf(a.code) - DATA_USE_KEYS.indexOf(b.code);
 
-export default class DataUseInput extends Component {
+class DataUseInput extends Component {
     static getDerivedStateFromProps(nextProps) {
         return "value" in nextProps
             ? {...(nextProps.value || {})}
@@ -161,3 +162,10 @@ export default class DataUseInput extends Component {
         );
     }
 }
+
+DataUseInput.propTypes = {
+    value: DATA_USE_PROP_TYPE_SHAPE,
+    onChange: PropTypes.func,
+};
+
+export default DataUseInput;

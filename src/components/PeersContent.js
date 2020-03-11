@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Icon, Layout, Table} from "antd";
 import "antd/es/icon/style/css";
@@ -48,7 +49,7 @@ class PeersContent extends Component {
                     <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                         <Table dataSource={this.props.peers}
                                columns={this.peerColumns}
-                               loading={this.props.loadingPeers}
+                               loading={this.props.isFetchingPeers}
                                rowKey="url"
                                bordered={true}
                                size="middle" />
@@ -59,10 +60,18 @@ class PeersContent extends Component {
     }
 }
 
+PeersContent.propTypes = {
+    nodeInfo: PropTypes.shape({
+        CHORD_URL: PropTypes.string,
+    }),
+    peers: PropTypes.arrayOf(PropTypes.string),
+    isFetchingPeers: PropTypes.bool,
+};
+
 const mapStateToProps = state => ({
     nodeInfo: state.nodeInfo.data,
     peers: state.peers.items.map(p => ({url: p})),
-    loadingPeers: state.services.isFetchingAll || state.peers.isFetching
+    isFetchingPeers: state.services.isFetchingAll || state.peers.isFetching
 });
 
 export default connect(mapStateToProps)(PeersContent);

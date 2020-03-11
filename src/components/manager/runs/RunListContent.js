@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Table, Typography} from "antd";
 
@@ -45,6 +46,15 @@ class RunListContent extends Component {
         );
     }
 }
+
+RunListContent.propTypes = {
+    runs: PropTypes.arrayOf(PropTypes.object),  // TODO: shape, incorporating additional props included below
+
+    servicesFetching: PropTypes.bool,
+    runsFetching: PropTypes.bool,
+
+    fetchAllRunDetailsIfNeeded: PropTypes.func,
+};
 
 const mapStateToProps = state => ({
     runs: state.runs.items.map(r => {

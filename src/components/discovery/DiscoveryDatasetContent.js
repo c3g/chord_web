@@ -43,7 +43,7 @@ DiscoveryDatasetContent.propTypes = {
     projects: PropTypes.arrayOf(projectPropTypesShape),
     projectTablesByProjectID: PropTypes.object,  // TODO: Shape
     serviceTablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
-    isFetchingProjects: PropTypes.bool,
+    isFetchingUserDependentData: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import {Button, List} from "antd";
 import "antd/es/button/style/css";
@@ -9,6 +10,7 @@ import "antd/es/list/style/css";
 import {hideNotificationDrawer, markNotificationAsRead} from "../../modules/notifications/actions";
 
 import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../notifications";
+import {notificationPropTypesShape} from "../../utils";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;
@@ -69,6 +71,17 @@ class NotificationList extends Component {
         );
     }
 }
+
+NotificationList.propTypes = {
+    notifications: PropTypes.arrayOf(notificationPropTypesShape),
+    small: PropTypes.bool,
+
+    fetchingNotifications: PropTypes.bool,
+
+    markNotificationAsRead: PropTypes.func,
+    hideNotificationDrawer: PropTypes.func,
+    navigateToWESRun: PropTypes.func,
+};
 
 
 const mapStateToProps = state => ({

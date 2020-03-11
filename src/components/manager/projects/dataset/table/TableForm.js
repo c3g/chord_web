@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {connect} from "react-redux";
 
@@ -34,6 +35,18 @@ class TableForm extends Component {
         );
     }
 }
+
+TableForm.propTypes = {
+    dataTypes: PropTypes.arrayOf(PropTypes.shape({
+        dt: PropTypes.object,  // TODO: Shape
+        a: PropTypes.string,
+    })),
+    initialValue: PropTypes.shape({
+        name: PropTypes.string,
+        dataType: PropTypes.string,
+    }),
+    style: PropTypes.object,
+};
 
 const mapStateToProps = state => ({
     dataTypes: Object.entries(state.serviceDataTypes.dataTypesByServiceArtifact)

@@ -176,6 +176,8 @@ SearchList.propTypes = {
     searches: PropTypes.array,  // TODO: Shape
     selectedSearch: PropTypes.number,
     searchLoading: PropTypes.bool,
+
+    selectSearch: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

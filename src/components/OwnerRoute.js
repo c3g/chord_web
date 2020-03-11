@@ -1,6 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Route} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import {Button, Empty, Icon, Layout} from "antd";
 import "antd/es/button/style/css";
@@ -17,7 +18,7 @@ const signInIcon = (
     </div>
 );
 
-const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, basePath, path, ...rest}) => {
+const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, path, ...rest}) => {
     const cleanedPath = path.length > 0 ? path.replace(/^\//, "") : path;
     return (
         <Route {...rest} path={withBasePath(cleanedPath)} render={props => shouldRedirect
@@ -35,6 +36,13 @@ const OwnerRoute = ({component: Component, isSignedIn, shouldRedirect, basePath,
                 </Layout.Content>
             ) : <Component {...props} />} />
     );
+};
+
+OwnerRoute.propTypes = {
+    component: PropTypes.elementType,
+    isSignedIn: PropTypes.bool,
+    shouldRedirect: PropTypes.bool,
+    path: PropTypes.string,
 };
 
 const mapStateToProps = state => ({

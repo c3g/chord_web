@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Descriptions, List, Tag} from "antd";
 import "antd/es/descriptions/style/css";
@@ -55,6 +56,20 @@ class RunRequest extends Component {
         );
     }
 }
+
+RunRequest.propTypes = {
+    run: PropTypes.shape({
+        details: PropTypes.shape({
+            request: PropTypes.shape({
+                workflow_type: PropTypes.string,
+                workflow_type_version: PropTypes.string,
+                workflow_url: PropTypes.string,
+                tags: PropTypes.object,
+            })
+        })
+    }),
+    tablesByServiceAndDataTypeID: PropTypes.objectOf(PropTypes.objectOf(PropTypes.object)),  // TODO: Shape
+};
 
 const mapStateToProps = state => ({
     tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,

@@ -52,9 +52,10 @@ class ProjectCreationModal extends Component {
 
 ProjectCreationModal.propTypes = {
     showCreationModal: PropTypes.bool,
-    creatingProject: PropTypes.bool,
-    toggleProjectCreationModal: PropTypes.func,
     isCreatingProject: PropTypes.bool,
+
+    toggleProjectCreationModal: PropTypes.func,
+    createProject: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

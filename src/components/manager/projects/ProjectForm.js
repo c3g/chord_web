@@ -1,7 +1,7 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Input, Form} from "antd";
-
 import "antd/es/input/style/css";
 import "antd/es/form/style/css";
 
@@ -25,5 +25,13 @@ class ProjectForm extends Component {
         );
     }
 }
+
+ProjectForm.propTypes = {
+    style: PropTypes.object,
+    initialValue: PropTypes.shape({
+        title: PropTypes.string,
+        description: PropTypes.string,
+    })
+};
 
 export default Form.create({name: "project_form"})(ProjectForm);

@@ -47,9 +47,7 @@ DiscoverySearchContent.propTypes = {
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
     // joinFormValues: PropTypes.object,
 
-    selectDataType: PropTypes.func,
-    updateSearchForm: PropTypes.func,
-    requestSearch: PropTypes.func,
+    performFullSearchIfPossible: PropTypes.func,
 
     addDataTypeQueryForm: PropTypes.func,
     updateDataTypeQueryForm: PropTypes.func,

@@ -8,6 +8,7 @@ import "antd/es/descriptions/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchRunLogStreamsIfPossibleAndNeeded} from "../../../modules/wes/actions";
+import {runPropTypesShape} from "../../../utils";
 
 class RunLog extends Component {
     componentDidMount() {
@@ -52,16 +53,15 @@ class RunLog extends Component {
 }
 
 RunLog.propTypes = {
-    run: PropTypes.shape({
-        run_id: PropTypes.string,
-        details: PropTypes.shape({
-            run_log: PropTypes.shape({
-                exit_code: PropTypes.number,
-                stdout: PropTypes.string,
-                stderr: PropTypes.string
-            })
-        })
-    })
+    run: runPropTypesShape,
+
+    isFetchingRuns: PropTypes.bool,
+    runLogStreams: PropTypes.objectOf(PropTypes.objectOf({
+        isFetching: PropTypes.bool,
+        data: PropTypes.string,
+    })),
+
+    fetchRunLogStreamsIfPossibleAndNeeded: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter, Redirect, Route, Switch} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import io from "socket.io-client";
 
@@ -25,7 +26,14 @@ import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
-import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils";
+import {
+    BASE_PATH, nop,
+    serviceInfoPropTypesShape,
+    signInURLWithRedirect,
+    urlPath,
+    userPropTypesShape,
+    withBasePath
+} from "../utils";
 
 class App extends Component {
     constructor(props) {
@@ -104,7 +112,7 @@ class App extends Component {
 
     // TODO: Don't execute on focus if it's been checked recently
     async refreshUserAndDependentData() {
-        await this.props.dispatch(fetchUserAndDependentData());
+        await this.props.fetchUserAndDependentData();
         if (this.lastUser !== null && this.props.user === null) {
             // We got de-authenticated, so show a prompt...
             this.setState({signedOutModal: true});
@@ -123,10 +131,10 @@ class App extends Component {
     }
 
     async componentDidMount() {
-        await this.props.dispatch(fetchUserAndDependentData(async () => {
-            await this.props.dispatch(fetchPeersOrError());
+        await this.props.fetchUserAndDependentData(async () => {
+            await this.props.fetchPeersOrError();
             this.createEventRelayConnectionIfNecessary();
-        }));
+        });
 
         // TODO: Refresh other data
         // TODO: Variable rate
@@ -139,8 +147,24 @@ class App extends Component {
     }
 }
 
-export default withRouter(connect(state => ({
+App.propTypes = {
+    isFetchingNodeInfo: PropTypes.bool,
+    eventRelay: serviceInfoPropTypesShape,
+    user: userPropTypesShape,
+
+    fetchUserAndDependentData: PropTypes.func,
+    fetchPeersOrError: PropTypes.func,
+};
+
+const mapStateToProps = state => ({
     isFetchingNodeInfo: state.nodeInfo.isFetching,
     eventRelay: state.services.eventRelay,
     user: state.auth.user
-}))(App));
+});
+
+const mapDispatchToProps = dispatch => ({
+    fetchUserAndDependentData: async (servicesCb = nop) => await dispatch(fetchUserAndDependentData(servicesCb)),
+    fetchPeersOrError: async () => await dispatch(fetchPeersOrError()),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

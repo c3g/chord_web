@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 import {Tag} from "antd";
-import "antd/es/tag/style/css"
+import "antd/es/tag/style/css";
 
 import {withBasePath} from "../../../utils";
 

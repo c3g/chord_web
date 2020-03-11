@@ -164,6 +164,66 @@ export const projectPropTypesShape = PropTypes.shape({
 });
 
 
+// Prop types object shape for a single notification object.
+export const notificationPropTypesShape = PropTypes.shape({
+    id: PropTypes.string.required,
+    title: PropTypes.string.required,
+    description: PropTypes.string,
+    notification_type: PropTypes.string,
+    action_target: PropTypes.string,
+    read: PropTypes.bool,
+    timestamp: PropTypes.string,  // TODO: de-serialize?
+});
+
+
+// Prop types object shape for a run object.
+// TODO: Missing stuff
+export const runPropTypesShape = PropTypes.shape({
+    run_id: PropTypes.string,
+    state: PropTypes.string,
+
+    // withDetails=true
+    details: PropTypes.shape({
+        run_id: PropTypes.string,
+        state: PropTypes.string,
+        request: PropTypes.shape({
+            workflow_params: PropTypes.object,
+            workflow_type: PropTypes.string,
+            workflow_type_version: PropTypes.string,
+            workflow_engine_parameters: PropTypes.object,
+            workflow_url: PropTypes.string,
+            tags: PropTypes.object,
+        }),
+        run_log: PropTypes.shape({
+            name: PropTypes.string,
+            cmd: PropTypes.string,
+            start_time: PropTypes.string,  // TODO: De-serialize?
+            end_time: PropTypes.string,  // TODO: De-serialize?
+            stdout: PropTypes.string,
+            stderr: PropTypes.string,
+            exit_code: PropTypes.number,
+        })
+    })
+});
+
+
+// Prop types object shape for a single table summary object.
+export const summaryPropTypesShape = PropTypes.shape({
+    count: PropTypes.number,
+    data_type_specific: PropTypes.object,  // TODO: Shape changes...
+});
+
+
+// Prop types object shape for a single user object.
+export const userPropTypesShape = PropTypes.shape({
+    // TODO: More
+    chord_user_role: PropTypes.string.isRequired,
+    email_verified: PropTypes.bool,
+    preferred_username: PropTypes.string,
+    sub: PropTypes.string.isRequired,
+});
+
+
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({
     workflows: Object.entries(state.serviceWorkflows.workflowsByServiceID)

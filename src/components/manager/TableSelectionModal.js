@@ -16,25 +16,23 @@ class TableSelectionModal extends Component {
     }
 
     render() {
-        return (
-            <Modal title={this.props.title || "Select a Table"}
-                   visible={this.props.visible || false}
-                   onCancel={() => (this.props.onCancel || nop)()}
-                   onOk={() => (this.props.onOk || nop)(this.state.selected)}>
-                <Form>
-                    <Form.Item label="Table">
-                        <TableTreeSelect style={{width: "100%"}}
-                                         value={this.state.selected}
-                                         dataType={this.props.dataType || null}
-                                         onChange={table => this.setState({selected: table})} />
-                    </Form.Item>
-                </Form>
-            </Modal>
-        );
+        return <Modal title={this.props.title || "Select a Table"}
+                      visible={this.props.visible || false}
+                      onCancel={() => (this.props.onCancel || nop)()}
+                      onOk={() => (this.props.onOk || nop)(this.state.selected)}>
+            <Form>
+                <Form.Item label="Table">
+                    <TableTreeSelect style={{width: "100%"}}
+                                     value={this.state.selected}
+                                     dataType={this.props.dataType || null}
+                                     onChange={table => this.setState({selected: table})} />
+                </Form.Item>
+            </Form>
+        </Modal>;
     }
 }
 
-TableTreeSelect.propTypes = {
+TableSelectionModal.propTypes = {
     dataType: PropTypes.string,
     title: PropTypes.string,
     visible: PropTypes.bool,

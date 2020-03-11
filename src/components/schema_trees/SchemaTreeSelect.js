@@ -52,6 +52,8 @@ class SchemaTreeSelect extends Component {
 }
 
 SchemaTreeSelect.propTypes = {
+    style: PropTypes.object,
+    disabled: PropTypes.bool,
     schema: PropTypes.object,
     isExcluded: PropTypes.func,
     onChange: PropTypes.func,

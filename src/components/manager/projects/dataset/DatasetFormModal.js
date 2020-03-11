@@ -94,6 +94,8 @@ class DatasetFormModal extends Component {
 DatasetFormModal.propTypes = {
     mode: propTypesFormMode,
     initialValue: datasetPropTypesShape,
+
+    onOk: PropTypes.func,
     onCancel: PropTypes.func,
 
     project: projectPropTypesShape,

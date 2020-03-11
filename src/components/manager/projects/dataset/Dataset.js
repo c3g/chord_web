@@ -193,7 +193,7 @@ class Dataset extends Component {
                                 {(this.state.linked_field_sets || []).map((fieldSet, i) => (
                                     <Col key={i} lg={24} xl={12}>
                                         <Card title={`${i+1}. ${fieldSet.name}`} actions={isPrivate ? [
-                                            <span onClick={() => this.setState({
+                                            <span key="edit" onClick={() => this.setState({
                                                 fieldSetEditModalVisible: true,
                                                 selectedLinkedFieldSet: {
                                                     data: fieldSet,
@@ -203,7 +203,7 @@ class Dataset extends Component {
                                                 <Icon type="edit"
                                                       style={{width: "auto", display: "inline"}}
                                                       key="edit_field_sets" /> Manage Fields</span>,
-                                            <span onClick={() => this.handleFieldSetDeletion(fieldSet, i)}>
+                                            <span key="delete" onClick={() => this.handleFieldSetDeletion(fieldSet, i)}>
                                                 <Icon type="delete"
                                                       style={{width: "auto", display: "inline"}}
                                                       key="delete_field_set" /> Delete Set</span>,
@@ -266,24 +266,21 @@ class Dataset extends Component {
                     </>
                 ) : null
             }>
-                {isPrivate ? (
-                    <>
-                        <LinkedFieldSetModal mode={FORM_MODE_ADD}
-                                             dataset={this.state}
-                                             visible={this.state.fieldSetAdditionModalVisible}
-                                             onSubmit={() => this.setState({fieldSetAdditionModalVisible: false})}
-                                             onCancel={() =>
-                                                         this.setState({fieldSetAdditionModalVisible: false})} />
+                {isPrivate ? <>
+                    <LinkedFieldSetModal mode={FORM_MODE_ADD}
+                                         dataset={this.state}
+                                         visible={this.state.fieldSetAdditionModalVisible}
+                                         onSubmit={() => this.setState({fieldSetAdditionModalVisible: false})}
+                                         onCancel={() => this.setState({fieldSetAdditionModalVisible: false})} />
 
-                        <LinkedFieldSetModal mode={FORM_MODE_EDIT}
-                                             dataset={this.state}
-                                             visible={this.state.fieldSetEditModalVisible}
-                                             linkedFieldSet={this.state.selectedLinkedFieldSet.data}
-                                             linkedFieldSetIndex={this.state.selectedLinkedFieldSet.index}
-                                             onSubmit={() => this.setState({fieldSetEditModalVisible: false})}
-                                             onCancel={() => this.setState({fieldSetEditModalVisible: false})} />
-                    </>
-                ) : null}
+                    <LinkedFieldSetModal mode={FORM_MODE_EDIT}
+                                         dataset={this.state}
+                                         visible={this.state.fieldSetEditModalVisible}
+                                         linkedFieldSet={this.state.selectedLinkedFieldSet.data}
+                                         linkedFieldSetIndex={this.state.selectedLinkedFieldSet.index}
+                                         onSubmit={() => this.setState({fieldSetEditModalVisible: false})}
+                                         onCancel={() => this.setState({fieldSetEditModalVisible: false})} />
+                </> : null}
                 {tabContents[this.state.selectedTab]}
             </Card>
         );
@@ -307,6 +304,9 @@ Dataset.propTypes = {
 
     onEdit: PropTypes.func,
     onTableIngest: PropTypes.func,
+
+    deleteProjectDataset: PropTypes.func,
+    deleteLinkedFieldSet: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

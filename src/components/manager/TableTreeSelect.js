@@ -100,6 +100,8 @@ class TableTreeSelect extends Component {
 TableTreeSelect.propTypes = {
     style: PropTypes.object,
 
+    value: PropTypes.string,
+
     dataType: PropTypes.string,
     onChange: PropTypes.func,
 

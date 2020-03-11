@@ -1,11 +1,12 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Skeleton} from "antd";
 import "antd/es/skeleton/style/css";
 
 import Run from "./Run";
-import {withBasePath} from "../../../utils";
+import {runPropTypesShape, withBasePath} from "../../../utils";
 
 class RunDetailContent extends Component {
     render() {
@@ -21,6 +22,10 @@ class RunDetailContent extends Component {
                    onBack={() => this.props.history.push(withBasePath("data/manager/runs"))} />;
     }
 }
+
+RunDetailContent.propTypes = {
+    runsByID: PropTypes.objectOf(runPropTypesShape),  // TODO: Shape (shared)
+};
 
 const mapStateToProps = state => ({
     runsByID: state.runs.itemsByID

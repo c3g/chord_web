@@ -236,6 +236,7 @@ class DiscoverySearchCondition extends Component {
 DiscoverySearchCondition.propTypes = {
     conditionType: PropTypes.oneOf(["data-type", "join"]),
     dataType: PropTypes.object,
+    dataType2: PropTypes.object,
     joinedSchema: PropTypes.object,
     isExcluded: PropTypes.func,
     value: PropTypes.object,

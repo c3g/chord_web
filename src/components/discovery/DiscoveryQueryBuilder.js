@@ -131,7 +131,7 @@ class DiscoveryQueryBuilder extends Component {
                                     standardize their datasets and make them discoverable. Each of these data types is
                                     defined by a <strong>schema</strong>, which specifies all the components of a single
                                     object in a table of a given data type. Some of the fields of these objects are
-                                    directly queryable, while others aren't; this is determined in part by the
+                                    directly queryable, while others are not; this is determined in part by the
                                     sensitivity of the field.
                                 </Typography.Paragraph>
                                 <Typography.Paragraph>
@@ -147,7 +147,7 @@ class DiscoveryQueryBuilder extends Component {
                             </>,
                             maskClosable: true,
                             width: 720
-                        })
+                        });
                     }}><Icon type="question-circle" /> Help</Button>
                 </Typography.Title>
 

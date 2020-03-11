@@ -28,8 +28,9 @@ class LinkedFieldSetForm extends Component {
     }
 
     removeField(key) {
-        this.props.form.setFieldsValue({[FIELD_KEYS]: this.props.form.getFieldValue(FIELD_KEYS)
-                .filter(k => k !== key)});
+        this.props.form.setFieldsValue({
+            [FIELD_KEYS]: this.props.form.getFieldValue(FIELD_KEYS).filter(k => k !== key)
+        });
     }
 
     syncForm(prevProps={}) {

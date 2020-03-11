@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Modal} from "antd";
 import "antd/es/modal/style/css";
@@ -10,7 +11,13 @@ import ProjectSkeleton from "./ProjectSkeleton";
 
 import {deleteProjectIfPossible, saveProjectIfPossible} from "../../../modules/metadata/actions";
 import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
-import {FORM_MODE_ADD, FORM_MODE_EDIT, withBasePath} from "../../../utils";
+import {
+    FORM_MODE_ADD,
+    FORM_MODE_EDIT,
+    projectPropTypesShape,
+    serviceInfoPropTypesShape,
+    withBasePath
+} from "../../../utils";
 
 class RoutedProject extends Component {
     constructor(props) {
@@ -120,48 +127,83 @@ class RoutedProject extends Component {
                 ...this.props.projectTables.filter(t => !this.props.servicesByID.hasOwnProperty(t.service_id))
             ];
 
-            return (
-                <>
-                    <DatasetFormModal mode={FORM_MODE_ADD}
-                                      project={project}
-                                      visible={this.state.datasetAdditionModal}
-                                      onCancel={this.hideDatasetAdditionModal}
-                                      onOk={this.hideDatasetAdditionModal} />
+            return <>
+                <DatasetFormModal mode={FORM_MODE_ADD}
+                                  project={project}
+                                  visible={this.state.datasetAdditionModal}
+                                  onCancel={this.hideDatasetAdditionModal}
+                                  onOk={this.hideDatasetAdditionModal} />
 
-                    <DatasetFormModal mode={FORM_MODE_EDIT}
-                                      project={project}
-                                      visible={this.state.datasetEditModal}
-                                      initialValue={this.state.selectedDataset}
-                                      onCancel={this.hideDatasetEditModal}
-                                      onOk={this.hideDatasetEditModal} />
+                <DatasetFormModal mode={FORM_MODE_EDIT}
+                                  project={project}
+                                  visible={this.state.datasetEditModal}
+                                  initialValue={this.state.selectedDataset}
+                                  onCancel={this.hideDatasetEditModal}
+                                  onOk={this.hideDatasetEditModal} />
 
-                    <Project value={project}
-                             tables={tableList}
-                             strayTables={strayTables}
-                             editing={this.props.editingProject}
-                             saving={this.props.savingProject}
-                             individuals={this.props.individuals.filter(i =>
-                                 i.phenopackets
-                                     .filter(p => project.datasets.map(d => d.identifier).includes(p.dataset))
-                                     .length > 0)}
-                             loadingIndividuals={this.props.loadingIndividuals}
-                             onDelete={() => this.handleDeleteProject(project)}
-                             onEdit={() => this.props.beginProjectEditing()}
-                             onCancelEdit={() => this.props.endProjectEditing()}
-                             onSave={project => this.handleProjectSave(project)}
-                             onAddDataset={() => this.showDatasetAdditionModal()}
-                             onEditDataset={dataset => this.setState({
-                                 selectedDataset: dataset,
-                                 datasetEditModal: true
-                             })}
-                             onTableIngest={(p, t) => this.ingestIntoTable(p, t)} />
-                 </>
-            );
+                <Project value={project}
+                         tables={tableList}
+                         strayTables={strayTables}
+                         editing={this.props.editingProject}
+                         saving={this.props.savingProject}
+                         individuals={this.props.individuals.filter(i =>
+                             i.phenopackets
+                                 .filter(p => project.datasets.map(d => d.identifier).includes(p.dataset))
+                                 .length > 0)}
+                         loadingIndividuals={this.props.loadingIndividuals}
+                         onDelete={() => this.handleDeleteProject(project)}
+                         onEdit={() => this.props.beginProjectEditing()}
+                         onCancelEdit={() => this.props.endProjectEditing()}
+                         onSave={project => this.handleProjectSave(project)}
+                         onAddDataset={() => this.showDatasetAdditionModal()}
+                         onEditDataset={dataset => this.setState({
+                             selectedDataset: dataset,
+                             datasetEditModal: true
+                         })}
+                         onTableIngest={(p, t) => this.ingestIntoTable(p, t)} />
+            </>;
         }
 
         return null;
     }
 }
+
+RoutedProject.propTypes = {
+    editingProject: PropTypes.bool,
+    savingProject: PropTypes.bool,
+
+    services: PropTypes.arrayOf(serviceInfoPropTypesShape),
+    servicesByID: PropTypes.objectOf(serviceInfoPropTypesShape),
+
+    serviceDataTypesByServiceID: PropTypes.objectOf(PropTypes.shape({
+        items: PropTypes.array,  // TODO: Shape
+        itemsByID: PropTypes.object,  // TODO: Shape
+        isFetching: PropTypes.bool,
+    })),
+
+    serviceTables: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
+    serviceTablesByServiceAndDataTypeID: PropTypes.objectOf(PropTypes.objectOf(PropTypes.object)),  // TODO: Shape
+
+    projects: PropTypes.arrayOf(projectPropTypesShape),
+    projectsByID: PropTypes.objectOf(projectPropTypesShape),
+
+    projectTables: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
+    projectTablesByProjectID: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
+
+    phenopackets: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
+    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
+
+    loadingPhenopackets: PropTypes.bool,
+    loadingIndividuals: PropTypes.bool,
+    loadingProjects: PropTypes.bool,
+
+    isDeletingProject: PropTypes.bool,
+
+    beginProjectEditing: PropTypes.func,
+    endProjectEditing: PropTypes.func,
+    saveProject: PropTypes.func,
+    deleteProject: PropTypes.func,
+};
 
 const mapStateToProps = state => ({
     editingProject: state.manager.editingProject,

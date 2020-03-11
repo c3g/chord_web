@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import {Button, Divider, Drawer} from "antd";
 import "antd/es/button/style/css";
@@ -10,7 +11,7 @@ import "antd/es/drawer/style/css";
 import NotificationList from "./NotificationList";
 
 import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
-import {withBasePath} from "../../utils";
+import {notificationPropTypesShape, withBasePath} from "../../utils";
 
 
 class NotificationDrawer extends Component {
@@ -36,6 +37,14 @@ class NotificationDrawer extends Component {
         </Drawer>;
     }
 }
+
+NotificationDrawer.propTypes = {
+    notificationDrawerVisible: PropTypes.bool,
+    notifications: PropTypes.arrayOf(notificationPropTypesShape),
+
+    markNotificationAsRead: PropTypes.func,
+    hideNotificationDrawer: PropTypes.func,
+};
 
 const mapStateToProps = state => ({
     notificationDrawerVisible: state.notifications.drawerVisible,

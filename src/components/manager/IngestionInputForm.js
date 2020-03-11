@@ -1,7 +1,7 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {Button, Form, Icon, Input, Select, TreeSelect} from "antd";
-
 import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
@@ -15,7 +15,7 @@ import {
     FORM_BUTTON_COL
 } from "./ingestion";
 
-import {nop} from "../../utils";
+import {nop, workflowPropTypesShape} from "../../utils";
 
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);
@@ -46,25 +46,19 @@ class IngestionInputForm extends Component {
             case "file":
             case "file[]":
                 // TODO: What about non-unique files?
-                return (
-                    <TreeSelect showSearch={true} treeDefaultExpandAll={true} multiple={input.type === "file[]"}>
-                        <TreeSelect.TreeNode title="chord_drop_box" key="root">
-                            {generateFileTree(
-                                this.props.tree,
-                                entry => entry.hasOwnProperty("contents") ||
-                                    input.extensions.find(e => entry.name.endsWith(e)) !== undefined
-                            )}
-                        </TreeSelect.TreeNode>
-                    </TreeSelect>
-                );
+                return <TreeSelect showSearch={true} treeDefaultExpandAll={true} multiple={input.type === "file[]"}>
+                    <TreeSelect.TreeNode title="chord_drop_box" key="root">
+                        {generateFileTree(
+                            this.props.tree,
+                            entry => entry.hasOwnProperty("contents") ||
+                                input.extensions.find(e => entry.name.endsWith(e)) !== undefined
+                        )}
+                    </TreeSelect.TreeNode>
+                </TreeSelect>;
 
             case "enum":
                 // TODO: enum[]
-                return (
-                    <Select>
-                        {input.values.map(v => <Select.Option key={v}>{v}</Select.Option>)}
-                    </Select>
-                );
+                return <Select>{input.values.map(v => <Select.Option key={v}>{v}</Select.Option>)}</Select>;
 
             case "number":
                 return <Input type="number" />;
@@ -77,31 +71,38 @@ class IngestionInputForm extends Component {
     }
 
     render() {
-        return (
-            <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL} onSubmit={this.handleSubmit}>
-                {[
-                    ...this.props.workflow.inputs.map(i => (
-                        <Form.Item label={i.id} key={i.id}>
-                            {this.props.form.getFieldDecorator(i.id, {
-                                initialValue: this.props.initialValues[i.id],  // undefined if not set
-                                rules: [{required: true}]
-                            })(this.getInputComponent(i))}
-                        </Form.Item>
-                    )),
-
-                    <Form.Item key="_submit" wrapperCol={FORM_BUTTON_COL}>
-                        {this.props.onBack
-                            ? <Button icon="left" onClick={() => this.props.onBack()}>Back</Button>
-                            : null}
-                        <Button type="primary" htmlType="submit" style={{float: "right"}}>
-                            Next <Icon type="right" />
-                        </Button>
+        return <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL} onSubmit={this.handleSubmit}>
+            {[
+                ...this.props.workflow.inputs.map(i => (
+                    <Form.Item label={i.id} key={i.id}>
+                        {this.props.form.getFieldDecorator(i.id, {
+                            initialValue: this.props.initialValues[i.id],  // undefined if not set
+                            rules: [{required: true}]
+                        })(this.getInputComponent(i))}
                     </Form.Item>
-                ]}
-            </Form>
-        );
+                )),
+
+                <Form.Item key="_submit" wrapperCol={FORM_BUTTON_COL}>
+                    {this.props.onBack
+                        ? <Button icon="left" onClick={() => this.props.onBack()}>Back</Button>
+                        : null}
+                    <Button type="primary" htmlType="submit" style={{float: "right"}}>
+                        Next <Icon type="right" />
+                    </Button>
+                </Form.Item>
+            ]}
+        </Form>;
     }
 }
+
+IngestionInputForm.propTypes = {
+    tree: PropTypes.array,
+    workflow: workflowPropTypesShape,
+    initialValues: PropTypes.object,
+
+    onBack: PropTypes.func,
+    onSubmit: PropTypes.func,
+};
 
 export default Form.create({
     name: "ingestion_input_form",

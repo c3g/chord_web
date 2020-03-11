@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 
 import {PageHeader, Row, Statistic, Tabs, Tag} from "antd";
 import "antd/es/page-header/style/css";
@@ -12,7 +13,7 @@ import RunLog from "./RunLog";
 import RunTaskLogs from "./RunTaskLogs";
 
 import {renderDate, RUN_STATE_TAG_COLORS} from "./utils";
-import {nop} from "../../../utils";
+import {nop, runPropTypesShape} from "../../../utils";
 
 
 const TABS = {
@@ -52,5 +53,12 @@ class Run extends Component {
         );
     }
 }
+
+Run.propTypes = {
+    tab: PropTypes.oneOf(["request", "run_log", "task_logs"]),
+    run: runPropTypesShape,
+    onBack: PropTypes.func,
+    onChangeTab: PropTypes.func,
+};
 
 export default Run;

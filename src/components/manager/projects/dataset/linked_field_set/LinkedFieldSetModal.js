@@ -91,7 +91,10 @@ LinkedFieldSetModal.propTypes = {
     linkedFieldSet: linkedFieldSetPropTypesShape,
 
     dataTypes: PropTypes.object,  // TODO: shape
+    isSavingDataset: PropTypes.bool,
+
     addLinkedFieldSet: PropTypes.func,
+    saveLinkedFieldSet: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
