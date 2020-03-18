@@ -20,21 +20,15 @@ class ExplorerDatasetSearch extends Component {
     constructor(props) {
         super(props);
 
-        this.handleDatasetChange = this.handleDatasetChange.bind(this);
         this.setDataTypeForms = this.setDataTypeForms.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
 
         this.state = {
             dataTypeForms: [],
             fetchingSearch: false,  // TODO: redux
+            searchPerformedByDataset: {},
+            searchResultsByDataset: {},
         };
-    }
-
-    handleDatasetChange(dataset) {
-        this.setState({
-            selectedDataset: dataset || null,
-            dataTypeForms: []
-        });
     }
 
     setDataTypeForms(dataTypeForms) {
@@ -65,6 +59,22 @@ class ExplorerDatasetSearch extends Component {
 
             const results = await r.json();
 
+            this.setState({
+                searchPerformedByDataset: {
+                    ...this.state.searchPerformedByDataset,
+                    [selectedDatasetID]: true
+                }
+            });
+
+            if (results && results.results) {
+                this.setState({
+                    searchResultsByDataset: {
+                        ...this.state.searchPerformedByDataset,
+                        [selectedDatasetID]: results.results
+                    }
+                });
+            }
+
             console.log(results);
         } catch (err) {
             console.error(err);
@@ -92,6 +102,10 @@ class ExplorerDatasetSearch extends Component {
                                        updateDataTypeFormIfPossible(this.state.dataTypeForms, dt, fs))}
                                    removeDataTypeQueryForm={dt => this.setDataTypeForms(
                                        removeDataTypeFormIfPossible(this.state.dataTypeForms, dt))} />
+            {this.state.searchPerformedByDataset[selectedDataset.identifier] ? <>
+                <Typography.Title level={4}>Search Results</Typography.Title>
+                TODO
+            </> : null}
         </>;
     }
 }
