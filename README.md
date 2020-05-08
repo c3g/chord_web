@@ -15,7 +15,10 @@ Written in React using Ant Design components.
       * `...`
     * `modules/`: Redux "modules", which determine the structure of the Redux 
                   state tree and specify relevant actions and reducers to 
-                  handle them.
+                  handle them. This isn't a Redux-defined concept; rather,
+                  these can be thought of as an arbitrary but useful way to
+                  divide up action and reducer definitions into manageable,
+                  semi-self-contained sections.
     * `styles/`: Shared style objects.
     * `utils/`: Utility code shared across components, state code, and other 
                 modules in the application.
