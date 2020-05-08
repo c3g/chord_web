@@ -5,7 +5,7 @@ import "antd/es/col/style/css";
 import "antd/es/row/style/css";
 import "antd/es/statistic/style/css";
 
-import {summaryPropTypesShape} from "../../../../../../utils";
+import {summaryPropTypesShape} from "../../../../../../propTypes";
 
 const GenericSummary = ({summary}) => summary ? (
     <Row gutter={16}><Col span={24}><Statistic title="Count" value={summary.count} /></Col></Row>

@@ -36,20 +36,17 @@ import "antd/es/spin/style/css";
 import "antd/es/tree/style/css";
 
 
-import {
-    dropBoxTreeStateToPropsMixin,
-    dropBoxTreeStateToPropsMixinPropTypes,
-
-    workflowsStateToPropsMixin,
-    workflowsStateToPropsMixinPropTypes,
-
-    withBasePath,
-} from "../../utils";
-
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import TableSelectionModal from "./TableSelectionModal";
 
 import {STEP_INPUT} from "./ingestion";
+import {withBasePath} from "../../utils/url";
+import {
+    dropBoxTreeStateToPropsMixin,
+    dropBoxTreeStateToPropsMixinPropTypes,
+    workflowsStateToPropsMixin,
+    workflowsStateToPropsMixinPropTypes
+} from "../../propTypes";
 
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);

@@ -11,9 +11,8 @@ import "antd/es/typography/style/css";
 
 import WorkflowListItem from "./WorkflowListItem";
 
-import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../utils";
-
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {workflowsStateToPropsMixin, workflowsStateToPropsMixinPropTypes} from "../../propTypes";
 
 class ManagerWorkflowsContent extends Component {
     render() {

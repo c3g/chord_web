@@ -10,7 +10,7 @@ import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 
 import {ROLE_OWNER, SIGN_OUT_URL} from "../constants";
-import {signInURLWithRedirect, withBasePath} from "../utils";
+import {signInURLWithRedirect, withBasePath} from "../utils/url";
 
 const signInIcon = (
     <div style={{textAlign: "center"}}>

@@ -18,7 +18,8 @@ import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
 import {fetchRuns} from "../wes/actions";
-import {nop, withBasePath} from "../../utils";
+import {nop} from "../../utils/misc";
+import {withBasePath} from "../../utils/url";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");

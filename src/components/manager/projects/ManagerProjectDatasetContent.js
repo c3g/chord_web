@@ -18,16 +18,11 @@ import RoutedProject from "./RoutedProject";
 
 import {toggleProjectCreationModal} from "../../../modules/manager/actions";
 
-import {
-    renderMenuItem,
-    matchingMenuKeys,
-    projectPropTypesShape,
-    nodeInfoDataPropTypesShape,
-    withBasePath
-} from "../../../utils";
-
 
 import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
+import {matchingMenuKeys, renderMenuItem} from "../../../utils/menu";
+import {withBasePath} from "../../../utils/url";
+import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../../../propTypes";
 
 
 class ManagerProjectDatasetContent extends Component {

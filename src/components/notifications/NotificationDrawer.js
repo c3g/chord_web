@@ -11,7 +11,8 @@ import "antd/es/drawer/style/css";
 import NotificationList from "./NotificationList";
 
 import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
-import {notificationPropTypesShape, withBasePath} from "../../utils";
+import {withBasePath} from "../../utils/url";
+import {notificationPropTypesShape} from "../../propTypes";
 
 
 class NotificationDrawer extends Component {

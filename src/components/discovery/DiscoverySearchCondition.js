@@ -7,10 +7,10 @@ import "antd/es/button/style/css";
 import "antd/es/input/style/css";
 import "antd/es/select/style/css";
 
-import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../search";
+import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS, OPERATION_TEXT} from "../../utils/search";
 
 import SchemaTreeSelect from "../schema_trees/SchemaTreeSelect";
-import {constFn, id, nop} from "../../utils";
+import {constFn, id, nop} from "../../utils/misc";
 
 
 const BOOLEAN_OPTIONS = ["true", "false"];

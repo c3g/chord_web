@@ -8,7 +8,7 @@ import "antd/es/descriptions/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchRunLogStreamsIfPossibleAndNeeded} from "../../../modules/wes/actions";
-import {runPropTypesShape} from "../../../utils";
+import {runPropTypesShape} from "../../../propTypes";
 
 class RunLog extends Component {
     componentDidMount() {

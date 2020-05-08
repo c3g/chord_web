@@ -1,85 +1,12 @@
-import React from "react";
-import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "./constants";
 
-import {Menu} from "antd";
-import "antd/es/menu/style/css";
-
-import {SIGN_IN_URL} from "./constants";
-
-
-export const EM_DASH = "⁠—";
-
-
-// Functional utilities
-export const id = x => x;  // id is a function that returns it's first passed parameter
-export const nop = () => {};
-export const constFn = x => () => x;  // constFn(null) creates a function that always returns null
-
-
-export const urlPath = url => (new URL(url)).pathname;
-
-// Allow embedding of CHORD_URL at build time
-export const BASE_PATH = process.env.CHORD_URL ? urlPath(process.env.CHORD_URL) : "/";
-export const withBasePath = path => `${BASE_PATH}${(path.length > 0 && path[0] === "/" ? path.slice(1) : path)}`;
-
-export const signInURLWithRedirect = () => withBasePath(`${SIGN_IN_URL}?redirect=${window.location.href}`);
-
-
-export const simpleDeepCopy = o => JSON.parse(JSON.stringify(o));
-
-export const objectWithoutProps =(o, ps) => Object.fromEntries(Object.entries(o)
-    .filter(([p2], _) => !ps.includes(p2)));
-export const objectWithoutProp = (o, p) => objectWithoutProps(o, [p]);
-
-
-// Custom menu renderer
-export const renderMenuItem = i => {
-    if (i.hasOwnProperty("children")) {
-        return (
-            <Menu.SubMenu style={i.style || {}} title={
-                <span className="submenu-title-wrapper">
-                    {i.icon || null}
-                    {i.text || null}
-                </span>
-            } key={i.key || ""}>
-                {(i.children || []).map(ii => renderMenuItem(ii))}
-            </Menu.SubMenu>
-        );
-    }
-
-    return (
-        <Menu.Item key={i.key || i.url || ""}
-                   onClick={i.onClick || undefined}
-                   style={i.style || {}}
-                   disabled={i.disabled || false}>
-            {i.url && !i.onClick ?
-                <Link to={i.url}>
-                    {i.icon || null}
-                    {i.text || null}
-                </Link> : <span>
-                    {i.icon || null}
-                    {i.text || null}
-                </span>}
-        </Menu.Item>
-    );
-};
-
-export const matchingMenuKeys = menuItems => menuItems
-    .filter(i => (i.url && window.location.pathname.startsWith(i.url)) || (i.children || []).length > 0)
-    .flatMap(i => [i.key || i.url || "", ...matchingMenuKeys(i.children || [])]);
-
-
-export const FORM_MODE_ADD = "add";
-export const FORM_MODE_EDIT = "edit";
 export const propTypesFormMode = PropTypes.oneOf([FORM_MODE_ADD, FORM_MODE_EDIT]);
-
 
 export const nodeInfoDataPropTypesShape = PropTypes.shape({
     CHORD_URL: PropTypes.string,
     OIDC_DISCOVERY_URI: PropTypes.string,
 });
-
 
 export const serviceInfoPropTypesShape = PropTypes.shape({
     id: PropTypes.string.required,
@@ -114,7 +41,6 @@ export const chordServicePropTypesMixin = {
     wsgi: PropTypes.bool,
 };
 
-
 // Gives components which include this in their state to props connection access to the drop box and loading status.
 export const dropBoxTreeStateToPropsMixin = state => ({
     tree: state.dropBox.tree,
@@ -130,12 +56,10 @@ export const dropBoxTreeStateToPropsMixinPropTypes = {
     treeLoading: PropTypes.bool
 };
 
-
 export const linkedFieldSetPropTypesShape = PropTypes.shape({
     name: PropTypes.string,
     fields: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),  // TODO: Properties pattern?
 });
-
 
 // Prop types object shape for a single dataset object.
 export const datasetPropTypesShape = PropTypes.shape({
@@ -152,7 +76,6 @@ export const datasetPropTypesShape = PropTypes.shape({
     project: PropTypes.string,
 });
 
-
 // Prop types object shape for a single project object.
 export const projectPropTypesShape = PropTypes.shape({
     identifier: PropTypes.string,
@@ -162,7 +85,6 @@ export const projectPropTypesShape = PropTypes.shape({
     created: PropTypes.string,
     updated: PropTypes.string
 });
-
 
 // Prop types object shape for a single notification object.
 export const notificationPropTypesShape = PropTypes.shape({
@@ -174,7 +96,6 @@ export const notificationPropTypesShape = PropTypes.shape({
     read: PropTypes.bool,
     timestamp: PropTypes.string,  // TODO: de-serialize?
 });
-
 
 // Prop types object shape for a run object.
 // TODO: Missing stuff
@@ -206,13 +127,11 @@ export const runPropTypesShape = PropTypes.shape({
     })
 });
 
-
 // Prop types object shape for a single table summary object.
 export const summaryPropTypesShape = PropTypes.shape({
     count: PropTypes.number,
     data_type_specific: PropTypes.object,  // TODO: Shape changes...
 });
-
 
 // Prop types object shape for a single user object.
 export const userPropTypesShape = PropTypes.shape({
@@ -222,7 +141,6 @@ export const userPropTypesShape = PropTypes.shape({
     preferred_username: PropTypes.string,
     sub: PropTypes.string.isRequired,
 });
-
 
 // Gives components which include this in their state to props connection access to workflows and loading status.
 export const workflowsStateToPropsMixin = state => ({

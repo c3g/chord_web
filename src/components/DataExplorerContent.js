@@ -10,13 +10,9 @@ import ExplorerSearchContent from "./explorer/ExplorerSearchContent";
 import ExplorerGenomeBrowserContent from "./explorer/ExplorerGenomeBrowserContent";
 
 import SitePageHeader from "./SitePageHeader";
-import {
-    matchingMenuKeys,
-    nodeInfoDataPropTypesShape,
-    renderMenuItem,
-    urlPath,
-    withBasePath
-} from "../utils";
+import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
+import {urlPath, withBasePath} from "../utils/url";
+import {nodeInfoDataPropTypesShape} from "../propTypes";
 
 
 const PAGE_MENU = [

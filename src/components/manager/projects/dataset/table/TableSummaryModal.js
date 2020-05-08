@@ -7,11 +7,12 @@ import "antd/es/modal/style/css";
 import "antd/es/skeleton/style/css";
 import "antd/es/tag/style/css";
 
-import {nop, summaryPropTypesShape} from "../../../../../utils";
+import {nop} from "../../../../../utils/misc";
 
 import GenericSummary from "./summaries/GenericSummary";
 import PhenopacketSummary from "./summaries/PhenopacketSummary";
 import VariantSummary from "./summaries/VariantSummary";
+import {summaryPropTypesShape} from "../../../../../propTypes";
 
 
 class TableSummaryModal extends Component {

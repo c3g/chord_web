@@ -9,7 +9,7 @@ import "antd/es/layout/style/css";
 import SitePageHeader from "./SitePageHeader";
 import DiscoverySearchContent from "./discovery/DiscoverySearchContent";
 import DiscoveryDatasetContent from "./discovery/DiscoveryDatasetContent";
-import {withBasePath} from "../utils";
+import {withBasePath} from "../utils/url";
 
 
 class DataDiscoveryContent extends Component {

@@ -13,7 +13,8 @@ import "antd/es/typography/style/css";
 import SitePageHeader from "./SitePageHeader";
 import ServiceList from "./ServiceList";
 
-import {EM_DASH, nodeInfoDataPropTypesShape, projectPropTypesShape} from "../utils";
+import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
+import {EM_DASH} from "../constants";
 
 
 class DashboardContent extends Component {

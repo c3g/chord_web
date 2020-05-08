@@ -9,7 +9,7 @@ import "antd/es/spin/style/css";
 import "antd/es/statistic/style/css";
 import "antd/es/typography/style/css";
 
-import {datasetPropTypesShape, projectPropTypesShape} from "../../../../utils";
+import {datasetPropTypesShape, projectPropTypesShape} from "../../../../propTypes";
 
 class DatasetOverview extends Component {
     render() {

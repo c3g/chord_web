@@ -12,9 +12,9 @@ import {
     extractQueriesFromDataTypeForms,
     removeDataTypeFormIfPossible,
     updateDataTypeFormIfPossible
-} from "../../search";
-import {datasetPropTypesShape, serviceInfoPropTypesShape} from "../../utils";
+} from "../../utils/search";
 import fetch from "cross-fetch";
+import {datasetPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes";
 
 class ExplorerDatasetSearch extends Component {
     constructor(props) {

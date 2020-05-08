@@ -15,7 +15,8 @@ import {
     FORM_BUTTON_COL
 } from "./ingestion";
 
-import {nop, workflowPropTypesShape} from "../../utils";
+import {nop} from "../../utils/misc";
+import {workflowPropTypesShape} from "../../propTypes";
 
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);

@@ -14,15 +14,10 @@ import ManagerIngestionContent from "./manager/ManagerIngestionContent";
 import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
 import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
 
-import {
-    renderMenuItem,
-    matchingMenuKeys,
-    projectPropTypesShape,
-    nodeInfoDataPropTypesShape,
-    urlPath,
-    withBasePath
-} from "../utils";
 import SitePageHeader from "./SitePageHeader";
+import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
+import {urlPath, withBasePath} from "../utils/url";
+import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
 
 const PAGE_MENU = [
     {url: withBasePath("data/manager/projects"), style: {marginLeft: "4px"}, text: "Projects and Datasets"},

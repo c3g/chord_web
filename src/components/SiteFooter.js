@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {Layout} from "antd";
 import "antd/es/layout/style/css";
 
-import {withBasePath} from "../utils";
+import {withBasePath} from "../utils/url";
 
 class SiteFooter extends Component {
     render() {

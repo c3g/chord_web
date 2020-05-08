@@ -9,8 +9,8 @@ import "antd/es/list/style/css";
 
 import {hideNotificationDrawer, markNotificationAsRead} from "../../modules/notifications/actions";
 
-import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../notifications";
-import {notificationPropTypesShape} from "../../utils";
+import {NOTIFICATION_WES_RUN_COMPLETED, NOTIFICATION_WES_RUN_FAILED, navigateToWESRun} from "../../utils/notifications";
+import {notificationPropTypesShape} from "../../propTypes";
 
 
 const sortNotificationTimestamps = (a, b) => b.timestamp - a.timestamp;

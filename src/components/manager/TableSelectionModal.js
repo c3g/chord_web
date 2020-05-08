@@ -7,7 +7,7 @@ import "antd/es/modal/style/css";
 
 import TableTreeSelect from "./TableTreeSelect";
 
-import {nop} from "../../utils";
+import {nop} from "../../utils/misc";
 
 class TableSelectionModal extends Component {
     constructor(props) {

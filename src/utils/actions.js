@@ -1,6 +1,6 @@
 import fetch from "cross-fetch";
-import {message} from "antd";
 
+import {message} from "antd";
 import "antd/es/message/style/css";
 
 

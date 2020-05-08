@@ -1,4 +1,4 @@
-import {simpleDeepCopy} from "./utils";
+import {simpleDeepCopy} from "./misc";
 
 export const OP_EQUALS = "eq";
 export const OP_LESS_THAN = "lt";

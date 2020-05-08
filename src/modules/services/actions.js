@@ -9,7 +9,7 @@ import {
 } from "../../utils/actions";
 
 import {createURLSearchParams} from "../../utils/requests";
-import {withBasePath} from "../../utils";
+import {withBasePath} from "../../utils/url";
 
 
 /**

@@ -7,7 +7,8 @@ import "antd/es/icon/style/css";
 import "antd/es/list/style/css";
 import "antd/es/tag/style/css";
 
-import {nop, workflowPropTypesShape} from "../../utils";
+import {nop} from "../../utils/misc";
+import {workflowPropTypesShape} from "../../propTypes";
 
 const TYPE_TAG_DISPLAY = {
     file: {

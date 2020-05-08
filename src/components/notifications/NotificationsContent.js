@@ -11,7 +11,7 @@ import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/noti
 import NotificationList from "./NotificationList";
 import SitePageHeader from "../SitePageHeader";
 
-import {notificationPropTypesShape} from "../../utils";
+import {notificationPropTypesShape} from "../../propTypes";
 
 
 class NotificationsContent extends Component {

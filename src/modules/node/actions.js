@@ -1,5 +1,5 @@
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
-import {withBasePath} from "../../utils";
+import {withBasePath} from "../../utils/url";
 
 export const FETCH_NODE_INFO = createNetworkActionTypes("FETCH_NODE_INFO");
 

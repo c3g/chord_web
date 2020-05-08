@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import {Icon, Input, Modal, Radio, Table, Tabs} from "antd";
 
 import SchemaTree from "../schema_trees/SchemaTree";
-import {generateSchemaTreeData, generateSchemaTableData} from "../../schema";
-import {nop} from "../../utils";
+import {generateSchemaTreeData, generateSchemaTableData} from "../../utils/schema";
+import {nop} from "../../utils/misc";
 
 // TODO: Add more columns
 const FIELD_COLUMNS = [

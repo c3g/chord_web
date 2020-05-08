@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {Tag} from "antd";
 import "antd/es/tag/style/css";
 
-import {withBasePath} from "../../../utils";
+import {withBasePath} from "../../../utils/url";
 
 
 export const RUN_REFRESH_TIMEOUT = 7500;

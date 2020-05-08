@@ -17,7 +17,7 @@ import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../DataUseDisplay";
 import {selectSearch} from "../../modules/discovery/actions";
-import {nodeInfoDataPropTypesShape} from "../../utils";
+import {nodeInfoDataPropTypesShape} from "../../propTypes";
 
 
 class SearchList extends Component {

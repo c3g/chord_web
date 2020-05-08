@@ -22,18 +22,13 @@ import {
 } from "../../../../modules/metadata/actions";
 
 import {INITIAL_DATA_USE_VALUE} from "../../../../duo";
-import {
-    simpleDeepCopy,
-    projectPropTypesShape,
-    datasetPropTypesShape,
-    nop,
-    FORM_MODE_EDIT,
-    FORM_MODE_ADD
-} from "../../../../utils";
+import {simpleDeepCopy, nop} from "../../../../utils/misc";
 import LinkedFieldSetTable from "./linked_field_set/LinkedFieldSetTable";
 import LinkedFieldSetModal from "./linked_field_set/LinkedFieldSetModal";
 import DatasetOverview from "./DatasetOverview";
 import DatasetTables from "./DatasetTables";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../../constants";
+import {datasetPropTypesShape, projectPropTypesShape} from "../../../../propTypes";
 
 
 class Dataset extends Component {

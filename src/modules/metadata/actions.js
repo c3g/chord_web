@@ -18,8 +18,9 @@ import {
     endFlow,
     terminateFlow,
 } from "../../utils/actions";
-import {nop, objectWithoutProps, withBasePath} from "../../utils";
+import {nop, objectWithoutProps} from "../../utils/misc";
 import {jsonRequest} from "../../utils/requests";
+import {withBasePath} from "../../utils/url";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");

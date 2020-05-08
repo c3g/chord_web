@@ -11,13 +11,9 @@ import ProjectSkeleton from "./ProjectSkeleton";
 
 import {deleteProjectIfPossible, saveProjectIfPossible} from "../../../modules/metadata/actions";
 import {beginProjectEditing, endProjectEditing} from "../../../modules/manager/actions";
-import {
-    FORM_MODE_ADD,
-    FORM_MODE_EDIT,
-    projectPropTypesShape,
-    serviceInfoPropTypesShape,
-    withBasePath
-} from "../../../utils";
+import {withBasePath} from "../../../utils/url";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../constants";
+import {projectPropTypesShape, serviceInfoPropTypesShape} from "../../../propTypes";
 
 class RoutedProject extends Component {
     constructor(props) {

@@ -8,8 +8,9 @@ import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 
 import SchemaTreeSelect from "../../../../schema_trees/SchemaTreeSelect";
-import {FORM_MODE_ADD, FORM_MODE_EDIT, propTypesFormMode} from "../../../../../utils";
-import {getFieldSchema} from "../../../../../schema";
+import {getFieldSchema} from "../../../../../utils/schema";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../../../constants";
+import {propTypesFormMode} from "../../../../../propTypes";
 
 const FIELD_KEYS = "fieldKeys";
 let fieldKey = 0;

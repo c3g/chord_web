@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {TreeSelect} from "antd";
 import "antd/es/tree-select/style/css";
 
-import {ROOT_SCHEMA_ID, generateSchemaTreeData, getFieldSchema} from "../../schema";
+import {ROOT_SCHEMA_ID, generateSchemaTreeData, getFieldSchema} from "../../utils/schema";
 import PropTypes from "prop-types";
 
 class SchemaTreeSelect extends Component {

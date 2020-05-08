@@ -13,7 +13,8 @@ import RunLog from "./RunLog";
 import RunTaskLogs from "./RunTaskLogs";
 
 import {renderDate, RUN_STATE_TAG_COLORS} from "./utils";
-import {nop, runPropTypesShape} from "../../../utils";
+import {nop} from "../../../utils/misc";
+import {runPropTypesShape} from "../../../propTypes";
 
 
 const TABS = {

@@ -6,7 +6,8 @@ import {Skeleton} from "antd";
 import "antd/es/skeleton/style/css";
 
 import Run from "./Run";
-import {runPropTypesShape, withBasePath} from "../../../utils";
+import {withBasePath} from "../../../utils/url";
+import {runPropTypesShape} from "../../../propTypes";
 
 class RunDetailContent extends Component {
     render() {

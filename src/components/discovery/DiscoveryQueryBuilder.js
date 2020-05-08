@@ -15,7 +15,7 @@ import "antd/es/typography/style/css";
 
 import DataTypeExplorationModal from "./DataTypeExplorationModal";
 import DiscoverySearchForm from "./DiscoverySearchForm";
-import {nop} from "../../utils";
+import {nop} from "../../utils/misc";
 
 
 class DiscoveryQueryBuilder extends Component {

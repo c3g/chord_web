@@ -7,7 +7,7 @@ import "antd/es/spin/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/tree-select/style/css";
 
-import {nop} from "../../utils";
+import {nop} from "../../utils/misc";
 
 class TableTreeSelect extends Component {
     static getDerivedStateFromProps(nextProps) {

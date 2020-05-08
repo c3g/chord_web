@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Tree} from "antd";
 import "antd/es/tree/style/css";
 
-import {generateSchemaTreeData} from "../../schema";
+import {generateSchemaTreeData} from "../../utils/schema";
 
 class SchemaTree extends Component {
     render() {

@@ -21,15 +21,8 @@ import WorkflowListItem from "./WorkflowListItem";
 import {submitIngestionWorkflowRun} from "../../modules/wes/actions";
 
 import {
-    simpleDeepCopy,
-    withBasePath,
-
-    dropBoxTreeStateToPropsMixin,
-    dropBoxTreeStateToPropsMixinPropTypes,
-
-    workflowsStateToPropsMixin,
-    workflowsStateToPropsMixinPropTypes
-} from "../../utils";
+    simpleDeepCopy
+} from "../../utils/misc";
 
 import {
     FORM_LABEL_COL,
@@ -44,6 +37,13 @@ import {
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
 import TableTreeSelect from "./TableTreeSelect";
+import {withBasePath} from "../../utils/url";
+import {
+    dropBoxTreeStateToPropsMixin,
+    dropBoxTreeStateToPropsMixinPropTypes,
+    workflowsStateToPropsMixin,
+    workflowsStateToPropsMixinPropTypes
+} from "../../propTypes";
 
 class ManagerIngestionContent extends Component {
     constructor(props) {

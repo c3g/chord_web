@@ -7,15 +7,11 @@ import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 
-import {
-    matchingMenuKeys,
-    projectPropTypesShape,
-    renderMenuItem,
-    serviceInfoPropTypesShape,
-    withBasePath
-} from "../../utils";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import ExplorerDatasetSearch from "./ExplorerDatasetSearch";
+import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
+import {withBasePath} from "../../utils/url";
+import {projectPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes";
 
 class ExplorerSearchContent extends Component {
     render() {

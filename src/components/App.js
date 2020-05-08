@@ -26,14 +26,9 @@ import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
 import eventHandler from "../events";
-import {
-    BASE_PATH, nop,
-    serviceInfoPropTypesShape,
-    signInURLWithRedirect,
-    urlPath,
-    userPropTypesShape,
-    withBasePath
-} from "../utils";
+import {nop} from "../utils/misc";
+import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils/url";
+import {serviceInfoPropTypesShape, userPropTypesShape} from "../propTypes";
 
 class App extends Component {
     constructor(props) {

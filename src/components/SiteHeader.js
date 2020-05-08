@@ -13,16 +13,9 @@ import "antd/es/menu/style/css";
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
 import {SIGN_OUT_URL} from "../constants";
-import {
-    BASE_PATH,
-    matchingMenuKeys,
-    nodeInfoDataPropTypesShape,
-    notificationPropTypesShape,
-    renderMenuItem,
-    signInURLWithRedirect,
-    userPropTypesShape,
-    withBasePath
-} from "../utils";
+import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
+import {BASE_PATH, signInURLWithRedirect, withBasePath} from "../utils/url";
+import {nodeInfoDataPropTypesShape, notificationPropTypesShape, userPropTypesShape} from "../propTypes";
 
 
 class SiteHeader extends Component {

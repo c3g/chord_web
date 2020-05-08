@@ -12,14 +12,9 @@ import {
     saveDatasetLinkedFieldSetIfPossible
 } from "../../../../../modules/metadata/actions";
 
-import {
-    datasetPropTypesShape,
-    linkedFieldSetPropTypesShape,
-    nop,
-
-    FORM_MODE_ADD,
-    propTypesFormMode
-} from "../../../../../utils";
+import {nop} from "../../../../../utils/misc";
+import {FORM_MODE_ADD} from "../../../../../constants";
+import {datasetPropTypesShape, linkedFieldSetPropTypesShape, propTypesFormMode} from "../../../../../propTypes";
 
 
 class LinkedFieldSetModal extends Component {

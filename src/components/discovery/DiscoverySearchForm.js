@@ -6,8 +6,8 @@ import "antd/es/button/style/css";
 import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 
-import {getFieldSchema, getFields} from "../../schema";
-import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS} from "../../search";
+import {getFieldSchema, getFields} from "../../utils/schema";
+import {DEFAULT_SEARCH_PARAMETERS, OP_EQUALS} from "../../utils/search";
 
 import DiscoverySearchCondition, {getSchemaTypeTransformer} from "./DiscoverySearchCondition";
 

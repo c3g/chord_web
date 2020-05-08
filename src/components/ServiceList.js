@@ -8,7 +8,7 @@ import "antd/es/icon/style/css";
 import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
 
-import {chordServicePropTypesMixin, serviceInfoPropTypesShape} from "../utils";
+import {chordServicePropTypesMixin, serviceInfoPropTypesShape} from "../propTypes";
 
 const SERVICE_COLUMNS = [
     {

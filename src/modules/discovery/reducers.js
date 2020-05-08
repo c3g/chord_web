@@ -1,4 +1,4 @@
-import {simpleDeepCopy} from "../../utils";
+import {simpleDeepCopy} from "../../utils/misc";
 
 import {
     PERFORM_SEARCH,
@@ -16,7 +16,7 @@ import {
     addDataTypeFormIfPossible,
     updateDataTypeFormIfPossible,
     removeDataTypeFormIfPossible,
-} from "../../search";
+} from "../../utils/search";
 
 export const discovery = (
     state = {

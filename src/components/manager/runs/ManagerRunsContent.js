@@ -10,7 +10,7 @@ import {LAYOUT_CONTENT_STYLE} from "../../../styles/layoutContent";
 
 import RunListContent from "./RunListContent";
 import RunDetailContent from "./RunDetailContent";
-import {withBasePath} from "../../../utils";
+import {withBasePath} from "../../../utils/url";
 
 
 class ManagerRunsContent extends Component {

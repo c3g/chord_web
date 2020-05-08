@@ -1,4 +1,4 @@
-import {objectWithoutProp} from "../../utils";
+import {objectWithoutProp} from "../../utils/misc";
 
 import {
     LOADING_ALL_SERVICE_DATA,
