@@ -125,16 +125,18 @@ class App extends Component {
         this.lastUser = this.props.user;
     }
 
-    async componentDidMount() {
-        await this.props.fetchUserAndDependentData(async () => {
-            await this.props.fetchPeersOrError();
-            this.createEventRelayConnectionIfNecessary();
-        });
+    componentDidMount() {
+        (async () => {
+            await this.props.fetchUserAndDependentData(async () => {
+                await this.props.fetchPeersOrError();
+                this.createEventRelayConnectionIfNecessary();
+            });
 
-        // TODO: Refresh other data
-        // TODO: Variable rate
-        this.pingInterval = setInterval(this.refreshUserAndDependentData, 30000);
-        window.addEventListener("focus", () => this.refreshUserAndDependentData());
+            // TODO: Refresh other data
+            // TODO: Variable rate
+            this.pingInterval = setInterval(this.refreshUserAndDependentData, 30000);
+            window.addEventListener("focus", () => this.refreshUserAndDependentData());
+        })();
     }
 
     componentWillUnmount() {
