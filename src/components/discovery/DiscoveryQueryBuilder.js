@@ -37,6 +37,10 @@ class DiscoveryQueryBuilder extends Component {
         this.forms = {};
     }
 
+    componentDidMount() {
+        (this.props.requiredDataTypes || []).forEach(dt => this.props.addDataTypeQueryForm(dt));
+    }
+
     async handleSubmit() {
         try {
             await Promise.all(Object.entries(this.forms).filter(f => f[1]).map(([_dt, f]) =>
@@ -85,7 +89,9 @@ class DiscoveryQueryBuilder extends Component {
         );
 
         const dataTypeTabPanes = this.props.dataTypeForms.map(d => (
-            <Tabs.TabPane tab={d.dataType.id} key={d.dataType.id}>
+            <Tabs.TabPane tab={d.dataType.id}
+                          key={d.dataType.id}
+                          closable={!(this.props.requiredDataTypes || []).includes(d.dataType.id)}>
                 <DiscoverySearchForm conditionType="data-type"
                                      isInternal={this.props.isInternal || false}
                                      dataType={d.dataType}
@@ -182,20 +188,17 @@ class DiscoveryQueryBuilder extends Component {
 
 DiscoveryQueryBuilder.propTypes = {
     isInternal: PropTypes.bool,
-    onSearchSelect: PropTypes.func,
+    requiredDataTypes: PropTypes.arrayOf(PropTypes.string),
+
     servicesInfo: PropTypes.arrayOf(PropTypes.object),
     dataTypes: PropTypes.object,
     dataTypesByID: PropTypes.object,
-    serviceInfo: PropTypes.object,
     dataTypesLoading: PropTypes.bool,
+
     searchLoading: PropTypes.bool,
     formValues: PropTypes.object,
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
     joinFormValues: PropTypes.object,
-
-    selectDataType: PropTypes.func,
-    updateSearchForm: PropTypes.func,
-    requestSearch: PropTypes.func,
 
     addDataTypeQueryForm: PropTypes.func,
     updateDataTypeQueryForm: PropTypes.func,
