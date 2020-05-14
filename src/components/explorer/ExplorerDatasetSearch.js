@@ -37,6 +37,13 @@ class ExplorerDatasetSearch extends Component {
 
     async handleSearch() {
         const dataTypeQueries = extractQueriesFromDataTypeForms(this.state.dataTypeForms);
+
+        // TODO: What to do if phenopacket data type not present?
+        // Must include phenopacket query so we can display phenopacket-styled results
+        if (!dataTypeQueries.includes("phenopacket")) {
+            dataTypeQueries["phenopacket"] = true;
+        }
+
         console.log(dataTypeQueries);
 
         this.setState({fetchingSearch: true});
