@@ -40,7 +40,7 @@ class ExplorerDatasetSearch extends Component {
 
         // TODO: What to do if phenopacket data type not present?
         // Must include phenopacket query so we can display phenopacket-styled results
-        if (!dataTypeQueries.includes("phenopacket")) {
+        if (!dataTypeQueries.hasOwnProperty("phenopacket")) {
             dataTypeQueries["phenopacket"] = true;
         }
 
