@@ -17,9 +17,10 @@ const getFalse = () => false;
  * @param {string} name - The node's ID (key fragment).
  * @param {string} prefix - The node's key prefix.
  * @param {function} isExcluded - An function determining if a key is disabled.
- * @returns {object} - A tree node for use in Ant Design components.
+ * @returns {object[]} - An array with a tree node element for use in Ant Design components, or an empty array.
  */
 const searchFragment = (node, name, prefix = "", isExcluded = getFalse) => {
+    if (!node) return [];
     const result = generateSchemaTreeData(node, name, prefix, isExcluded);
     return (node.hasOwnProperty("search") || node.type === "object" && result.children.length > 0 ||
         node.type === "array" && result.children.length > 0) ? [result] : [];
