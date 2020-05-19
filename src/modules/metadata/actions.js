@@ -256,8 +256,14 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
         await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`, {method: "OPTIONS"});
 
         try {
-            const serviceResponse = await fetch(`${serviceInfo.url}/tables?data-type=${dataType}`,
-                jsonRequest({name: tableName.trim(), metadata: {}}, "POST"));
+            const serviceResponse = await fetch(
+                `${serviceInfo.url}/tables`,
+                jsonRequest({
+                    name: tableName.trim(),
+                    metadata: {},
+                    data_type: dataType,
+                    dataset: datasetID,  // This will only be used by the metadata service to create the ownership
+                }, "POST"));
 
             if (!serviceResponse.ok) {
                 console.error(serviceResponse);
@@ -266,20 +272,25 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
             }
 
             const serviceTable = await serviceResponse.json();
+            const serviceArtifact = serviceInfo.type.split(":")[1]
 
-            // TODO: Rename dataset, add actual dataset adding endpoint
             try {
-                const projectResponse = await fetch(
-                    `${getState().services.metadataService.url}/api/table_ownership`,
-                    jsonRequest({
-                        table_id: serviceTable.id,
-                        service_id: serviceInfo.id,
-                        service_artifact: serviceInfo.type.split(":")[1],
-                        data_type: dataType,
+                // If table is created in the metadata service, it'll handle automatically creating the ownership record
+                const projectResponse = await (
+                    serviceArtifact === "metadata" ? fetch(
+                        `${getState().services.metadataService.url}/api/table_ownership/${serviceTable.id}`,
+                    ) : fetch(
+                        `${getState().services.metadataService.url}/api/table_ownership`,
+                        jsonRequest({
+                            table_id: serviceTable.id,
+                            service_id: serviceInfo.id,
+                            service_artifact: serviceInfo.type.split(":")[1],
+                            data_type: dataType,
 
-                        dataset: datasetID,
-                        sample: null  // TODO: Sample ID if wanted  // TODO: Deprecate?
-                    }, "POST")
+                            dataset: datasetID,
+                            sample: null  // TODO: Sample ID if wanted  // TODO: Deprecate?
+                        }, "POST")
+                    )
                 );
 
                 if (!projectResponse.ok) {

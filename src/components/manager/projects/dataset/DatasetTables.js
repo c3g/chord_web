@@ -136,16 +136,7 @@ class DatasetTables extends Component {
         ];
 
         const dataset = this.props.dataset || {};
-        const tables = [
-            ...(dataset ? [{  // TODO: Not hard-coded
-                table_id: dataset.identifier,
-                name: `${dataset.title} Metadata`,
-                data_type: "phenopacket",
-                service_artifact: "metadata",
-                manageable: false,
-            }] : []),
-            ...(dataset.tables || [])
-        ].map(t => ({...t, name: t.name || null}));
+        const tables = (dataset.tables || []).map(t => ({...t, name: t.name || null}));
         return <>
             <Typography.Title level={4}>
                 Tables

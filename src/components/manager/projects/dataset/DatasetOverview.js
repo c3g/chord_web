@@ -43,9 +43,8 @@ class DatasetOverview extends Component {
                     </Col>
                     <Col span={this.props.isPrivate ? 12 : 8}>
                         <Spin spinning={this.props.isFetchingTables}>
-                            {/* Add 1 to represent metadata table TODO: Don't want to hard code */}
                             <Statistic title="Tables"
-                                       value={this.props.isFetchingTables ? "—" : dataset.tables.length + 1} />
+                                       value={this.props.isFetchingTables ? "—" : dataset.tables.length} />
                         </Spin>
                     </Col>
                 </Row>
