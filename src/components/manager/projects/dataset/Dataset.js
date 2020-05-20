@@ -224,14 +224,6 @@ class Dataset extends Component {
             ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={
                 isPrivate ? (
                     <>
-                        <Button icon="import" style={{marginRight: "16px"}}
-                                onClick={() => (this.props.onTableIngest || nop)(this.props.project, {
-                                    // Map dataset to metadata table  TODO: Remove all these hacks
-                                    id: this.state.identifier,
-                                    data_type: "phenopacket",  // TODO: Remove hard-coding...
-                                })}>
-                            Ingest Metadata
-                        </Button>
                         <Button icon="edit"
                                 style={{marginRight: "8px"}}
                                 onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
