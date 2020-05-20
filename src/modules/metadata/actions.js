@@ -272,7 +272,7 @@ export const addProjectTable = (project, datasetID, serviceInfo, dataType, table
             }
 
             const serviceTable = await serviceResponse.json();
-            const serviceArtifact = serviceInfo.type.split(":")[1]
+            const serviceArtifact = serviceInfo.type.split(":")[1];
 
             try {
                 // If table is created in the metadata service, it'll handle automatically creating the ownership record
