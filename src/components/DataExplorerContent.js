@@ -35,23 +35,21 @@ class DataExplorerContent extends Component {
     render() {
         if (!this.props.nodeInfo.CHORD_URL) return null;
         const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
-        return (
-            <>
-                <SitePageHeader title="Data Explorer" withTabBar={true} footer={
-                    <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                        {PAGE_MENU.map(renderMenuItem)}
-                    </Menu>
-                } />
-                <Switch>
-                    <Route path={withBasePath("data/explorer/search")}
-                           component={ExplorerSearchContent} />
-                    <Route path={withBasePath("data/explorer/genome")}
-                           component={ExplorerGenomeBrowserContent} />
-                    <Redirect from={withBasePath("data/explorer")}
-                              to={withBasePath("data/explorer/search")} />
-                </Switch>
-            </>
-        );
+        return <>
+            <SitePageHeader title="Data Explorer" withTabBar={true} footer={
+                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                    {PAGE_MENU.map(renderMenuItem)}
+                </Menu>
+            } />
+            <Switch>
+                <Route path={withBasePath("data/explorer/search")}
+                       component={ExplorerSearchContent} />
+                <Route path={withBasePath("data/explorer/genome")}
+                       component={ExplorerGenomeBrowserContent} />
+                <Redirect from={withBasePath("data/explorer")}
+                          to={withBasePath("data/explorer/search")} />
+            </Switch>
+        </>;
     }
 }
 

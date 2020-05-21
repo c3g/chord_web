@@ -43,30 +43,28 @@ class DataManagerContent extends Component {
     render() {
         if (!this.props.nodeInfo.CHORD_URL) return null;
         const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
-        return (
-            <>
-                <SitePageHeader title="Data Manager"
-                                withTabBar={true}
-                                footer={
-                                    <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                                        {PAGE_MENU.map(renderMenuItem)}
-                                    </Menu>
-                                } />
-                <Switch>
-                    <Route path={withBasePath("data/manager/projects")}
-                           component={ManagerProjectDatasetContent} />
-                    <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
-                    <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
-                    <Route exact path={withBasePath("data/manager/ingestion")}
-                           component={ManagerIngestionContent} />
-                    <Route exact path={withBasePath("data/manager/workflows")}
-                           component={ManagerWorkflowsContent} />
-                    <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
-                    <Redirect from={withBasePath("data/manager")}
-                              to={withBasePath("data/manager/projects")} />
-                </Switch>
-            </>
-        );
+        return <>
+            <SitePageHeader title="Data Manager"
+                            withTabBar={true}
+                            footer={
+                                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                                    {PAGE_MENU.map(renderMenuItem)}
+                                </Menu>
+                            } />
+            <Switch>
+                <Route path={withBasePath("data/manager/projects")}
+                       component={ManagerProjectDatasetContent} />
+                <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
+                <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
+                <Route exact path={withBasePath("data/manager/ingestion")}
+                       component={ManagerIngestionContent} />
+                <Route exact path={withBasePath("data/manager/workflows")}
+                       component={ManagerWorkflowsContent} />
+                <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
+                <Redirect from={withBasePath("data/manager")}
+                          to={withBasePath("data/manager/projects")} />
+            </Switch>
+        </>;
     }
 }
 

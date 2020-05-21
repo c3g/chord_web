@@ -185,51 +185,49 @@ class DiscoverySearchCondition extends Component {
         const operationOptions = this.state.fieldSchema.search.operations.map(o =>
             <Select.Option key={o}>{OPERATION_TEXT[o]}</Select.Option>);
 
-        return (
-            <Input.Group compact>
-                {schemaTreeSelect(  // LHS TODO: Redo base level name
-                    "field",
-                    "fieldSchema",
-                    conditionType === "join" ? this.props.joinedSchema : (this.state.dataType || {}).schema,
-                    {
-                        ...(conditionType === "join"
-                            ? getInputStyle(valueWidth,2)
-                            : {width: `${DATA_TYPE_FIELD_WIDTH}px`}),
-                        borderTopRightRadius: "0",
-                        borderBottomRightRadius: "0"
-                    }
-                )}
-                {canNegate ? (  // Negation
-                    <Select style={{width: `${NEGATION_WIDTH}px`, float: "left"}}
-                            value={this.state.negated ? "neg" : "pos"}
-                            onChange={this.handleNegation}>
-                        <Select.Option key="pos">is</Select.Option>
-                        <Select.Option key="neg">is not</Select.Option>
-                    </Select>
-                ) : null}
-                {this.equalsOnly() ? null : (  // Operation select
-                    <Select style={{width: `${OPERATION_WIDTH}px`, float: "left"}}
-                            value={this.state.operation}
-                            onChange={this.handleOperation}>
-                        {operationOptions}
-                    </Select>
-                )}
-                {conditionType === "join" ?  // RHS
-                    schemaTreeSelect(
-                        "field2",
-                        "fieldSchema2",
-                        this.props.joinedSchema,
-                        {...getInputStyle(valueWidth, 2), borderRadius: "0"}
-                    ) : this.getRHSInput(valueWidth)}
-                {canRemove ? (  // Condition removal button
-                    <Button type="danger"
-                            icon="close"
-                            style={{width: `${CLOSE_WIDTH}px`}}
-                            disabled={this.props.removeDisabled}
-                            onClick={this.props.onRemoveClick || nop} />
-                ) : null}
-            </Input.Group>
-        );
+        return <Input.Group compact>
+            {schemaTreeSelect(  // LHS TODO: Redo base level name
+                "field",
+                "fieldSchema",
+                conditionType === "join" ? this.props.joinedSchema : (this.state.dataType || {}).schema,
+                {
+                    ...(conditionType === "join"
+                        ? getInputStyle(valueWidth,2)
+                        : {width: `${DATA_TYPE_FIELD_WIDTH}px`}),
+                    borderTopRightRadius: "0",
+                    borderBottomRightRadius: "0"
+                }
+            )}
+            {canNegate ? (  // Negation
+                <Select style={{width: `${NEGATION_WIDTH}px`, float: "left"}}
+                        value={this.state.negated ? "neg" : "pos"}
+                        onChange={this.handleNegation}>
+                    <Select.Option key="pos">is</Select.Option>
+                    <Select.Option key="neg">is not</Select.Option>
+                </Select>
+            ) : null}
+            {this.equalsOnly() ? null : (  // Operation select
+                <Select style={{width: `${OPERATION_WIDTH}px`, float: "left"}}
+                        value={this.state.operation}
+                        onChange={this.handleOperation}>
+                    {operationOptions}
+                </Select>
+            )}
+            {conditionType === "join" ?  // RHS
+                schemaTreeSelect(
+                    "field2",
+                    "fieldSchema2",
+                    this.props.joinedSchema,
+                    {...getInputStyle(valueWidth, 2), borderRadius: "0"}
+                ) : this.getRHSInput(valueWidth)}
+            {canRemove ? (  // Condition removal button
+                <Button type="danger"
+                        icon="close"
+                        style={{width: `${CLOSE_WIDTH}px`}}
+                        disabled={this.props.removeDisabled}
+                        onClick={this.props.onRemoveClick || nop} />
+            ) : null}
+        </Input.Group>;
     }
 }
 

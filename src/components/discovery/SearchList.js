@@ -127,46 +127,44 @@ class SearchList extends Component {
         const dataUseTermsTitle = `Dataset ${datasetNameOrID
             .substr(0, 18)}${datasetNameOrID ? "…" : ""}: Data Use Terms`;
 
-        return (
-            <>
-                <Modal title={dataUseTermsTitle}
-                       visible={this.state.dataUseTermsModalShown}
-                       onCancel={() => this.handleDatasetTermsCancel()}
-                       footer={null}>
-                    <DataUseDisplay dataUse={(this.state.dataset || {}).data_use} />
-                </Modal>
-                <Spin spinning={this.props.searchLoading}>
-                    <Collapse bordered={true}
-                              accordion={true}
-                              activeKey={(this.props.selectedSearch || 0).toString(10)}
-                              onChange={i => this.handleSearchSelect(i)}>
-                        {[...this.props.searches].reverse().map((s, i) => {
-                            const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
-                                r ? r.map(d => ({...d, node: n})) : []);  // TODO: Report node response errors
-                            const title = `Search ${this.props.searches.length - i}: ${searchResults.length} result${
-                                searchResults.length === 1 ? "" : "s"}`;
-                            return (
-                                <Collapse.Panel header={title}
-                                                key={(this.props.searches.length - i - 1).toString(10)}>
-                                    <Typography.Title level={4}>
-                                        Nodes Responded:&nbsp;
-                                        <span style={{fontWeight: "normal"}}>
-                                            {Object.values(s.results).filter(r => r !== null).length}
-                                            &nbsp;/&nbsp;
-                                            {Object.keys(s.results).length}</span>
-                                    </Typography.Title>
-                                    <Typography.Title level={4}>Results</Typography.Title>
-                                    <Table bordered={true}
-                                           columns={this.searchResultColumns}
-                                           dataSource={searchResults}
-                                           rowKey="identifier" />
-                                </Collapse.Panel>
-                            );
-                        })}
-                    </Collapse>
-                </Spin>
-            </>
-        );
+        return <>
+            <Modal title={dataUseTermsTitle}
+                   visible={this.state.dataUseTermsModalShown}
+                   onCancel={() => this.handleDatasetTermsCancel()}
+                   footer={null}>
+                <DataUseDisplay dataUse={(this.state.dataset || {}).data_use} />
+            </Modal>
+            <Spin spinning={this.props.searchLoading}>
+                <Collapse bordered={true}
+                          accordion={true}
+                          activeKey={(this.props.selectedSearch || 0).toString(10)}
+                          onChange={i => this.handleSearchSelect(i)}>
+                    {[...this.props.searches].reverse().map((s, i) => {
+                        const searchResults = Object.entries(s.results).flatMap(([n, r]) =>
+                            r ? r.map(d => ({...d, node: n})) : []);  // TODO: Report node response errors
+                        const title = `Search ${this.props.searches.length - i}: ${searchResults.length} result${
+                            searchResults.length === 1 ? "" : "s"}`;
+                        return (
+                            <Collapse.Panel header={title}
+                                            key={(this.props.searches.length - i - 1).toString(10)}>
+                                <Typography.Title level={4}>
+                                    Nodes Responded:&nbsp;
+                                    <span style={{fontWeight: "normal"}}>
+                                        {Object.values(s.results).filter(r => r !== null).length}
+                                        &nbsp;/&nbsp;
+                                        {Object.keys(s.results).length}</span>
+                                </Typography.Title>
+                                <Typography.Title level={4}>Results</Typography.Title>
+                                <Table bordered={true}
+                                       columns={this.searchResultColumns}
+                                       dataSource={searchResults}
+                                       rowKey="identifier" />
+                            </Collapse.Panel>
+                        );
+                    })}
+                </Collapse>
+            </Spin>
+        </>;
     }
 }
 

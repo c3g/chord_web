@@ -7,16 +7,14 @@ import "antd/es/menu/style/css";
 // Custom menu renderer
 export const renderMenuItem = i => {
     if (i.hasOwnProperty("children")) {
-        return (
-            <Menu.SubMenu style={i.style || {}} title={
-                <span className="submenu-title-wrapper">
-                    {i.icon || null}
-                    {i.text || null}
-                </span>
-            } key={i.key || ""}>
-                {(i.children || []).map(ii => renderMenuItem(ii))}
-            </Menu.SubMenu>
-        );
+        return <Menu.SubMenu style={i.style || {}} title={
+            <span className="submenu-title-wrapper">
+                {i.icon || null}
+                {i.text || null}
+            </span>
+        } key={i.key || ""}>
+            {(i.children || []).map(ii => renderMenuItem(ii))}
+        </Menu.SubMenu>;
     }
 
     return (

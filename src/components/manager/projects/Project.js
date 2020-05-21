@@ -71,83 +71,81 @@ class Project extends Component {
     }
 
     render() {
-        return (
-            <div>
-                <div style={{position: "absolute", top: "24px", right: "24px"}}>
-                    {this.props.editing ? (
-                        <>
-                            <Button type="primary"
-                                    icon="check"
-                                    loading={this.props.saving}
-                                    onClick={() => this.handleSave()}>Save</Button>
-                            <Button icon="close"
-                                    style={{marginLeft: "10px"}}
-                                    disabled={this.props.saving}
-                                    onClick={() => this.handleCancelEdit()}>Cancel</Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button icon="edit" onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                            <Button type="danger" icon="delete"
-                                    style={{marginLeft: "10px"}}
-                                    onClick={() => (this.props.onDelete || nop)()}>Delete</Button>
-                        </>
-                    )}
-                </div>
+        return <div>
+            <div style={{position: "absolute", top: "24px", right: "24px"}}>
                 {this.props.editing ? (
-                    <ProjectForm style={{maxWidth: "600px"}}
-                                 initialValue={{
-                                     title: this.state.title,
-                                     description: this.state.description,
-                                     data_use: this.state.data_use
-                                 }}
-                                 ref={form => this.editingForm = form} />
+                    <>
+                        <Button type="primary"
+                                icon="check"
+                                loading={this.props.saving}
+                                onClick={() => this.handleSave()}>Save</Button>
+                        <Button icon="close"
+                                style={{marginLeft: "10px"}}
+                                disabled={this.props.saving}
+                                onClick={() => this.handleCancelEdit()}>Cancel</Button>
+                    </>
                 ) : (
                     <>
-                        <Typography.Title level={2}>
-                            {this.state.title}
-                        </Typography.Title>
-                        {this.state.description.split("\n").map((p, i) =>
-                            <Typography.Paragraph key={i} style={{maxWidth: "600px"}}>{p}</Typography.Paragraph>)}
+                        <Button icon="edit" onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
+                        <Button type="danger" icon="delete"
+                                style={{marginLeft: "10px"}}
+                                onClick={() => (this.props.onDelete || nop)()}>Delete</Button>
                     </>
                 )}
-
-                <Typography.Title level={3} style={{marginTop: "1.2em"}}>
-                    Datasets
-                    <div style={{float: "right"}}>
-                        <Button icon="plus"
-                                style={{verticalAlign: "top"}}
-                                onClick={() => (this.props.onAddDataset || nop)()}>
-                            Add Dataset
-                        </Button>
-                    </div>
-                </Typography.Title>
-                {(this.state.datasets || []).length > 0
-                    ? this.state.datasets.sort((d1, d2) => d1.title.localeCompare(d2.title)).map(d =>
-                        <Row gutter={[0, 16]} key={d.identifier}>
-                            <Col span={24}>
-                                <Dataset key={d.identifier}
-                                         mode="private"
-                                         project={this.props.value}
-                                         value={{
-                                             ...d,
-                                             tables: this.props.tables.filter(t => t.dataset === d.identifier),
-                                         }}
-                                         strayTables={this.props.strayTables}
-                                         individuals={this.props.individuals.filter(i =>
-                                             i.phenopackets.map(p => p.dataset).includes(d.identifier))}
-                                         loadingIndividuals={this.props.loadingIndividuals}
-                                         onEdit={() => (this.props.onEditDataset || nop)(d)}
-                                         onTableIngest={this.props.onTableIngest || nop}  />
-                            </Col>
-                        </Row>
-                    ) : (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
-                            <Button icon="plus" onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
-                        </Empty>
-                    )}
             </div>
-        );
+            {this.props.editing ? (
+                <ProjectForm style={{maxWidth: "600px"}}
+                             initialValue={{
+                                 title: this.state.title,
+                                 description: this.state.description,
+                                 data_use: this.state.data_use
+                             }}
+                             ref={form => this.editingForm = form} />
+            ) : (
+                <>
+                    <Typography.Title level={2}>
+                        {this.state.title}
+                    </Typography.Title>
+                    {this.state.description.split("\n").map((p, i) =>
+                        <Typography.Paragraph key={i} style={{maxWidth: "600px"}}>{p}</Typography.Paragraph>)}
+                </>
+            )}
+
+            <Typography.Title level={3} style={{marginTop: "1.2em"}}>
+                Datasets
+                <div style={{float: "right"}}>
+                    <Button icon="plus"
+                            style={{verticalAlign: "top"}}
+                            onClick={() => (this.props.onAddDataset || nop)()}>
+                        Add Dataset
+                    </Button>
+                </div>
+            </Typography.Title>
+            {(this.state.datasets || []).length > 0
+                ? this.state.datasets.sort((d1, d2) => d1.title.localeCompare(d2.title)).map(d =>
+                    <Row gutter={[0, 16]} key={d.identifier}>
+                        <Col span={24}>
+                            <Dataset key={d.identifier}
+                                     mode="private"
+                                     project={this.props.value}
+                                     value={{
+                                         ...d,
+                                         tables: this.props.tables.filter(t => t.dataset === d.identifier),
+                                     }}
+                                     strayTables={this.props.strayTables}
+                                     individuals={this.props.individuals.filter(i =>
+                                         i.phenopackets.map(p => p.dataset).includes(d.identifier))}
+                                     loadingIndividuals={this.props.loadingIndividuals}
+                                     onEdit={() => (this.props.onEditDataset || nop)(d)}
+                                     onTableIngest={this.props.onTableIngest || nop}  />
+                        </Col>
+                    </Row>
+                ) : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Datasets">
+                        <Button icon="plus" onClick={() => (this.props.onAddDataset || nop)()}>Add Dataset</Button>
+                    </Empty>
+                )}
+        </div>;
     }
 }
 

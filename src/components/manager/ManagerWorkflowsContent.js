@@ -18,16 +18,14 @@ class ManagerWorkflowsContent extends Component {
     render() {
         // TODO: real key
         const workflows = this.props.workflows.map(w => <WorkflowListItem key={w.name} workflow={w} />);
-        return (
-            <Layout>
-                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
-                    <Spin spinning={this.props.workflowsLoading}>
-                        {this.props.workflowsLoading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
-                    </Spin>
-                </Layout.Content>
-            </Layout>
-        );
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <Typography.Title level={2}>Ingestion Workflows</Typography.Title>
+                <Spin spinning={this.props.workflowsLoading}>
+                    {this.props.workflowsLoading ? <Skeleton /> : <List itemLayout="vertical">{workflows}</List>}
+                </Spin>
+            </Layout.Content>
+        </Layout>;
     }
 }
 

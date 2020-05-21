@@ -60,28 +60,26 @@ class WorkflowListItem extends Component {
             return ioTagWithType(o.id, o.type, formattedOutput + (o.type.endsWith("[]") ? " array" : ""));
         });
 
-        return (
-            <List.Item>
-                <List.Item.Meta
-                    title={
-                        this.props.selectable
-                            ? <a onClick={() => (this.props.onClick || nop)()}>
-                                {typeTag} {this.props.workflow.name}
-                                <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
-                            : <span>{typeTag} {this.props.workflow.name}</span>}
-                    description={this.props.workflow.description || ""} />
+        return <List.Item>
+            <List.Item.Meta
+                title={
+                    this.props.selectable
+                        ? <a onClick={() => (this.props.onClick || nop)()}>
+                            {typeTag} {this.props.workflow.name}
+                            <Icon type="right" style={{marginLeft: "0.3rem"}} /></a>
+                        : <span>{typeTag} {this.props.workflow.name}</span>}
+                description={this.props.workflow.description || ""} />
 
-                <div style={{marginBottom: "12px"}}>
-                    <span style={{fontWeight: "bold", marginRight: "1em"}}>Inputs:</span>
-                    {inputs}
-                </div>
+            <div style={{marginBottom: "12px"}}>
+                <span style={{fontWeight: "bold", marginRight: "1em"}}>Inputs:</span>
+                {inputs}
+            </div>
 
-                <div>
-                    <span style={{fontWeight: "bold", marginRight: "1em"}}>Outputs:</span>
-                    {outputs}
-                </div>
-            </List.Item>
-        );
+            <div>
+                <span style={{fontWeight: "bold", marginRight: "1em"}}>Outputs:</span>
+                {outputs}
+            </div>
+        </List.Item>;
     }
 }
 

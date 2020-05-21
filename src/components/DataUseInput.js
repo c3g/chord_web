@@ -84,82 +84,80 @@ class DataUseInput extends Component {
     }
 
     render() {
-        return (
-            <>
-                <div>
-                    <Typography.Title level={4} style={{fontSize: "20px"}}>Consent Code</Typography.Title>
+        return <>
+            <div>
+                <Typography.Title level={4} style={{fontSize: "20px"}}>Consent Code</Typography.Title>
 
-                    <div style={{fontWeight: "bold", marginBottom: "4px"}}>Primary</div>
-                    <Radio.Group name="primary_consent_code"
-                                 value={(this.state.consent_code.primary_category || {code: null}).code}
-                                 onChange={e => this.handlePCCChange(e.target.value)}>
-                        <List itemLayout="horizontal" style={{maxWidth: "600px"}}>
-                        {PRIMARY_CONSENT_CODE_KEYS.map(pcc =>
-                            <Radio key={pcc} value={pcc} style={{display: "block"}}>
-                                <List.Item style={{
-                                    display: "inline-block",
-                                    verticalAlign: "top",
-                                    paddingTop: "2px",
-                                    paddingRight: "16px",
-                                    whiteSpace: "normal"
-                                }}>
-                                    <List.Item.Meta title={PRIMARY_CONSENT_CODE_INFO[pcc].title}
-                                                    description={PRIMARY_CONSENT_CODE_INFO[pcc].content} />
-                                </List.Item>
-                            </Radio>
-                        )}
-                        </List>
-                    </Radio.Group>
-
-                    <div style={{fontWeight: "bold"}}>Secondary</div>
+                <div style={{fontWeight: "bold", marginBottom: "4px"}}>Primary</div>
+                <Radio.Group name="primary_consent_code"
+                             value={(this.state.consent_code.primary_category || {code: null}).code}
+                             onChange={e => this.handlePCCChange(e.target.value)}>
                     <List itemLayout="horizontal" style={{maxWidth: "600px"}}>
-                        {SECONDARY_CONSENT_CODE_KEYS.map(scc =>
-                            <List.Item key={scc}>
-                                <List.Item.Meta title={
-                                    <Checkbox checked={
-                                        this.state.consent_code.secondary_categories
-                                            .map(c => c.code)
-                                            .includes(scc)
-                                    } onChange={e => this.handleSCCChange(e, scc)}>
-                                        {SECONDARY_CONSENT_CODE_INFO[scc].title}
-                                    </Checkbox>
-                                } description={<div style={{marginLeft: "24px"}}>
-                                    {SECONDARY_CONSENT_CODE_INFO[scc].content}
-                                </div>} />
+                    {PRIMARY_CONSENT_CODE_KEYS.map(pcc =>
+                        <Radio key={pcc} value={pcc} style={{display: "block"}}>
+                            <List.Item style={{
+                                display: "inline-block",
+                                verticalAlign: "top",
+                                paddingTop: "2px",
+                                paddingRight: "16px",
+                                whiteSpace: "normal"
+                            }}>
+                                <List.Item.Meta title={PRIMARY_CONSENT_CODE_INFO[pcc].title}
+                                                description={PRIMARY_CONSENT_CODE_INFO[pcc].content} />
                             </List.Item>
-                        )}
+                        </Radio>
+                    )}
                     </List>
-                </div>
-                <div style={{marginTop: "20px"}}>
-                    <Typography.Title level={4}>
-                        Restrictions and Conditions
-                    </Typography.Title>
-                    <List itemLayout="horizontal" style={{maxWidth: "600px"}}
-                          dataSource={DATA_USE_KEYS}
-                          renderItem={u => (
-                              <List.Item>
-                                  <List.Item.Meta avatar={
-                                      u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
-                                          // Special case for non-profit use; stack two icons (dollar + stop) to
-                                          // create a custom synthetic icon.
-                                          <div style={{opacity: 0.65}}>
-                                              <Icon style={{fontSize: "24px", color: "black"}}
-                                                    type={DATA_USE_INFO[u].icon} />
-                                              <Icon style={{fontSize: "24px", marginLeft: "-24px", color: "black"}}
-                                                    type="stop" />
-                                          </div>
-                                      ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
-                                  } title={
-                                      <Checkbox checked={this.state.data_use_requirements.map(c => c.code).includes(u)}
-                                                onChange={e => this.handleDURChange(e, u)}>
-                                          {DATA_USE_INFO[u].title}
-                                      </Checkbox>
-                                  } description={DATA_USE_INFO[u].content} />
-                              </List.Item>
-                          )} />
-                </div>
-            </>
-        );
+                </Radio.Group>
+
+                <div style={{fontWeight: "bold"}}>Secondary</div>
+                <List itemLayout="horizontal" style={{maxWidth: "600px"}}>
+                    {SECONDARY_CONSENT_CODE_KEYS.map(scc =>
+                        <List.Item key={scc}>
+                            <List.Item.Meta title={
+                                <Checkbox checked={
+                                    this.state.consent_code.secondary_categories
+                                        .map(c => c.code)
+                                        .includes(scc)
+                                } onChange={e => this.handleSCCChange(e, scc)}>
+                                    {SECONDARY_CONSENT_CODE_INFO[scc].title}
+                                </Checkbox>
+                            } description={<div style={{marginLeft: "24px"}}>
+                                {SECONDARY_CONSENT_CODE_INFO[scc].content}
+                            </div>} />
+                        </List.Item>
+                    )}
+                </List>
+            </div>
+            <div style={{marginTop: "20px"}}>
+                <Typography.Title level={4}>
+                    Restrictions and Conditions
+                </Typography.Title>
+                <List itemLayout="horizontal" style={{maxWidth: "600px"}}
+                      dataSource={DATA_USE_KEYS}
+                      renderItem={u => (
+                          <List.Item>
+                              <List.Item.Meta avatar={
+                                  u === DUO_NOT_FOR_PROFIT_USE_ONLY ? (
+                                      // Special case for non-profit use; stack two icons (dollar + stop) to
+                                      // create a custom synthetic icon.
+                                      <div style={{opacity: 0.65}}>
+                                          <Icon style={{fontSize: "24px", color: "black"}}
+                                                type={DATA_USE_INFO[u].icon} />
+                                          <Icon style={{fontSize: "24px", marginLeft: "-24px", color: "black"}}
+                                                type="stop" />
+                                      </div>
+                                  ) : <Icon style={{fontSize: "24px"}} type={DATA_USE_INFO[u].icon} />
+                              } title={
+                                  <Checkbox checked={this.state.data_use_requirements.map(c => c.code).includes(u)}
+                                            onChange={e => this.handleDURChange(e, u)}>
+                                      {DATA_USE_INFO[u].title}
+                                  </Checkbox>
+                              } description={DATA_USE_INFO[u].content} />
+                          </List.Item>
+                      )} />
+            </div>
+        </>;
     }
 }
 

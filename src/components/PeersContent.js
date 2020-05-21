@@ -42,21 +42,19 @@ class PeersContent extends Component {
     }
 
     render() {
-        return (
-            <>
-                <SitePageHeader title="Peers" subTitle="Other CHORD nodes" />
-                <Layout>
-                    <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
-                        <Table dataSource={this.props.peers}
-                               columns={this.peerColumns}
-                               loading={this.props.isFetchingPeers}
-                               rowKey="url"
-                               bordered={true}
-                               size="middle" />
-                    </Layout.Content>
-                </Layout>
-            </>
-        );
+        return <>
+            <SitePageHeader title="Peers" subTitle="Other CHORD nodes" />
+            <Layout>
+                <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
+                    <Table dataSource={this.props.peers}
+                           columns={this.peerColumns}
+                           loading={this.props.isFetchingPeers}
+                           rowKey="url"
+                           bordered={true}
+                           size="middle" />
+                </Layout.Content>
+            </Layout>
+        </>;
     }
 }
 

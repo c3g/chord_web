@@ -210,66 +210,64 @@ class ManagerFilesContent extends Component {
         const selectedFile = selectedFileViewable ? this.state.selectedFiles[0] : "";
         const selectedFileType = selectedFile.split(".").slice(-1)[0];
 
-        return (
-            <Layout>
-                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <TableSelectionModal
-                        dataType={(this.state.selectedWorkflow || {}).data_type || null}
-                        visible={this.state.tableSelectionModal}
-                        title={"Select a Table to Ingest Into"}
-                        onCancel={() => this.hideTableSelectionModal()}
-                        onOk={tableKey => this.ingestIntoTable(tableKey)}
-                    />
-                    {/* TODO: v0.2: Don't hard-code replace */}
-                    <Modal visible={this.state.fileContentsModal}
-                           title={selectedFile.replace("/chord/data/drop-box", "")}
-                           width={800}
-                           footer={null}
-                           onCancel={this.hideFileContentsModal}>
-                        <Spin spinning={this.state.loadingFileContents}>
-                            <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFileType}`]}
-                                               style={a11yLight}
-                                               customStyle={{fontSize: "12px"}}
-                                               showLineNumbers={true}>
-                                {this.state.fileContents[selectedFile] || ""}
-                            </SyntaxHighlighter>
-                        </Spin>
-                    </Modal>
-                    <div style={{marginBottom: "1em"}}>
-                        <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
-                                         disabled={this.state.selectedFiles.length === 0
-                                            || workflowsSupported.length === 0}
-                                         onClick={() => {
-                                             if (workflowsSupported.length !== 1) return;
-                                             this.showTableSelectionModal(workflowsSupported[0]);
-                                         }}>
-                            <Icon type="import" /> Ingest
-                        </Dropdown.Button>
-                        <Button icon="file-text"
-                                onClick={() => this.handleViewFile()}
-                                style={{marginRight: "12px"}}
-                                disabled={!selectedFileViewable}
-                                loading={this.state.loadingFileContents}>View</Button>
-                        {/* TODO: Implement v0.2 */}
-                        {/*<Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>*/}
-                        {/*    Delete*/}
-                        {/*</Button>*/}
-                        {/* TODO: Implement v0.2 */}
-                        {/*<Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>*/}
-                    </div>
-                    <Spin spinning={this.props.treeLoading}>
-                        <Tree.DirectoryTree defaultExpandAll={true}
-                                            multiple={true}
-                                            onSelect={keys => this.handleSelect(keys)}
-                                            selectedKeys={this.state.selectedFiles}>
-                            <Tree.TreeNode title="chord_drop_box" key="root">
-                                {generateFileTree(this.props.tree)}
-                            </Tree.TreeNode>
-                        </Tree.DirectoryTree>
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <TableSelectionModal
+                    dataType={(this.state.selectedWorkflow || {}).data_type || null}
+                    visible={this.state.tableSelectionModal}
+                    title={"Select a Table to Ingest Into"}
+                    onCancel={() => this.hideTableSelectionModal()}
+                    onOk={tableKey => this.ingestIntoTable(tableKey)}
+                />
+                {/* TODO: v0.2: Don't hard-code replace */}
+                <Modal visible={this.state.fileContentsModal}
+                       title={selectedFile.replace("/chord/data/drop-box", "")}
+                       width={800}
+                       footer={null}
+                       onCancel={this.hideFileContentsModal}>
+                    <Spin spinning={this.state.loadingFileContents}>
+                        <SyntaxHighlighter language={LANGUAGE_HIGHLIGHTERS[`.${selectedFileType}`]}
+                                           style={a11yLight}
+                                           customStyle={{fontSize: "12px"}}
+                                           showLineNumbers={true}>
+                            {this.state.fileContents[selectedFile] || ""}
+                        </SyntaxHighlighter>
                     </Spin>
-                </Layout.Content>
-            </Layout>
-        );
+                </Modal>
+                <div style={{marginBottom: "1em"}}>
+                    <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
+                                     disabled={this.state.selectedFiles.length === 0
+                                        || workflowsSupported.length === 0}
+                                     onClick={() => {
+                                         if (workflowsSupported.length !== 1) return;
+                                         this.showTableSelectionModal(workflowsSupported[0]);
+                                     }}>
+                        <Icon type="import" /> Ingest
+                    </Dropdown.Button>
+                    <Button icon="file-text"
+                            onClick={() => this.handleViewFile()}
+                            style={{marginRight: "12px"}}
+                            disabled={!selectedFileViewable}
+                            loading={this.state.loadingFileContents}>View</Button>
+                    {/* TODO: Implement v0.2 */}
+                    {/*<Button type="danger" icon="delete" disabled={this.state.selectedFiles.length === 0}>*/}
+                    {/*    Delete*/}
+                    {/*</Button>*/}
+                    {/* TODO: Implement v0.2 */}
+                    {/*<Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>*/}
+                </div>
+                <Spin spinning={this.props.treeLoading}>
+                    <Tree.DirectoryTree defaultExpandAll={true}
+                                        multiple={true}
+                                        onSelect={keys => this.handleSelect(keys)}
+                                        selectedKeys={this.state.selectedFiles}>
+                        <Tree.TreeNode title="chord_drop_box" key="root">
+                            {generateFileTree(this.props.tree)}
+                        </Tree.TreeNode>
+                    </Tree.DirectoryTree>
+                </Spin>
+            </Layout.Content>
+        </Layout>;
     }
 }
 

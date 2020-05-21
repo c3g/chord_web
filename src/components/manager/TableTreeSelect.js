@@ -69,23 +69,21 @@ class TableTreeSelect extends Component {
             }))
         }));
 
-        return (
-            <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
-                <TreeSelect style={this.props.style || {}}
-                            showSearch={true}
-                            filterTreeNode={(v, n) => {
-                                const filter = v.toLocaleLowerCase().trim();
-                                if (filter === "") return true;
-                                return n.key.toLocaleLowerCase().includes(filter)
-                                    || n.props.data.title.toLocaleLowerCase().includes(filter)
-                                    || (n.props.data.data_type || "").toLocaleLowerCase().includes(filter);
-                            }}
-                            onChange={this.props.onChange || nop}
-                            value={this.state.selected}
-                            treeData={selectTreeData}
-                            treeDefaultExpandAll={true} />
-            </Spin>
-        );
+        return <Spin spinning={this.props.servicesLoading || this.props.projectsLoading}>
+            <TreeSelect style={this.props.style || {}}
+                        showSearch={true}
+                        filterTreeNode={(v, n) => {
+                            const filter = v.toLocaleLowerCase().trim();
+                            if (filter === "") return true;
+                            return n.key.toLocaleLowerCase().includes(filter)
+                                || n.props.data.title.toLocaleLowerCase().includes(filter)
+                                || (n.props.data.data_type || "").toLocaleLowerCase().includes(filter);
+                        }}
+                        onChange={this.props.onChange || nop}
+                        value={this.state.selected}
+                        treeData={selectTreeData}
+                        treeDefaultExpandAll={true} />
+        </Spin>;
     }
 }
 
