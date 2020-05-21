@@ -120,10 +120,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addProjectDataset: async (project, dataset, onSuccess) =>
-        await dispatch(addProjectDataset(project, dataset, onSuccess)),
-    saveProjectDataset: async (dataset, onSuccess) => await dispatch(saveProjectDataset(dataset, onSuccess)),
-    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables())
+    addProjectDataset: (project, dataset, onSuccess) => dispatch(addProjectDataset(project, dataset, onSuccess)),
+    saveProjectDataset: (dataset, onSuccess) => dispatch(saveProjectDataset(dataset, onSuccess)),
+    fetchProjectsWithDatasetsAndTables: () => dispatch(fetchProjectsWithDatasetsAndTables()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetFormModal);

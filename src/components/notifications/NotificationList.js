@@ -91,7 +91,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
     markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
     hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
-    navigateToWESRun: async target => await navigateToWESRun(target, dispatch, ownProps.history),
+    navigateToWESRun: target => navigateToWESRun(target, dispatch, ownProps.history),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationList));

@@ -205,9 +205,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addProjectTable: async (ds, s, dt, name) => await dispatch(addProjectTable(ownProps.project, ds, s, dt, name)),
-    deleteProjectTable: async table => await dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
-    fetchProjectsWithDatasetsAndTables: async () => await dispatch(fetchProjectsWithDatasetsAndTables()),
+    addProjectTable: (ds, s, dt, name) => dispatch(addProjectTable(ownProps.project, ds, s, dt, name)),
+    deleteProjectTable: table => dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
+    fetchProjectsWithDatasetsAndTables: () => dispatch(fetchProjectsWithDatasetsAndTables()),
     fetchTableSummary: (cs, si, t) => dispatch(fetchTableSummaryIfPossible(cs, si, t))
 });
 

@@ -305,9 +305,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    deleteProjectDataset: async dataset => await dispatch(deleteProjectDatasetIfPossible(ownProps.project, dataset)),
-    deleteLinkedFieldSet: async (dataset, linkedFieldSet, linkedFieldSetIndex) =>
-        await dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
+    deleteProjectDataset: dataset => dispatch(deleteProjectDatasetIfPossible(ownProps.project, dataset)),
+    deleteLinkedFieldSet: (dataset, linkedFieldSet, linkedFieldSetIndex) =>
+        dispatch(deleteDatasetLinkedFieldSetIfPossible(dataset, linkedFieldSet, linkedFieldSetIndex)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dataset);

@@ -250,8 +250,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    submitIngestionWorkflowRun: async (sID, dID, workflow, inputs, redirect, history) =>
-        await dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs, redirect, history))
+    submitIngestionWorkflowRun: (sID, dID, workflow, inputs, redirect, history) =>
+        dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs, redirect, history))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerIngestionContent));

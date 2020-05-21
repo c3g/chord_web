@@ -160,8 +160,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    fetchUserAndDependentData: async (servicesCb = nop) => await dispatch(fetchUserAndDependentData(servicesCb)),
-    fetchPeersOrError: async () => await dispatch(fetchPeersOrError()),
+    fetchUserAndDependentData: (servicesCb = nop) => dispatch(fetchUserAndDependentData(servicesCb)),
+    fetchPeersOrError: () => dispatch(fetchPeersOrError()),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
