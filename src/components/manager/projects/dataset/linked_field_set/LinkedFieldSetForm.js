@@ -106,22 +106,20 @@ class LinkedFieldSetForm extends Component {
             </Form.Item>
         ));
 
-        return (
-            <Form>
-                <Form.Item label="Name">
-                    {getFieldDecorator("name", {
-                        initialValue: (this.props.initialValue || {}).name || "",
-                        rules: [{required: true}, {min: 3}]
-                    })(<Input placeholder="Sample IDs" />)}
-                </Form.Item>
-                {fieldItems}
-                <Form.Item>
-                    <Button type="dashed" onClick={() => this.addField()} block={true}>
-                        <Icon type="plus" /> Add Linked Field
-                    </Button>
-                </Form.Item>
-            </Form>
-        );
+        return <Form>
+            <Form.Item label="Name">
+                {getFieldDecorator("name", {
+                    initialValue: (this.props.initialValue || {}).name || "",
+                    rules: [{required: true}, {min: 3}]
+                })(<Input placeholder="Sample IDs" />)}
+            </Form.Item>
+            {fieldItems}
+            <Form.Item>
+                <Button type="dashed" onClick={() => this.addField()} block={true}>
+                    <Icon type="plus" /> Add Linked Field
+                </Button>
+            </Form.Item>
+        </Form>;
     }
 }
 

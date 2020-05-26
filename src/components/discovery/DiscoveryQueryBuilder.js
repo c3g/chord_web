@@ -109,80 +109,78 @@ class DiscoveryQueryBuilder extends Component {
             </Dropdown>
         );
 
-        return (
-            <Card style={{marginBottom: "1.5em"}}>
-                <DataTypeExplorationModal dataTypes={this.props.dataTypes}
-                                          visible={this.state.schemasModalShown}
-                                          onCancel={this.handleSchemasToggle} />
+        return <Card style={{marginBottom: "1.5em"}}>
+            <DataTypeExplorationModal dataTypes={this.props.dataTypes}
+                                      visible={this.state.schemasModalShown}
+                                      onCancel={this.handleSchemasToggle} />
 
-                <Typography.Title level={3} style={{marginBottom: "1.5rem"}}>
-                    Data Type Queries
-                    {addConditionsOnDataType()}
-                    <Button style={{float: "right", marginRight: "1em"}}
-                            onClick={this.handleSchemasToggle}><Icon type="table" /> Explore Data Types</Button>
-                    <Button style={{float: "right", marginRight: "1em"}} onClick={() => {
-                        /** @type {object|null} */
-                        let helpModal = null;
+            <Typography.Title level={3} style={{marginBottom: "1.5rem"}}>
+                Data Type Queries
+                {addConditionsOnDataType()}
+                <Button style={{float: "right", marginRight: "1em"}}
+                        onClick={this.handleSchemasToggle}><Icon type="table" /> Explore Data Types</Button>
+                <Button style={{float: "right", marginRight: "1em"}} onClick={() => {
+                    /** @type {object|null} */
+                    let helpModal = null;
 
-                        const destroyHelpModal = () => {
-                            this.handleSchemasToggle();
-                            if (helpModal) helpModal.destroy();
-                        };
+                    const destroyHelpModal = () => {
+                        this.handleSchemasToggle();
+                        if (helpModal) helpModal.destroy();
+                    };
 
-                        helpModal = Modal.info({
-                            title: "Help",
-                            content: <>
-                                <Typography.Paragraph>
-                                    CHORD defines multiple queryable data types for researchers to take advantage of to
-                                    standardize their datasets and make them discoverable. Each of these data types is
-                                    defined by a <strong>schema</strong>, which specifies all the components of a single
-                                    object in a table of a given data type. Some of the fields of these objects are
-                                    directly queryable, while others are not; this is determined in part by the
-                                    sensitivity of the field.
-                                </Typography.Paragraph>
-                                <Typography.Paragraph>
-                                    Data types and their schemas can be <a onClick={destroyHelpModal}>explored</a> in
-                                    both a tree and a searchable table structure.
-                                </Typography.Paragraph>
-                                <Typography.Paragraph>
-                                    If two or more data types are queried at the same time, the federated search system
-                                    will look for datasets that have linked data objects matching both criteria. This
-                                    first requires that researchers have correctly set up their datasets to link e.g.
-                                    patients with their corresponding genomic variants.
-                                </Typography.Paragraph>
-                            </>,
-                            maskClosable: true,
-                            width: 720
-                        });
-                    }}><Icon type="question-circle" /> Help</Button>
-                </Typography.Title>
+                    helpModal = Modal.info({
+                        title: "Help",
+                        content: <>
+                            <Typography.Paragraph>
+                                CHORD defines multiple queryable data types for researchers to take advantage of to
+                                standardize their datasets and make them discoverable. Each of these data types is
+                                defined by a <strong>schema</strong>, which specifies all the components of a single
+                                object in a table of a given data type. Some of the fields of these objects are
+                                directly queryable, while others are not; this is determined in part by the
+                                sensitivity of the field.
+                            </Typography.Paragraph>
+                            <Typography.Paragraph>
+                                Data types and their schemas can be <a onClick={destroyHelpModal}>explored</a> in
+                                both a tree and a searchable table structure.
+                            </Typography.Paragraph>
+                            <Typography.Paragraph>
+                                If two or more data types are queried at the same time, the federated search system
+                                will look for datasets that have linked data objects matching both criteria. This
+                                first requires that researchers have correctly set up their datasets to link e.g.
+                                patients with their corresponding genomic variants.
+                            </Typography.Paragraph>
+                        </>,
+                        maskClosable: true,
+                        width: 720
+                    });
+                }}><Icon type="question-circle" /> Help</Button>
+            </Typography.Title>
 
-                {this.props.dataTypeForms.length > 0
-                    ? <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>{dataTypeTabPanes}</Tabs>
-                    : (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added">
-                            {addConditionsOnDataType({type: "primary"})}
-                        </Empty>
-                    )}
+            {this.props.dataTypeForms.length > 0
+                ? <Tabs type="editable-card" hideAdd onEdit={this.handleTabsEdit}>{dataTypeTabPanes}</Tabs>
+                : (
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Data Types Added">
+                        {addConditionsOnDataType({type: "primary"})}
+                    </Empty>
+                )}
 
-                {/* TODO: Allow this to be optionally specified for advanced users
-                <Divider />
+            {/* TODO: Allow this to be optionally specified for advanced users
+            <Divider />
 
-                <Typography.Title level={3}>Join Query</Typography.Title>
+            <Typography.Title level={3}>Join Query</Typography.Title>
 
-                <DiscoverySearchForm conditionType="join"
-                                     formValues={this.props.joinFormValues}
-                                     loading={this.props.searchLoading}
-                                     onChange={fields => this.props.updateJoinForm(fields)} />
-                */}
+            <DiscoverySearchForm conditionType="join"
+                                 formValues={this.props.joinFormValues}
+                                 loading={this.props.searchLoading}
+                                 onChange={fields => this.props.updateJoinForm(fields)} />
+            */}
 
-                <Button type="primary"
-                        icon="search"
-                        loading={this.props.searchLoading}
-                        disabled={this.props.dataTypeForms.length === 0}
-                        onClick={() => this.handleSubmit()}>Search</Button>
-            </Card>
-        );
+            <Button type="primary"
+                    icon="search"
+                    loading={this.props.searchLoading}
+                    disabled={this.props.dataTypeForms.length === 0}
+                    onClick={() => this.handleSubmit()}>Search</Button>
+        </Card>;
     }
 }
 

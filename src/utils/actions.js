@@ -22,28 +22,27 @@ export const createFlowActionTypes = name => ({
 
 const _unpaginatedNetworkFetch = async (url, req, parse) => {
     const response = await fetch(url, req);
-    if (response.ok) {
-        return response.status === 204 ? null : await parse(response);
-    } else {
+    if (!response.ok) {
         throw `${response.status} ${response.statusText}`;
     }
+    return response.status === 204 ? null : await parse(response);
 };
 
 const _paginatedNetworkFetch = async (url, req, parse) => {
     const results = [];
     const _fetchNext = async (pageUrl) => {
         const response = await fetch(pageUrl, req);
-        if (response.ok) {
-            const data = await parse(response);
-            if (!data.hasOwnProperty("results")) throw "Missing results set";
-            const pageResults = data.results;
-            const nextUrl = data.next || null;
-            if (!(pageResults instanceof Array)) throw "Invalid results set";
-            results.push(...pageResults);
-            if (nextUrl) await _fetchNext(nextUrl);
-        } else {
+        if (!response.ok) {
             throw "Invalid response encountered";
         }
+
+        const data = await parse(response);
+        if (!data.hasOwnProperty("results")) throw "Missing results set";
+        const pageResults = data.results;
+        const nextUrl = data.next || null;
+        if (!(pageResults instanceof Array)) throw "Invalid results set";
+        results.push(...pageResults);
+        if (nextUrl) await _fetchNext(nextUrl);
     };
     await _fetchNext(url);
     return results;

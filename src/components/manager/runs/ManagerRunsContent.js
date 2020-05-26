@@ -15,20 +15,18 @@ import {withBasePath} from "../../../utils/url";
 
 class ManagerRunsContent extends Component {
     render() {
-        return (
-            <Layout>
-                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <Switch>
-                        <Route exact path={withBasePath("data/manager/runs")} component={RunListContent} />
-                        <Route path={withBasePath("data/manager/runs/:id/:tab")} component={RunDetailContent} />
-                        <Redirect from={withBasePath("data/manager/runs/:id")}
-                                  to={withBasePath("data/manager/runs/:id/request")} />
-                        <Redirect from={withBasePath("data/manager")}
-                                  to={withBasePath("data/manager/projects")} />
-                    </Switch>
-                </Layout.Content>
-            </Layout>
-        );
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <Switch>
+                    <Route exact path={withBasePath("data/manager/runs")} component={RunListContent} />
+                    <Route path={withBasePath("data/manager/runs/:id/:tab")} component={RunDetailContent} />
+                    <Redirect from={withBasePath("data/manager/runs/:id")}
+                              to={withBasePath("data/manager/runs/:id/request")} />
+                    <Redirect from={withBasePath("data/manager")}
+                              to={withBasePath("data/manager/projects")} />
+                </Switch>
+            </Layout.Content>
+        </Layout>;
     }
 }
 

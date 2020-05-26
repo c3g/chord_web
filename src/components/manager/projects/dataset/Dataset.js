@@ -103,39 +103,35 @@ class Dataset extends Component {
                                        isPrivate={isPrivate}
                                        isFetchingTables={this.props.isFetchingTables} />,
             ...(isPrivate ? {
-                individuals: (
-                    <>
-                        <Typography.Title level={4}>Individuals and Pools</Typography.Title>
-                        <Typography.Paragraph>
-                            Individuals can potentially be shared across many datasets.
-                        </Typography.Paragraph>
+                individuals: <>
+                    <Typography.Title level={4}>Individuals and Pools</Typography.Title>
+                    <Typography.Paragraph>
+                        Individuals can potentially be shared across many datasets.
+                    </Typography.Paragraph>
 
-                        <Table bordered
-                               style={{marginBottom: "1rem"}}
-                               dataSource={this.props.individuals.map(i => ({
-                                   ...i,
-                                   sex: i.sex || "UNKNOWN_SEX",
-                                   n_of_biosamples: (i.biosamples || []).length
-                               }))}
-                               rowKey="id"
-                               loading={this.props.loadingIndividuals}
-                               columns={[
-                                   {title: "Individual ID", dataIndex: "id"},
-                                   {title: "Date of Birth", dataIndex: "date_of_birth"},
-                                   {title: "Sex", dataIndex: "sex"},
-                                   // TODO: Only relevant biosamples
-                                   {title: "# Biosamples", dataIndex: "n_of_biosamples"}
-                               ]}
-                               expandedRowRender={i => (
-                                   <div>
-                                       <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
-                                              rowKey="id"
-                                              dataSource={i.biosamples || []} />
-                                   </div>
-                               )}
-                        />
-                    </>
-                ),
+                    <Table bordered
+                           style={{marginBottom: "1rem"}}
+                           dataSource={this.props.individuals.map(i => ({
+                               ...i,
+                               sex: i.sex || "UNKNOWN_SEX",
+                               n_of_biosamples: (i.biosamples || []).length
+                           }))}
+                           rowKey="id"
+                           loading={this.props.loadingIndividuals}
+                           columns={[
+                               {title: "Individual ID", dataIndex: "id"},
+                               {title: "Date of Birth", dataIndex: "date_of_birth"},
+                               {title: "Sex", dataIndex: "sex"},
+                               // TODO: Only relevant biosamples
+                               {title: "# Biosamples", dataIndex: "n_of_biosamples"}
+                           ]}
+                           expandedRowRender={i => <div>
+                               <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
+                                      rowKey="id"
+                                      dataSource={i.biosamples || []} />
+                           </div>}
+                    />
+                </>,
             } : {}),
             tables: <DatasetTables dataset={this.state}
                                    project={this.props.project}

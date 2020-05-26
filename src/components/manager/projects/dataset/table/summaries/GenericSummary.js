@@ -7,9 +7,9 @@ import "antd/es/statistic/style/css";
 
 import {summaryPropTypesShape} from "../../../../../../propTypes";
 
-const GenericSummary = ({summary}) => summary ? (
-    <Row gutter={16}><Col span={24}><Statistic title="Count" value={summary.count} /></Col></Row>
-) : "No summary available";
+const GenericSummary = ({summary}) => summary
+    ? <Row gutter={16}><Col span={24}><Statistic title="Count" value={summary.count} /></Col></Row>
+    : "No summary available";
 
 GenericSummary.propTypes = {
     summary: summaryPropTypesShape
