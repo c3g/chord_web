@@ -136,6 +136,10 @@ class ExplorerDatasetSearch extends Component {
 
         if (!selectedDataset) return null;  // TODO
 
+        console.log(selectedDataset.identifier);
+        console.log(this.state.searchPerformedByDataset[selectedDataset.identifier]);
+        console.log(this.state.searchPerformedByDataset);
+
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
