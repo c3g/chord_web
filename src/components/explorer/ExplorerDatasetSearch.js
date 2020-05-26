@@ -67,7 +67,7 @@ class ExplorerDatasetSearch extends Component {
                 </Typography.Title>
                 <Table bordered
                        columns={SEARCH_RESULT_COLUMNS}
-                       dataSource={this.props.searchResults}
+                       dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
                        rowSelection={() => {}} />
             </> : null}
         </>;
