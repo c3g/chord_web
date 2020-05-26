@@ -32,7 +32,7 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
 }));
 
 
-export const performFullSearchIfPossible = () => async (dispatch, getState) => {
+export const performFullSearchIfPossible = () => (dispatch, getState) => {
     if (getState().discovery.isFetching) return;
 
     // TODO: Map keys to avoid issues!!! Otherwise "deleted" conditions show up
@@ -44,7 +44,7 @@ export const performFullSearchIfPossible = () => async (dispatch, getState) => {
     const joinQueryConditions = extractQueryConditionsFromFormValues(joinFormValues);
     const joinQuery = joinQueryConditions.length > 0 ? conditionsToQuery(joinQueryConditions) : null;
 
-    await dispatch(performSearch(dataTypeQueries, joinQuery));
+    return dispatch(performSearch(dataTypeQueries, joinQuery));
 };
 
 
