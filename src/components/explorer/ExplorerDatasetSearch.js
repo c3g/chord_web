@@ -47,7 +47,6 @@ class ExplorerDatasetSearch extends Component {
         this.state = {
             dataTypeForms: [],
             fetchingSearch: false,  // TODO: redux
-            searchPerformedByDataset: {},
             searchResultsByDataset: {},
         };
     }
@@ -89,7 +88,7 @@ class ExplorerDatasetSearch extends Component {
 
             this.setState({
                 searchResultsByDataset: {
-                    ...this.state.searchPerformedByDataset,
+                    ...this.state.searchResultsByDataset,
                     [selectedDatasetID]: {
                         results: (results || {}).results || [],
                         searchResults: this.tableSearchResults(results)
@@ -137,8 +136,8 @@ class ExplorerDatasetSearch extends Component {
         if (!selectedDataset) return null;  // TODO
 
         console.log(selectedDataset.identifier);
-        console.log(this.state.searchPerformedByDataset[selectedDataset.identifier]);
-        console.log(this.state.searchPerformedByDataset);
+        console.log(this.state.searchResultsByDataset[selectedDataset.identifier]);
+        console.log(this.state.searchResultsByDataset);
 
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
@@ -152,11 +151,11 @@ class ExplorerDatasetSearch extends Component {
                                        updateDataTypeFormIfPossible(this.state.dataTypeForms, dt, fs))}
                                    removeDataTypeQueryForm={dt => this.setDataTypeForms(
                                        removeDataTypeFormIfPossible(this.state.dataTypeForms, dt))} />
-            {this.state.searchPerformedByDataset[selectedDataset.identifier] ? <>
+            {this.state.searchResultsByDataset[selectedDataset.identifier] ? <>
                 <Typography.Title level={4}>Search Results</Typography.Title>
                 <Table bordered
                        columns={SEARCH_RESULT_COLUMNS}
-                       dataSource={this.state.searchPerformedByDataset[selectedDataset.identifier].searchResults}
+                       dataSource={this.state.searchResultsByDataset[selectedDataset.identifier].searchResults}
                        rowSelection={() => {}} />
             </> : null}
         </>;
