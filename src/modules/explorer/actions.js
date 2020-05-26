@@ -11,6 +11,7 @@ export const REMOVE_DATA_TYPE_QUERY_FORM = "REMOVE_DATA_TYPE_QUERY_FORM";
 const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, getState) => ({
     types: PERFORM_SEARCH,
     url: `${getState().services.federationService.url}/private/dataset-search/${datasetID}`,
+    params: {datasetID},
     req: jsonRequest({
         data_type_queries: dataTypeQueries,
         join_query: null  // Will get auto-filled by the federation service
