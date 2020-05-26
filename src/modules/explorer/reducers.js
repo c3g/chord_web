@@ -76,27 +76,36 @@ export const explorer = (
         case ADD_DATA_TYPE_QUERY_FORM:
             return {
                 ...state,
-                dataTypeForms: addDataTypeFormIfPossible(
-                    state.dataTypeFormsByDatasetID[action.datasetID],
-                    action.dataType
-                ),
+                dataTypeFormsByDatasetID: {
+                    ...state.dataTypeFormsByDatasetID,
+                    [action.datasetID]: addDataTypeFormIfPossible(
+                        state.dataTypeFormsByDatasetID[action.datasetID] || [],
+                        action.dataType,
+                    ),
+                },
             };
         case UPDATE_DATA_TYPE_QUERY_FORM:
             return {
                 ...state,
-                dataTypeForms: updateDataTypeFormIfPossible(
-                    state.dataTypeFormsByDatasetID[action.datasetID],
-                    action.dataType,
-                    action.fields
-                ),
+                dataTypeFormsByDatasetID: {
+                    ...state.dataTypeFormsByDatasetID,
+                    [action.datasetID]: updateDataTypeFormIfPossible(
+                        state.dataTypeFormsByDatasetID[action.datasetID] || [],
+                        action.dataType,
+                        action.fields,
+                    ),
+                },
             };
         case REMOVE_DATA_TYPE_QUERY_FORM:
             return {
                 ...state,
-                dataTypeForms: removeDataTypeFormIfPossible(
-                    state.dataTypeFormsByDatasetID[action.datasetID],
-                    action.dataType
-                ),
+                dataTypeFormsByDatasetID: {
+                    ...state.dataTypeFormsByDatasetID,
+                    [action.datasetID]: removeDataTypeFormIfPossible(
+                        state.dataTypeFormsByDatasetID[action.datasetID] || [],
+                        action.dataType,
+                    ),
+                },
             };
 
         default:
