@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {withRouter} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Typography} from "antd";
+import {Table, Typography} from "antd";
+import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoveryQueryBuilder from "../discovery/DiscoveryQueryBuilder";
@@ -15,6 +16,26 @@ import {
 } from "../../utils/search";
 import fetch from "cross-fetch";
 import {datasetPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes";
+
+
+const SEARCH_RESULT_COLUMNS = [
+    {
+        title: "Individual",
+        dataIndex: "individual",
+        render: individual => <Link to={"/"}>{individual.name}</Link>,
+    },
+    {
+        title: "Samples",
+        dataIndex: "biosamples",
+        render: samples => <>{samples.length} Samples{samples.length ? ": " : ""}{samples}</>,
+    },
+    {
+        title: "Experiments",
+        dataIndex: "experiments",
+        render: experiments => <>{experiments.length} Experiments</>,
+    },
+];
+
 
 class ExplorerDatasetSearch extends Component {
     constructor(props) {
@@ -67,20 +88,14 @@ class ExplorerDatasetSearch extends Component {
             const results = await r.json();
 
             this.setState({
-                searchPerformedByDataset: {
+                searchResultsByDataset: {
                     ...this.state.searchPerformedByDataset,
-                    [selectedDatasetID]: true
+                    [selectedDatasetID]: {
+                        results: (results || {}).results || [],
+                        searchResults: this.tableSearchResults(results)
+                    }
                 }
             });
-
-            if (results && results.results) {
-                this.setState({
-                    searchResultsByDataset: {
-                        ...this.state.searchPerformedByDataset,
-                        [selectedDatasetID]: results.results
-                    }
-                });
-            }
 
             console.log(results);
         } catch (err) {
@@ -88,6 +103,30 @@ class ExplorerDatasetSearch extends Component {
         }
 
         this.setState({fetchingSearch: false});
+    }
+
+    tableSearchResults(searchResults) {
+        const results = (searchResults || {}).results || [];
+        const tableResultSet = {};
+
+        (results.phenopacket || []).forEach(p => {
+            const individualID = p.subject.id;
+            if (!tableResultSet.hasOwnProperty(individualID)) {
+                tableResultSet[individualID] = {
+                    key: individualID,
+                    individual: p.subject,
+                    biosamples: {},
+                    experiments: [],  // TODO
+                };
+            }
+
+            p.biosamples.forEach(b => tableResultSet[individualID].biosamples[b.id] = b);
+        });
+
+        return Object.values(tableResultSet).map(i => ({
+            ...i,
+            biosamples: Object.values(i.biosamples).sort((b1, b2) => b1.id.localeCompare(b2.id)),
+        }));
     }
 
     render() {
@@ -109,9 +148,12 @@ class ExplorerDatasetSearch extends Component {
                                        updateDataTypeFormIfPossible(this.state.dataTypeForms, dt, fs))}
                                    removeDataTypeQueryForm={dt => this.setDataTypeForms(
                                        removeDataTypeFormIfPossible(this.state.dataTypeForms, dt))} />
-            {this.state.searchPerformedByDataset[selectedDataset.identifier] ? <>
+            {this.state.searchPerformedByDataset[selectedDataset.identifier] !== undefined ? <>
                 <Typography.Title level={4}>Search Results</Typography.Title>
-                TODO
+                <Table bordered
+                       columns={SEARCH_RESULT_COLUMNS}
+                       dataSource={this.state.searchPerformedByDataset[selectedDataset.identifier].searchResults}
+                       rowSelection={() => {}} />
             </> : null}
         </>;
     }
