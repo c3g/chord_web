@@ -14,7 +14,7 @@ import {createProjectIfPossible} from "../../../modules/metadata/actions";
 
 
 class ProjectCreationModal extends Component {
-    async componentDidMount() {
+    componentDidMount() {
         this.handleCreateCancel = this.handleCreateCancel.bind(this);
         this.handleCreateSubmit = this.handleCreateSubmit.bind(this);
     }
@@ -65,7 +65,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-    createProject: async (project, history) => await dispatch(createProjectIfPossible(project, history)),
+    createProject: (project, history) => dispatch(createProjectIfPossible(project, history)),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectCreationModal));

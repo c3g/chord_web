@@ -98,11 +98,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    addLinkedFieldSet: async (newLinkedFieldSet, onSuccess) =>
-        await dispatch(addDatasetLinkedFieldSetIfPossible(ownProps.dataset, newLinkedFieldSet, onSuccess)),
-    saveLinkedFieldSet: async (linkedFieldSet, onSuccess) =>
-        await dispatch(saveDatasetLinkedFieldSetIfPossible(ownProps.dataset, ownProps.linkedFieldSetIndex,
-            linkedFieldSet, onSuccess)),
+    addLinkedFieldSet: (newLinkedFieldSet, onSuccess) =>
+        dispatch(addDatasetLinkedFieldSetIfPossible(ownProps.dataset, newLinkedFieldSet, onSuccess)),
+    saveLinkedFieldSet: (linkedFieldSet, onSuccess) =>
+        dispatch(saveDatasetLinkedFieldSetIfPossible(ownProps.dataset, ownProps.linkedFieldSetIndex, linkedFieldSet,
+            onSuccess)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LinkedFieldSetModal);

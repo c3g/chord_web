@@ -233,7 +233,7 @@ const mapDispatchToProps = dispatch => ({
     beginProjectEditing: () => dispatch(beginProjectEditing()),
     endProjectEditing: () => dispatch(endProjectEditing()),
     saveProject: project => dispatch(saveProjectIfPossible(project)),
-    deleteProject: async project => await dispatch(deleteProjectIfPossible(project)),
+    deleteProject: project => dispatch(deleteProjectIfPossible(project)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoutedProject);

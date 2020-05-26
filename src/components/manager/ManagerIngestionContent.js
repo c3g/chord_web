@@ -97,7 +97,7 @@ class ManagerIngestionContent extends Component {
         });
     }
 
-    async handleRunIngestion(history) {
+    handleRunIngestion(history) {
         if (!this.state.selectedTable || !this.state.selectedWorkflow) {
             // TODO: GUI error message
             return;
@@ -106,7 +106,7 @@ class ManagerIngestionContent extends Component {
         const serviceInfo = this.props.servicesByID[this.state.selectedWorkflow.serviceID];
         const tableID = this.state.selectedTable.split(":")[2];
 
-        await this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
+        this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
             this.state.inputs, withBasePath("data/manager/runs"), history);
     }
 

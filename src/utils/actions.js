@@ -61,10 +61,10 @@ const _networkAction = (fn, ...args) =>
         let {parse} = fnResult;
         if (!parse) parse = async r => await r.json();
 
-        await dispatch({type: types.REQUEST, ...params});
+        dispatch({type: types.REQUEST, ...params});
         try {
             const data = await (paginated ? _paginatedNetworkFetch : _unpaginatedNetworkFetch)(url, req, parse);
-            await dispatch({
+            dispatch({
                 type: types.RECEIVE,
                 ...params,
                 ...(data === null ? {} : {data}),
@@ -76,9 +76,9 @@ const _networkAction = (fn, ...args) =>
                 console.error(e, err);
                 message.error(err);
             }
-            await dispatch({type: types.ERROR, ...params});
+            dispatch({type: types.ERROR, ...params});
         }
-        await dispatch({type: types.FINISH, ...params});
+        dispatch({type: types.FINISH, ...params});
     };
 
 // Curried version

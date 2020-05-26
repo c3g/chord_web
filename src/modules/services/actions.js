@@ -89,13 +89,13 @@ export const fetchDataServiceWorkflows = networkAction((chordService, serviceInf
 
 
 export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispatch, getState) => {
-    await dispatch(beginFlow(LOADING_ALL_SERVICE_DATA));
+    dispatch(beginFlow(LOADING_ALL_SERVICE_DATA));
 
     // Fetch Services
     await Promise.all([dispatch(fetchCHORDServices()), dispatch(fetchServices())]);
     if (!getState().services.items) {
         // Something went wrong, terminate early
-        await dispatch(terminateFlow(LOADING_ALL_SERVICE_DATA));
+        dispatch(terminateFlow(LOADING_ALL_SERVICE_DATA));
         return;
     }
 
@@ -111,26 +111,26 @@ export const fetchServicesWithMetadataAndDataTypesAndTables = () => async (dispa
     // - Fetch Data Service Data Types and Workflows
     await Promise.all([
         (async () => {
-            await dispatch(beginFlow(LOADING_SERVICE_DATA_TYPES));
+            dispatch(beginFlow(LOADING_SERVICE_DATA_TYPES));
             await Promise.all(dataServicesInfo.map(s => dispatch(fetchDataServiceDataTypes(s.chordService, s))));
-            await dispatch(endFlow(LOADING_SERVICE_DATA_TYPES));
+            dispatch(endFlow(LOADING_SERVICE_DATA_TYPES));
         })(),
         (async () => {
-            await dispatch(beginFlow(LOADING_SERVICE_WORKFLOWS));
+            dispatch(beginFlow(LOADING_SERVICE_WORKFLOWS));
             await Promise.all(dataServicesInfo.map(s => dispatch(fetchDataServiceWorkflows(s.chordService, s))));
-            await dispatch(endFlow(LOADING_SERVICE_WORKFLOWS));
+            dispatch(endFlow(LOADING_SERVICE_WORKFLOWS));
         })()
     ]);
 
     // Fetch Data Service Local Tables
     // - skip services that don't provide data or don't have data types
-    await dispatch(beginFlow(LOADING_SERVICE_TABLES));
+    dispatch(beginFlow(LOADING_SERVICE_TABLES));
     await Promise.all(dataServicesInfo.flatMap(s =>
         ((getState().serviceDataTypes.dataTypesByServiceID[s.id] || {items: []}).items || [])
             .map(dt => dispatch(fetchDataServiceDataTypeTables(s.chordService, s, dt)))));
-    await dispatch(endFlow(LOADING_SERVICE_TABLES));
+    dispatch(endFlow(LOADING_SERVICE_TABLES));
 
-    await dispatch(endFlow(LOADING_ALL_SERVICE_DATA));
+    dispatch(endFlow(LOADING_ALL_SERVICE_DATA));
 };
 
 export const fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded = () => async (dispatch, getState) => {

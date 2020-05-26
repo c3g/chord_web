@@ -58,16 +58,15 @@ export const fetchRunDetailsIfNeeded = runID => async (dispatch, getState) => {
     }
 };
 
-export const fetchAllRunDetailsIfNeeded = () => async (dispatch, getState) => {
-    await Promise.all(getState().runs.items.map(r => dispatch(fetchRunDetailsIfNeeded(r.run_id))));
-};
+export const fetchAllRunDetailsIfNeeded = () => (dispatch, getState) =>
+    Promise.all(getState().runs.items.map(r => dispatch(fetchRunDetailsIfNeeded(r.run_id))));
 
 
 export const fetchRunLogStdOut = networkAction(runDetails => ({
     types: FETCH_RUN_LOG_STDOUT,
     params: {runID: runDetails.run_id},
     url: runDetails.run_log.stdout,
-    parse: async r => r.text(),
+    parse: r => r.text(),
     err: `Error fetching stdout for run ${runDetails.run_id}`
 }));
 
@@ -75,11 +74,11 @@ export const fetchRunLogStdErr = networkAction(runDetails => ({
     types: FETCH_RUN_LOG_STDERR,
     params: {runID: runDetails.run_id},
     url: runDetails.run_log.stderr,
-    parse: async r => r.text(),
+    parse: r => r.text(),
     err: `Error fetching stderr for run ${runDetails.run_id}`
 }));
 
-export const fetchRunLogStreamsIfPossibleAndNeeded = runID => async (dispatch, getState) => {
+export const fetchRunLogStreamsIfPossibleAndNeeded = runID => (dispatch, getState) => {
     if (getState().runs.isFetching) return;
     const run = getState().runs.itemsByID[runID];
     if (!run || run.isFetching || !run.details) return;
@@ -90,7 +89,7 @@ export const fetchRunLogStreamsIfPossibleAndNeeded = runID => async (dispatch, g
         && runStreams.stdout.data !== null
         && runStreams.hasOwnProperty("stderr")
         && runStreams.stderr.data !== null) return;  // No new output expected
-    await Promise.all([
+    return Promise.all([
         dispatch(fetchRunLogStdOut(run.details)),
         dispatch(fetchRunLogStdErr(run.details)),
     ]);
