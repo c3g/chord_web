@@ -22,7 +22,7 @@ const SEARCH_RESULT_COLUMNS = [
     {
         title: "Individual",
         dataIndex: "individual",
-        render: individual => <Link to={"/"}>{individual.name}</Link>,
+        render: individual => <Link to={"/"}>{individual.id}</Link>,
     },
     {
         title: "Samples",
@@ -148,7 +148,7 @@ class ExplorerDatasetSearch extends Component {
                                        updateDataTypeFormIfPossible(this.state.dataTypeForms, dt, fs))}
                                    removeDataTypeQueryForm={dt => this.setDataTypeForms(
                                        removeDataTypeFormIfPossible(this.state.dataTypeForms, dt))} />
-            {this.state.searchPerformedByDataset[selectedDataset.identifier] !== undefined ? <>
+            {this.state.searchPerformedByDataset[selectedDataset.identifier] ? <>
                 <Typography.Title level={4}>Search Results</Typography.Title>
                 <Table bordered
                        columns={SEARCH_RESULT_COLUMNS}
