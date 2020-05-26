@@ -27,7 +27,7 @@ const SEARCH_RESULT_COLUMNS = [
     {
         title: "Samples",
         dataIndex: "biosamples",
-        render: samples => <>{samples.length} Samples{samples.length ? ": " : ""}{samples}</>,
+        render: samples => <>{samples.length} Samples{samples.length ? ": " : ""}{samples.map(b => b.id).join(", ")}</>,
     },
     {
         title: "Experiments",
