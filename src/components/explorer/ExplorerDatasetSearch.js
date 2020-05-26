@@ -3,7 +3,8 @@ import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Table, Typography} from "antd";
+import {Button, Table, Typography} from "antd";
+import "antd/es/button/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
@@ -27,12 +28,15 @@ const SEARCH_RESULT_COLUMNS = [
     {
         title: "Samples",
         dataIndex: "biosamples",
-        render: samples => <>{samples.length} Samples{samples.length ? ": " : ""}{samples.map(b => b.id).join(", ")}</>,
+        render: samples => <>
+            {samples.length} Sample{samples.length === 1 ? "" : "s"}{samples.length ? ": " : ""}
+            {samples.map(b => b.id).join(", ")}
+        </>,
     },
     {
         title: "Experiments",
         dataIndex: "experiments",
-        render: experiments => <>{experiments.length} Experiments</>,
+        render: experiments => <>{experiments.length} Experiment{experiments.length === 1 ? "" : "s"}</>,
     },
 ];
 
@@ -59,12 +63,9 @@ class ExplorerDatasetSearch extends Component {
         const dataTypeQueries = extractQueriesFromDataTypeForms(this.state.dataTypeForms);
 
         // TODO: What to do if phenopacket data type not present?
-        // Must include phenopacket query so we can display phenopacket-styled results
-        if (!dataTypeQueries.hasOwnProperty("phenopacket")) {
-            dataTypeQueries["phenopacket"] = true;
-        }
-
-        console.log(dataTypeQueries);
+        // Must include phenopacket/experiment query so we can include the data in the results
+        if (!dataTypeQueries.hasOwnProperty("phenopacket")) dataTypeQueries["phenopacket"] = true;
+        if (!dataTypeQueries.hasOwnProperty("experiment")) dataTypeQueries["experiment"] = true;
 
         this.setState({fetchingSearch: true});
 
@@ -135,10 +136,6 @@ class ExplorerDatasetSearch extends Component {
 
         if (!selectedDataset) return null;  // TODO
 
-        console.log(selectedDataset.identifier);
-        console.log(this.state.searchResultsByDataset[selectedDataset.identifier]);
-        console.log(this.state.searchResultsByDataset);
-
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
@@ -152,7 +149,13 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={dt => this.setDataTypeForms(
                                        removeDataTypeFormIfPossible(this.state.dataTypeForms, dt))} />
             {this.state.searchResultsByDataset[selectedDataset.identifier] ? <>
-                <Typography.Title level={4}>Search Results</Typography.Title>
+                <Typography.Title level={4}>
+                    Search Results
+                    <div style={{float: "right", verticalAlign: "top"}}>
+                        <Button icon="profile" style={{marginRight: "8px"}}>Visualize Tracks</Button>
+                        <Button icon="export">Export as CSV</Button>
+                    </div>
+                </Typography.Title>
                 <Table bordered
                        columns={SEARCH_RESULT_COLUMNS}
                        dataSource={this.state.searchResultsByDataset[selectedDataset.identifier].searchResults}
