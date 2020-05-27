@@ -7,7 +7,6 @@ import {
     projects,
     projectTables,
 
-    phenopackets,
     biosamples,
     individuals
 } from "./modules/metadata/reducers";
@@ -40,7 +39,6 @@ const rootReducer = combineReducers({
     projects,
     projectTables,
 
-    phenopackets,
     biosamples,
     individuals,
 
