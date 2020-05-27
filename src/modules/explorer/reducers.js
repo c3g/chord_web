@@ -66,7 +66,7 @@ export const explorer = (
             };
         case PERFORM_SEARCH.FINISH:
             return {
-                ...state.fetchingSearchByDatasetID,
+                ...state,
                 fetchingSearchByDatasetID: {
                     ...state.fetchingSearchByDatasetID,
                     [action.datasetID]: false,
