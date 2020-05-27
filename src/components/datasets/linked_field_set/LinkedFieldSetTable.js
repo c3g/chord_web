@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {Table} from "antd";
 import "antd/es/table/style/css";
 
-import {linkedFieldSetPropTypesShape} from "../../../../../propTypes";
+import {linkedFieldSetPropTypesShape} from "../../../propTypes";
 
 const COLUMNS = [
     {dataIndex: "dataType", title: "Data Type"},

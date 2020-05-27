@@ -6,7 +6,7 @@ import "antd/es/icon/style/css";
 import "antd/es/row/style/css";
 import "antd/es/statistic/style/css";
 
-import {summaryPropTypesShape} from "../../../../../../propTypes";
+import {summaryPropTypesShape} from "../../../../propTypes";
 
 const VariantSummary = ({summary}) =>
     <Row gutter={16}>

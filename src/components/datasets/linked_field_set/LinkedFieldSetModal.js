@@ -10,11 +10,11 @@ import LinkedFieldSetForm from "./LinkedFieldSetForm";
 import {
     addDatasetLinkedFieldSetIfPossible,
     saveDatasetLinkedFieldSetIfPossible
-} from "../../../../../modules/metadata/actions";
+} from "../../../modules/metadata/actions";
 
-import {nop} from "../../../../../utils/misc";
-import {FORM_MODE_ADD} from "../../../../../constants";
-import {datasetPropTypesShape, linkedFieldSetPropTypesShape, propTypesFormMode} from "../../../../../propTypes";
+import {nop} from "../../../utils/misc";
+import {FORM_MODE_ADD} from "../../../constants";
+import {datasetPropTypesShape, linkedFieldSetPropTypesShape, propTypesFormMode} from "../../../propTypes";
 
 
 class LinkedFieldSetModal extends Component {

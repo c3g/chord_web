@@ -5,10 +5,10 @@ import {Form, Input} from "antd";
 import "antd/es/form/style/css";
 import "antd/es/input/style/css";
 
-import DataUseInput from "../../../DataUseInput";
+import DataUseInput from "../DataUseInput";
 
-import {DATA_USE_PROP_TYPE_SHAPE, INITIAL_DATA_USE_VALUE} from "../../../../duo";
-import {simpleDeepCopy} from "../../../../utils/misc";
+import {DATA_USE_PROP_TYPE_SHAPE, INITIAL_DATA_USE_VALUE} from "../../duo";
+import {simpleDeepCopy} from "../../utils/misc";
 
 
 class DatasetForm extends Component {

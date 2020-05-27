@@ -7,10 +7,10 @@ import "antd/es/form/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/input/style/css";
 
-import SchemaTreeSelect from "../../../../schema_trees/SchemaTreeSelect";
-import {getFieldSchema} from "../../../../../utils/schema";
-import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../../../constants";
-import {propTypesFormMode} from "../../../../../propTypes";
+import SchemaTreeSelect from "../../schema_trees/SchemaTreeSelect";
+import {getFieldSchema} from "../../../utils/schema";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../constants";
+import {propTypesFormMode} from "../../../propTypes";
 
 const FIELD_KEYS = "fieldKeys";
 let fieldKey = 0;

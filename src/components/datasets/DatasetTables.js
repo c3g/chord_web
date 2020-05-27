@@ -16,11 +16,11 @@ import {
     addProjectTable,
     deleteProjectTableIfPossible,
     fetchProjectsWithDatasetsAndTables
-} from "../../../../modules/metadata/actions";
-import {nop} from "../../../../utils/misc";
-import {fetchTableSummaryIfPossible} from "../../../../modules/tables/actions";
+} from "../../modules/metadata/actions";
+import {nop} from "../../utils/misc";
+import {fetchTableSummaryIfPossible} from "../../modules/tables/actions";
 import TableSummaryModal from "./table/TableSummaryModal";
-import {datasetPropTypesShape, projectPropTypesShape, serviceInfoPropTypesShape} from "../../../../propTypes";
+import {datasetPropTypesShape, projectPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes";
 
 
 const NA_TEXT = (<span style={{color: "#999", fontStyle: "italic"}}>N/A</span>);

@@ -10,7 +10,7 @@ import "antd/es/typography/style/css";
 
 import {VictoryLabel, VictoryPie} from "victory";
 
-import {summaryPropTypesShape} from "../../../../../../propTypes";
+import {summaryPropTypesShape} from "../../../../propTypes";
 
 
 const WrapSVG = ({children}) => <svg viewBox="0 0 400 250">{children}</svg>;

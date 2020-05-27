@@ -13,21 +13,21 @@ import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/typography/style/css";
 
-import DataUseDisplay from "../../../DataUseDisplay";
+import DataUseDisplay from "../DataUseDisplay";
 
 import {
     deleteProjectDatasetIfPossible,
     deleteDatasetLinkedFieldSetIfPossible,
-} from "../../../../modules/metadata/actions";
+} from "../../modules/metadata/actions";
 
-import {INITIAL_DATA_USE_VALUE} from "../../../../duo";
-import {simpleDeepCopy, nop} from "../../../../utils/misc";
+import {INITIAL_DATA_USE_VALUE} from "../../duo";
+import {simpleDeepCopy, nop} from "../../utils/misc";
 import LinkedFieldSetTable from "./linked_field_set/LinkedFieldSetTable";
 import LinkedFieldSetModal from "./linked_field_set/LinkedFieldSetModal";
 import DatasetOverview from "./DatasetOverview";
 import DatasetTables from "./DatasetTables";
-import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../../../constants";
-import {datasetPropTypesShape, projectPropTypesShape} from "../../../../propTypes";
+import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../constants";
+import {datasetPropTypesShape, projectPropTypesShape} from "../../propTypes";
 
 
 class Dataset extends Component {
