@@ -69,8 +69,10 @@ class ExplorerDatasetSearch extends Component {
                     </div>
                 </Typography.Title>
                 <Table bordered
+                       size="middle"
                        columns={SEARCH_RESULT_COLUMNS}
                        dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
+                       pagination={{pageSize: 25}}
                        rowSelection={{
                            selectedRowKeys: this.props.selectedRows,
                            onChange: this.props.setSelectedRows,
