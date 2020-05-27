@@ -24,7 +24,7 @@ const SEARCH_RESULT_COLUMNS = [
         title: "Individual",
         dataIndex: "individual",
         render: individual => <Link to={"/"}>{individual.id}</Link>,
-        sorter: (a, b) => a.id.localeCompare(b.id),
+        sorter: (a, b) => a.individual.id.localeCompare(b.individual.id),
         defaultSortOrder: "ascend",
     },
     {
