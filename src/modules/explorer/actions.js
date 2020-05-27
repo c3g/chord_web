@@ -8,6 +8,8 @@ export const ADD_DATA_TYPE_QUERY_FORM = "EXPLORER.ADD_DATA_TYPE_QUERY_FORM";
 export const UPDATE_DATA_TYPE_QUERY_FORM = "EXPLORER.UPDATE_DATA_TYPE_QUERY_FORM";
 export const REMOVE_DATA_TYPE_QUERY_FORM = "EXPLORER.REMOVE_DATA_TYPE_QUERY_FORM";
 
+export const SET_SELECTED_ROWS = "EXPLORER.SET_SELECTED_ROWS";
+
 const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, getState) => ({
     types: PERFORM_SEARCH,
     url: `${getState().services.federationService.url}/private/dataset-search/${datasetID}`,
@@ -35,18 +37,24 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
 export const addDataTypeQueryForm = (datasetID, dataType) => ({
     type: ADD_DATA_TYPE_QUERY_FORM,
     datasetID,
-    dataType
+    dataType,
 });
 
 export const updateDataTypeQueryForm = (datasetID, dataType, fields) => ({
     type: UPDATE_DATA_TYPE_QUERY_FORM,
     datasetID,
     dataType,
-    fields
+    fields,
 });
 
 export const removeDataTypeQueryForm = (datasetID, dataType) => ({
     type: REMOVE_DATA_TYPE_QUERY_FORM,
     datasetID,
-    dataType
+    dataType,
+});
+
+export const setSelectedRows = (datasetID, selectedRows) => ({
+    type: SET_SELECTED_ROWS,
+    datasetID,
+    selectedRows,
 });

@@ -9,6 +9,7 @@ import {
     ADD_DATA_TYPE_QUERY_FORM,
     REMOVE_DATA_TYPE_QUERY_FORM,
     UPDATE_DATA_TYPE_QUERY_FORM,
+    SET_SELECTED_ROWS,
 } from "./actions";
 
 const tableSearchResults = (searchResults) => {
@@ -41,6 +42,7 @@ export const explorer = (
         dataTypeFormsByDatasetID: {},
         fetchingSearchByDatasetID: {},
         searchResultsByDatasetID: {},
+        selectedRowsByDatasetID: {},
     },
     action
 ) => {
@@ -62,6 +64,10 @@ export const explorer = (
                         results: action.data,
                         searchFormattedResults: tableSearchResults(action.data),
                     },
+                },
+                selectedRowsByDatasetID: {
+                    ...state.selectedRowsByDatasetID,
+                    [action.datasetID]: [],
                 },
             };
         case PERFORM_SEARCH.FINISH:
@@ -105,6 +111,15 @@ export const explorer = (
                         state.dataTypeFormsByDatasetID[action.datasetID] || [],
                         action.dataType,
                     ),
+                },
+            };
+
+        case SET_SELECTED_ROWS:
+            return {
+                ...state,
+                selectedRowsByDatasetID: {
+                    ...state.selectedRowsByDatasetID,
+                    [action.datasetID]: action.selectedRows,
                 },
             };
 

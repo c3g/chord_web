@@ -14,7 +14,8 @@ import {
     addDataTypeQueryForm,
     performSearchIfPossible,
     removeDataTypeQueryForm,
-    updateDataTypeQueryForm
+    updateDataTypeQueryForm,
+    setSelectedRows,
 } from "../../modules/explorer/actions";
 
 
@@ -70,7 +71,19 @@ class ExplorerDatasetSearch extends Component {
                 <Table bordered
                        columns={SEARCH_RESULT_COLUMNS}
                        dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
-                       rowSelection={() => {}} />
+                       rowSelection={{
+                           selectedRowKeys: this.props.selectedRows,
+                           onChange: this.props.setSelectedRows,
+                           selections: [
+                               {
+                                   key: "all-data",
+                                   text: "Select All Data",
+                                   onSelect: () => this.props.setSelectedRows(
+                                       ((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)
+                                   ),
+                               },
+                           ],
+                       }} />
             </> : null}
         </>;
     }
@@ -80,6 +93,7 @@ ExplorerDatasetSearch.propTypes = {
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
     fetchingSearch: PropTypes.bool,
     searchResults: PropTypes.object,
+    selectedRows: PropTypes.arrayOf(PropTypes.string),
 
     addDataTypeQueryForm: PropTypes.func,
     updateDataTypeQueryForm: PropTypes.func,
@@ -110,6 +124,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(datasetID, dataType, fields)),
         removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(datasetID, dataType)),
         performSearch: () => dispatch(performSearchIfPossible(datasetID)),
+        setSelectedRows: selectedRows => dispatch(setSelectedRows(datasetID, selectedRows)),
     };
 }
 
