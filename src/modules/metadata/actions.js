@@ -41,10 +41,6 @@ export const DELETE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("DELETE_
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
 
-export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
-export const FETCH_BIOSAMPLES = createNetworkActionTypes("FETCH_BIOSAMPLES");
-export const FETCH_INDIVIDUALS = createNetworkActionTypes("FETCH_INDIVIDUALS");
-
 
 const endProjectTableAddition = (project, table) => ({type: PROJECT_TABLE_ADDITION.END, project, table});
 const endProjectTableDeletion = (project, tableID) => ({type: PROJECT_TABLE_DELETION.END, project, tableID});
@@ -379,41 +375,4 @@ export const deleteProjectTableIfPossible = (project, table) => async (dispatch,
         return;
     }
     await dispatch(deleteProjectTable(project, table));
-};
-
-
-export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
-    types: FETCH_PHENOPACKETS,
-    url: `${getState().services.metadataService.url}/api/phenopackets`,
-    paginated: true,
-    err: "Error fetching phenopackets"
-}));
-
-export const fetchPhenopacketsIfNeeded = () => async (dispatch, getState) => {
-    if (getState().phenopackets.isFetching || getState().phenopackets.items.length > 0) return;
-    dispatch(fetchPhenopackets());
-};
-
-export const fetchBiosamples = networkAction(() => (dispatch, getState) => ({
-    types: FETCH_BIOSAMPLES,
-    url: `${getState().services.metadataService.url}/api/biosamples`,
-    paginated: true,
-    err: "Error fetching biosamples"
-}));
-
-export const fetchBiosamplesIfNeeded = () => async (dispatch, getState) => {
-    if (getState().biosamples.isFetching || getState().biosamples.items.length > 0) return;
-    dispatch(fetchBiosamples());
-};
-
-export const fetchIndividuals = networkAction(() => (dispatch, getState) => ({
-    types: FETCH_INDIVIDUALS,
-    url: `${getState().services.metadataService.url}/api/individuals`,
-    paginated: true,
-    err: "Error fetching individuals",
-}));
-
-export const fetchIndividualsIfNeeded = () => async (dispatch, getState) => {
-    if (getState().individuals.isFetching || getState().individuals.items.length > 0) return;
-    dispatch(fetchIndividuals());
 };

@@ -133,9 +133,6 @@ class Project extends Component {
                                          tables: this.props.tables.filter(t => t.dataset === d.identifier),
                                      }}
                                      strayTables={this.props.strayTables}
-                                     individuals={this.props.individuals.filter(i =>
-                                         i.phenopackets.map(p => p.dataset).includes(d.identifier))}
-                                     loadingIndividuals={this.props.loadingIndividuals}
                                      onEdit={() => (this.props.onEditDataset || nop)(d)}
                                      onTableIngest={this.props.onTableIngest || nop}  />
                         </Col>
@@ -156,9 +153,6 @@ Project.propTypes = {
 
     editing: PropTypes.bool,
     saving: PropTypes.bool,
-
-    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: shape
-    loadingIndividuals: PropTypes.bool,
 
     onDelete: PropTypes.func,
     onEdit: PropTypes.func,

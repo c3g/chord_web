@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Table, Typography} from "antd";
+import {Button, Card, Col, Divider, Empty, Icon, Modal, Row, Typography} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/card/style/css";
 import "antd/es/col/style/css";
@@ -11,7 +11,6 @@ import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
-import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DataUseDisplay from "../../../DataUseDisplay";
@@ -102,37 +101,6 @@ class Dataset extends Component {
                                        project={this.props.project}
                                        isPrivate={isPrivate}
                                        isFetchingTables={this.props.isFetchingTables} />,
-            ...(isPrivate ? {
-                individuals: <>
-                    <Typography.Title level={4}>Individuals and Pools</Typography.Title>
-                    <Typography.Paragraph>
-                        Individuals can potentially be shared across many datasets.
-                    </Typography.Paragraph>
-
-                    <Table bordered
-                           style={{marginBottom: "1rem"}}
-                           dataSource={this.props.individuals.map(i => ({
-                               ...i,
-                               sex: i.sex || "UNKNOWN_SEX",
-                               n_of_biosamples: (i.biosamples || []).length
-                           }))}
-                           rowKey="id"
-                           loading={this.props.loadingIndividuals}
-                           columns={[
-                               {title: "Individual ID", dataIndex: "id"},
-                               {title: "Date of Birth", dataIndex: "date_of_birth"},
-                               {title: "Sex", dataIndex: "sex"},
-                               // TODO: Only relevant biosamples
-                               {title: "# Biosamples", dataIndex: "n_of_biosamples"}
-                           ]}
-                           expandedRowRender={i => <div>
-                               <Table columns={[{title: "Biosample ID", dataIndex: "id"}]}
-                                      rowKey="id"
-                                      dataSource={i.biosamples || []} />
-                           </div>}
-                    />
-                </>,
-            } : {}),
             tables: <DatasetTables dataset={this.state}
                                    project={this.props.project}
                                    isPrivate={isPrivate}
@@ -213,7 +181,6 @@ class Dataset extends Component {
         return (
             <Card key={this.state.identifier} title={this.state.title} tabList={[
                 {key: "overview", tab: "Overview"},
-                ...(isPrivate ? [{key: "individuals", tab: "Individuals and Pools"}] : []),
                 {key: "tables", tab: "Data Tables"},
                 {key: "linked_field_sets", tab: "Linked Field Sets"},
                 {key: "data_use", tab: "Consent Codes and Data Use"},
@@ -279,10 +246,6 @@ Dataset.propTypes = {
 
     value: datasetPropTypesShape,
 
-    // TODO: Shape
-    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Get this via redux store instead of transformations
-
-    loadingIndividuals: PropTypes.bool,
     isFetchingTables: PropTypes.bool,
 
     onEdit: PropTypes.func,

@@ -9,10 +9,6 @@ import {
 import {fetchDropBoxTree} from "../manager/actions";
 import {
     fetchProjectsWithDatasetsAndTables,
-
-    fetchBiosamplesIfNeeded,
-    fetchIndividualsIfNeeded,
-    fetchPhenopacketsIfNeeded
 } from "../metadata/actions";
 import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
@@ -61,9 +57,6 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     await Promise.all([
         dispatch(fetchDropBoxTree()),
         dispatch(fetchRuns()),
-        dispatch(fetchPhenopacketsIfNeeded()),
-        dispatch(fetchBiosamplesIfNeeded()),
-        dispatch(fetchIndividualsIfNeeded()),
         dispatch(fetchNotifications()),
     ]);
 

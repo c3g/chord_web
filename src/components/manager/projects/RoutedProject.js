@@ -142,11 +142,6 @@ class RoutedProject extends Component {
                          strayTables={strayTables}
                          editing={this.props.editingProject}
                          saving={this.props.savingProject}
-                         individuals={this.props.individuals.filter(i =>
-                             i.phenopackets
-                                 .filter(p => project.datasets.map(d => d.identifier).includes(p.dataset))
-                                 .length > 0)}
-                         loadingIndividuals={this.props.loadingIndividuals}
                          onDelete={() => this.handleDeleteProject(project)}
                          onEdit={() => this.props.beginProjectEditing()}
                          onCancelEdit={() => this.props.endProjectEditing()}
@@ -186,11 +181,6 @@ RoutedProject.propTypes = {
     projectTables: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
     projectTablesByProjectID: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
 
-    phenopackets: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
-    individuals: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
-
-    loadingPhenopackets: PropTypes.bool,
-    loadingIndividuals: PropTypes.bool,
     loadingProjects: PropTypes.bool,
 
     isDeletingProject: PropTypes.bool,
@@ -219,11 +209,6 @@ const mapStateToProps = state => ({
     projectTables: state.projectTables.items,
     projectTablesByProjectID: state.projectTables.itemsByProjectID,
 
-    phenopackets: state.phenopackets.items,
-    individuals: state.individuals.items,
-
-    loadingPhenopackets: state.phenopackets.isFetching,
-    loadingIndividuals: state.individuals.isFetching,
     loadingProjects: state.projects.isAdding || state.projects.isFetching,
 
     isDeletingProject: state.projects.isDeleting,

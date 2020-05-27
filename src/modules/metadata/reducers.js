@@ -19,10 +19,6 @@ import {
 
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
-
-    FETCH_PHENOPACKETS,
-    FETCH_BIOSAMPLES,
-    FETCH_INDIVIDUALS,
 } from "./actions";
 
 
@@ -307,57 +303,14 @@ export const projectTables = (
 };
 
 
-export const phenopackets = (
-    state = {
-        isFetching: false,
-        items: [],
-        itemsByDatasetID: {}
-    },
-    action
-) => {
-    switch (action.type) {
-        case FETCH_PHENOPACKETS.REQUEST:
-            return {...state, isFetching: true};
-
-        case FETCH_PHENOPACKETS.RECEIVE:
-            return {
-                ...state,
-                isFetching: false,
-                items: [...action.data],
-                itemsByDatasetID: Object.fromEntries(Object.entries(action))  // TODO: ????????
-            };
-
-        case FETCH_PHENOPACKETS.ERROR:
-            return {...state, isFetching: false};
-
-        default:
-            return state;
-    }
-};
-
 export const biosamples = (
     state = {
         isFetching: false,
-        items: [],
         itemsByID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case FETCH_BIOSAMPLES.REQUEST:
-            return {...state, isFetching: true};
-
-        case FETCH_BIOSAMPLES.RECEIVE:
-            return {
-                ...state,
-                isFetching: false,
-                items: [...action.data],
-                itemsByID: Object.fromEntries(action.data.map(b => [b.id, b]))
-            };
-
-        case FETCH_BIOSAMPLES.ERROR:
-            return {...state, isFetching: false};
-
         default:
             return state;
     }
@@ -366,26 +319,12 @@ export const biosamples = (
 export const individuals = (
     state = {
         isFetching: false,
-        items: [],
         itemsByID: {}
     },
     action
 ) => {
     switch (action.type) {
-        case FETCH_INDIVIDUALS.REQUEST:
-            return {...state, isFetching: true};
-
-        case FETCH_INDIVIDUALS.RECEIVE:
-            return {
-                ...state,
-                isFetching: false,
-                items: [...action.data],
-                itemsByID: Object.fromEntries(action.data.map(i => [i.id, i]))
-            };
-
-        case FETCH_INDIVIDUALS.ERROR:
-            return {...state, isFetching: false};
-
+        // TODO
         default:
             return state;
     }
