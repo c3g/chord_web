@@ -28,31 +28,31 @@ class ExplorerSearchContent extends Component {
 
         const datasets = this.props.projects.flatMap(p => p.datasets);
 
-        return <Layout>
-            <Layout.Header>
-                <SitePageHeader title="Data Explorer" />
-            </Layout.Header>
-            <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
-                <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
-                <Menu mode="inline"
-                      style={{flex: 1, paddingTop: "8px"}}
-                      defaultOpenKeys={menuItems.map(p => p.key)}
-                      selectedKeys={matchingMenuKeys(menuItems)}>
-                    {menuItems.map(renderMenuItem)}
-                </Menu>
-                </div>
-            </Layout.Sider>
-            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                {datasets.length > 0 ? (
-                    <Switch>
-                        <Route path={withBasePath("data/explorer/search/:dataset")}
-                               component={ExplorerDatasetSearch} />
-                        <Redirect from={withBasePath("data/explorer/search")}
-                                  to={withBasePath(`data/explorer/search/${datasets[0].identifier}`)} />
-                    </Switch>
-                ) : (this.props.isFetchingDependentData ? <Skeleton /> : "No datasets available")}
-            </Layout.Content>
-        </Layout>;
+        return <>
+            <SitePageHeader title="Data Explorer" />
+            <Layout>
+                <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
+                    <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                    <Menu mode="inline"
+                          style={{flex: 1, paddingTop: "8px"}}
+                          defaultOpenKeys={menuItems.map(p => p.key)}
+                          selectedKeys={matchingMenuKeys(menuItems)}>
+                        {menuItems.map(renderMenuItem)}
+                    </Menu>
+                    </div>
+                </Layout.Sider>
+                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                    {datasets.length > 0 ? (
+                        <Switch>
+                            <Route path={withBasePath("data/explorer/search/:dataset")}
+                                   component={ExplorerDatasetSearch} />
+                            <Redirect from={withBasePath("data/explorer/search")}
+                                      to={withBasePath(`data/explorer/search/${datasets[0].identifier}`)} />
+                        </Switch>
+                    ) : (this.props.isFetchingDependentData ? <Skeleton /> : "No datasets available")}
+                </Layout.Content>
+            </Layout>
+        </>;
     }
 }
 

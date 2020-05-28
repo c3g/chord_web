@@ -65,18 +65,18 @@ class ExplorerIndividualContent extends Component {
 
         const selectedKeys = matchingMenuKeys(INDIVIDUAL_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
 
-        return <Layout>
-            <Layout.Header>
-                <SitePageHeader title={individual.id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
-                    <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                        {INDIVIDUAL_MENU.map(renderMenuItem)}
-                    </Menu>
-                } />
-            </Layout.Header>
-            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                {(individual && !individualInfo.isFetching) ? <div /> : <Skeleton />}
-            </Layout.Content>
-        </Layout>;
+        return <>
+            <SitePageHeader title={individual.id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
+                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                    {INDIVIDUAL_MENU.map(renderMenuItem)}
+                </Menu>
+            } />
+            <Layout>
+                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                    {(individual && !individualInfo.isFetching) ? <div /> : <Skeleton />}
+                </Layout.Content>
+            </Layout>
+        </>;
     }
 }
 
