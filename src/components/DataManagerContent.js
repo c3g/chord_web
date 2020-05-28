@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 
 import {Redirect, Route, Switch} from "react-router-dom";
 
-import {Menu} from "antd";
+import {Menu, Skeleton} from "antd";
 import "antd/es/menu/style/css";
+import "antd/es/skeleton/style/css";
 
 import SitePageHeader from "./SitePageHeader";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
@@ -53,7 +54,7 @@ class DataManagerContent extends Component {
                                     {PAGE_MENU.map(renderMenuItem)}
                                 </Menu>
                             } />
-            <Suspense fallback={<div />}>
+            <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton /></div>}>
                 <Switch>
                     <Route path={withBasePath("data/manager/projects")}
                            component={ManagerProjectDatasetContent} />

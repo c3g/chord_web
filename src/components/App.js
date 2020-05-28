@@ -37,7 +37,7 @@ const NotificationsContent = lazy(() => import("./notifications/NotificationsCon
 class App extends Component {
     constructor(props) {
         super(props);
-        
+
         /** @type {null|io.Manager} */
         this.eventRelayConnection = null;
 
