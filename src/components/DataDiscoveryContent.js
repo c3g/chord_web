@@ -3,8 +3,10 @@ import {connect} from "react-redux";
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Layout} from "antd";
+import {Card, Layout, Skeleton} from "antd";
+import "antd/es/card/style/css";
 import "antd/es/layout/style/css";
+import "antd/es/skeleton/style/css";
 
 import SitePageHeader from "./SitePageHeader";
 import {withBasePath} from "../utils/url";
@@ -14,10 +16,6 @@ const DiscoveryDatasetContent = lazy(() => import("./discovery/DiscoveryDatasetC
 
 
 class DataDiscoveryContent extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         document.title = "CHORD - Discover Data";
     }
@@ -27,7 +25,7 @@ class DataDiscoveryContent extends Component {
             <SitePageHeader title="Data Discovery" subTitle="Federated, censored dataset search" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "24px"}}>
-                    <Suspense fallback={<div />}>
+                    <Suspense fallback={<Card><Skeleton /></Card>}>
                         <Switch>
                             <Route exact path={withBasePath("data/discovery/search")}
                                    component={DiscoverySearchContent} />
