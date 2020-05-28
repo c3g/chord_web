@@ -1,20 +1,33 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Card, Layout, Skeleton} from "antd";
-import "antd/es/card/style/css";
+import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
+import "antd/es/menu/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchIndividualIfNecessary} from "../../modules/metadata/actions";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
+import {urlPath, withBasePath} from "../../utils/url";
+
+import SitePageHeader from "../SitePageHeader";
 
 
-const INDIVIDUAL_CARD_TABS = [
-    {key: "overview", tab: "Overview"},
-    {key: "biosamples", tab: "Biosamples"},
-    {key: "experiments", tab: "Experiments"},  // TODO: Only if data type available / experiments present?
+const withURLPrefix = page => withBasePath(`data/explorer/individuals/:individual/${page}`);
+
+const INDIVIDUAL_MENU = [
+    {url: withURLPrefix("overview"), style: {marginLeft: "4px"}, text: "Overview",},
+    {url: withURLPrefix("biosamples"), text: "Biosamples",},
+    // TODO: Only if data type available / experiments present?
+    {url: withURLPrefix("experiments"), text: "Experiments"},
 ];
+
+const MENU_STYLE = {
+    marginLeft: "-24px",
+    marginRight: "-24px",
+    marginTop: "-12px"
+};
 
 
 class ExplorerIndividualContent extends Component {
@@ -50,13 +63,18 @@ class ExplorerIndividualContent extends Component {
         const individualInfo = this.props.individuals[individualID] || {};
         const individual = individualInfo.data;
 
+        const selectedKeys = matchingMenuKeys(INDIVIDUAL_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
+
         return <Layout>
+            <Layout.Header>
+                <SitePageHeader title={individual.id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
+                    <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                        {INDIVIDUAL_MENU.map(renderMenuItem)}
+                    </Menu>
+                } />
+            </Layout.Header>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                {(individual && !individualInfo.isFetching) ? (
-                    <Card title={`Individual: ${individual.id}`}
-                          tabList={INDIVIDUAL_CARD_TABS}
-                          activeTabKey={this.state.selectedTab} />
-                ) : <Skeleton />}
+                {(individual && !individualInfo.isFetching) ? <div /> : <Skeleton />}
             </Layout.Content>
         </Layout>;
     }

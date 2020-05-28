@@ -3,29 +3,12 @@ import {connect} from "react-redux";
 
 import {Redirect, Route, Switch} from "react-router-dom";
 
-import {Menu} from "antd";
-import "antd/es/menu/style/css";
-
 import ExplorerGenomeBrowserContent from "./explorer/ExplorerGenomeBrowserContent";
 import ExplorerIndividualContent from "./explorer/ExplorerIndividualContent";
 import ExplorerSearchContent from "./explorer/ExplorerSearchContent";
 
-import SitePageHeader from "./SitePageHeader";
-import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
-import {urlPath, withBasePath} from "../utils/url";
+import {withBasePath} from "../utils/url";
 import {nodeInfoDataPropTypesShape} from "../propTypes";
-
-
-const PAGE_MENU = [
-    {url: withBasePath("data/explorer/search"), style: {marginLeft: "4px"}, text: "Search"},
-    {url: withBasePath("data/explorer/genome"), text: "Genome Browser"},
-];
-
-const MENU_STYLE = {
-    marginLeft: "-24px",
-    marginRight: "-24px",
-    marginTop: "-12px"
-};
 
 
 class DataExplorerContent extends Component {
@@ -35,24 +18,16 @@ class DataExplorerContent extends Component {
 
     render() {
         if (!this.props.nodeInfo.CHORD_URL) return null;
-        const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
-        return <>
-            <SitePageHeader title="Data Explorer" withTabBar={true} footer={
-                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                    {PAGE_MENU.map(renderMenuItem)}
-                </Menu>
-            } />
-            <Switch>
-                <Route path={withBasePath("data/explorer/search")}
-                       component={ExplorerSearchContent} />
-                <Route path={withBasePath("data/explorer/individuals/:individual")}
-                       component={ExplorerIndividualContent} />
-                <Route path={withBasePath("data/explorer/genome")}
-                       component={ExplorerGenomeBrowserContent} />
-                <Redirect from={withBasePath("data/explorer")}
-                          to={withBasePath("data/explorer/search")} />
-            </Switch>
-        </>;
+        return <Switch>
+            <Route path={withBasePath("data/explorer/search")}
+                   component={ExplorerSearchContent} />
+            <Route path={withBasePath("data/explorer/individuals/:individual")}
+                   component={ExplorerIndividualContent} />
+            <Route path={withBasePath("data/explorer/genome")}
+                   component={ExplorerGenomeBrowserContent} />
+            <Redirect from={withBasePath("data/explorer")}
+                      to={withBasePath("data/explorer/search")} />
+        </Switch>;
     }
 }
 

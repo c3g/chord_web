@@ -7,6 +7,7 @@ import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 
+import SitePageHeader from "../SitePageHeader";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import ExplorerDatasetSearch from "./ExplorerDatasetSearch";
 import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
@@ -28,6 +29,9 @@ class ExplorerSearchContent extends Component {
         const datasets = this.props.projects.flatMap(p => p.datasets);
 
         return <Layout>
+            <Layout.Header>
+                <SitePageHeader title="Data Explorer" />
+            </Layout.Header>
             <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
                 <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                 <Menu mode="inline"
