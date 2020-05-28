@@ -36,23 +36,15 @@ class ExplorerIndividualContent extends Component {
     render() {
         const individualID = this.props.match.params.individual || null;
         const individualInfo = this.props.individuals[individualID] || {};
-
-        if (!individualID || !individualInfo.data || individualInfo.isFetching) {
-            // TODO: Nicer
-            return <Layout>
-                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    <Skeleton />
-                </Layout.Content>
-            </Layout>;
-        }
-
         const individual = individualInfo.data;
 
         return <Layout>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                <Card title={`Individual: ${individual.id}`}
-                      tabList={INDIVIDUAL_CARD_TABS}
-                      activeTabKey={this.state.selectedTab} />
+                {(individual && !individualInfo.isFetching) ? (
+                    <Card title={`Individual: ${individual.id}`}
+                          tabList={INDIVIDUAL_CARD_TABS}
+                          activeTabKey={this.state.selectedTab} />
+                ) : <Skeleton />}
             </Layout.Content>
         </Layout>;
     }
