@@ -30,6 +30,14 @@ import {FORM_MODE_ADD, FORM_MODE_EDIT} from "../../constants";
 import {datasetPropTypesShape, projectPropTypesShape} from "../../propTypes";
 
 
+const DATASET_CARD_TABS = [
+    {key: "overview", tab: "Overview"},
+    {key: "tables", tab: "Data Tables"},
+    {key: "linked_field_sets", tab: "Linked Field Sets"},
+    {key: "data_use", tab: "Consent Codes and Data Use"},
+];
+
+
 class Dataset extends Component {
     // TODO: Editing
 
@@ -178,44 +186,45 @@ class Dataset extends Component {
             data_use: <DataUseDisplay dataUse={this.state.data_use} />
         };
 
+        const handleDelete = () => {
+            const deleteModal = Modal.confirm({
+                title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
+                content: <>
+                    <Typography.Paragraph>
+                        All data contained in the dataset will be deleted permanently, and the
+                        dataset will no longer be available for discovery within the CHORD
+                        federation.
+                        {/* TODO: Real terms and conditions */}
+                    </Typography.Paragraph>
+                </>,
+                width: 572,
+                autoFocusButton: "cancel",
+                okText: "Delete",
+                okType: "danger",
+                maskClosable: true,
+                onOk: async () => {
+                    deleteModal.update({okButtonProps: {loading: true}});
+                    await this.props.deleteProjectDataset(this.state);
+                    deleteModal.update({okButtonProps: {loading: false}});
+                },
+            });
+        };
+
         return (
-            <Card key={this.state.identifier} title={this.state.title} tabList={[
-                {key: "overview", tab: "Overview"},
-                {key: "tables", tab: "Data Tables"},
-                {key: "linked_field_sets", tab: "Linked Field Sets"},
-                {key: "data_use", tab: "Consent Codes and Data Use"},
-            ]} activeTabKey={this.state.selectedTab} onTabChange={t => this.setState({selectedTab: t})} extra={
-                isPrivate ? (
-                    <>
-                        <Button icon="edit"
-                                style={{marginRight: "8px"}}
-                                onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
-                        <Button type="danger" icon="delete" onClick={() => {
-                            const deleteModal = Modal.confirm({
-                                title: `Are you sure you want to delete the "${this.state.title}" dataset?`,
-                                content: <>
-                                    <Typography.Paragraph>
-                                        All data contained in the dataset will be deleted permanently, and the dataset
-                                        will no longer be available for discovery within the CHORD federation.
-                                        {/* TODO: Real terms and conditions */}
-                                    </Typography.Paragraph>
-                                </>,
-                                width: 572,
-                                autoFocusButton: "cancel",
-                                okText: "Delete",
-                                okType: "danger",
-                                maskClosable: true,
-                                onOk: async () => {
-                                    deleteModal.update({okButtonProps: {loading: true}});
-                                    await this.props.deleteProjectDataset(this.state);
-                                    deleteModal.update({okButtonProps: {loading: false}});
-                                },
-                            });
-                        }}>Delete</Button>
-                        {/* TODO: Share button (vFuture) */}
-                    </>
-                ) : null
-            }>
+            <Card key={this.state.identifier}
+                  title={this.state.title}
+                  tabList={DATASET_CARD_TABS}
+                  activeTabKey={this.state.selectedTab}
+                  onTabChange={t => this.setState({selectedTab: t})}
+                  extra={
+                      isPrivate ? <>
+                          <Button icon="edit"
+                                  style={{marginRight: "8px"}}
+                                  onClick={() => (this.props.onEdit || nop)()}>Edit</Button>
+                          <Button type="danger" icon="delete" onClick={handleDelete}>Delete</Button>
+                          {/* TODO: Share button (vFuture) */}
+                      </> : null
+                  }>
                 {isPrivate ? <>
                     <LinkedFieldSetModal mode={FORM_MODE_ADD}
                                          dataset={this.state}
