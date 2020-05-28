@@ -329,7 +329,10 @@ export const individuals = (
                 ...state,
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.individualID]: {isFetching: true},
+                    [action.individualID]: {
+                        ...(state.itemsByID[action.individualID] || {}),
+                        isFetching: true,
+                    },
                 },
             };
         case FETCH_INDIVIDUAL.RECEIVE:
@@ -337,7 +340,10 @@ export const individuals = (
                 ...state,
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.individualID]: {data: action.data},
+                    [action.individualID]: {
+                        ...(state.itemsByID[action.individualID] || {}),
+                        data: action.data,
+                    },
                 },
             };
         case FETCH_INDIVIDUAL.FINISH:
@@ -345,7 +351,10 @@ export const individuals = (
                 ...state,
                 itemsByID: {
                     ...state.itemsByID,
-                    [action.individualID]: {isFetching: false},
+                    [action.individualID]: {
+                        ...(state.itemsByID[action.individualID] || {}),
+                        isFetching: false,
+                    },
                 },
             };
 
