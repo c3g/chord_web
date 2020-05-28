@@ -25,7 +25,7 @@ const searchResultColumns = backUrl => [
         title: "Individual",
         dataIndex: "individual",
         render: individual => <Link to={{
-            pathname: withBasePath(),
+            pathname: withBasePath(`data/explorer/individuals/${individual.id}`),
             state: {backUrl},
         }}>{individual.id}</Link>,
         sorter: (a, b) => a.individual.id.localeCompare(b.individual.id),
