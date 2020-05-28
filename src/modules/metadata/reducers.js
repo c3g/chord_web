@@ -19,6 +19,8 @@ import {
 
     PROJECT_TABLE_ADDITION,
     PROJECT_TABLE_DELETION,
+
+    FETCH_INDIVIDUAL,
 } from "./actions";
 
 
@@ -305,8 +307,7 @@ export const projectTables = (
 
 export const biosamples = (
     state = {
-        isFetching: false,
-        itemsByID: {}
+        itemsByID: {},
     },
     action
 ) => {
@@ -318,13 +319,36 @@ export const biosamples = (
 
 export const individuals = (
     state = {
-        isFetching: false,
-        itemsByID: {}
+        itemsByID: {},
     },
     action
 ) => {
     switch (action.type) {
-        // TODO
+        case FETCH_INDIVIDUAL.REQUEST:
+            return {
+                ...state,
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.individualID]: {isFetching: true},
+                },
+            };
+        case FETCH_INDIVIDUAL.RECEIVE:
+            return {
+                ...state,
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.individualID]: {data: action.data},
+                },
+            };
+        case FETCH_INDIVIDUAL.FINISH:
+            return {
+                ...state,
+                itemsByID: {
+                    ...state.itemsByID,
+                    [action.individualID]: {isFetching: false},
+                },
+            };
+
         default:
             return state;
     }

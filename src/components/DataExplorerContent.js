@@ -6,8 +6,9 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import {Menu} from "antd";
 import "antd/es/menu/style/css";
 
-import ExplorerSearchContent from "./explorer/ExplorerSearchContent";
 import ExplorerGenomeBrowserContent from "./explorer/ExplorerGenomeBrowserContent";
+import ExplorerIndividualContent from "./explorer/ExplorerIndividualContent";
+import ExplorerSearchContent from "./explorer/ExplorerSearchContent";
 
 import SitePageHeader from "./SitePageHeader";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
@@ -44,6 +45,8 @@ class DataExplorerContent extends Component {
             <Switch>
                 <Route path={withBasePath("data/explorer/search")}
                        component={ExplorerSearchContent} />
+                <Route path={withBasePath("data/explorer/individuals/:individual")}
+                       component={ExplorerIndividualContent} />
                 <Route path={withBasePath("data/explorer/genome")}
                        component={ExplorerGenomeBrowserContent} />
                 <Redirect from={withBasePath("data/explorer")}

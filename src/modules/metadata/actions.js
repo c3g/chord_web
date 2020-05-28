@@ -41,6 +41,8 @@ export const DELETE_DATASET_LINKED_FIELD_SET = createNetworkActionTypes("DELETE_
 export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDITION");
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
 
+export const FETCH_INDIVIDUAL = createNetworkActionTypes("FETCH_INDIVIDUAL");
+
 
 const endProjectTableAddition = (project, table) => ({type: PROJECT_TABLE_ADDITION.END, project, table});
 const endProjectTableDeletion = (project, tableID) => ({type: PROJECT_TABLE_DELETION.END, project, tableID});
@@ -374,5 +376,19 @@ export const deleteProjectTableIfPossible = (project, table) => async (dispatch,
         // If manageable_tables is set and not true, we can't delete the table.
         return;
     }
-    await dispatch(deleteProjectTable(project, table));
+    return dispatch(deleteProjectTable(project, table));
+};
+
+
+const fetchIndividual = networkAction(individualID => (dispatch, getState) => ({
+    types: FETCH_INDIVIDUAL,
+    params: {individualID},
+    url: `${getState().services.metadataService.url}/api/individuals/${individualID}`,
+    err: `Error fetching individual ${individualID}`,
+}));
+
+export const fetchIndividualIfNecessary = individualID => (dispatch, getState) => {
+    const individualRecord = getState().individuals.itemsByID[individualID] || {};
+    if (individualRecord.isFetching || individualRecord.data) return;  // Don't fetch if already fetching or loaded.
+    return fetchIndividual(individualID);
 };
