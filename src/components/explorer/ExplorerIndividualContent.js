@@ -91,7 +91,7 @@ class ExplorerIndividualContent extends Component {
                         </Route>
                         <Route path={biosamplesUrl.replace(":", "\\:")}><div /></Route>
                         <Route path={experimentsUrl.replace(":", "\\:")}><div /></Route>
-                        <Redirect to={overviewUrl} />
+                        <Redirect to={overviewUrl.replace(":", "\\:")} />
                     </Switch> : <Skeleton />}
                 </Layout.Content>
             </Layout>
