@@ -39,7 +39,11 @@ class ExplorerIndividualContent extends Component {
 
         if (!individualID || !individualInfo.data || individualInfo.isFetching) {
             // TODO: Nicer
-            return <Skeleton />;
+            return <Layout>
+                <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                    <Skeleton />
+                </Layout.Content>
+            </Layout>;
         }
 
         const individual = individualInfo.data;
