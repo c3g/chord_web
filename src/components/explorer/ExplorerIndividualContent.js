@@ -16,7 +16,7 @@ import SitePageHeader from "../SitePageHeader";
 import IndividualOverview from "./IndividualOverview";
 
 
-const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/:individual/${page}`);
+const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/${individual}/${page}`);
 
 const MENU_STYLE = {
     marginLeft: "-24px",
