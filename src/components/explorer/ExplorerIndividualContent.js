@@ -63,7 +63,9 @@ class ExplorerIndividualContent extends Component {
         const individualInfo = this.props.individuals[individualID] || {};
         const individual = individualInfo.data;
 
-        const selectedKeys = matchingMenuKeys(INDIVIDUAL_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
+        const selectedKeys = this.props.nodeInfo
+            ? matchingMenuKeys(INDIVIDUAL_MENU, urlPath(this.props.nodeInfo.CHORD_URL))
+            : [];
 
         return <>
             <SitePageHeader title={individual.id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
