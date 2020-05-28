@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import {Redirect, Route, Switch} from "react-router-dom";
 
 import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
@@ -14,14 +15,7 @@ import {urlPath, withBasePath} from "../../utils/url";
 import SitePageHeader from "../SitePageHeader";
 
 
-const withURLPrefix = page => withBasePath(`data/explorer/individuals/:individual/${page}`);
-
-const INDIVIDUAL_MENU = [
-    {url: withURLPrefix("overview"), style: {marginLeft: "4px"}, text: "Overview",},
-    {url: withURLPrefix("biosamples"), text: "Biosamples",},
-    // TODO: Only if data type available / experiments present?
-    {url: withURLPrefix("experiments"), text: "Experiments"},
-];
+const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/:individual/${page}`);
 
 const MENU_STYLE = {
     marginLeft: "-24px",
@@ -63,19 +57,34 @@ class ExplorerIndividualContent extends Component {
         const individualInfo = this.props.individuals[individualID] || {};
         const individual = individualInfo.data;
 
+        const overviewUrl = withURLPrefix(individualID, "overview");
+        const biosamplesUrl = withURLPrefix(individualID, "biosamples");
+        const experimentsUrl = withURLPrefix(individualID, "experiments");
+        const individualMenu = [
+            {url: overviewUrl, style: {marginLeft: "4px"}, text: "Overview",},
+            {url: biosamplesUrl, text: "Biosamples",},
+            // TODO: Only if data type available / experiments present?
+            {url: experimentsUrl, text: "Experiments"},
+        ];
+
         const selectedKeys = this.props.nodeInfo
-            ? matchingMenuKeys(INDIVIDUAL_MENU, urlPath(this.props.nodeInfo.CHORD_URL))
+            ? matchingMenuKeys(individualMenu, urlPath(this.props.nodeInfo.CHORD_URL))
             : [];
 
         return <>
             <SitePageHeader title={(individual || {}).id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
                 <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                    {INDIVIDUAL_MENU.map(renderMenuItem)}
+                    {individualMenu.map(renderMenuItem)}
                 </Menu>
             } />
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                    {(individual && !individualInfo.isFetching) ? <div /> : <Skeleton />}
+                    {(individual && !individualInfo.isFetching) ? <Switch>
+                        <Route path={overviewUrl}><div /></Route>
+                        <Route path={biosamplesUrl}><div /></Route>
+                        <Route path={experimentsUrl}><div /></Route>
+                        <Redirect to={overviewUrl} />
+                    </Switch> : <Skeleton />}
                 </Layout.Content>
             </Layout>
         </>;
