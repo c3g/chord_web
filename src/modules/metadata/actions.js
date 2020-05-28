@@ -73,10 +73,10 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
         state.projects.isDeleting ||
         state.projects.isSaving) return;
 
-    await dispatch(beginFlow(FETCHING_PROJECTS_WITH_TABLES));
+    dispatch(beginFlow(FETCHING_PROJECTS_WITH_TABLES));
     await dispatch(fetchProjects());
     await dispatch(fetchProjectTables(getState().projects.itemsByID));
-    await dispatch(endFlow(FETCHING_PROJECTS_WITH_TABLES));
+    dispatch(endFlow(FETCHING_PROJECTS_WITH_TABLES));
 };
 
 
@@ -85,16 +85,16 @@ const createProject = networkAction((project, history) => (dispatch, getState) =
     url: `${getState().services.metadataService.url}/api/projects`,
     req: jsonRequest(project, "POST"),
     err: "Error creating project",
-    onSuccess: async data => {
+    onSuccess: data => {
         if (history) history.push(withBasePath(`data/manager/projects/${data.identifier}`));
         message.success(`Project '${data.title}' created!`);
     }
 }));
 
-export const createProjectIfPossible = (project, history) => async (dispatch, getState) => {
+export const createProjectIfPossible = (project, history) => (dispatch, getState) => {
     // TODO: Need object response from POST (is this done??)
     if (getState().projects.isCreating) return;
-    await dispatch(createProject(project, history));
+    return dispatch(createProject(project, history));
 };
 
 export const deleteProject = networkAction(project => (dispatch, getState) => ({
@@ -106,9 +106,9 @@ export const deleteProject = networkAction(project => (dispatch, getState) => ({
     onSuccess: () => message.success(`Project '${project.title}' deleted!`)
 }));
 
-export const deleteProjectIfPossible = project => async (dispatch, getState) => {
+export const deleteProjectIfPossible = project => (dispatch, getState) => {
     if (getState().projects.isDeleting) return;
-    await dispatch(deleteProject(project));
+    return dispatch(deleteProject(project));
 
     // TODO: Do we need to delete project tables as well? What to do here??
 };
@@ -125,9 +125,9 @@ const saveProject = networkAction(project => (dispatch, getState) => ({
     }
 }));
 
-export const saveProjectIfPossible = project => async (dispatch, getState) => {
+export const saveProjectIfPossible = project => (dispatch, getState) => {
     if (getState().projects.isDeleting || getState().projects.isSaving) return;
-    await dispatch(saveProject(project));
+    return dispatch(saveProject(project));
 };
 
 
@@ -165,11 +165,11 @@ export const deleteProjectDataset = networkAction((project, dataset) => (dispatc
     // TODO: Do we need to delete project tables as well? What to do here??
 }));
 
-export const deleteProjectDatasetIfPossible = (project, dataset) => async (dispatch, getState) => {
+export const deleteProjectDatasetIfPossible = (project, dataset) => (dispatch, getState) => {
     if (getState().projects.isAddingDataset
         || getState().projects.isSavingDataset
         || getState().projects.isDeletingDataset) return;
-    await dispatch(deleteProjectDataset(project, dataset));
+    return dispatch(deleteProjectDataset(project, dataset));
 };
 
 
@@ -185,11 +185,11 @@ const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, onSucce
 }));
 
 export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, onSuccess = nop) =>
-    async (dispatch, getState) => {
+    (dispatch, getState) => {
         if (getState().projects.isAddingDataset
             || getState().projects.isSavingDataset
             || getState().projects.isDeletingDataset) return;
-        await dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet, onSuccess));
+        return dispatch(addDatasetLinkedFieldSet(dataset, linkedFieldSet, onSuccess));
     };
 
 
@@ -208,11 +208,11 @@ const saveDatasetLinkedFieldSet = networkAction((dataset, index, linkedFieldSet,
     }));
 
 export const saveDatasetLinkedFieldSetIfPossible = (dataset, index, linkedFieldSet, onSuccess = nop) =>
-    async (dispatch, getState) => {
+    (dispatch, getState) => {
         if (getState().projects.isAddingDataset
             || getState().projects.isSavingDataset
             || getState().projects.isDeletingDataset) return;
-        await dispatch(saveDatasetLinkedFieldSet(dataset, index, linkedFieldSet, onSuccess));
+        return dispatch(saveDatasetLinkedFieldSet(dataset, index, linkedFieldSet, onSuccess));
     };
 
 
@@ -229,11 +229,11 @@ const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, link
     }));
 
 export const deleteDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, linkedFieldSetIndex) =>
-    async (dispatch, getState) => {
+    (dispatch, getState) => {
         if (getState().projects.isAddingDataset
             || getState().projects.isSavingDataset
             || getState().projects.isDeletingDataset) return;
-        await dispatch(deleteDatasetLinkedFieldSet(dataset, linkedFieldSet, linkedFieldSetIndex));
+        return dispatch(deleteDatasetLinkedFieldSet(dataset, linkedFieldSet, linkedFieldSetIndex));
     };
 
 
@@ -368,7 +368,7 @@ const deleteProjectTable = (project, table) => async (dispatch, getState) => {
     dispatch(endProjectTableDeletion(project, table.table_id));  // TODO: Check params here
 };
 
-export const deleteProjectTableIfPossible = (project, table) => async (dispatch, getState) => {
+export const deleteProjectTableIfPossible = (project, table) => (dispatch, getState) => {
     if (getState().projectTables.isDeleting) return;
     const chordServiceInfo = getState().chordServices.itemsByArtifact[
         getState().services.itemsByID[table.service_id].type.split(":")[1]];
