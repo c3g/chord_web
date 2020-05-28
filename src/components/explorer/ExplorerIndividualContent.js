@@ -81,6 +81,7 @@ class ExplorerIndividualContent extends Component {
 }
 
 const mapStateToProps = state => ({
+    nodeInfo: state.nodeInfo.data,
     metadataService: state.services.metadataService,
     individuals: state.individuals.itemsByID,
 });
