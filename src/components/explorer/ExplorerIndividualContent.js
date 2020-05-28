@@ -73,11 +73,14 @@ class ExplorerIndividualContent extends Component {
             : [];
 
         return <>
-            <SitePageHeader title={(individual || {}).id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
-                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
-                    {individualMenu.map(renderMenuItem)}
-                </Menu>
-            } />
+            <SitePageHeader title={(individual || {}).id || "Loading..."}
+                            withTabBar={true}
+                            onBack={() => this.props.history.goBack()}
+                            footer={
+                                <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
+                                    {individualMenu.map(renderMenuItem)}
+                                </Menu>
+                            } />
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     {(individual && !individualInfo.isFetching) ? <Switch>
