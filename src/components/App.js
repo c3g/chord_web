@@ -1,11 +1,11 @@
-import React, {Component} from "react";
+import React, {Component, Suspense, lazy} from "react";
 import {connect} from "react-redux";
 import {withRouter, Redirect, Route, Switch} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import io from "socket.io-client";
 
-import {Layout, Modal} from "antd";
+import {Layout, Modal, Skeleton} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/modal/style/css";
 
@@ -15,13 +15,6 @@ import NotificationDrawer from "./notifications/NotificationDrawer";
 import SiteHeader from "./SiteHeader";
 import SiteFooter from "./SiteFooter";
 
-import DashboardContent from "./DashboardContent";
-import DataDiscoveryContent from "./DataDiscoveryContent";
-import DataExplorerContent from "./DataExplorerContent";
-import DataManagerContent from "./DataManagerContent";
-import PeersContent from "./PeersContent";
-import NotificationsContent from "./notifications/NotificationsContent";
-
 import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
@@ -29,6 +22,16 @@ import eventHandler from "../events";
 import {nop} from "../utils/misc";
 import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils/url";
 import {serviceInfoPropTypesShape, userPropTypesShape} from "../propTypes";
+
+// Lazy-load notification drawer
+
+// Lazy-load route components
+const DashboardContent = lazy(() => import("./DashboardContent"));
+const DataDiscoveryContent = lazy(() => import("./DataDiscoveryContent.js"));
+const DataExplorerContent = lazy(() => import("./DataExplorerContent"));
+const DataManagerContent = lazy(() => import("./DataManagerContent"));
+const PeersContent = lazy(() => import("./PeersContent"));
+const NotificationsContent = lazy(() => import("./notifications/NotificationsContent"));
 
 class App extends Component {
     constructor(props) {
@@ -72,15 +75,19 @@ class App extends Component {
                     <NotificationDrawer />
                     <SiteHeader />
                     <Layout.Content style={{margin: "50px"}}>
-                        <Switch>
-                            <Route path={withBasePath("dashboard")} component={DashboardContent} />
-                            <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
-                            <OwnerRoute path={withBasePath("data/explorer")} component={DataExplorerContent} />
-                            <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
-                            <Route path={withBasePath("peers")} component={PeersContent} />
-                            <OwnerRoute path={withBasePath("notifications")} component={NotificationsContent} />
-                            <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
-                        </Switch>
+                        <Suspense fallback={<Skeleton />}>
+                            <Switch>
+                                <Route path={withBasePath("dashboard")} component={DashboardContent} />
+                                <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
+                                <OwnerRoute path={withBasePath("data/explorer")}
+                                            component={DataExplorerContent} />
+                                <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
+                                <Route path={withBasePath("peers")} component={PeersContent} />
+                                <OwnerRoute path={withBasePath("notifications")}
+                                            component={NotificationsContent} />
+                                <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
+                            </Switch>
+                        </Suspense>
                     </Layout.Content>
                     <SiteFooter />
                 </Layout>
