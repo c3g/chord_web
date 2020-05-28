@@ -26,6 +26,7 @@ class ExplorerIndividualContent extends Component {
     componentDidMount() {
         // TODO: Fetch individual if necessary
         const individualID = this.props.match.params.individual || null;
+        console.log(individualID);
         if (!individualID) return;
         this.props.fetchIndividual(individualID);
     }
