@@ -390,5 +390,5 @@ const fetchIndividual = networkAction(individualID => (dispatch, getState) => ({
 export const fetchIndividualIfNecessary = individualID => (dispatch, getState) => {
     const individualRecord = getState().individuals.itemsByID[individualID] || {};
     if (individualRecord.isFetching || individualRecord.data) return;  // Don't fetch if already fetching or loaded.
-    return fetchIndividual(individualID);
+    return dispatch(fetchIndividual(individualID));
 };
