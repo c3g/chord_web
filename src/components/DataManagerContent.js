@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, Suspense, lazy} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
@@ -7,17 +7,19 @@ import {Redirect, Route, Switch} from "react-router-dom";
 import {Menu} from "antd";
 import "antd/es/menu/style/css";
 
-import ManagerProjectDatasetContent from "./manager/projects/ManagerProjectDatasetContent";
-import ManagerAccessContent from "./manager/ManagerAccessContent";
-import ManagerFilesContent from "./manager/ManagerFilesContent";
-import ManagerIngestionContent from "./manager/ManagerIngestionContent";
-import ManagerWorkflowsContent from "./manager/ManagerWorkflowsContent";
-import ManagerRunsContent from "./manager/runs/ManagerRunsContent";
-
 import SitePageHeader from "./SitePageHeader";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
 import {urlPath, withBasePath} from "../utils/url";
 import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
+
+
+const ManagerProjectDatasetContent = lazy(() => import("./manager/projects/ManagerProjectDatasetContent"));
+const ManagerAccessContent = lazy(() => import("./manager/ManagerAccessContent"));
+const ManagerFilesContent = lazy(() => import("./manager/ManagerFilesContent"));
+const ManagerIngestionContent = lazy(() => import("./manager/ManagerIngestionContent"));
+const ManagerWorkflowsContent = lazy(() => import("./manager/ManagerWorkflowsContent"));
+const ManagerRunsContent = lazy(() => import("./manager/runs/ManagerRunsContent"));
+
 
 const PAGE_MENU = [
     {url: withBasePath("data/manager/projects"), style: {marginLeft: "4px"}, text: "Projects and Datasets"},
@@ -36,7 +38,7 @@ const MENU_STYLE = {
 
 
 class DataManagerContent extends Component {
-    async componentDidMount() {
+    componentDidMount() {
         document.title = "CHORD - Manage Your Data";
     }
 
@@ -51,19 +53,21 @@ class DataManagerContent extends Component {
                                     {PAGE_MENU.map(renderMenuItem)}
                                 </Menu>
                             } />
-            <Switch>
-                <Route path={withBasePath("data/manager/projects")}
-                       component={ManagerProjectDatasetContent} />
-                <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
-                <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
-                <Route exact path={withBasePath("data/manager/ingestion")}
-                       component={ManagerIngestionContent} />
-                <Route exact path={withBasePath("data/manager/workflows")}
-                       component={ManagerWorkflowsContent} />
-                <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
-                <Redirect from={withBasePath("data/manager")}
-                          to={withBasePath("data/manager/projects")} />
-            </Switch>
+            <Suspense fallback={<div />}>
+                <Switch>
+                    <Route path={withBasePath("data/manager/projects")}
+                           component={ManagerProjectDatasetContent} />
+                    <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
+                    <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
+                    <Route exact path={withBasePath("data/manager/ingestion")}
+                           component={ManagerIngestionContent} />
+                    <Route exact path={withBasePath("data/manager/workflows")}
+                           component={ManagerWorkflowsContent} />
+                    <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
+                    <Redirect from={withBasePath("data/manager")}
+                              to={withBasePath("data/manager/projects")} />
+                </Switch>
+            </Suspense>
         </>;
     }
 }
@@ -74,7 +78,7 @@ DataManagerContent.propTypes = {
     runs: PropTypes.arrayOf(PropTypes.shape({
         run_id: PropTypes.string,
         state: PropTypes.string
-    }))
+    })),
 };
 
 const mapStateToProps = state => ({
