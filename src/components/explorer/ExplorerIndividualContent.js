@@ -74,9 +74,7 @@ class ExplorerIndividualContent extends Component {
         const selectedKeys = this.props.nodeInfo
             ? matchingMenuKeys(individualMenu, urlPath(this.props.nodeInfo.CHORD_URL))
             : [];
-
-        console.log(this.state.backUrl);
-
+        
         return <>
             <SitePageHeader title={(individual || {}).id || "Loading..."}
                             withTabBar={true}

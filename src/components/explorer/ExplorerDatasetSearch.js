@@ -55,8 +55,6 @@ class ExplorerDatasetSearch extends Component {
 
         if (!selectedDataset) return null;  // TODO
 
-        console.log(this.props.location.pathname);
-
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
