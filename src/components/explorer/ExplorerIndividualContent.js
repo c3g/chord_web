@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 
-import {Card, Skeleton} from "antd";
+import {Card, Layout, Skeleton} from "antd";
 import "antd/es/card/style/css";
+import "antd/es/layout/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchIndividualIfNecessary} from "../../modules/metadata/actions";
+import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 
 const INDIVIDUAL_CARD_TABS = [
@@ -42,9 +44,13 @@ class ExplorerIndividualContent extends Component {
 
         const individual = individualInfo.data;
 
-        return <Card title={`Individual: ${individual.id}`}
-                     tabList={INDIVIDUAL_CARD_TABS}
-                     activeTabKey={this.state.selectedTab} />;
+        return <Layout>
+            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <Card title={`Individual: ${individual.id}`}
+                      tabList={INDIVIDUAL_CARD_TABS}
+                      activeTabKey={this.state.selectedTab} />
+            </Layout.Content>
+        </Layout>;
     }
 }
 
