@@ -68,7 +68,7 @@ class ExplorerIndividualContent extends Component {
             : [];
 
         return <>
-            <SitePageHeader title={individual.id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
+            <SitePageHeader title={(individual || {}).id || "Loading..."} withTabBar={true} onBack={() => {}} footer={
                 <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
                     {INDIVIDUAL_MENU.map(renderMenuItem)}
                 </Menu>
