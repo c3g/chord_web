@@ -17,13 +17,17 @@ import {
     updateDataTypeQueryForm,
     setSelectedRows,
 } from "../../modules/explorer/actions";
+import {withBasePath} from "../../utils/url";
 
 
-const SEARCH_RESULT_COLUMNS = [
+const searchResultColumns = backUrl => [
     {
         title: "Individual",
         dataIndex: "individual",
-        render: individual => <Link to={"/"}>{individual.id}</Link>,
+        render: individual => <Link to={{
+            pathname: withBasePath(),
+            state: {backUrl},
+        }}>{individual.id}</Link>,
         sorter: (a, b) => a.individual.id.localeCompare(b.individual.id),
         defaultSortOrder: "ascend",
     },
@@ -70,7 +74,7 @@ class ExplorerDatasetSearch extends Component {
                 </Typography.Title>
                 <Table bordered
                        size="middle"
-                       columns={SEARCH_RESULT_COLUMNS}
+                       columns={searchResultColumns(this.props.location.pathname)}
                        dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
                        pagination={{pageSize: 25}}
                        rowSelection={{

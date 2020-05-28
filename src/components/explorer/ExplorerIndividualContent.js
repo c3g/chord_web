@@ -32,6 +32,7 @@ class ExplorerIndividualContent extends Component {
         this.fetchIndividualData = this.fetchIndividualData.bind(this);
 
         this.state = {
+            backUrl: null,
             selectedTab: "overview",
         };
     }
@@ -75,7 +76,7 @@ class ExplorerIndividualContent extends Component {
         return <>
             <SitePageHeader title={(individual || {}).id || "Loading..."}
                             withTabBar={true}
-                            onBack={() => this.props.history.goBack()}
+                            onBack={this.state.backUrl ? () => this.props.history.push(this.state.backUrl) : undefined}
                             footer={
                                 <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
                                     {individualMenu.map(renderMenuItem)}

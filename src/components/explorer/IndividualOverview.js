@@ -14,8 +14,8 @@ const IndividualOverview = ({individual}) => individual ?
         <Descriptions.Item label="Karyotypic Sex">{individual.karyotypic_sex || "UNKNOWN_KARYOTYPE"}</Descriptions.Item>
         {/* TODO: Link to ontology term */}
         <Descriptions.Item label="Taxonomy">
-            {renderOntologyTerm(individual.taxonomy 
-                ? {...individual.taxonomy, label: <em>individual.taxonomy.label</em>}
+            {renderOntologyTerm(individual.taxonomy
+                ? {...individual.taxonomy, label: <em>{individual.taxonomy.label}</em>}
                 : null)}
         </Descriptions.Item>
     </Descriptions> : <div />;
