@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import {withRouter, Redirect, Route, Switch} from "react-router-dom";
 import PropTypes from "prop-types";
 
+import io from "socket.io-client";
+
 import {Layout, Modal} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/modal/style/css";
@@ -16,7 +18,7 @@ import SitePageLoading from "./SitePageLoading";
 import {fetchUserAndDependentData} from "../modules/auth/actions";
 import {fetchPeersOrError} from "../modules/peers/actions";
 
-// import eventHandler from "../events";
+import eventHandler from "../events";
 import {nop} from "../utils/misc";
 import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils/url";
 import {serviceInfoPropTypesShape, userPropTypesShape} from "../propTypes";
@@ -35,11 +37,7 @@ const NotificationsContent = lazy(() => import("./notifications/NotificationsCon
 class App extends Component {
     constructor(props) {
         super(props);
-
-        // The following are for lazy-loading libraries/functions
-        this.io = null;
-        this.eventHandler = null;
-
+        
         /** @type {null|io.Manager} */
         this.eventRelayConnection = null;
 
@@ -62,42 +60,40 @@ class App extends Component {
 
     render() {
         // noinspection HtmlUnknownTarget
-        return (
-            <>
-                <Modal title="You have been signed out"
-                       onOk={() => window.location.href = signInURLWithRedirect()}
-                       onCancel={() => {
-                           this.clearPingInterval();  // Stop pinging until the user decides to sign in again
-                           this.setState({signedOutModal: false});  // Close the modal
-                           // TODO: Set a new interval at a slower rate
-                       }}
-                       visible={this.state.signedOutModal}>
-                    Please <a href={signInURLWithRedirect()}>sign in</a> again to continue working.
-                </Modal>
-                <Layout style={{minHeight: "100vh"}}>
-                    <Suspense fallback={<div />}>
-                        <NotificationDrawer />
+        return <>
+            <Modal title="You have been signed out"
+                   onOk={() => window.location.href = signInURLWithRedirect()}
+                   onCancel={() => {
+                       this.clearPingInterval();  // Stop pinging until the user decides to sign in again
+                       this.setState({signedOutModal: false});  // Close the modal
+                       // TODO: Set a new interval at a slower rate
+                   }}
+                   visible={this.state.signedOutModal}>
+                Please <a href={signInURLWithRedirect()}>sign in</a> again to continue working.
+            </Modal>
+            <Layout style={{minHeight: "100vh"}}>
+                <Suspense fallback={<div />}>
+                    <NotificationDrawer />
+                </Suspense>
+                <SiteHeader />
+                <Layout.Content style={{margin: "50px"}}>
+                    <Suspense fallback={<SitePageLoading />}>
+                        <Switch>
+                            <Route path={withBasePath("dashboard")} component={DashboardContent} />
+                            <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
+                            <OwnerRoute path={withBasePath("data/explorer")}
+                                        component={DataExplorerContent} />
+                            <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
+                            <Route path={withBasePath("peers")} component={PeersContent} />
+                            <OwnerRoute path={withBasePath("notifications")}
+                                        component={NotificationsContent} />
+                            <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
+                        </Switch>
                     </Suspense>
-                    <SiteHeader />
-                    <Layout.Content style={{margin: "50px"}}>
-                        <Suspense fallback={<SitePageLoading />}>
-                            <Switch>
-                                <Route path={withBasePath("dashboard")} component={DashboardContent} />
-                                <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
-                                <OwnerRoute path={withBasePath("data/explorer")}
-                                            component={DataExplorerContent} />
-                                <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
-                                <Route path={withBasePath("peers")} component={PeersContent} />
-                                <OwnerRoute path={withBasePath("notifications")}
-                                            component={NotificationsContent} />
-                                <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
-                            </Switch>
-                        </Suspense>
-                    </Layout.Content>
-                    <SiteFooter />
-                </Layout>
-            </>
-        );
+                </Layout.Content>
+                <SiteFooter />
+            </Layout>
+        </>;
     }
 
     createEventRelayConnectionIfNecessary() {
@@ -110,10 +106,10 @@ class App extends Component {
             if (!this.props.user) return null;
 
             const url = (this.props.eventRelay || {url: null}).url || null;
-            return url ? (() => this.io(BASE_PATH, {
+            return url ? (() => io(BASE_PATH, {
                 path: `${urlPath(url)}/private/socket.io`,
                 reconnection: !!this.props.user  // Only try to reconnect if we're authenticated
-            }).on("events", message => this.eventHandler(message, this.props.history)))() : null;
+            }).on("events", message => eventHandler(message, this.props.history)))() : null;
         })();
     }
 
@@ -139,11 +135,6 @@ class App extends Component {
 
     componentDidMount() {
         (async () => {
-            [this.io, this.eventHandler] = await Promise.all([
-                import("socket.io-client"),
-                import("../events"),
-            ]);
-
             await this.props.fetchUserAndDependentData(async () => {
                 await this.props.fetchPeersOrError();
                 this.createEventRelayConnectionIfNecessary();
