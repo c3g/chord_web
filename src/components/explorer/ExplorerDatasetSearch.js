@@ -20,14 +20,14 @@ import {
 import {withBasePath} from "../../utils/url";
 
 
-const searchResultColumns = backUrl => [
+const SEARCH_RESULT_COLUMNS = [
     {
         title: "Individual",
         dataIndex: "individual",
-        render: individual => <Link to={{
-            pathname: withBasePath(`data/explorer/individuals/${individual.id}`),
-            state: {backUrl},
-        }}>{individual.id}</Link>,
+        render: individual => <Link to={location => ({
+            pathname: withBasePath(`data/explorer/individuals/${individual.id}/overview`),
+            state: {backUrl: location.pathname},
+        })}>{individual.id}</Link>,
         sorter: (a, b) => a.individual.id.localeCompare(b.individual.id),
         defaultSortOrder: "ascend",
     },
@@ -74,7 +74,7 @@ class ExplorerDatasetSearch extends Component {
                 </Typography.Title>
                 <Table bordered
                        size="middle"
-                       columns={searchResultColumns(this.props.location.pathname)}
+                       columns={SEARCH_RESULT_COLUMNS}
                        dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
                        pagination={{pageSize: 25}}
                        rowSelection={{
