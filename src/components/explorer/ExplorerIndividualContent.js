@@ -20,17 +20,29 @@ const INDIVIDUAL_CARD_TABS = [
 class ExplorerIndividualContent extends Component {
     constructor(props) {
         super(props);
+
+        this.fetchIndividualData = this.fetchIndividualData.bind(this);
+
         this.state = {
             selectedTab: "overview",
         };
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    fetchIndividualData() {
         const individualID = this.props.match.params.individual || null;
-        if (!prevProps.metadataService && this.props.metadataService && individualID) {
+        if (!individualID || !this.props.metadataService) return;
+        this.props.fetchIndividual(individualID);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!prevProps.metadataService && this.props.metadataService) {
             // We loaded metadata service, so we can load individual data now
-            this.props.fetchIndividual(individualID);
+            this.fetchIndividualData();
         }
+    }
+
+    componentDidMount() {
+        this.fetchIndividualData();
     }
 
     render() {
