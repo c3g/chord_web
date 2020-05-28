@@ -25,12 +25,12 @@ class ExplorerIndividualContent extends Component {
         };
     }
 
-    componentDidMount() {
-        // TODO: Fetch individual if necessary
+    componentDidUpdate(prevProps, prevState, snapshot) {
         const individualID = this.props.match.params.individual || null;
-        console.log(individualID);
-        if (!individualID) return;
-        this.props.fetchIndividual(individualID);
+        if (!prevProps.metadataService && this.props.metadataService && individualID) {
+            // We loaded metadata service, so we can load individual data now
+            this.props.fetchIndividual(individualID);
+        }
     }
 
     render() {
@@ -51,6 +51,7 @@ class ExplorerIndividualContent extends Component {
 }
 
 const mapStateToProps = state => ({
+    metadataService: state.services.metadataService,
     individuals: state.individuals.itemsByID,
 });
 
