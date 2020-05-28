@@ -76,7 +76,8 @@ class ExplorerIndividualContent extends Component {
         return <>
             <SitePageHeader title={(individual || {}).id || "Loading..."}
                             withTabBar={true}
-                            onBack={this.state.backUrl ? () => this.props.history.push(this.state.backUrl) : undefined}
+                            onBack={this.state.backUrl
+                                ? (() => this.props.history.push(this.state.backUrl)) : undefined}
                             footer={
                                 <Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
                                     {individualMenu.map(renderMenuItem)}
@@ -85,9 +86,11 @@ class ExplorerIndividualContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     {(individual && !individualInfo.isFetching) ? <Switch>
-                        <Route path={overviewUrl}><IndividualOverview individual={individual} /></Route>
-                        <Route path={biosamplesUrl}><div /></Route>
-                        <Route path={experimentsUrl}><div /></Route>
+                        <Route path={overviewUrl.replace(":", "\\:")}>
+                            <IndividualOverview individual={individual} />
+                        </Route>
+                        <Route path={biosamplesUrl.replace(":", "\\:")}><div /></Route>
+                        <Route path={experimentsUrl.replace(":", "\\:")}><div /></Route>
                         <Redirect to={overviewUrl} />
                     </Switch> : <Skeleton />}
                 </Layout.Content>
