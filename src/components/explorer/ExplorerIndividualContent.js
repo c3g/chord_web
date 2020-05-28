@@ -13,6 +13,7 @@ import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
 import {urlPath, withBasePath} from "../../utils/url";
 
 import SitePageHeader from "../SitePageHeader";
+import IndividualOverview from "./IndividualOverview";
 
 
 const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/:individual/${page}`);
@@ -80,7 +81,7 @@ class ExplorerIndividualContent extends Component {
             <Layout>
                 <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                     {(individual && !individualInfo.isFetching) ? <Switch>
-                        <Route path={overviewUrl}><div /></Route>
+                        <Route path={overviewUrl}><IndividualOverview individual={individual} /></Route>
                         <Route path={biosamplesUrl}><div /></Route>
                         <Route path={experimentsUrl}><div /></Route>
                         <Redirect to={overviewUrl} />
