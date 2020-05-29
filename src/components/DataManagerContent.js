@@ -54,7 +54,7 @@ class DataManagerContent extends Component {
                                     {PAGE_MENU.map(renderMenuItem)}
                                 </Menu>
                             } />
-            <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton /></div>}>
+            <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton active /></div>}>
                 <Switch>
                     <Route path={withBasePath("data/manager/projects")}
                            component={ManagerProjectDatasetContent} />
