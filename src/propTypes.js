@@ -9,24 +9,24 @@ export const nodeInfoDataPropTypesShape = PropTypes.shape({
 });
 
 export const serviceInfoPropTypesShape = PropTypes.shape({
-    id: PropTypes.string.required,
-    name: PropTypes.string.required,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     type: PropTypes.shape({
-        group: PropTypes.string.required,
-        artifact: PropTypes.string.required,
-        version: PropTypes.string.required,
+        group: PropTypes.string.isRequired,
+        artifact: PropTypes.string.isRequired,
+        version: PropTypes.string.isRequired,
     }).required,
     description: PropTypes.string,
     organization: PropTypes.shape({
-        name: PropTypes.string.required,
-        url: PropTypes.string.required,
+        name: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
     }),
     contactUrl: PropTypes.string,
     documentationUrl: PropTypes.string,
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
     environment: PropTypes.string,
-    version: PropTypes.string.required,
+    version: PropTypes.string.isRequired,
 });
 
 export const chordServicePropTypesMixin = {
@@ -88,8 +88,8 @@ export const projectPropTypesShape = PropTypes.shape({
 
 // Prop types object shape for a single notification object.
 export const notificationPropTypesShape = PropTypes.shape({
-    id: PropTypes.string.required,
-    title: PropTypes.string.required,
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
     description: PropTypes.string,
     notification_type: PropTypes.string,
     action_target: PropTypes.string,
@@ -179,3 +179,66 @@ export const workflowsStateToPropsMixinPropTypes = {
     workflows: PropTypes.arrayOf(workflowPropTypesShape),
     workflowsLoading: PropTypes.bool
 };
+
+// Shape of a phenopackets ontology object
+export const ontologyShape = PropTypes.shape({
+    id: PropTypes.string,  // CURIE ID
+    label: PropTypes.string,  // Term label
+});
+
+const agePropTypesShape = PropTypes.shape({
+    age: PropTypes.string,  // ISO duration string
+});
+
+const ageRangePropTypesShape = PropTypes.shape({
+    start: agePropTypesShape,
+    end: agePropTypesShape,
+});
+
+// Prop types object shape for a single biosample object from the metadata service.
+export const biosamplePropTypesShape = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    procedure: PropTypes.shape({
+        code: ontologyShape.isRequired,
+        body_site: ontologyShape,
+        created: PropTypes.string,  // ISO datetime string
+        updated: PropTypes.string,  // ISO datetime string
+    }).isRequired,
+    description: PropTypes.string,
+    sampled_tissue: ontologyShape.isRequired,
+    individual_age_at_collection: PropTypes.oneOfType([agePropTypesShape, ageRangePropTypesShape]),
+    histological_diagnosis: ontologyShape,
+    tumor_progression: ontologyShape,
+    tumor_grade: ontologyShape,
+    diagnostic_markers: PropTypes.arrayOf(ontologyShape),
+    created: PropTypes.string,  // ISO datetime string
+    updated: PropTypes.string,  // ISO datetime string
+});
+
+// Prop types object shape for a single patient individual object from the metadata service.
+export const individualPropTypesShape = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    date_of_birth: PropTypes.string,
+    sex: PropTypes.oneOf([
+        "UNKNOWN_SEX",
+        "FEMALE",
+        "MALE",
+        "OTHER_SEX",
+    ]),
+    karyotypic_sex: PropTypes.oneOf([
+        "UNKNOWN_KARYOTYPE",
+        "XX",
+        "XY",
+        "XO",
+        "XXY",
+        "XXX",
+        "XXYY",
+        "XXXY",
+        "XXXX",
+        "XYY",
+        "OTHER_KARYOTYPE",
+    ]),
+    taxonomy: ontologyShape,
+    phenopackets: PropTypes.arrayOf(PropTypes.object),  // TODO
+    biosamples: PropTypes.arrayOf(biosamplePropTypesShape),
+});

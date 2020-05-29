@@ -4,8 +4,7 @@ import {Descriptions} from "antd";
 import "antd/es/descriptions/style/css";
 
 import {EM_DASH} from "../../constants";
-
-const renderOntologyTerm = term => term ? <span>{term.label} ({term.id})</span> : EM_DASH;
+import {renderOntologyTerm} from "./ontologies";
 
 const IndividualOverview = ({individual}) => individual ?
     <Descriptions bordered={true} size="middle">

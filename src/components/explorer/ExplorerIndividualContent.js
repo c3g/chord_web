@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
+import PropTypes from "prop-types";
 
 import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
@@ -8,12 +9,14 @@ import "antd/es/menu/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchIndividualIfNecessary} from "../../modules/metadata/actions";
+import {individualPropTypesShape} from "../../propTypes";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
 import {urlPath, withBasePath} from "../../utils/url";
 
 import SitePageHeader from "../SitePageHeader";
 import IndividualOverview from "./IndividualOverview";
+import IndividualBiosamples from "./IndividualBiosamples";
 
 
 const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/${individual}/${page}`);
@@ -63,12 +66,9 @@ class ExplorerIndividualContent extends Component {
 
         const overviewUrl = withURLPrefix(individualID, "overview");
         const biosamplesUrl = withURLPrefix(individualID, "biosamples");
-        const experimentsUrl = withURLPrefix(individualID, "experiments");
         const individualMenu = [
             {url: overviewUrl, style: {marginLeft: "4px"}, text: "Overview",},
-            {url: biosamplesUrl, text: "Biosamples",},
-            // TODO: Only if data type available / experiments present?
-            {url: experimentsUrl, text: "Experiments"},
+            {url: biosamplesUrl, text: "Biosamples & Experiments",},
         ];
 
         const selectedKeys = this.props.nodeInfo
@@ -91,8 +91,9 @@ class ExplorerIndividualContent extends Component {
                         <Route path={overviewUrl.replace(":", "\\:")}>
                             <IndividualOverview individual={individual} />
                         </Route>
-                        <Route path={biosamplesUrl.replace(":", "\\:")}><div /></Route>
-                        <Route path={experimentsUrl.replace(":", "\\:")}><div /></Route>
+                        <Route path={biosamplesUrl.replace(":", "\\:")}>
+                            <IndividualBiosamples individual={individual} />
+                        </Route>
                         <Redirect to={overviewUrl.replace(":", "\\:")} />
                     </Switch> : <Skeleton />}
                 </Layout.Content>
@@ -100,6 +101,10 @@ class ExplorerIndividualContent extends Component {
         </>;
     }
 }
+
+ExplorerIndividualContent.propTypes = {
+    individuals: PropTypes.objectOf(individualPropTypesShape),
+};
 
 const mapStateToProps = state => ({
     nodeInfo: state.nodeInfo.data,
