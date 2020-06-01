@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import {Layout} from "antd";
+import {Layout, Typography} from "antd";
 import "antd/es/layout/style/css";
 
 import igv from "igv";
@@ -26,6 +26,7 @@ class ExplorerGenomeBrowserContent extends Component {
     render() {
         return <Layout>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+                <Typography.Title level={4}>Testing</Typography.Title>
                 <div id="igv-container" />
             </Layout.Content>
         </Layout>;
