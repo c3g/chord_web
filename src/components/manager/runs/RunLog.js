@@ -54,10 +54,10 @@ RunLog.propTypes = {
     run: runPropTypesShape,
 
     isFetchingRuns: PropTypes.bool,
-    runLogStreams: PropTypes.objectOf(PropTypes.objectOf({
+    runLogStreams: PropTypes.objectOf(PropTypes.objectOf(PropTypes.shape({
         isFetching: PropTypes.bool,
         data: PropTypes.string,
-    })),
+    }))),
 
     fetchRunLogStreamsIfPossibleAndNeeded: PropTypes.func,
 };

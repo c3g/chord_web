@@ -1,6 +1,5 @@
 import React, {Component, Suspense, lazy} from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
 
 import {Redirect, Route, Switch} from "react-router-dom";
 
@@ -11,7 +10,7 @@ import "antd/es/skeleton/style/css";
 import SitePageHeader from "./SitePageHeader";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
 import {urlPath, withBasePath} from "../utils/url";
-import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
+import {nodeInfoDataPropTypesShape} from "../propTypes";
 
 
 const ManagerProjectDatasetContent = lazy(() => import("./manager/projects/ManagerProjectDatasetContent"));
@@ -75,11 +74,6 @@ class DataManagerContent extends Component {
 
 DataManagerContent.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
-    projects: PropTypes.arrayOf(projectPropTypesShape),
-    runs: PropTypes.arrayOf(PropTypes.shape({
-        run_id: PropTypes.string,
-        state: PropTypes.string
-    })),
 };
 
 const mapStateToProps = state => ({

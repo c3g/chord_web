@@ -28,7 +28,7 @@ class DiscoverySearchContent extends Component {
                                    updateDataTypeQueryForm={this.props.updateDataTypeQueryForm}
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm}
                                    searchLoading={this.props.searchLoading}
-                                   onSubmit={() => this.props.performFullSearchIfPossible()} />
+                                   onSubmit={this.props.performFullSearchIfPossible} />
             <Typography.Title level={3}>Results</Typography.Title>
             <SearchList />
         </>;
@@ -36,14 +36,7 @@ class DiscoverySearchContent extends Component {
 }
 
 DiscoverySearchContent.propTypes = {
-    onSearchSelect: PropTypes.func,
-    servicesInfo: PropTypes.arrayOf(PropTypes.object),
-    dataTypes: PropTypes.object,
-    dataTypesByID: PropTypes.object,
-    serviceInfo: PropTypes.object,
-    dataTypesLoading: PropTypes.bool,
     searchLoading: PropTypes.bool,
-    formValues: PropTypes.object,
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
     // joinFormValues: PropTypes.object,
 
@@ -52,20 +45,12 @@ DiscoverySearchContent.propTypes = {
     addDataTypeQueryForm: PropTypes.func,
     updateDataTypeQueryForm: PropTypes.func,
     removeDataTypeQueryForm: PropTypes.func,
+
+    // updateJoinForm: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-    servicesInfo: state.services.items,
-    dataTypes: state.serviceDataTypes.dataTypesByServiceID,
-    dataTypesByID: state.serviceDataTypes.itemsByID,
-
-    dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetchingAll
-        || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
-
-    schemaModalShown: state.discovery.schemaModalShown,
-
     searchLoading: state.discovery.isFetching,
-
     dataTypeForms: state.discovery.dataTypeForms,
     // joinFormValues: state.discovery.joinFormValues,
 });

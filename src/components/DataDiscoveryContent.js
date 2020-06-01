@@ -1,7 +1,5 @@
 import React, {Component, Suspense, lazy} from "react";
-import {connect} from "react-redux";
 import {Redirect, Route, Switch, withRouter} from "react-router-dom";
-import PropTypes from "prop-types";
 
 import {Card, Layout, Skeleton} from "antd";
 import "antd/es/card/style/css";
@@ -41,14 +39,4 @@ class DataDiscoveryContent extends Component {
     }
 }
 
-DataDiscoveryContent.propTypes = {
-    selectedServiceID: PropTypes.string,
-    selectedDataTypeID: PropTypes.string,
-};
-
-const mapStateToProps = state => ({
-    selectedServiceID: state.discovery.selectedServiceID,
-    selectedDataTypeID: state.discovery.selectedDataTypeID
-});
-
-export default connect(mapStateToProps)(withRouter(DataDiscoveryContent));
+export default withRouter(DataDiscoveryContent);
