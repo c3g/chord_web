@@ -33,9 +33,8 @@ class TableTreeSelect extends Component {
     render() {
         // TODO: Handle table loading better
 
-        const getTableName = (serviceID, dataTypeID, tableID) =>
-            ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[dataTypeID]
-                || {}).tablesByID || {})[tableID] || {}).name;
+        const getTableName = (serviceID, tableID) =>
+            (((this.props.tablesByServiceID[serviceID] || {}).tablesByID || {})[tableID] || {}).name;
 
         const dataType = this.props.dataType || null;
 
@@ -53,17 +52,24 @@ class TableTreeSelect extends Component {
                 data: d,
                 children: (this.props.projectTables[p.identifier] || [])
                     .filter(t => t.dataset === d.identifier &&
-                        this.props.tablesByServiceAndDataTypeID.hasOwnProperty(t.service_id))
+                        (((this.props.tablesByServiceID || {})[t.service_id] || {}).tablesByID || {})
+                            .hasOwnProperty(t.table_id))
+                    .map(t => ({
+                        ...t,
+                        treeValue: `${p.identifier}:${t.dataType}:${t.table_id}`,
+                        tableName: getTableName(t.service_id, t.table_id) || "",
+                        dataType: this.props.tablesByServiceID[t.service_id].tablesByID[t.table_id].data_type
+                    }))
                     .map(t => ({
                         title: <>
-                            <Tag style={{marginRight: "1em"}}>{t.data_type}</Tag>
-                            {getTableName(t.service_id, t.data_type, t.table_id) || ""}&nbsp;
+                            <Tag style={{marginRight: "1em"}}>{t.dataType}</Tag>
+                            {t.tableName}&nbsp;
                             (<span style={{fontFamily: "monospace"}}>{t.table_id}</span>)
                         </>,
-                        disabled: !(dataType === null || dataType === t.data_type),
+                        disabled: !(dataType === null || dataType === t.dataType),
                         isLeaf: true,
-                        key: `${p.identifier}:${t.data_type}:${t.table_id}`,
-                        value: `${p.identifier}:${t.data_type}:${t.table_id}`,
+                        key: t.treeValue,
+                        value: t.treeValue,
                         data: t,
                     }))
             }))
@@ -77,7 +83,7 @@ class TableTreeSelect extends Component {
                             if (filter === "") return true;
                             return n.key.toLocaleLowerCase().includes(filter)
                                 || n.props.data.title.toLocaleLowerCase().includes(filter)
-                                || (n.props.data.data_type || "").toLocaleLowerCase().includes(filter);
+                                || (n.props.data.dataType || "").toLocaleLowerCase().includes(filter);
                         }}
                         onChange={this.props.onChange || nop}
                         value={this.state.selected}
@@ -97,7 +103,7 @@ TableTreeSelect.propTypes = {
 
     projects: PropTypes.array,
     projectTables: PropTypes.object,  // TODO: Shape
-    tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
+    tablesByServiceID: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
 
     servicesLoading: PropTypes.bool,
     projectsLoading: PropTypes.bool,
@@ -106,7 +112,7 @@ TableTreeSelect.propTypes = {
 const mapStateToProps = state => ({
     projects: state.projects.items,
     projectTables: state.projectTables.itemsByProjectID,
-    tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+    tablesByServiceID: state.serviceTables.itemsByServiceID,
     servicesLoading: state.services.isFetchingAll,
     projectsLoading: state.projects.isFetching,
 });

@@ -16,8 +16,7 @@ class RunRequest extends Component {
         const serviceID = details.request.tags.workflow_metadata.serviceID;
         const tableDataType = details.request.tags.workflow_metadata.data_type;
         const tableID = details.request.tags.table_id;
-        const tableName = ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[tableDataType]
-            || {}).tablesByID || {})[tableID] || {}).name;
+        const tableName = (((this.props.tablesByServiceID[serviceID] || {}).tablesByID || {})[tableID] || {}).name;
 
         // TODO: Link to some "table" page from the table description item here
 
@@ -66,11 +65,11 @@ RunRequest.propTypes = {
             })
         })
     }),
-    tablesByServiceAndDataTypeID: PropTypes.objectOf(PropTypes.objectOf(PropTypes.object)),  // TODO: Shape
+    tablesByServiceID: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
 };
 
 const mapStateToProps = state => ({
-    tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+    tablesByServiceID: state.serviceTables.itemsByServiceID,
 });
 
 export default connect(mapStateToProps)(RunRequest);

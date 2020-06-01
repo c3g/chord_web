@@ -190,7 +190,7 @@ export const serviceTables = (
         isCreating: false,
         isDeleting: false,
         items: [],
-        itemsByServiceAndDataTypeID: {},
+        itemsByServiceID: {},
     },
     action
 ) => {
@@ -205,17 +205,13 @@ export const serviceTables = (
         case FETCH_SERVICE_TABLES.REQUEST:
             return {
                 ...state,
-                itemsByServiceAndDataTypeID: {
-                    ...state.itemsByServiceAndDataTypeID,
+                itemsByServiceID: {
+                    ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
-                        ...(state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: {
-                            ...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                || {tables: [], tablesByID: {}}),
-                            isFetching: true
-                        }
+                        ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                        isFetching: true,
                     }
-                }
+                },
             };
 
         case FETCH_SERVICE_TABLES.RECEIVE: {
@@ -228,34 +224,28 @@ export const serviceTables = (
             return {
                 ...state,
                 items: [...state.items, ...newTables],
-                itemsByServiceAndDataTypeID: {
-                    ...state.itemsByServiceAndDataTypeID,
+                itemsByServiceID: {
+                    ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
-                        ...(state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: {
-                            tables: action.data,
-                            tablesByID: Object.fromEntries(newTables.map(t => [t.id, t])),
-                            isFetching: false
-                        }
+                        ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                        isFetching: false,
+                        tables: action.data,
+                        tablesByID: Object.fromEntries(newTables.map(t => [t.id, t])),
                     }
-                }
+                },
             };
         }
 
         case FETCH_SERVICE_TABLES.ERROR:
             return {
                 ...state,
-                itemsByServiceAndDataTypeID: {
-                    ...state.itemsByServiceAndDataTypeID,
+                itemsByServiceID: {
+                    ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
-                        ...(state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: {
-                            ...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                || {tables: [], tablesByID: {}}),
-                            isFetching: false
-                        }
+                        ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                        isFetching: false,
                     }
-                }
+                },
             };
 
         case ADDING_SERVICE_TABLE.BEGIN:
@@ -264,23 +254,16 @@ export const serviceTables = (
         case ADDING_SERVICE_TABLE.END:
             return {
                 ...state,
-                isCreating: false,
-                itemsByServiceAndDataTypeID: {
-                    ...state.itemsByServiceAndDataTypeID,
+                itemsByServiceID: {
+                    ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
-                        ...(state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: {
-                            ...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                || {tables: [], tablesByID: {}}),
-                            tables: [...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id]
-                                || {})[action.dataTypeID] || {tables: [], tablesByID: {}}).tables, action.table],
-                            tablesByID: {
-                                ...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                    || {tables: [], tablesByID: {}}).tablesByID,
-                                [action.table.id]: action.table
-                            }
-                        }
-                    }
+                        ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                        tables: [...(state.itemsByServiceID[action.serviceInfo.id] || {}).tables, action.table],
+                        tablesByID: {
+                            ...((state.itemsByServiceID[action.serviceInfo.id] || {}).tablesByID || {}),
+                            [action.table.id]: action.table,
+                        },
+                    },
                 }
             };
 
@@ -293,24 +276,18 @@ export const serviceTables = (
         case DELETING_SERVICE_TABLE.END:
             return {
                 ...state,
-                itemsByServiceAndDataTypeID: {
-                    ...state.itemsByServiceAndDataTypeID,
+                itemsByServiceID: {
+                    ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
-                        ...(state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {}),
-                        [action.dataTypeID]: {
-                            ...((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                || {tables: [], tablesByID: {}}),
-                            tables: (((state.itemsByServiceAndDataTypeID[action.serviceInfo.id]
-                                || {})[action.dataTypeID] || {tables: [], tablesByID: {}}).tables || [])
-                                .filter(t => t.id !== action.tableID),
-                            tablesByID: objectWithoutProp(
-                                ((state.itemsByServiceAndDataTypeID[action.serviceInfo.id] || {})[action.dataTypeID]
-                                    || {tables: [], tablesByID: {}}).tablesByID,
-                                action.tableID
-                            )
-                        }
-                    }
-                }
+                        ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                        tables: ((state.itemsByServiceID[action.serviceInfo.id] || {}).tables || [])
+                            .filter(t => t.id !== action.tableID),
+                        tablesByID: objectWithoutProp(
+                            ((state.itemsByServiceID[action.serviceInfo.id] || {}).tablesByID || {}),
+                            action.tableID
+                        ),
+                    },
+                },
             };
 
         case DELETING_SERVICE_TABLE.TERMINATE:

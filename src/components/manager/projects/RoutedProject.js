@@ -89,7 +89,7 @@ class RoutedProject extends Component {
             const project = this.props.projectsByID[this.props.match.params.project];
             if (!project) return <ProjectSkeleton />;
 
-            const tables = this.props.serviceTablesByServiceAndDataTypeID;
+            const tables = this.props.serviceTablesByServiceID;
 
             /**
              * @typedef {Object} ProjectTable
@@ -110,17 +110,19 @@ class RoutedProject extends Component {
 
 
             const tableList = projectTableRecords
-                .filter(table =>  tables.hasOwnProperty(table.service_id))
-                .flatMap(table => (tables[table.service_id][table.data_type].tables || [])
-                    .filter(tb => tb.id === table.table_id)
-                    .map(tb => ({...tb, ...table})));
+                .filter(tableOwnership =>
+                    (tables[tableOwnership.service_id] || {}).tablesByID.hasOwnProperty(tableOwnership.table_id))
+                .map(tableOwnership => ({
+                    ...tableOwnership,
+                    ...tables[tableOwnership.service_id].tablesByID[tableOwnership.table_id],
+                }));
 
             // TODO: Inconsistent schemas
             const strayTables = [
                 ...this.props.serviceTables.filter(t2 =>
-                    !this.props.projectTables.map(t => t.table_id).includes(t2.id) &&
+                    !this.props.projectTables.map(to => to.table_id).includes(t2.id) &&
                     manageableDataTypes.includes(t2.data_type)).map(t => ({...t, table_id: t.id})),
-                ...this.props.projectTables.filter(t => !this.props.servicesByID.hasOwnProperty(t.service_id))
+                ...this.props.projectTables.filter(to => !this.props.servicesByID.hasOwnProperty(to.service_id))
             ];
 
             return <>
@@ -173,7 +175,7 @@ RoutedProject.propTypes = {
     })),
 
     serviceTables: PropTypes.arrayOf(PropTypes.object),  // TODO: Shape
-    serviceTablesByServiceAndDataTypeID: PropTypes.objectOf(PropTypes.objectOf(PropTypes.object)),  // TODO: Shape
+    serviceTablesByServiceID: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
 
     projects: PropTypes.arrayOf(projectPropTypesShape),
     projectsByID: PropTypes.objectOf(projectPropTypesShape),
@@ -201,7 +203,7 @@ const mapStateToProps = state => ({
     serviceDataTypesByServiceID: state.serviceDataTypes.dataTypesByServiceID,
 
     serviceTables: state.serviceTables.items,
-    serviceTablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+    serviceTablesByServiceID: state.serviceTables.itemsByServiceID,
 
     projects: state.projects.items,
     projectsByID: state.projects.itemsByID,
