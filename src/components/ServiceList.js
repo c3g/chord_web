@@ -72,7 +72,7 @@ const mapStateToProps = state => ({
     rowKey: "key",
     bordered: true,
     loading: state.chordServices.isFetching || state.services.isFetching,
-    size: "middle"
+    size: "middle",
 });
 
 export default connect(mapStateToProps)(ServiceList);

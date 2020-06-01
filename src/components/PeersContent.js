@@ -17,11 +17,9 @@ class PeersContent extends Component {
                 title: "",
                 key: "icon",
                 width: 75,
-                render: (_, peer) => (
-                    <div style={{width: "100%", textAlign: "center"}}>
-                        <Icon type={this.props.nodeInfo.CHORD_URL === peer.url ? "home" : "global"} />
-                    </div>
-                )
+                render: (_, peer) => <div style={{width: "100%", textAlign: "center"}}>
+                    <Icon type={this.props.nodeInfo.CHORD_URL === peer.url ? "home" : "global"} />
+                </div>,
             },
             {
                 title: "Peer",
@@ -69,7 +67,7 @@ PeersContent.propTypes = {
 const mapStateToProps = state => ({
     nodeInfo: state.nodeInfo.data,
     peers: state.peers.items.map(p => ({url: p})),
-    isFetchingPeers: state.services.isFetchingAll || state.peers.isFetching
+    isFetchingPeers: state.services.isFetchingAll || state.peers.isFetching,
 });
 
 export default connect(mapStateToProps)(PeersContent);
