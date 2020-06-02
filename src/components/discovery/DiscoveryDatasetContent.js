@@ -21,14 +21,16 @@ class DiscoveryDatasetContent extends Component {
         if (!project) return null;  // TODO: 404 or error
 
         // TODO: Deduplicate with RoutedProject
-        const tables = this.props.serviceTablesByServiceAndDataTypeID;
-        const projectTableRecords = this.props.projectTablesByProjectID[project.identifier] || [];
+        const tables = this.props.serviceTablesByServiceID;
+        const projectTableOwnershipRecords = this.props.projectTablesByProjectID[project.identifier] || [];
 
-        const tableList = projectTableRecords
-            .filter(table => tables.hasOwnProperty(table.service_id))
-            .flatMap(table => (tables[table.service_id][table.data_type].tables || [])
-                .filter(tb => tb.id === table.table_id)
-                .map(tb => ({...tb, ...table})));
+        const tableList = projectTableOwnershipRecords
+            .filter(tableOwnership =>
+                (tables[tableOwnership.service_id] || {}).tablesByID.hasOwnProperty(tableOwnership.table_id))
+            .map(tableOwnership => ({
+                ...tableOwnership,
+                ...tables[tableOwnership.service_id].tablesByID[tableOwnership.table_id],
+            }));
 
         const dataset = {
             ...project.datasets.find(d => d.identifier === datasetId),
@@ -42,14 +44,14 @@ class DiscoveryDatasetContent extends Component {
 DiscoveryDatasetContent.propTypes = {
     projects: PropTypes.arrayOf(projectPropTypesShape),
     projectTablesByProjectID: PropTypes.object,  // TODO: Shape
-    serviceTablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
+    serviceTablesByServiceID: PropTypes.object,  // TODO: Shape
     isFetchingUserDependentData: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
     projects: state.projects.items,
     projectTablesByProjectID: state.projectTables.itemsByProjectID,
-    serviceTablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+    serviceTablesByServiceID: state.serviceTables.itemsByServiceID,
     isFetchingUserDependentData: state.auth.isFetchingDependentData,
 });
 

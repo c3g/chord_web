@@ -85,6 +85,7 @@ class ExplorerDatasetSearch extends Component {
                                    key: "all-data",
                                    text: "Select All Data",
                                    onSelect: () => this.props.setSelectedRows(
+                                       console.log(((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)) ||
                                        ((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)
                                    ),
                                },

@@ -111,9 +111,8 @@ class ManagerIngestionContent extends Component {
     }
 
     getStepContents() {
-        const getTableName = (serviceID, dataTypeID, tableID) =>
-            ((((this.props.tablesByServiceAndDataTypeID[serviceID] || {})[dataTypeID]
-                || {}).tablesByID || {})[tableID] || {}).name;
+        const getTableName = (serviceID, tableID) =>
+            (((this.props.tablesByServiceID[serviceID] || {}).tablesByID || {})[tableID] || {}).name;
 
         const formatWithNameIfPossible = (name, id) => name ? `${name} (${id})` : id;
 
@@ -158,8 +157,7 @@ class ManagerIngestionContent extends Component {
             case STEP_CONFIRM: {
                 const [projectID, dataType, tableID] = this.state.selectedTable.split(":");
                 const projectTitle = (this.props.projectsByID[projectID] || {title: null}).title || null;
-                const tableName = getTableName(this.state.selectedWorkflow.serviceID,
-                    this.state.selectedWorkflow.data_type, tableID);
+                const tableName = getTableName(this.state.selectedWorkflow.serviceID, tableID);
 
                 return (
                     <Form labelCol={FORM_LABEL_COL} wrapperCol={FORM_WRAPPER_COL}>
@@ -236,7 +234,7 @@ ManagerIngestionContent.propTypes = {
     ...workflowsStateToPropsMixinPropTypes,
     servicesByID: PropTypes.object, // TODO: Shape
     projectsByID: PropTypes.object,  // TODO: Shape
-    tablesByServiceAndDataTypeID: PropTypes.object,  // TODO: Shape
+    tablesByServiceID: PropTypes.object,  // TODO: Shape
     isSubmittingIngestionRun: PropTypes.bool,
 };
 
@@ -245,7 +243,7 @@ const mapStateToProps = state => ({
     ...workflowsStateToPropsMixin(state),
     servicesByID: state.services.itemsByID,
     projectsByID: state.projects.itemsByID,
-    tablesByServiceAndDataTypeID: state.serviceTables.itemsByServiceAndDataTypeID,
+    tablesByServiceID: state.serviceTables.itemsByServiceID,
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,
 });
 

@@ -3,6 +3,7 @@ import React from "react";
 import {Table} from "antd";
 import "antd/es/table/style/css";
 
+import {EM_DASH} from "../../constants";
 import {renderOntologyTerm} from "./ontologies";
 
 // TODO: Only show biosamples from the relevant dataset, if specified;
@@ -12,28 +13,34 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "ID",
         key: "id",
+        render: (_, individual) => individual.id,
         sorter: (a, b) => a.id.localeCompare(b.id),
         defaultSortOrder: "ascend",
     },
     {
         title: "Sampled Tissue",
         key: "sampled_tissue",
-        render: renderOntologyTerm,
+        render: (_, individual) => renderOntologyTerm(individual.sampled_tissue),
     },
     {
         title: "Procedure",
         key: "procedure",
-        render: procedure => <>
-            <strong>Code:</strong> {renderOntologyTerm(procedure.code)}<br />
-            {procedure.body_site
-                ? <><br /><strong>Body Site:</strong> {renderOntologyTerm(procedure.body_site)}</>
+        render: (_, individual) => <>
+            <strong>Code:</strong> {renderOntologyTerm(individual.procedure.code)}<br />
+            {individual.procedure.body_site
+                ? <><br /><strong>Body Site:</strong> {renderOntologyTerm(individual.procedure.body_site)}</>
                 : null}
         </>,
     },
     {
         title: "Ind. Age at Collection",
         key: "individual_age_at_collection",
-        render: age => age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`,
+        render: (_, individual) => {
+            const age = individual.individual_age_at_collection;
+            return age
+                ? (age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`)
+                : EM_DASH
+        },
     },
 ];
 
@@ -42,6 +49,7 @@ const IndividualBiosamples = ({individual}) =>
            size="middle"
            pagination={{pageSize: 25}}
            columns={BIOSAMPLE_COLUMNS}
+           rowKey="id"
            dataSource={(individual || {}).biosamples || []} />;
 
 export default IndividualBiosamples;
