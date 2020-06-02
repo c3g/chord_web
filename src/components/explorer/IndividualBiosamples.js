@@ -19,7 +19,7 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "Sampled Tissue",
         key: "sampled_tissue",
-        render: renderOntologyTerm,
+        render: (_, individual) => renderOntologyTerm(individual.sampled_tissue),
     },
     {
         title: "Procedure",
