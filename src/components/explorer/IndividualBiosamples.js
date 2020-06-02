@@ -13,6 +13,7 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "ID",
         key: "id",
+        render: (_, individual) => individual.id,
         sorter: (a, b) => a.id.localeCompare(b.id),
         defaultSortOrder: "ascend",
     },
@@ -48,6 +49,7 @@ const IndividualBiosamples = ({individual}) =>
            size="middle"
            pagination={{pageSize: 25}}
            columns={BIOSAMPLE_COLUMNS}
+           rowKey="id"
            dataSource={(individual || {}).biosamples || []} />;
 
 export default IndividualBiosamples;
