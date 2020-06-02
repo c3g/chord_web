@@ -24,10 +24,10 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "Procedure",
         key: "procedure",
-        render: procedure => <>
-            <strong>Code:</strong> {renderOntologyTerm(procedure.code)}<br />
-            {procedure.body_site
-                ? <><br /><strong>Body Site:</strong> {renderOntologyTerm(procedure.body_site)}</>
+        render: (_, individual) => <>
+            <strong>Code:</strong> {renderOntologyTerm(individual.procedure.code)}<br />
+            {individual.procedure.body_site
+                ? <><br /><strong>Body Site:</strong> {renderOntologyTerm(individual.procedure.body_site)}</>
                 : null}
         </>,
     },
@@ -36,7 +36,6 @@ const BIOSAMPLE_COLUMNS = [
         key: "individual_age_at_collection",
         render: (_, individual) => {
             const age = individual.individual_age_at_collection;
-            console.log(age);
             return age
                 ? (age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`)
                 : EM_DASH
