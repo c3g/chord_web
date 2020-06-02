@@ -56,7 +56,6 @@ class TableTreeSelect extends Component {
                             .hasOwnProperty(t.table_id))
                     .map(t => ({
                         ...t,
-                        treeValue: `${p.identifier}:${t.dataType}:${t.table_id}`,
                         tableName: getTableName(t.service_id, t.table_id) || "",
                         dataType: this.props.tablesByServiceID[t.service_id].tablesByID[t.table_id].data_type
                     }))
@@ -68,8 +67,8 @@ class TableTreeSelect extends Component {
                         </>,
                         disabled: !(dataType === null || dataType === t.dataType),
                         isLeaf: true,
-                        key: t.treeValue,
-                        value: t.treeValue,
+                        key: `${p.identifier}:${t.dataType}:${t.table_id}`,
+                        value: `${p.identifier}:${t.dataType}:${t.table_id}`,
                         data: t,
                     }))
             }))
