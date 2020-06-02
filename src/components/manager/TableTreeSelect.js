@@ -57,7 +57,8 @@ class TableTreeSelect extends Component {
                     .map(t => ({
                         ...t,
                         tableName: getTableName(t.service_id, t.table_id) || "",
-                        dataType: this.props.tablesByServiceID[t.service_id].tablesByID[t.table_id].data_type
+                        dataType: console.log(this.props.tablesByServiceID[t.service_id].tablesByID[t.table_id]) ||
+                            this.props.tablesByServiceID[t.service_id].tablesByID[t.table_id].data_type
                     }))
                     .map(t => ({
                         title: <>
