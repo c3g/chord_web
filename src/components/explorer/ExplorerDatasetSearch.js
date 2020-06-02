@@ -82,12 +82,16 @@ class ExplorerDatasetSearch extends Component {
                            onChange: this.props.setSelectedRows,
                            selections: [
                                {
-                                   key: "all-data",
-                                   text: "Select All Data",
+                                   key: "select-all-data",
+                                   text: "Select all data",
                                    onSelect: () => this.props.setSelectedRows(
-                                       console.log(((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)) ||
                                        ((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)
                                    ),
+                               },
+                               {
+                                   key: "unselect-all-data",
+                                   text: "Unselect all data",
+                                   onSelect: () => this.props.setSelectedRows([]),
                                },
                            ],
                        }} />
@@ -117,6 +121,7 @@ const mapStateToProps = (state, ownProps) => {
         dataTypeForms: state.explorer.dataTypeFormsByDatasetID[datasetID] || [],
         fetchingSearch: state.explorer.fetchingSearchByDatasetID[datasetID] || false,
         searchResults: state.explorer.searchResultsByDatasetID[datasetID] || null,
+        selectedRows: state.explorer.selectedRowsByDatasetID[datasetID] || [],
 
         federationServiceInfo: state.services.federationService,
         datasetsByID: Object.fromEntries(state.projects.items
