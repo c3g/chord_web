@@ -34,7 +34,7 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "Ind. Age at Collection",
         key: "individual_age_at_collection",
-        render: age => console.log(age, age.hasOwnProperty("age")) || age
+        render: age => console.log(age.age) || age
             ? (age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`)
             : EM_DASH,
     },
