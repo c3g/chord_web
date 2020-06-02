@@ -3,6 +3,7 @@ import React from "react";
 import {Table} from "antd";
 import "antd/es/table/style/css";
 
+import {EM_DASH} from "../../constants";
 import {renderOntologyTerm} from "./ontologies";
 
 // TODO: Only show biosamples from the relevant dataset, if specified;
@@ -33,7 +34,9 @@ const BIOSAMPLE_COLUMNS = [
     {
         title: "Ind. Age at Collection",
         key: "individual_age_at_collection",
-        render: age => age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`,
+        render: age => age
+            ? age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`
+            : EM_DASH,
     },
 ];
 
