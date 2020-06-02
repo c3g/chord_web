@@ -54,7 +54,7 @@ class ExplorerIndividualContent extends Component {
     }
 
     componentDidMount() {
-        const backUrl = this.props.location.state.backUrl;
+        const backUrl = (this.props.location.state || {}).backUrl;
         if (backUrl) this.setState({backUrl});
         this.fetchIndividualData();
     }
