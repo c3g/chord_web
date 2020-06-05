@@ -87,7 +87,7 @@ class ExplorerDatasetSearch extends Component {
                 </Typography.Title>
                 <SearchSummaryModal searchResults={this.props.searchResults}
                                     visible={this.state.summaryModalVisible}
-                                    onClose={() => this.setState({summaryModalVisible: false})} />
+                                    onCancel={() => this.setState({summaryModalVisible: false})} />
                 <Table bordered
                        size="middle"
                        columns={SEARCH_RESULT_COLUMNS}
