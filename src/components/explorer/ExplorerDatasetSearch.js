@@ -85,7 +85,8 @@ class ExplorerDatasetSearch extends Component {
                         <Button icon="export">Export as CSV</Button>
                     </div>
                 </Typography.Title>
-                <SearchSummaryModal visible={this.state.summaryModalVisible}
+                <SearchSummaryModal searchResults={this.props.searchResults}
+                                    visible={this.state.summaryModalVisible}
                                     onClose={() => this.setState({summaryModalVisible: false})} />
                 <Table bordered
                        size="middle"
