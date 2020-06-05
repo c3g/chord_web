@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import {Col, Divider, Row, Statistic, Typography} from "antd";
 import "antd/es/col/style/css";
@@ -9,12 +8,10 @@ import "antd/es/statistic/style/css";
 import "antd/es/typography/style/css";
 
 import {VictoryLabel, VictoryPie} from "victory";
+import VictoryPieWrapSVG from "../../../VictoryPieWrapSVG";
 
 import {summaryPropTypesShape} from "../../../../propTypes";
-
-
-const WrapSVG = ({children}) => <svg viewBox="0 0 400 250">{children}</svg>;
-WrapSVG.propTypes = {children: PropTypes.any};
+import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS} from "../../../../styles/victory";
 
 
 const PhenopacketSummary = ({summary}) => {
@@ -24,26 +21,6 @@ const PhenopacketSummary = ({summary}) => {
     const individualsByKaryotype = Object.entries(summary.data_type_specific.individuals.karyotypic_sex)
         .filter(e => e[1] > 0)
         .map(([x, y]) => ({x, y}));
-
-    // noinspection JSUnusedGlobalSymbols
-    const victoryPieProps = {
-        standalone: false,
-        innerRadius: ({radius}) => radius * (7/10),
-        // labelRadius: ({innerRadius, radius}) => innerRadius({radius}) + (radius - innerRadius({radius})) / 2,
-        // style: {labels: {fill: "white", textAnchor: "middle"}},
-        padding: {left: 120, right: 120, top: 40, bottom: 40},
-        labelPadding: 20,
-        height: 250,
-        labels: ({datum}) => `${datum.x}: ${datum.y}`,
-        style: {labels: {fontFamily: "monospace"}},
-    };
-
-    const victoryLabelProps = {
-        textAnchor: "middle",
-        x: 200,
-        y: 125,
-        style: {fontFamily: "monospace"}
-    };
 
     return <>
         <Typography.Title level={4}>Object Counts</Typography.Title>
@@ -60,16 +37,16 @@ const PhenopacketSummary = ({summary}) => {
                 <Typography.Title level={4}>Overview: Individuals</Typography.Title>
                 <Row gutter={16}>
                     <Col span={12}>
-                        <WrapSVG>
-                            <VictoryPie data={individualsBySex} {...victoryPieProps} />
-                            <VictoryLabel text="SEX" {...victoryLabelProps} />
-                        </WrapSVG>
+                        <VictoryPieWrapSVG>
+                            <VictoryPie data={individualsBySex} {...VICTORY_PIE_PROPS} />
+                            <VictoryLabel text="SEX" {...VICTORY_PIE_LABEL_PROPS} />
+                        </VictoryPieWrapSVG>
                     </Col>
                     <Col span={12}>
-                        <WrapSVG>
-                            <VictoryPie data={individualsByKaryotype} {...victoryPieProps} />
-                            <VictoryLabel text="KARYOTYPE" {...victoryLabelProps} />
-                        </WrapSVG>
+                        <VictoryPieWrapSVG>
+                            <VictoryPie data={individualsByKaryotype} {...VICTORY_PIE_PROPS} />
+                            <VictoryLabel text="KARYOTYPE" {...VICTORY_PIE_LABEL_PROPS} />
+                        </VictoryPieWrapSVG>
                     </Col>
                 </Row>
             </>

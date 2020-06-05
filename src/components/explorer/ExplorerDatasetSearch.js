@@ -9,6 +9,8 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 
 import DiscoveryQueryBuilder from "../discovery/DiscoveryQueryBuilder";
+import SearchSummaryModal from "./SearchSummaryModal";
+
 import {datasetPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes";
 import {
     addDataTypeQueryForm,
@@ -48,6 +50,13 @@ const SEARCH_RESULT_COLUMNS = [
 
 
 class ExplorerDatasetSearch extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            summaryModalVisible: false,
+        };
+    }
+
     render() {
         if (!this.props.match.params.dataset) return null;  // TODO
 
@@ -68,14 +77,20 @@ class ExplorerDatasetSearch extends Component {
                 <Typography.Title level={4}>
                     Search Results
                     <div style={{float: "right", verticalAlign: "top"}}>
-                        <Button icon="profile" style={{marginRight: "8px"}}>Visualize Tracks</Button>
+                        {/* TODO: v0.2 */}
+                        {/*<Button icon="profile" style={{marginRight: "8px"}}>Visualize Tracks</Button>*/}
+                        <Button icon="bar-chart"
+                                style={{marginRight: "8px"}}
+                                onClick={() => this.setState({summaryModalVisible: true})}>View Summary</Button>
                         <Button icon="export">Export as CSV</Button>
                     </div>
                 </Typography.Title>
+                <SearchSummaryModal visible={this.state.summaryModalVisible}
+                                    onClose={() => this.setState({summaryModalVisible: false})} />
                 <Table bordered
                        size="middle"
                        columns={SEARCH_RESULT_COLUMNS}
-                       dataSource={(this.props.searchResults || {}).searchFormattedResults || []}
+                       dataSource={this.props.searchResults.searchFormattedResults || []}
                        pagination={{pageSize: 25}}
                        rowSelection={{
                            selectedRowKeys: this.props.selectedRows,
@@ -85,7 +100,7 @@ class ExplorerDatasetSearch extends Component {
                                    key: "select-all-data",
                                    text: "Select all data",
                                    onSelect: () => this.props.setSelectedRows(
-                                       ((this.props.searchResults || {}).searchFormattedResults || []).map(r => r.key)
+                                       (this.props.searchResults.searchFormattedResults || []).map(r => r.key)
                                    ),
                                },
                                {
