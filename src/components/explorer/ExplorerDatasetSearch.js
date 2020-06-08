@@ -126,6 +126,7 @@ ExplorerDatasetSearch.propTypes = {
     updateDataTypeQueryForm: PropTypes.func,
     removeDataTypeQueryForm: PropTypes.func,
     performSearch: PropTypes.func,
+    setSelectedRows: PropTypes.func,
 
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
@@ -143,7 +144,7 @@ const mapStateToProps = (state, ownProps) => {
         datasetsByID: Object.fromEntries(state.projects.items
             .flatMap(p => p.datasets.map(d => [d.identifier, {...d, project: p.identifier}]))),
     };
-}
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     const datasetID = ownProps.match.params.dataset;
@@ -154,6 +155,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         performSearch: () => dispatch(performSearchIfPossible(datasetID)),
         setSelectedRows: selectedRows => dispatch(setSelectedRows(datasetID, selectedRows)),
     };
-}
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExplorerDatasetSearch));

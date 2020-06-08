@@ -5,6 +5,7 @@ import "antd/es/table/style/css";
 
 import {EM_DASH} from "../../constants";
 import {renderOntologyTerm} from "./ontologies";
+import {individualPropTypesShape} from "../../propTypes";
 
 // TODO: Only show biosamples from the relevant dataset, if specified;
 //  highlight those found in search results, if specified
@@ -39,7 +40,7 @@ const BIOSAMPLE_COLUMNS = [
             const age = individual.individual_age_at_collection;
             return age
                 ? (age.hasOwnProperty("age") ? age.age : `Between ${age.start.age} and ${age.end.age}`)
-                : EM_DASH
+                : EM_DASH;
         },
     },
 ];
@@ -51,5 +52,9 @@ const IndividualBiosamples = ({individual}) =>
            columns={BIOSAMPLE_COLUMNS}
            rowKey="id"
            dataSource={(individual || {}).biosamples || []} />;
+
+IndividualBiosamples.propTypes = {
+    individual: individualPropTypesShape,
+};
 
 export default IndividualBiosamples;

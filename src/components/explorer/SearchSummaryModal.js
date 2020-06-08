@@ -110,7 +110,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
             </Row>
         </> : null}
     </Modal> : null;
-}
+};
 
 SearchSummaryModal.propTypes = {
     searchResults: explorerSearchResultsPropTypesShape,
