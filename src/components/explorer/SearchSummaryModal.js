@@ -16,11 +16,13 @@ import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS} from "../../styles/victory";
 const SearchSummaryModal = ({searchResults, ...props}) => {
     const searchFormattedResults = searchResults.searchFormattedResults || [];
 
+    console.log(searchFormattedResults);
+
     const numIndividualsBySex = Object.fromEntries(SEX_VALUES.map(v => [v, 0]));
     const numIndividualsByKaryotype = Object.fromEntries(KARYOTYPIC_SEX_VALUES.map(v => [v, 0]));
-    searchFormattedResults.forEach(i => {
-        numIndividualsBySex[i.sex]++;
-        numIndividualsByKaryotype[i.karyotypic_sex]++;
+    searchFormattedResults.forEach(r => {
+        numIndividualsBySex[r.individual.sex]++;
+        numIndividualsByKaryotype[r.individual.karyotypic_sex]++;
     });
 
     console.log(numIndividualsBySex);
