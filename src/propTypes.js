@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import {FORM_MODE_ADD, FORM_MODE_EDIT} from "./constants";
+import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "./dataTypes/phenopacket";
 
 export const propTypesFormMode = PropTypes.oneOf([FORM_MODE_ADD, FORM_MODE_EDIT]);
 
@@ -219,25 +220,8 @@ export const biosamplePropTypesShape = PropTypes.shape({
 export const individualPropTypesShape = PropTypes.shape({
     id: PropTypes.string.isRequired,
     date_of_birth: PropTypes.string,
-    sex: PropTypes.oneOf([
-        "UNKNOWN_SEX",
-        "FEMALE",
-        "MALE",
-        "OTHER_SEX",
-    ]),
-    karyotypic_sex: PropTypes.oneOf([
-        "UNKNOWN_KARYOTYPE",
-        "XX",
-        "XY",
-        "XO",
-        "XXY",
-        "XXX",
-        "XXYY",
-        "XXXY",
-        "XXXX",
-        "XYY",
-        "OTHER_KARYOTYPE",
-    ]),
+    sex: PropTypes.oneOf(SEX_VALUES),
+    karyotypic_sex: PropTypes.oneOf(KARYOTYPIC_SEX_VALUES),
     taxonomy: ontologyShape,
     phenopackets: PropTypes.arrayOf(PropTypes.object),  // TODO
     biosamples: PropTypes.arrayOf(biosamplePropTypesShape),

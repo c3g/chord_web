@@ -31,7 +31,7 @@ const PhenopacketSummary = ({summary}) => {
             <Col span={8}>
                 <Statistic title="Individuals" value={summary.data_type_specific.individuals.count} /></Col>
         </Row>
-        {individualsBySex.length > 0 && individualsByKaryotype.length > 0 ? (
+        {(individualsBySex.length > 0 && individualsByKaryotype.length > 0) ? (
             <>
                 <Divider />
                 <Typography.Title level={4}>Overview: Individuals</Typography.Title>
