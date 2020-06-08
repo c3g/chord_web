@@ -12,6 +12,13 @@ import VictoryPieWrapSVG from "../VictoryPieWrapSVG";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
 import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS} from "../../styles/victory";
+import {explorerSearchResultsPropTypesShape} from "../../propTypes";
+
+
+const numObjectToVictoryArray = numObj => Object.entries(numObj)
+    .filter(e => e[1] > 0)
+    .map(([x, y]) => ({x, y}));
+
 
 const SearchSummaryModal = ({searchResults, ...props}) => {
     const searchFormattedResults = searchResults.searchFormattedResults || [];
@@ -27,13 +34,17 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
         numIndividualsByKaryotype[r.individual.karyotypic_sex]++;
     });
 
-    const individualsBySex = Object.entries(numIndividualsBySex)
-        .filter(e => e[1] > 0)
-        .map(([x, y]) => ({x, y}));
+    const individualsBySex = numObjectToVictoryArray(numIndividualsBySex);
+    const individualsByKaryotype = numObjectToVictoryArray(numIndividualsByKaryotype);
 
-    const individualsByKaryotype = Object.entries(numIndividualsByKaryotype)
-        .filter(e => e[1] > 0)
-        .map(([x, y]) => ({x, y}));
+    // - Individuals' diseases summary - from phenopackets
+
+    const numDiseasesByTerm = {};
+    searchFormattedResults.forEach(r => r.diseases.forEach(d => {
+        // TODO: Better ontology awareness - label vs id, translation, etc.
+        numDiseasesByTerm[d.term.label] = (numDiseasesByTerm[d.term.label]  || 0) + 1;
+    }));
+    const diseasesByTerm = numObjectToVictoryArray(numDiseasesByTerm);
 
     // Biosamples summary
     // TODO: More ontology aware
@@ -43,6 +54,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
         const key = (b.sampled_tissue || {}).label || "N/A";
         numSamplesByTissue[key] = (numSamplesByTissue[key] || 0) + 1;
     }));
+    const samplesByTissue = numObjectToVictoryArray(numSamplesByTissue);
 
     // TODO: Procedures: account for both code and (if specified) body_site
     //  e.g. "Biopsy" or "Biopsy on X body site" - maybe stacked bar or grouped bar chart?
@@ -76,9 +88,32 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                         <VictoryLabel text="KARYOTYPE" {...VICTORY_PIE_LABEL_PROPS} />
                     </VictoryPieWrapSVG>
                 </Col>
+                <Col span={12}>
+                    <VictoryPieWrapSVG>
+                        <VictoryPie data={diseasesByTerm} {...VICTORY_PIE_PROPS} />
+                        <VictoryLabel text="DISEASE" {...VICTORY_PIE_LABEL_PROPS} />
+                    </VictoryPieWrapSVG>
+                </Col>
+            </Row>
+        </> : null}
+        {samplesByTissue.length > 0 ? <>
+            {/* TODO: Deduplicate with phenopacket summary */}
+            <Divider />
+            <Typography.Title level={4}>Overview: Biosamples</Typography.Title>
+            <Row gutter={16}>
+                <Col span={12}>
+                    <VictoryPieWrapSVG>
+                        <VictoryPie data={samplesByTissue} {...VICTORY_PIE_PROPS} />
+                        <VictoryLabel text="TISSUE" {...VICTORY_PIE_LABEL_PROPS} />
+                    </VictoryPieWrapSVG>
+                </Col>
             </Row>
         </> : null}
     </Modal> : null;
 }
+
+SearchSummaryModal.propTypes = {
+    searchResults: explorerSearchResultsPropTypesShape,
+};
 
 export default SearchSummaryModal;

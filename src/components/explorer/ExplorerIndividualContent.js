@@ -60,6 +60,8 @@ class ExplorerIndividualContent extends Component {
     }
 
     render() {
+        // TODO: Disease content - highlight what was found in search results?
+
         const individualID = this.props.match.params.individual || null;
         const individualInfo = this.props.individuals[individualID] || {};
         const individual = individualInfo.data;
