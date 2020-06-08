@@ -23,6 +23,9 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
         numIndividualsByKaryotype[i.karyotypic_sex]++;
     });
 
+    console.log(numIndividualsBySex);
+    console.log(numIndividualsByKaryotype);
+
     const individualsBySex = Object.entries(numIndividualsBySex)
         .filter(e => e[1] > 0)
         .map(([x, y]) => ({x, y}));
