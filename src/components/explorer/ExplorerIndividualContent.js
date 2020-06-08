@@ -1,7 +1,9 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
+
 import PropTypes from "prop-types";
+import ReactRouterPropTypes from "react-router-prop-types";
 
 import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
@@ -9,7 +11,7 @@ import "antd/es/menu/style/css";
 import "antd/es/skeleton/style/css";
 
 import {fetchIndividualIfNecessary} from "../../modules/metadata/actions";
-import {individualPropTypesShape} from "../../propTypes";
+import {individualPropTypesShape, nodeInfoDataPropTypesShape} from "../../propTypes";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
 import {urlPath, withBasePath} from "../../utils/url";
@@ -46,7 +48,8 @@ class ExplorerIndividualContent extends Component {
         this.props.fetchIndividual(individualID);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    // noinspection JSCheckFunctionSignatures
+    componentDidUpdate(prevProps) {
         if (!prevProps.metadataService && this.props.metadataService) {
             // We loaded metadata service, so we can load individual data now
             this.fetchIndividualData();
@@ -60,6 +63,8 @@ class ExplorerIndividualContent extends Component {
     }
 
     render() {
+        // TODO: Disease content - highlight what was found in search results?
+
         const individualID = this.props.match.params.individual || null;
         const individualInfo = this.props.individuals[individualID] || {};
         const individual = individualInfo.data;
@@ -103,7 +108,14 @@ class ExplorerIndividualContent extends Component {
 }
 
 ExplorerIndividualContent.propTypes = {
+    nodeInfo: nodeInfoDataPropTypesShape,
+    metadataService: PropTypes.object,  // TODO
     individuals: PropTypes.objectOf(individualPropTypesShape),
+
+    fetchIndividual: PropTypes.func,
+
+    location: ReactRouterPropTypes.location.isRequired,
+    match: ReactRouterPropTypes.match.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -114,6 +126,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     fetchIndividual: individualID => dispatch(fetchIndividualIfNecessary(individualID)),
-})
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExplorerIndividualContent);

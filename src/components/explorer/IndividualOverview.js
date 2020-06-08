@@ -5,6 +5,7 @@ import "antd/es/descriptions/style/css";
 
 import {EM_DASH} from "../../constants";
 import {renderOntologyTerm} from "./ontologies";
+import {individualPropTypesShape} from "../../propTypes";
 
 const IndividualOverview = ({individual}) => individual ?
     <Descriptions bordered={true} size="middle">
@@ -18,5 +19,9 @@ const IndividualOverview = ({individual}) => individual ?
                 : null)}
         </Descriptions.Item>
     </Descriptions> : <div />;
+
+IndividualOverview.propTypes = {
+    individual: individualPropTypesShape,
+};
 
 export default IndividualOverview;

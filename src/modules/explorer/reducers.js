@@ -22,17 +22,20 @@ const tableSearchResults = (searchResults) => {
             tableResultSet[individualID] = {
                 key: individualID,
                 individual: p.subject,
-                biosamples: {},
+                biosamples: {},  // Only includes biosamples from the phenopackets that matched the search query.
+                diseases: {},  // Only includes diseases from "
                 experiments: [],  // TODO
             };
         }
 
         p.biosamples.forEach(b => tableResultSet[individualID].biosamples[b.id] = b);
+        p.diseases.forEach(d => tableResultSet[individualID].diseases[d.id] = d);
     });
 
     return Object.values(tableResultSet).map(i => ({
         ...i,
         biosamples: Object.values(i.biosamples).sort((b1, b2) => b1.id.localeCompare(b2.id)),
+        diseases: Object.values(i.diseases).sort((d1, d2) => d1.id.localeCompare(d2.id)),
     }));
 };
 

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import {FORM_MODE_ADD, FORM_MODE_EDIT} from "./constants";
+import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "./dataTypes/phenopacket";
 
 export const propTypesFormMode = PropTypes.oneOf([FORM_MODE_ADD, FORM_MODE_EDIT]);
 
@@ -219,26 +220,48 @@ export const biosamplePropTypesShape = PropTypes.shape({
 export const individualPropTypesShape = PropTypes.shape({
     id: PropTypes.string.isRequired,
     date_of_birth: PropTypes.string,
-    sex: PropTypes.oneOf([
-        "UNKNOWN_SEX",
-        "FEMALE",
-        "MALE",
-        "OTHER_SEX",
-    ]),
-    karyotypic_sex: PropTypes.oneOf([
-        "UNKNOWN_KARYOTYPE",
-        "XX",
-        "XY",
-        "XO",
-        "XXY",
-        "XXX",
-        "XXYY",
-        "XXXY",
-        "XXXX",
-        "XYY",
-        "OTHER_KARYOTYPE",
-    ]),
+    sex: PropTypes.oneOf(SEX_VALUES),
+    karyotypic_sex: PropTypes.oneOf(KARYOTYPIC_SEX_VALUES),
     taxonomy: ontologyShape,
     phenopackets: PropTypes.arrayOf(PropTypes.object),  // TODO
     biosamples: PropTypes.arrayOf(biosamplePropTypesShape),
+});
+
+// Prop types object shape for a single phenopacket disease object.
+export const diseasePropTypesShape = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    term: ontologyShape.isRequired,
+    onset: PropTypes.object,  // TODO
+    disease_stage: PropTypes.arrayOf(ontologyShape),
+    tnm_finding: PropTypes.arrayOf(ontologyShape),
+    created: PropTypes.string,  // ISO datetime string
+    updated: PropTypes.string,  // ISO datetime string
+});
+
+export const phenopacketPropTypesShape = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    subject: PropTypes.oneOfType([individualPropTypesShape, PropTypes.string]).isRequired,
+    biosamples: biosamplePropTypesShape.isRequired,
+    diseases: diseasePropTypesShape.isRequired,
+    meta_data: PropTypes.object.isRequired,  // TODO: Shape
+    created: PropTypes.string,  // ISO datetime string
+    updated: PropTypes.string,  // ISO datetime string
+});
+
+
+// Explorer search results format
+export const explorerSearchResultsPropTypesShape = PropTypes.shape({
+    results: PropTypes.shape({
+        // TODO: Other data types
+        experiment: PropTypes.arrayOf(PropTypes.object),
+        phenopacket: PropTypes.arrayOf(phenopacketPropTypesShape),
+        variant: PropTypes.arrayOf(PropTypes.object),
+    }),
+    searchFormattedResults: PropTypes.arrayOf(PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        individual: individualPropTypesShape,
+        biosamples: PropTypes.arrayOf(biosamplePropTypesShape),
+        diseases: PropTypes.arrayOf(diseasePropTypesShape),
+        experiments: PropTypes.arrayOf(PropTypes.object),  // TODO
+    })),
 });
