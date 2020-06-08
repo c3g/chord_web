@@ -18,15 +18,14 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
 
     console.log(searchFormattedResults);
 
+    // Individuals summary
+
     const numIndividualsBySex = Object.fromEntries(SEX_VALUES.map(v => [v, 0]));
     const numIndividualsByKaryotype = Object.fromEntries(KARYOTYPIC_SEX_VALUES.map(v => [v, 0]));
     searchFormattedResults.forEach(r => {
         numIndividualsBySex[r.individual.sex]++;
         numIndividualsByKaryotype[r.individual.karyotypic_sex]++;
     });
-
-    console.log(numIndividualsBySex);
-    console.log(numIndividualsByKaryotype);
 
     const individualsBySex = Object.entries(numIndividualsBySex)
         .filter(e => e[1] > 0)
@@ -35,6 +34,18 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
     const individualsByKaryotype = Object.entries(numIndividualsByKaryotype)
         .filter(e => e[1] > 0)
         .map(([x, y]) => ({x, y}));
+
+    // Biosamples summary
+    // TODO: More ontology aware
+
+    const numSamplesByTissue = {};
+    searchFormattedResults.forEach(r => r.biosamples.forEach(b => {
+        const key = (b.sampled_tissue || {}).label || "N/A";
+        numSamplesByTissue[key] = (numSamplesByTissue[key] || 0) + 1;
+    }));
+
+    // TODO: Procedures: account for both code and (if specified) body_site
+    //  e.g. "Biopsy" or "Biopsy on X body site" - maybe stacked bar or grouped bar chart?
 
     return searchResults ? <Modal title="Search Results" {...props} width={960} footer={null}>
         <Row gutter={16}>
