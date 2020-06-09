@@ -6,8 +6,10 @@ import "antd/es/card/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/skeleton/style/css";
 
-import SitePageHeader from "./SitePageHeader";
+import {SITE_NAME} from "../constants";
 import {withBasePath} from "../utils/url";
+
+import SitePageHeader from "./SitePageHeader";
 
 const DiscoverySearchContent = lazy(() => import("./discovery/DiscoverySearchContent"));
 const DiscoveryDatasetContent = lazy(() => import("./discovery/DiscoveryDatasetContent"));
@@ -15,7 +17,7 @@ const DiscoveryDatasetContent = lazy(() => import("./discovery/DiscoveryDatasetC
 
 class DataDiscoveryContent extends Component {
     componentDidMount() {
-        document.title = "CHORD - Discover Data";
+        document.title = `${SITE_NAME} - Discover Data`;
     }
 
     render() {

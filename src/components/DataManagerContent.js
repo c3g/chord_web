@@ -7,11 +7,12 @@ import {Menu, Skeleton} from "antd";
 import "antd/es/menu/style/css";
 import "antd/es/skeleton/style/css";
 
-import SitePageHeader from "./SitePageHeader";
+import {SITE_NAME} from "../constants";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
 import {urlPath, withBasePath} from "../utils/url";
 import {nodeInfoDataPropTypesShape} from "../propTypes";
 
+import SitePageHeader from "./SitePageHeader";
 
 const ManagerProjectDatasetContent = lazy(() => import("./manager/projects/ManagerProjectDatasetContent"));
 const ManagerAccessContent = lazy(() => import("./manager/ManagerAccessContent"));
@@ -39,7 +40,7 @@ const MENU_STYLE = {
 
 class DataManagerContent extends Component {
     componentDidMount() {
-        document.title = "CHORD - Manage Your Data";
+        document.title = `${SITE_NAME} - Manage Your Data`;
     }
 
     render() {

@@ -9,6 +9,8 @@ import "antd/es/table/style/css";
 
 import SitePageHeader from "./SitePageHeader";
 
+import {SITE_NAME} from "../constants";
+
 class PeersContent extends Component {
     constructor(props) {
         super(props);
@@ -36,12 +38,12 @@ class PeersContent extends Component {
     }
 
     componentDidMount() {
-        document.title = "CHORD - Peers";
+        document.title = `${SITE_NAME} - Peers`;
     }
 
     render() {
         return <>
-            <SitePageHeader title="Peers" subTitle="Other CHORD nodes" />
+            <SitePageHeader title="Peers" subTitle="Other Bento nodes connected to this one" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                     <Table dataSource={this.props.peers}
