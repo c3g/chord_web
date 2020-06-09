@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
 
 import PropTypes from "prop-types";
-import ReactRouterPropTypes from "react-router-prop-types";
+import ReactRouterPropTypes from "react-router-prop-types/dist/index";
 
 import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
