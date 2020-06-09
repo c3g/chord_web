@@ -68,7 +68,7 @@ class ExplorerDatasetSearch extends Component {
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
                                    dataTypeForms={this.props.dataTypeForms}
-                                   onSubmit={() => this.props.performSearch()}
+                                   onSubmit={this.props.performSearchIfPossible}
                                    searchLoading={this.props.fetchingSearch}
                                    addDataTypeQueryForm={this.props.addDataTypeQueryForm}
                                    updateDataTypeQueryForm={this.props.updateDataTypeQueryForm}
@@ -122,11 +122,11 @@ ExplorerDatasetSearch.propTypes = {
     searchResults: PropTypes.object,
     selectedRows: PropTypes.arrayOf(PropTypes.string),
 
-    addDataTypeQueryForm: PropTypes.func,
-    updateDataTypeQueryForm: PropTypes.func,
-    removeDataTypeQueryForm: PropTypes.func,
-    performSearch: PropTypes.func,
-    setSelectedRows: PropTypes.func,
+    addDataTypeQueryForm: PropTypes.func.isRequired,
+    updateDataTypeQueryForm: PropTypes.func.isRequired,
+    removeDataTypeQueryForm: PropTypes.func.isRequired,
+    performSearch: PropTypes.func.isRequired,
+    setSelectedRows: PropTypes.func.isRequired,
 
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
@@ -146,15 +146,13 @@ const mapStateToProps = (state, ownProps) => {
     };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-    const datasetID = ownProps.match.params.dataset;
-    return {
-        addDataTypeQueryForm: dataType => dispatch(addDataTypeQueryForm(datasetID, dataType)),
-        updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(datasetID, dataType, fields)),
-        removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(datasetID, dataType)),
-        performSearch: () => dispatch(performSearchIfPossible(datasetID)),
-        setSelectedRows: selectedRows => dispatch(setSelectedRows(datasetID, selectedRows)),
-    };
-};
+// Map datasetID to the front argument of these actions and add dispatching
+const mapDispatchToProps = (dispatch, ownProps) => Object.fromEntries(Object.entries({
+    addDataTypeQueryForm,
+    updateDataTypeQueryForm,
+    removeDataTypeQueryForm,
+    performSearchIfPossible,
+    setSelectedRows,
+}).map(([k, v]) => [k, (...args) => dispatch(v(ownProps.match.params.dataset, ...args))]));
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExplorerDatasetSearch));

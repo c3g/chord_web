@@ -33,6 +33,7 @@ class RoutedProject extends Component {
         this.handleDeleteProject = this.handleDeleteProject.bind(this);
     }
 
+    // noinspection JSCheckFunctionSignatures
     componentDidUpdate() {
         if (!this.props.projectsByID[this.props.match.params.project] && !this.props.loadingProjects) {
             this.props.history.push(withBasePath("data/manager/projects/"));

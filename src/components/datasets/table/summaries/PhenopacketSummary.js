@@ -48,12 +48,6 @@ const PhenopacketSummary = ({summary}) => {
                             <VictoryLabel text="KARYOTYPE" {...VICTORY_PIE_LABEL_PROPS} />
                         </VictoryPieWrapSVG>
                     </Col>
-                    <Col span={12}>
-                        <VictoryPieWrapSVG>
-                            <VictoryPie data={individualsByKaryotype} {...VICTORY_PIE_PROPS} />
-                            <VictoryLabel text="KARYOTYPE" {...VICTORY_PIE_LABEL_PROPS} />
-                        </VictoryPieWrapSVG>
-                    </Col>
                 </Row>
             </>
         ) : null}
