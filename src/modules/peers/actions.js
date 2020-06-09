@@ -11,7 +11,7 @@ const fetchPeers = networkAction(() => (dispatch, getState) => ({
 
 export const fetchPeersOrError = () => async dispatch => {
     try {
-        await dispatch(fetchPeers());
+        return await dispatch(fetchPeers());
     } catch (e) {
         // Possibly federationService is null
         message.error("Error fetching peers");

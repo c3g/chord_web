@@ -118,8 +118,4 @@ const mapStateToProps = state => ({
     isOwner: (state.auth.user || {}).chord_user_role === "owner"
 });
 
-const mapDispatchToProps = dispatch => ({
-    showNotificationDrawer: () => dispatch(showNotificationDrawer())
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SiteHeader));
+export default withRouter(connect(mapStateToProps, {showNotificationDrawer})(SiteHeader));

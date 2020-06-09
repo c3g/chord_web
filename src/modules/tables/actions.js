@@ -8,7 +8,7 @@ const fetchTableSummary = networkAction((chordService, serviceInfo, tableID) => 
     url: `${serviceInfo.url}/tables/${tableID}/summary`  // TODO: Private...
 }));
 
-export const fetchTableSummaryIfPossible = (chordService, serviceInfo, tableID) => async (dispatch, getState) => {
+export const fetchTableSummaryIfPossible = (chordService, serviceInfo, tableID) => (dispatch, getState) => {
     if (getState().tableSummaries.isFetching) return;
-    await dispatch(fetchTableSummary(chordService, serviceInfo, tableID));
+    return dispatch(fetchTableSummary(chordService, serviceInfo, tableID));
 };

@@ -327,18 +327,18 @@ const deleteProjectTable = (project, table) => async (dispatch, getState) => {
         dispatch(terminateFlow(PROJECT_TABLE_DELETION));
     };
 
+    const handleFailure = e => {
+        console.error(e);
+        message.error("Error deleting table");
+        terminate();
+    };
+
     // Delete from service
     try {
         const serviceResponse = await fetch(`${serviceInfo.url}/tables/${table.table_id}`, {method: "DELETE"});
-        if (!serviceResponse.ok) {
-            console.error(serviceResponse);
-            terminate();
-            return;
-        }
+        if (!serviceResponse.ok) return handleFailure(serviceResponse);
     } catch (e) {
-        console.error(e);
-        terminate();
-        return;
+        return handleFailure(e);
     }
 
     // Delete from project metadata
@@ -350,14 +350,11 @@ const deleteProjectTable = (project, table) => async (dispatch, getState) => {
 
         if (!projectResponse.ok) {
             // TODO: Handle partial failure / out-of-sync
-            console.error(projectResponse);
-            terminate();
-            return;
+            return handleFailure(projectResponse);
         }
     } catch (e) {
         // TODO: Handle partial failure / out-of-sync
-        console.error(e);
-        terminate();
+        return handleFailure(e);
     }
 
     // Success

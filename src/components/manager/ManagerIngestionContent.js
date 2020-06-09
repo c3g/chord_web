@@ -247,9 +247,6 @@ const mapStateToProps = state => ({
     isSubmittingIngestionRun: state.runs.isSubmittingIngestionRun,
 });
 
-const mapDispatchToProps = dispatch => ({
-    submitIngestionWorkflowRun: (sID, dID, workflow, inputs, redirect, history) =>
-        dispatch(submitIngestionWorkflowRun(sID, dID, workflow, inputs, redirect, history))
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerIngestionContent));
+export default withRouter(connect(mapStateToProps, {
+    submitIngestionWorkflowRun,
+})(ManagerIngestionContent));

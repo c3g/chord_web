@@ -17,6 +17,7 @@ class RunLog extends Component {
         }
     }
 
+    // noinspection JSCheckFunctionSignatures
     componentDidUpdate(prevProps) {
         if (prevProps.isFetchingRuns && !this.props.isFetchingRuns) {
             this.props.fetchRunLogStreamsIfPossibleAndNeeded(this.props.run.run_id);
@@ -67,8 +68,6 @@ const mapStateToProps = state => ({
     runLogStreams: state.runs.streamsByID,
 });
 
-const mapDispatchToProps = dispatch => ({
-    fetchRunLogStreamsIfPossibleAndNeeded: runID => dispatch(fetchRunLogStreamsIfPossibleAndNeeded(runID))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RunLog);
+export default connect(mapStateToProps, {
+    fetchRunLogStreamsIfPossibleAndNeeded,
+})(RunLog);

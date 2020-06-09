@@ -31,7 +31,7 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     const hasAttempted = getState().auth.hasAttempted;
 
     if (!hasAttempted) {
-        await dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
+        dispatch(beginFlow(FETCHING_USER_DEPENDENT_DATA));
 
         // Fetch node info if it's the first time this has been run; node info doesn't really change.
         await dispatch(fetchNodeInfo());
@@ -49,7 +49,7 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     if (newState === null
             || (oldState || {}).chord_user_role === newState.chord_user_role
             || newState.chord_user_role !== "owner") {
-        if (!hasAttempted) await dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
+        if (!hasAttempted) dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
         return;
     }
 
@@ -60,5 +60,5 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
         dispatch(fetchNotifications()),
     ]);
 
-    if (!hasAttempted) await dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
+    if (!hasAttempted) dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
 };

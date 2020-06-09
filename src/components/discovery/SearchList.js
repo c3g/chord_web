@@ -188,8 +188,4 @@ const mapStateToProps = state => ({
     searchLoading: state.discovery.isFetching,
 });
 
-const mapDispatchToProps = dispatch => ({
-    selectSearch: searchIndex => dispatch(selectSearch(searchIndex)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchList);
+export default connect(mapStateToProps, {selectSearch})(SearchList);

@@ -30,7 +30,7 @@ class ProjectCreationModal extends Component {
                 return;
             }
 
-            await this.props.createProject(values, this.props.history);
+            await this.props.createProjectIfPossible(values, this.props.history);
 
             // TODO: Only clear values and close modal if submission was a success
             this.form.resetFields();
@@ -55,7 +55,7 @@ ProjectCreationModal.propTypes = {
     isCreatingProject: PropTypes.bool,
 
     toggleProjectCreationModal: PropTypes.func,
-    createProject: PropTypes.func,
+    createProjectIfPossible: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -63,9 +63,7 @@ const mapStateToProps = state => ({
     isCreatingProject: state.projects.isCreating,
 });
 
-const mapDispatchToProps = dispatch => ({
-    toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-    createProject: (project, history) => dispatch(createProjectIfPossible(project, history)),
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectCreationModal));
+export default withRouter(connect(mapStateToProps, {
+    toggleProjectCreationModal,
+    createProjectIfPossible,
+})(ProjectCreationModal));

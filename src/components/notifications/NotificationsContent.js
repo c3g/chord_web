@@ -38,9 +38,7 @@ const mapStateToProps = state => ({
     notifications: state.notifications.items
 });
 
-const mapDispatchToProps = dispatch => ({
-    markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
-    hideNotificationDrawer: () => dispatch(hideNotificationDrawer())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationsContent);
+export default connect(mapStateToProps, {
+    markNotificationAsRead,
+    hideNotificationDrawer,
+})(NotificationsContent);

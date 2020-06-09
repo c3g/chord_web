@@ -46,7 +46,7 @@ class RoutedProject extends Component {
 
     handleProjectSave(project) {
         // TODO: Form validation for project
-        this.props.saveProject(project);
+        this.props.saveProjectIfPossible(project);
     }
 
     showDatasetAdditionModal() {
@@ -77,7 +77,7 @@ class RoutedProject extends Component {
             maskClosable: true,
             onOk: async () => {
                 deleteModal.update({okButtonProps: {loading: true}});
-                await this.props.deleteProject(project);
+                await this.props.deleteProjectIfPossible(project);
                 deleteModal.update({okButtonProps: {loading: false}});
             },
         });
@@ -189,8 +189,8 @@ RoutedProject.propTypes = {
 
     beginProjectEditing: PropTypes.func,
     endProjectEditing: PropTypes.func,
-    saveProject: PropTypes.func,
-    deleteProject: PropTypes.func,
+    saveProjectIfPossible: PropTypes.func,
+    deleteProjectIfPossible: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -216,11 +216,9 @@ const mapStateToProps = state => ({
     isDeletingProject: state.projects.isDeleting,
 });
 
-const mapDispatchToProps = dispatch => ({
-    beginProjectEditing: () => dispatch(beginProjectEditing()),
-    endProjectEditing: () => dispatch(endProjectEditing()),
-    saveProject: project => dispatch(saveProjectIfPossible(project)),
-    deleteProject: project => dispatch(deleteProjectIfPossible(project)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RoutedProject);
+export default connect(mapStateToProps, {
+    beginProjectEditing,
+    endProjectEditing,
+    saveProjectIfPossible,
+    deleteProjectIfPossible,
+})(RoutedProject);

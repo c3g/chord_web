@@ -115,7 +115,7 @@ class App extends Component {
 
     // TODO: Don't execute on focus if it's been checked recently
     async refreshUserAndDependentData() {
-        await this.props.fetchUserAndDependentData();
+        await this.props.fetchUserAndDependentData(nop);
         if (this.lastUser !== null && this.props.user === null) {
             // We got de-authenticated, so show a prompt...
             this.setState({signedOutModal: true});
@@ -167,9 +167,7 @@ const mapStateToProps = state => ({
     user: state.auth.user
 });
 
-const mapDispatchToProps = dispatch => ({
-    fetchUserAndDependentData: (servicesCb = nop) => dispatch(fetchUserAndDependentData(servicesCb)),
-    fetchPeersOrError: () => dispatch(fetchPeersOrError()),
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default withRouter(connect(mapStateToProps, {
+    fetchUserAndDependentData,
+    fetchPeersOrError,
+})(App));

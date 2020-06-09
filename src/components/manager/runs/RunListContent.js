@@ -69,8 +69,6 @@ const mapStateToProps = state => ({
     runsFetching: state.runs.isFetching,
 });
 
-const mapDispatchToProps = dispatch => ({
-    fetchAllRunDetailsIfNeeded: async () => await dispatch(fetchAllRunDetailsIfNeeded())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(RunListContent);
+export default connect(mapStateToProps, {
+    fetchAllRunDetailsIfNeeded,
+})(RunListContent);

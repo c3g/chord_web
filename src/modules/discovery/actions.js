@@ -16,7 +16,7 @@ export const UPDATE_JOIN_QUERY_FORM = "DISCOVERY.UPDATE_JOIN_QUERY_FORM";
 
 export const selectSearch = searchIndex => ({
     type: SELECT_SEARCH,
-    searchIndex
+    searchIndex,
 });
 
 
@@ -28,7 +28,7 @@ const performSearch = networkAction((dataTypeQueries, joinQuery=null) => (dispat
         join_query: joinQuery
     }, "POST"),
     err: "Error performing search",
-    onSuccess: () => dispatch(selectSearch(getState().discovery.searches.length - 1))
+    onSuccess: () => dispatch(selectSearch(getState().discovery.searches.length - 1)),
 }));
 
 
@@ -50,18 +50,18 @@ export const performFullSearchIfPossible = () => (dispatch, getState) => {
 
 export const addDataTypeQueryForm = dataType => ({
     type: ADD_DATA_TYPE_QUERY_FORM,
-    dataType
+    dataType,
 });
 
 export const updateDataTypeQueryForm = (dataType, fields) => ({
     type: UPDATE_DATA_TYPE_QUERY_FORM,
     dataType,
-    fields
+    fields,
 });
 
 export const removeDataTypeQueryForm = dataType => ({
     type: REMOVE_DATA_TYPE_QUERY_FORM,
-    dataType
+    dataType,
 });
 
 // export const removeAllDataTypeQueryForms = basicAction(REMOVE_ALL_DATA_TYPE_QUERY_FORMS);
