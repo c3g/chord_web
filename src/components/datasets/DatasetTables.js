@@ -192,7 +192,27 @@ DatasetTables.propTypes = {
     onTableIngest: PropTypes.func,
     isFetchingTables: PropTypes.bool,
 
-    chordServicesByArtifact: PropTypes.objectOf(PropTypes.object),  // TODO: Shape
+    chordServicesByArtifact: PropTypes.objectOf(PropTypes.shape({
+        apt_dependencies: PropTypes.arrayOf(PropTypes.string),
+        data_service: PropTypes.bool,
+        manageable_tables: PropTypes.string,
+        python_callable: PropTypes.string,
+        python_module: PropTypes.string,
+        repository: PropTypes.string,
+        run_environment: PropTypes.objectOf(PropTypes.string),
+        service_runnable: PropTypes.string,
+        type: PropTypes.shape({
+            artifact: PropTypes.string.isRequired,
+            language: PropTypes.string,
+            organization: PropTypes.string,
+        }),
+        wsgi: PropTypes.bool,
+
+        post_stop_commands: PropTypes.arrayOf(PropTypes.string),
+        post_start_commands: PropTypes.arrayOf(PropTypes.string),
+        pre_install_commands: PropTypes.arrayOf(PropTypes.string),
+        pre_start_commands: PropTypes.arrayOf(PropTypes.string),
+    })),
     serviceInfoByArtifact: PropTypes.objectOf(serviceInfoPropTypesShape),
 
     addProjectTable: PropTypes.func,

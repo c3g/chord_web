@@ -122,11 +122,11 @@ ExplorerDatasetSearch.propTypes = {
     searchResults: PropTypes.object,
     selectedRows: PropTypes.arrayOf(PropTypes.string),
 
-    addDataTypeQueryForm: PropTypes.func,
-    updateDataTypeQueryForm: PropTypes.func,
-    removeDataTypeQueryForm: PropTypes.func,
-    performSearch: PropTypes.func,
-    setSelectedRows: PropTypes.func,
+    addDataTypeQueryForm: PropTypes.func.isRequired,
+    updateDataTypeQueryForm: PropTypes.func.isRequired,
+    removeDataTypeQueryForm: PropTypes.func.isRequired,
+    performSearch: PropTypes.func.isRequired,
+    setSelectedRows: PropTypes.func.isRequired,
 
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
