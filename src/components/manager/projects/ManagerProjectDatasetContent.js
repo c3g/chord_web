@@ -50,7 +50,7 @@ class ManagerProjectDatasetContent extends Component {
                                 restrictions to control data access.
                             </Typography.Paragraph>
                             <Button type="primary" icon="plus"
-                                    onClick={() => this.props.toggleProjectCreationModal()}>Create Project</Button>
+                                    onClick={this.props.toggleProjectCreationModal}>Create Project</Button>
                         </Empty>
                     </Layout.Content>
                 ) : <>
@@ -63,7 +63,7 @@ class ManagerProjectDatasetContent extends Component {
                             </Menu>
                             <div style={{borderRight: "1px solid #e8e8e8", padding: "24px"}}>
                                 <Button type="primary" style={{width: "100%"}}
-                                        onClick={() => this.props.toggleProjectCreationModal()}
+                                        onClick={this.props.toggleProjectCreationModal}
                                         loading={this.props.loadingAuthDependentData}
                                         disabled={this.props.loadingAuthDependentData}
                                         icon="plus">
@@ -114,8 +114,6 @@ const mapStateToProps = state => ({
     loadingAuthDependentData: state.auth.isFetchingDependentData,
 });
 
-const mapDispatchToProps = dispatch => ({
-    toggleProjectCreationModal: () => dispatch(toggleProjectCreationModal()),
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ManagerProjectDatasetContent));
+export default withRouter(connect(mapStateToProps, {
+    toggleProjectCreationModal,
+})(ManagerProjectDatasetContent));

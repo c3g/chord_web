@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -89,8 +90,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
-    hideNotificationDrawer: () => dispatch(hideNotificationDrawer()),
+    ...bindActionCreators({
+        markNotificationAsRead,
+        hideNotificationDrawer,
+    }, dispatch),
     navigateToWESRun: target => navigateToWESRun(target, dispatch, ownProps.history),
 });
 

@@ -55,14 +55,12 @@ const mapStateToProps = state => ({
     // joinFormValues: state.discovery.joinFormValues,
 });
 
-const mapDispatchToProps = dispatch => ({
-    performFullSearchIfPossible: () => dispatch(performFullSearchIfPossible()),
+export default connect(mapStateToProps, {
+    performFullSearchIfPossible,
 
-    addDataTypeQueryForm: dataType => dispatch(addDataTypeQueryForm(dataType)),
-    updateDataTypeQueryForm: (dataType, fields) => dispatch(updateDataTypeQueryForm(dataType, fields)),
-    removeDataTypeQueryForm: dataType => dispatch(removeDataTypeQueryForm(dataType)),
+    addDataTypeQueryForm,
+    updateDataTypeQueryForm,
+    removeDataTypeQueryForm,
 
-    // updateJoinForm: fields => dispatch(updateJoinQueryForm(fields)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverySearchContent);
+    // updateJoinForm,
+})(DiscoverySearchContent);

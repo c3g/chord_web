@@ -119,10 +119,8 @@ const mapStateToProps = state => ({
     projectsFetchingWithTables: state.projects.projectsFetchingWithTables,
 });
 
-const mapDispatchToProps = dispatch => ({
-    addProjectDataset: (project, dataset, onSuccess) => dispatch(addProjectDataset(project, dataset, onSuccess)),
-    saveProjectDataset: (dataset, onSuccess) => dispatch(saveProjectDataset(dataset, onSuccess)),
-    fetchProjectsWithDatasetsAndTables: () => dispatch(fetchProjectsWithDatasetsAndTables()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DatasetFormModal);
+export default connect(mapStateToProps, {
+    addProjectDataset,
+    saveProjectDataset,
+    fetchProjectsWithDatasetsAndTables,
+})(DatasetFormModal);

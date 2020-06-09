@@ -45,7 +45,7 @@ class ExplorerIndividualContent extends Component {
     fetchIndividualData() {
         const individualID = this.props.match.params.individual || null;
         if (!individualID || !this.props.metadataService) return;
-        this.props.fetchIndividual(individualID);
+        this.props.fetchIndividualIfNecessary(individualID);
     }
 
     // noinspection JSCheckFunctionSignatures
@@ -112,7 +112,7 @@ ExplorerIndividualContent.propTypes = {
     metadataService: PropTypes.object,  // TODO
     individuals: PropTypes.objectOf(individualPropTypesShape),
 
-    fetchIndividual: PropTypes.func,
+    fetchIndividualIfNecessary: PropTypes.func,
 
     location: ReactRouterPropTypes.location.isRequired,
     match: ReactRouterPropTypes.match.isRequired,
@@ -124,8 +124,4 @@ const mapStateToProps = state => ({
     individuals: state.individuals.itemsByID,
 });
 
-const mapDispatchToProps = dispatch => ({
-    fetchIndividual: individualID => dispatch(fetchIndividualIfNecessary(individualID)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ExplorerIndividualContent);
+export default connect(mapStateToProps, {fetchIndividualIfNecessary})(ExplorerIndividualContent);

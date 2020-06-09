@@ -1,6 +1,8 @@
 import React, {Component} from "react";
-import {connect} from "react-redux";
 import PropTypes from "prop-types";
+
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
 
 import {Button, Col, Row, Table, Typography} from "antd";
 import "antd/es/button/style/css";
@@ -207,8 +209,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
     addProjectTable: (ds, s, dt, name) => dispatch(addProjectTable(ownProps.project, ds, s, dt, name)),
     deleteProjectTable: table => dispatch(deleteProjectTableIfPossible(ownProps.project, table)),
-    fetchProjectsWithDatasetsAndTables: () => dispatch(fetchProjectsWithDatasetsAndTables()),
-    fetchTableSummary: (cs, si, t) => dispatch(fetchTableSummaryIfPossible(cs, si, t))
+    ...bindActionCreators({
+        fetchProjectsWithDatasetsAndTables,
+        fetchTableSummaryIfPossible,
+    }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetTables);
