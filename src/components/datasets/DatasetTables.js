@@ -85,7 +85,7 @@ class DatasetTables extends Component {
     }
 
     showTableSummaryModal(table) {
-        this.props.fetchTableSummary(this.props.chordServicesByArtifact[table.service_artifact],
+        this.props.fetchTableSummaryIfPossible(this.props.chordServicesByArtifact[table.service_artifact],
             this.props.serviceInfoByArtifact[table.service_artifact], table.table_id);  // TODO
         this.setState({tableSummaryModalVisible: true, selectedTable: table});
     }
@@ -198,7 +198,7 @@ DatasetTables.propTypes = {
     addProjectTable: PropTypes.func,
     deleteProjectTable: PropTypes.func,
     fetchProjectsWithDatasetsAndTables: PropTypes.func,
-    fetchTableSummary: PropTypes.func,
+    fetchTableSummaryIfPossible: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
