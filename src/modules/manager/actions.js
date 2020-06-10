@@ -19,9 +19,19 @@ export const beginProjectEditing = basicAction(PROJECT_EDITING.BEGIN);
 export const endProjectEditing = basicAction(PROJECT_EDITING.END);
 
 
-// TODO: If needed
-export const fetchDropBoxTree = networkAction(() => (dispatch, getState) => ({
+const fetchDropBoxTree = networkAction(() => (dispatch, getState) => ({
     types: FETCH_DROP_BOX_TREE,
     url: `${getState().services.dropBoxService.url}/tree`,
     err: "Error fetching drop box tree"  // TODO: More user-friendly error
 }));
+
+// TODO: If needed
+export const fetchDropBoxTreeOrFail = () => async dispatch => {
+    try {
+        return await dispatch(fetchDropBoxTree());
+    } catch (e) {
+        // Reset loading
+        console.error(e);
+        return await dispatch({type: FETCH_DROP_BOX_TREE.FINISH});
+    }
+};
