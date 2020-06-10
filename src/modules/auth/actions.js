@@ -55,7 +55,7 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
 
     // Otherwise, we're newly authenticated as an owner, so run all actions that need authentication.
     await Promise.all([
-        ...(getState().services.dropBoxService ? [dispatch(fetchDropBoxTree())] : []),
+        dispatch(fetchDropBoxTree()),
         dispatch(fetchRuns()),
         dispatch(fetchNotifications()),
     ]);
