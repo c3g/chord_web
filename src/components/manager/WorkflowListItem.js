@@ -30,7 +30,7 @@ const TYPE_TAG_DISPLAY = {
 };
 
 const ioTagWithType = (id, ioType, typeContent="") => (
-    <Tag key={id} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color}>
+    <Tag key={id} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color} style={{marginBottom: "2px"}}>
         <Icon type={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].icon} />&nbsp;
         {id} ({typeContent || ioType}{ioType.endsWith("[]") ? " array" : ""})
     </Tag>
