@@ -48,7 +48,7 @@ class WorkflowListItem extends Component {
             .map(i => [i.id, i.extensions[0]]));  // TODO: What to do with more than one?
 
         const outputs = this.props.workflow.outputs.map(o => {
-            if (!o.value) console.error("Missing value prop for workflow output: ", o)
+            if (!o.value) console.error("Missing or invalid value prop for workflow output: ", o)
 
             const outputValue = o.value || "";
             let formattedOutput = outputValue;
