@@ -13,13 +13,14 @@ import "antd/es/typography/style/css";
 import SitePageHeader from "./SitePageHeader";
 import ServiceList from "./ServiceList";
 
+import {SITE_NAME} from "../constants";
 import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
 import {EM_DASH} from "../constants";
 
 
 class DashboardContent extends Component {
     componentDidMount() {
-        document.title = "CHORD - Dashboard";
+        document.title = `${SITE_NAME} - Dashboard`;
     }
 
     render() {

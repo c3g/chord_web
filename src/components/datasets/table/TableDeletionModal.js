@@ -29,7 +29,7 @@ class TableDeletionModal extends Component {
                    onCancel={this.props.onCancel || nop}>
                 <Typography.Paragraph>
                     Deleting this table means all data contained in the table will be deleted permanently, and
-                    the will no longer be available for discovery within the CHORD federation.
+                    the will no longer be available for discovery within the current Bento federation.
                     {/* TODO: Real terms and conditions */}
                 </Typography.Paragraph>
             </Modal>

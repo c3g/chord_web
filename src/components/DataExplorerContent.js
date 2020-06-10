@@ -7,13 +7,14 @@ import ExplorerGenomeBrowserContent from "./explorer/ExplorerGenomeBrowserConten
 import ExplorerIndividualContent from "./explorer/ExplorerIndividualContent";
 import ExplorerSearchContent from "./explorer/ExplorerSearchContent";
 
+import {SITE_NAME} from "../constants";
 import {withBasePath} from "../utils/url";
 import {nodeInfoDataPropTypesShape} from "../propTypes";
 
 
 class DataExplorerContent extends Component {
     componentDidMount() {
-        document.title = "CHORD - Explore Your Data";
+        document.title = `${SITE_NAME} - Explore Your Data`;
     }
 
     render() {

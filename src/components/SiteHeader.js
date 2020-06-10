@@ -12,7 +12,7 @@ import "antd/es/menu/style/css";
 
 import {showNotificationDrawer} from "../modules/notifications/actions";
 
-import {SIGN_OUT_URL} from "../constants";
+import {SIGN_OUT_URL, SITE_NAME} from "../constants";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
 import {BASE_PATH, signInURLWithRedirect, withBasePath} from "../utils/url";
 import {nodeInfoDataPropTypesShape, notificationPropTypesShape, userPropTypesShape} from "../propTypes";
@@ -89,7 +89,7 @@ class SiteHeader extends Component {
                 color: "rgba(255, 255, 255, 0.95)",
                 margin: "0 30px 0 0",
                 float: "left"
-            }}>CHORD</h1></Link>
+            }}>{SITE_NAME}</h1></Link>
             <Menu theme="dark"
                   mode="horizontal"
                   selectedKeys={matchingMenuKeys(menuItems)}
