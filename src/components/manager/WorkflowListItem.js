@@ -48,9 +48,12 @@ class WorkflowListItem extends Component {
             .map(i => [i.id, i.extensions[0]]));  // TODO: What to do with more than one?
 
         const outputs = this.props.workflow.outputs.map(o => {
-            let formattedOutput = o.value;
+            if (!o.value) console.error("Missing value prop for workflow output: ", o)
 
-            [...o.value.matchAll(/{(.*)}/g)].forEach(([_, id]) => {
+            const outputValue = o.value || "";
+            let formattedOutput = outputValue;
+
+            [...outputValue.matchAll(/{(.*)}/g)].forEach(([_, id]) => {
                 formattedOutput = formattedOutput.replace(`{${id}}`, {
                     ...inputExtensions,
                     "": o.hasOwnProperty("map_from_input") ? inputExtensions[o.map_from_input] : undefined
