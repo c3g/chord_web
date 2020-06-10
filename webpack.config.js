@@ -35,7 +35,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: "CHORD",
+            title: "Bento",
             template: path.resolve(__dirname, "./src/template.html"),
             hash: true,
         }),
