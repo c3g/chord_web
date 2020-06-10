@@ -49,8 +49,8 @@ const _paginatedNetworkFetch = async (url, req, parse) => {
 };
 
 
-const _networkAction = (fn, ...args) =>
-    async (dispatch, getState) => {
+const _networkAction = (fn, ...args) => async (dispatch, getState) => {
+    try {
         let fnResult = fn(...args);
         if (typeof fnResult === "function") {
             // Needs dispatch / getState, resolve those.
@@ -79,7 +79,11 @@ const _networkAction = (fn, ...args) =>
             dispatch({type: types.ERROR, ...params});
         }
         dispatch({type: types.FINISH, ...params});
-    };
+    } catch (e) {
+        // Hit error before we even started the request - handle it to avoid crashing the page.
+        console.error(e);
+    }
+};
 
 // Curried version
 export const networkAction = fn => (...args) => _networkAction(fn, ...args);
