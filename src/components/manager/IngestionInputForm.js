@@ -78,7 +78,8 @@ class IngestionInputForm extends Component {
                     <Form.Item label={i.id} key={i.id}>
                         {this.props.form.getFieldDecorator(i.id, {
                             initialValue: this.props.initialValues[i.id],  // undefined if not set
-                            rules: [{required: true}]
+                            // Default to requiring the field unless the "required" property is set on the input
+                            rules: [{required: i.required === undefined ? true : i.required}],
                         })(this.getInputComponent(i))}
                     </Form.Item>
                 )),
