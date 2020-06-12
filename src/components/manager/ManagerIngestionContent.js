@@ -21,10 +21,6 @@ import WorkflowListItem from "./WorkflowListItem";
 import {submitIngestionWorkflowRun} from "../../modules/wes/actions";
 
 import {
-    simpleDeepCopy
-} from "../../utils/misc";
-
-import {
     FORM_LABEL_COL,
     FORM_WRAPPER_COL,
     FORM_BUTTON_COL,
@@ -34,9 +30,12 @@ import {
     STEP_CONFIRM,
 } from "./ingestion";
 
-import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import IngestionInputForm from "./IngestionInputForm";
 import TableTreeSelect from "./TableTreeSelect";
+
+import {EM_DASH} from "../../constants";
+import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
+import {simpleDeepCopy} from "../../utils/misc";
 import {withBasePath} from "../../utils/url";
 import {
     dropBoxTreeStateToPropsMixin,
@@ -183,9 +182,12 @@ class ManagerIngestionContent extends Component {
                                 },
                                 {
                                     title: "Value", dataIndex: "value", render: value =>
-                                        value instanceof Array
-                                            ? <ul>{value.map(v => <li key={v.toString()}>{v.toString()}</li>)}</ul>
-                                            : value.toString()
+                                        value === undefined
+                                            ? EM_DASH
+                                            : (value instanceof Array
+                                                ? <ul>{value.map(v => <li key={v.toString()}>{v.toString()}</li>)}</ul>
+                                                : value.toString()
+                                            )
                                 }
                             ]} rowKey="id" dataSource={this.state.selectedWorkflow.inputs.map(i =>
                                 ({id: i.id, value: this.state.inputs[i.id]}))}/>
