@@ -4,8 +4,8 @@
   "description": "Bento platform front-end",
   "main": "src/index.js",
   "dependencies": {
-    "antd": "^3.26.17",
-    "cross-fetch": "^3.0.4",
+    "antd": "^3.26.18",
+    "cross-fetch": "^3.0.5",
     "igv": "^2.5.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -17,7 +17,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.0",
-    "victory": "^34.3.10"
+    "victory": "^34.3.11"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -26,7 +26,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babel-polyfill": "^6.26.0",
-    "css-loader": "^3.5.3",
+    "css-loader": "^3.6.0",
     "eslint": "^7.2.0",
     "eslint-plugin-react": "^7.20.0",
     "html-webpack-plugin": "^4.3.0",
