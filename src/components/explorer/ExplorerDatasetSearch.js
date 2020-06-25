@@ -125,7 +125,7 @@ ExplorerDatasetSearch.propTypes = {
     addDataTypeQueryForm: PropTypes.func.isRequired,
     updateDataTypeQueryForm: PropTypes.func.isRequired,
     removeDataTypeQueryForm: PropTypes.func.isRequired,
-    performSearch: PropTypes.func.isRequired,
+    performSearchIfPossible: PropTypes.func.isRequired,
     setSelectedRows: PropTypes.func.isRequired,
 
     federationServiceInfo: serviceInfoPropTypesShape,

@@ -29,9 +29,10 @@ const TYPE_TAG_DISPLAY = {
     }
 };
 
-const ioTagWithType = (key, ioType, content) => (
-    <Tag key={key} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color}>
-        <Icon type={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].icon} /> {content}
+const ioTagWithType = (id, ioType, typeContent="") => (
+    <Tag key={id} color={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].color} style={{marginBottom: "2px"}}>
+        <Icon type={TYPE_TAG_DISPLAY[ioType.replace("[]", "")].icon} />&nbsp;
+        {id} ({typeContent || ioType}{ioType.endsWith("[]") ? " array" : ""})
     </Tag>
 );
 
@@ -40,24 +41,28 @@ class WorkflowListItem extends Component {
         const typeTag = <Tag key={this.props.workflow.data_type}>{this.props.workflow.data_type}</Tag>;
 
         const inputs = this.props.workflow.inputs.map(i =>
-            ioTagWithType(i.id, i.type, (i.type.startsWith("file") ? i.extensions.join(" / ") : i.id)
-                + (i.type.endsWith("[]") ? " array" : "")));
+            ioTagWithType(i.id, i.type, i.type.startsWith("file") ? i.extensions.join(" / ") : ""));
 
         const inputExtensions = Object.fromEntries(this.props.workflow.inputs
             .filter(i => i.type.startsWith("file"))
             .map(i => [i.id, i.extensions[0]]));  // TODO: What to do with more than one?
 
         const outputs = this.props.workflow.outputs.map(o => {
-            let formattedOutput = o.value;
+            if (!o.value) console.error("Missing or invalid value prop for workflow output: ", o);
 
-            [...o.value.matchAll(/{(.*)}/g)].forEach(([_, id]) => {
+            if (!o.type.startsWith("file")) return ioTagWithType(o.id, o.type);
+
+            const outputValue = o.value || "";
+            let formattedOutput = outputValue;
+
+            [...outputValue.matchAll(/{(.*)}/g)].forEach(([_, id]) => {
                 formattedOutput = formattedOutput.replace(`{${id}}`, {
                     ...inputExtensions,
                     "": o.hasOwnProperty("map_from_input") ? inputExtensions[o.map_from_input] : undefined
                 }[id]);
             });
 
-            return ioTagWithType(o.id, o.type, formattedOutput + (o.type.endsWith("[]") ? " array" : ""));
+            return ioTagWithType(o.id, o.type, formattedOutput);
         });
 
         return <List.Item>

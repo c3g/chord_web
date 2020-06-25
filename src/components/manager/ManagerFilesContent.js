@@ -24,10 +24,11 @@ const LANGUAGE_HIGHLIGHTERS = {
     "CHANGELOG": "plaintext",
 };
 
-import {Button, Dropdown, Icon, Layout, Menu, Modal, Spin, Tree} from "antd";
+import {Button, Dropdown, Empty, Icon, Layout, Menu, Modal, Spin, Tree} from "antd";
 
 import "antd/es/button/style/css";
 import "antd/es/dropdown/style/css";
+import "antd/es/empty/style/css";
 import "antd/es/icon/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
@@ -236,7 +237,8 @@ class ManagerFilesContent extends Component {
                 </Modal>
                 <div style={{marginBottom: "1em"}}>
                     <Dropdown.Button overlay={workflowMenu} style={{marginRight: "12px"}}
-                                     disabled={this.state.selectedFiles.length === 0
+                                     disabled={!this.props.dropBoxService
+                                        || this.state.selectedFiles.length === 0
                                         || workflowsSupported.length === 0}
                                      onClick={() => {
                                          if (workflowsSupported.length !== 1) return;
@@ -257,14 +259,17 @@ class ManagerFilesContent extends Component {
                     {/*<Button type="primary" icon="upload" style={{float: "right"}}>Upload</Button>*/}
                 </div>
                 <Spin spinning={this.props.treeLoading}>
-                    <Tree.DirectoryTree defaultExpandAll={true}
-                                        multiple={true}
-                                        onSelect={keys => this.handleSelect(keys)}
-                                        selectedKeys={this.state.selectedFiles}>
-                        <Tree.TreeNode title="chord_drop_box" key="root">
-                            {generateFileTree(this.props.tree)}
-                        </Tree.TreeNode>
-                    </Tree.DirectoryTree>
+                    {(this.props.treeLoading || this.props.dropBoxService) ? (
+                        <Tree.DirectoryTree defaultExpandAll={true}
+                                            multiple={true}
+                                            onSelect={keys => this.handleSelect(keys)}
+                                            selectedKeys={this.state.selectedFiles}>
+                            <Tree.TreeNode title="chord_drop_box" key="root">
+                                {generateFileTree(this.props.tree)}
+                            </Tree.TreeNode>
+                        </Tree.DirectoryTree>
+                    ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
+                               description="Encountered an error while trying to access the drop box service" />}
                 </Spin>
             </Layout.Content>
         </Layout>;

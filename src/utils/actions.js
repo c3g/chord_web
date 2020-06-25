@@ -49,37 +49,36 @@ const _paginatedNetworkFetch = async (url, req, parse) => {
 };
 
 
-const _networkAction = (fn, ...args) =>
-    async (dispatch, getState) => {
-        let fnResult = fn(...args);
-        if (typeof fnResult === "function") {
-            // Needs dispatch / getState, resolve those.
-            fnResult = fnResult(dispatch, getState);
-        }
+const _networkAction = (fn, ...args) => async (dispatch, getState) => {
+    let fnResult = fn(...args);
+    if (typeof fnResult === "function") {
+        // Needs dispatch / getState, resolve those.
+        fnResult = fnResult(dispatch, getState);
+    }
 
-        const {types, params, url, req, err, onSuccess, paginated} = fnResult;
-        let {parse} = fnResult;
-        if (!parse) parse = async r => await r.json();
+    const {types, params, url, req, err, onSuccess, paginated} = fnResult;
+    let {parse} = fnResult;
+    if (!parse) parse = async r => await r.json();
 
-        dispatch({type: types.REQUEST, ...params});
-        try {
-            const data = await (paginated ? _paginatedNetworkFetch : _unpaginatedNetworkFetch)(url, req, parse);
-            dispatch({
-                type: types.RECEIVE,
-                ...params,
-                ...(data === null ? {} : {data}),
-                receivedAt: Date.now()
-            });
-            if (onSuccess) await onSuccess(data);
-        } catch (e) {
-            if (err) {
-                console.error(e, err);
-                message.error(err);
-            }
-            dispatch({type: types.ERROR, ...params});
+    dispatch({type: types.REQUEST, ...params});
+    try {
+        const data = await (paginated ? _paginatedNetworkFetch : _unpaginatedNetworkFetch)(url, req, parse);
+        dispatch({
+            type: types.RECEIVE,
+            ...params,
+            ...(data === null ? {} : {data}),
+            receivedAt: Date.now()
+        });
+        if (onSuccess) await onSuccess(data);
+    } catch (e) {
+        if (err) {
+            console.error(e, err);
+            message.error(err);
         }
-        dispatch({type: types.FINISH, ...params});
-    };
+        dispatch({type: types.ERROR, ...params});
+    }
+    dispatch({type: types.FINISH, ...params});
+};
 
 // Curried version
 export const networkAction = fn => (...args) => _networkAction(fn, ...args);
