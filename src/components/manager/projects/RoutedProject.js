@@ -109,6 +109,7 @@ class RoutedProject extends Component {
                     (this.props.serviceDataTypesByServiceID[s.id] || {}).items)
                 .flatMap(s => this.props.serviceDataTypesByServiceID[s.id].items.map(dt => dt.id));
 
+            console.log(projectTableRecords);
 
             const tableList = projectTableRecords
                 .filter(tableOwnership =>
