@@ -219,7 +219,8 @@ export const serviceTables = (
                 ...t,
                 service_id: action.serviceInfo.id,
                 data_type: action.dataTypeID
-            }));
+            })).filter(t =>
+                !((state.itemsByServiceID[action.serviceInfo.id] || {}).tablesByID || {}).hasOwnProperty(t.id));
 
             return {
                 ...state,
@@ -229,8 +230,14 @@ export const serviceTables = (
                     [action.serviceInfo.id]: {
                         ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
                         isFetching: false,
-                        tables: action.data,
-                        tablesByID: Object.fromEntries(newTables.map(t => [t.id, t])),
+                        tables: [
+                            ...((state.itemsByServiceID[action.serviceInfo.id] || {}).tables || []),
+                            ...action.data,
+                        ],
+                        tablesByID: {
+                            ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                            ...Object.fromEntries(newTables.map(t => [t.id, t]))
+                        },
                     }
                 },
             };
@@ -258,7 +265,7 @@ export const serviceTables = (
                     ...state.itemsByServiceID,
                     [action.serviceInfo.id]: {
                         ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
-                        tables: [...(state.itemsByServiceID[action.serviceInfo.id] || {}).tables, action.table],
+                        tables: [...((state.itemsByServiceID[action.serviceInfo.id] || {}).tables || []), action.table],
                         tablesByID: {
                             ...((state.itemsByServiceID[action.serviceInfo.id] || {}).tablesByID || {}),
                             [action.table.id]: action.table,
