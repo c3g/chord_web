@@ -235,7 +235,7 @@ export const serviceTables = (
                             ...action.data,
                         ],
                         tablesByID: {
-                            ...(state.itemsByServiceID[action.serviceInfo.id] || {}),
+                            ...((state.itemsByServiceID[action.serviceInfo.id] || {}).tablesByID || {}),
                             ...Object.fromEntries(newTables.map(t => [t.id, t]))
                         },
                     }
