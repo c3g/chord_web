@@ -118,6 +118,8 @@ class RoutedProject extends Component {
                     ...tables[tableOwnership.service_id].tablesByID[tableOwnership.table_id],
                 }));
 
+            console.log(tableList);
+
             // TODO: Inconsistent schemas
             const strayTables = [
                 ...this.props.serviceTables.filter(t2 =>
