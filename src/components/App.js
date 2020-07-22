@@ -29,7 +29,7 @@ const NotificationDrawer = lazy(() => import("./notifications/NotificationDrawer
 // Lazy-load route components
 const DashboardContent = lazy(() => import("./DashboardContent"));
 const ServiceDetail = lazy(() => import("./services/ServiceDetail"));
-const DataDiscoveryContent = lazy(() => import("./DataDiscoveryContent.js"));
+const DataDiscoveryContent = lazy(() => import("./DataDiscoveryContent"));
 const DataExplorerContent = lazy(() => import("./DataExplorerContent"));
 const DataManagerContent = lazy(() => import("./DataManagerContent"));
 const PeersContent = lazy(() => import("./PeersContent"));

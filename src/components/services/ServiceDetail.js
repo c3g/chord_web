@@ -14,7 +14,7 @@ class ServiceDetail extends Component {
         // TODO: 404
         const serviceInfo = this.props.serviceInfoByArtifact[this.props.match.params.artifact] || null;
         const chordServiceInfo = this.props.chordServicesByArtifact[this.props.match.params.artifact] || null;
-        const loading = !(serviceInfo || chordServiceInfo);
+        const loading = !(serviceInfo && chordServiceInfo);
 
         console.log(serviceInfo, chordServiceInfo, loading);
 
