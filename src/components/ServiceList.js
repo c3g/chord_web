@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
+import {Link} from "react-router-dom";
+
 import {Table, Typography, Icon, Tag} from "antd";
 import "antd/es/table/style/css";
 import "antd/es/icon/style/css";
@@ -9,12 +11,20 @@ import "antd/es/tag/style/css";
 import "antd/es/table/style/css.js";
 
 import {chordServicePropTypesMixin, serviceInfoPropTypesShape} from "../propTypes";
+import {ROLE_OWNER} from "../constants";
+import {withBasePath} from "../utils/url";
 
-const SERVICE_COLUMNS = [
+const ARTIFACT_STYLING = {fontFamily: "monospace"};
+
+const serviceColumns = isOwner => [
     {
         title: "Artifact",
         dataIndex: "type.artifact",
-        render: artifact => artifact ? <span style={{fontFamily: "monospace"}}>{artifact}</span> : ""
+        render: artifact => artifact
+            ? (isOwner
+                ? <Link style={ARTIFACT_STYLING} to={withBasePath(`services/${artifact}`)}>{artifact}</Link>
+                : <span style={ARTIFACT_STYLING}>{artifact}</span>)
+            : ""
     },
     {
         title: "Name",
@@ -68,7 +78,7 @@ const mapStateToProps = state => ({
         status: state.services.itemsByArtifact.hasOwnProperty(service.type.artifact),
         loading: state.services.isFetching
     })),
-    columns: SERVICE_COLUMNS,
+    columns: serviceColumns(state.auth.hasAttempted && (state.auth.user || {}).chord_user_role !== ROLE_OWNER),
     rowKey: "key",
     bordered: true,
     loading: state.chordServices.isFetching || state.services.isFetching,

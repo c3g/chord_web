@@ -28,6 +28,7 @@ const NotificationDrawer = lazy(() => import("./notifications/NotificationDrawer
 
 // Lazy-load route components
 const DashboardContent = lazy(() => import("./DashboardContent"));
+const ServiceDetail = lazy(() => import("./services/ServiceDetail"));
 const DataDiscoveryContent = lazy(() => import("./DataDiscoveryContent.js"));
 const DataExplorerContent = lazy(() => import("./DataExplorerContent"));
 const DataManagerContent = lazy(() => import("./DataManagerContent"));
@@ -80,6 +81,7 @@ class App extends Component {
                     <Suspense fallback={<SitePageLoading />}>
                         <Switch>
                             <Route path={withBasePath("dashboard")} component={DashboardContent} />
+                            <Route path={withBasePath("services/:artifact")} component={ServiceDetail} />
                             <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
                             <OwnerRoute path={withBasePath("data/explorer")}
                                         component={DataExplorerContent} />
