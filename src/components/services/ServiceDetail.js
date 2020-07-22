@@ -21,9 +21,9 @@ class ServiceDetail extends Component {
         return loading ? <Skeleton /> : <>
             <PageHeader title={serviceInfo.name}
                         onBack={() => this.props.history.push(withBasePath("dashboard"))}>
-                <Typography.Header level={4}>Service Info</Typography.Header>
+                <Typography.Title level={4}>Service Info</Typography.Title>
                 <pre>{JSON.stringify(serviceInfo, null, 2)}</pre>
-                <Typography.Header level={4}>CHORD Service Configuration</Typography.Header>
+                <Typography.Title level={4}>CHORD Service Configuration</Typography.Title>
                 <pre>{JSON.stringify(chordServiceInfo, null, 2)}</pre>
             </PageHeader>
         </>;
