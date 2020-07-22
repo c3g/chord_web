@@ -6,6 +6,7 @@ import {
     networkAction
 } from "../../utils/actions";
 
+import {fetchServiceLogsIfPossible, fetchSystemLogsIfPossible} from "../logs/actions";
 import {fetchDropBoxTreeOrFail} from "../manager/actions";
 import {fetchProjectsWithDatasetsAndTables} from "../metadata/actions";
 import {fetchNodeInfo} from "../node/actions";
@@ -54,6 +55,8 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
     // Otherwise, we're newly authenticated as an owner, so run all actions that need authentication.
     await Promise.all([
         dispatch(fetchDropBoxTreeOrFail()),
+        dispatch(fetchServiceLogsIfPossible()),
+        dispatch(fetchSystemLogsIfPossible()),
         dispatch(fetchRuns()),
         dispatch(fetchNotifications()),
     ]);
