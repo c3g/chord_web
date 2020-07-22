@@ -1,7 +1,7 @@
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 
 export const FETCH_SYSTEM_LOGS = createNetworkActionTypes("FETCH_SYSTEM_LOGS");
-export const FETCH_SERVICE_LOGS = createNetworkActionTypes("FETCH_SYSTEM_LOGS");
+export const FETCH_SERVICE_LOGS = createNetworkActionTypes("FETCH_SERVICE_LOGS");
 
 const fetchSystemLogs = networkAction(() => (dispatch, getState) => ({
     types: FETCH_SYSTEM_LOGS,
