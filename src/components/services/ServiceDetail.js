@@ -15,6 +15,9 @@ class ServiceDetail extends Component {
         const serviceInfo = this.props.serviceInfoByArtifact[this.props.match.params.artifact] || null;
         const chordServiceInfo = this.props.chordServicesByArtifact[this.props.match.params.artifact] || null;
         const loading = !(serviceInfo || chordServiceInfo);
+
+        console.log(serviceInfo, chordServiceInfo, loading);
+
         return loading ? <Skeleton /> : <>
             <PageHeader title={serviceInfo.name}
                         onBack={() => this.props.history.push(withBasePath("dashboard"))}>

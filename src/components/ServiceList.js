@@ -78,7 +78,7 @@ const mapStateToProps = state => ({
         status: state.services.itemsByArtifact.hasOwnProperty(service.type.artifact),
         loading: state.services.isFetching
     })),
-    columns: serviceColumns(state.auth.hasAttempted && (state.auth.user || {}).chord_user_role !== ROLE_OWNER),
+    columns: console.log(state.auth) || serviceColumns(state.auth.hasAttempted && (state.auth.user || {}).chord_user_role === ROLE_OWNER),
     rowKey: "key",
     bordered: true,
     loading: state.chordServices.isFetching || state.services.isFetching,
