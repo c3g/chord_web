@@ -42,6 +42,7 @@ class ServiceDetail extends Component {
                             footer={<Menu mode="horizontal" style={MENU_STYLE} selectedKeys={selectedKeys}>
                                 {menuItems.map(renderMenuItem)}
                             </Menu>}
+                            withTabBar={true}
                             onBack={() => this.props.history.push(withBasePath("dashboard"))} />
             <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton active /></div>}>
                 <Switch>
