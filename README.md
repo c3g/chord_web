@@ -5,6 +5,11 @@
 Front end for a single Bento platform node. Written in React using Ant Design 
 components.
 
+## Coding Style
+
+  * Use 4 spaces for indentation
+  * Use `async`/`await` syntax for asynchronous operations
+
 ## Project Structure
 
   * `.babelrc`: Babel configuration file
