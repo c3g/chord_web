@@ -27,27 +27,27 @@ class ServiceLogs extends Component {
             text: log,
         }));
 
-        return  loading ? <Skeleton /> : <Layout>
+        return <Layout>
             {/* TODO: De-duplicate with project-dataset content */}
-            {Object.keys(logs).length ? (
-                <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
-                    <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
-                        <Menu style={{flex: 1, paddingTop: "8px"}}
-                              mode="inline"
-                              selectedKeys={matchingMenuKeys(logMenuItems)}>
-                            {logMenuItems.map(renderMenuItem)}
-                        </Menu>
-                    </div>
-                </Layout.Sider>
-            ) : null}
+            <Layout.Sider style={{background: "white"}} width={256} breakpoint="lg" collapsedWidth={0}>
+                <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                    <Menu style={{flex: 1, paddingTop: "8px"}}
+                          mode="inline"
+                          selectedKeys={matchingMenuKeys(logMenuItems)}>
+                        {logMenuItems.map(renderMenuItem)}
+                    </Menu>
+                </div>
+            </Layout.Sider>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                {Object.keys(logs).length ? (
-                    <Switch>
-                        <Route path={withBasePath("services/:artifact/logs/:log")} component={ServiceLog} />
-                        <Redirect from={withBasePath(`services/${artifact}/logs`)}
-                                  to={withBasePath(`services/${artifact}/logs/${logList[0]}`)} />
-                    </Switch>
-                ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+                {loading ? <Skeleton /> : (
+                    Object.keys(logs).length ? (
+                        <Switch>
+                            <Route path={withBasePath("services/:artifact/logs/:log")} component={ServiceLog} />
+                            <Redirect from={withBasePath(`services/${artifact}/logs`)}
+                                      to={withBasePath(`services/${artifact}/logs/${logList[0]}`)} />
+                        </Switch>
+                    ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
             </Layout.Content>
         </Layout>;
     }
