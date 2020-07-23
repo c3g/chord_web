@@ -10,9 +10,8 @@ import SitePageHeader from "../SitePageHeader";
 import ServiceOverview from "./ServiceOverview";
 import ServiceLogs from "./ServiceLogs";
 
-import {nodeInfoDataPropTypesShape} from "../../propTypes";
 import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
-import {urlPath, withBasePath} from "../../utils/url";
+import {withBasePath} from "../../utils/url";
 import {Redirect, Route, Switch} from "react-router-dom";
 
 const pageMenu = artifact => [
@@ -34,7 +33,7 @@ class ServiceDetail extends Component {
         const serviceInfo = this.props.serviceInfoByArtifact[artifact] || null;
 
         const menuItems = pageMenu(artifact);
-        const selectedKeys = matchingMenuKeys(menuItems, urlPath(this.props.nodeInfo.CHORD_URL));
+        const selectedKeys = matchingMenuKeys(menuItems);
 
         return <>
             <SitePageHeader title={(serviceInfo || {}).name || ""}
@@ -59,12 +58,10 @@ class ServiceDetail extends Component {
 
 ServiceDetail.propTypes = {
     serviceInfoByArtifact: PropTypes.objectOf(PropTypes.object),  // TODO
-    nodeInfo: nodeInfoDataPropTypesShape,
 };
 
 const mapStateToProps = state => ({
     serviceInfoByArtifact: state.services.itemsByArtifact,
-    nodeInfo: state.nodeInfo.data,
 });
 
 export default connect(mapStateToProps)(ServiceDetail);
