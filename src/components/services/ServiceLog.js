@@ -12,16 +12,22 @@ class ServiceLog extends Component {
             loading: false,
             data: ""
         };
+        this.getLogUrl = this.getLogUrl.bind(this);
         this.fetchLog = this.fetchLog.bind(this);
         this.containerDiv = createRef();
+    }
+
+    getLogUrl(artifact, logName) {
+        return ((this.props.serviceLogs.itemsByArtifact[artifact] || {}).logs || {})[logName];
     }
 
     componentDidMount() {
         const artifact = this.props.match.params.artifact;
         const logName = this.props.match.params.log;
-        const log = ((this.props.serviceLogs.itemsByArtifact[artifact] || {}).logs || {})[logName];
 
-        this.fetchLog(log).catch(console.error);
+        if (!artifact || !logName) return;
+
+        this.fetchLog(this.getLogUrl(artifact, logName)).catch(console.error);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -30,8 +36,8 @@ class ServiceLog extends Component {
         const artifact = this.props.match.params.artifact;
         const logName = this.props.match.params.log;
 
-        if (oldArtifact !== artifact || oldLogName !== logName) {
-            this.fetchLog(log).catch(console.error);
+        if ((oldArtifact !== artifact || oldLogName !== logName) && artifact && logName) {
+            this.fetchLog(this.getLogUrl(artifact, logName)).catch(console.error);
         }
     }
 
