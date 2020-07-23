@@ -2,10 +2,14 @@ import React, {Component, createRef} from "react";
 import {connect} from "react-redux";
 import fetch from "cross-fetch";
 
+import {Skeleton} from "antd";
+import "antd/es/skeleton/style/css";
+
 class ServiceLog extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             data: ""
         };
         this.fetchLog = this.fetchLog.bind(this);
@@ -32,10 +36,11 @@ class ServiceLog extends Component {
     }
 
     async fetchLog(path) {
+        this.setState({loading: true});
         const r = await fetch(path);
         if (r.ok) {
             const data = await r.text();
-            this.setState({data}, () => {
+            this.setState({data, loading: false}, () => {
                 const div = this.containerDiv.current;
                 div.scrollTop = div.scrollHeight;
             });
@@ -46,7 +51,7 @@ class ServiceLog extends Component {
 
     render() {
         return <div style={{maxHeight: "calc(100vh - 48px)", overflow: "auto"}} ref={this.containerDiv}>
-            <pre>{this.state.data}</pre>
+            {this.state.loading ? <Skeleton active={true} title={false} /> : <pre>{this.state.data}</pre>}]
         </div>;
     }
 }

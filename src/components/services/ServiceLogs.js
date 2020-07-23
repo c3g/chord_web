@@ -39,7 +39,7 @@ class ServiceLogs extends Component {
                 </div>
             </Layout.Sider>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                {loading ? <Skeleton /> : (
+                {loading ? <Skeleton active={true} title={false} /> : (
                     Object.keys(logs).length ? (
                         <Switch>
                             <Route path={withBasePath("services/:artifact/logs/:log")} component={ServiceLog} />
