@@ -35,7 +35,8 @@ const tableSearchResults = (searchResults) => {
     return Object.values(tableResultSet).map(i => ({
         ...i,
         biosamples: Object.values(i.biosamples).sort((b1, b2) => b1.id.localeCompare(b2.id)),
-        diseases: Object.values(i.diseases).sort((d1, d2) => d1.id.localeCompare(d2.id)),
+        diseases: Object.values(i.diseases).sort(
+            (d1, d2) => d1.id.toString().localeCompare(d2.id.toString())),
     }));
 };
 
