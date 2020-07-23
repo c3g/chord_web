@@ -22,7 +22,7 @@ const logReducerFactory = actionTypes => (
                 itemsByArtifact: byService(action.data),
             };
         case actionTypes.FINISH:
-            return {...state.service, isFetching: false};
+            return {...state, isFetching: false};
 
         default:
             return state;
