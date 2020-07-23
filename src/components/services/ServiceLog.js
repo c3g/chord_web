@@ -57,7 +57,7 @@ class ServiceLog extends Component {
             boxSizing: "border-box",
             padding: "24px",
             transition: "box-shadow 0.1s ease-in-out",
-            ...((div.scrollTop > 0)
+            ...((div && div.scrollTop > 0)
                 ? {boxShadow: "0 2px 3px rgba(0, 0, 0, 0.1)"}
                 : {boxShadow: "0 2px 3px rgba(0, 0, 0, 0.0)"})
         }} ref={this.containerDiv}>
