@@ -38,7 +38,7 @@ class ServiceLogs extends Component {
                     </Menu>
                 </div>
             </Layout.Sider>
-            <Layout.Content style={LAYOUT_CONTENT_STYLE}>
+            <Layout.Content style={{...LAYOUT_CONTENT_STYLE, ...(loading ? {} : {padding: 0})}}>
                 {loading ? <Skeleton active={true} title={false} /> : (
                     Object.keys(logs).length ? (
                         <Switch>
