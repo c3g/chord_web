@@ -61,7 +61,9 @@ class ServiceLog extends Component {
                 ? {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.05)"}
                 : {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.0)"})
         }} ref={this.containerDiv}>
-            {this.state.loading ? <Skeleton active={true} title={false} /> : <pre>{this.state.data}</pre>}
+            {this.state.loading
+                ? <Skeleton active={true} title={false} />
+                : <pre style={{fontSize: "11px"}}>{this.state.data}</pre>}
         </div>;
     }
 }
