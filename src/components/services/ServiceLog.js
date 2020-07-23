@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, createRef} from "react";
 import {connect} from "react-redux";
 import fetch from "cross-fetch";
 
@@ -9,6 +9,7 @@ class ServiceLog extends Component {
             data: ""
         };
         this.fetchLog = this.fetchLog.bind(this);
+        this.containerDiv = createRef();
     }
 
     componentDidMount() {
@@ -34,14 +35,19 @@ class ServiceLog extends Component {
         const r = await fetch(path);
         if (r.ok) {
             const data = await r.text();
-            this.setState({data});
+            this.setState({data}, () => {
+                const div = this.containerDiv.current;
+                div.scrollTop = div.scrollHeight;
+            });
         } else {
             throw r;
         }
     }
 
     render() {
-        return <pre>{this.state.data}</pre>;
+        return <div style={{maxHeight: "calc(100vh - 48px)", overflow: "auto"}} ref={this.containerDiv}>
+            <pre>{this.state.data}</pre>
+        </div>;
     }
 }
 
