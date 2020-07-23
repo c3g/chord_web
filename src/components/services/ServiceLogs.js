@@ -20,7 +20,7 @@ class ServiceLogs extends Component {
         const logs = this.props.serviceLogs.itemsByArtifact[artifact] || {};
         const loading = this.props.loadingAuthDependentData || this.props.serviceLogs.isFetching;
 
-        const logList = Object.entries((logs || {}).logs).map(l => l[0]);
+        const logList = Object.entries((logs || {}).logs || {}).map(l => l[0]);
 
         const logMenuItems = logList.map(log => ({
             url: withBasePath(`services/${artifact}/logs/${log}`),
