@@ -48,7 +48,7 @@ class ServiceDetail extends Component {
                 <Switch>
                     <Route exact path={withBasePath(`services/:artifact/overview`)}
                            component={ServiceOverview} />
-                    <Route exact path={withBasePath(`services/:artifact/logs`)} component={ServiceLogs} />
+                    <Route path={withBasePath(`services/:artifact/logs`)} component={ServiceLogs} />
                     <Redirect from={withBasePath(`services/${artifact}`)}
                               to={withBasePath(`services/${artifact}/overview`)} />
                 </Switch>
