@@ -57,13 +57,13 @@ class ServiceLog extends Component {
             boxSizing: "border-box",
             padding: "24px",
             transition: "box-shadow 0.1s ease-in-out",
-            ...((div && div.scrollTop > 0)
+            ...(this.state.data.split("\n").length > 40 || (div && div.scrollTop > 0)
                 ? {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.05)"}
                 : {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.0)"})
         }} ref={this.containerDiv}>
             {this.state.loading
                 ? <Skeleton active={true} title={false} />
-                : <pre style={{fontSize: "11px"}}>{this.state.data}</pre>}
+                : <pre style={{fontSize: "11px"}}>{this.state.data.trim()}</pre>}
         </div>;
     }
 }
