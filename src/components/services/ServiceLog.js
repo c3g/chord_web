@@ -58,10 +58,10 @@ class ServiceLog extends Component {
             padding: "24px",
             transition: "box-shadow 0.1s ease-in-out",
             ...((div && div.scrollTop > 0)
-                ? {boxShadow: "0 2px 3px rgba(0, 0, 0, 0.1)"}
-                : {boxShadow: "0 2px 3px rgba(0, 0, 0, 0.0)"})
+                ? {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.05)"}
+                : {boxShadow: "inset 0 2px 3px rgba(0, 0, 0, 0.0)"})
         }} ref={this.containerDiv}>
-            {this.state.loading ? <Skeleton active={true} title={false} /> : <pre>{this.state.data}</pre>}]
+            {this.state.loading ? <Skeleton active={true} title={false} /> : <pre>{this.state.data}</pre>}
         </div>;
     }
 }
