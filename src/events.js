@@ -16,6 +16,6 @@ export default async (message, history) => {
         .map(([_, h]) => h);
 
     for (const handler of handlers) {
-        await store.dispatch(handler(message, history));
+        await store.dispatch(handler(message.message, history));
     }
 };
