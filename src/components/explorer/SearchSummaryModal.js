@@ -141,7 +141,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart>
-                        <VictoryAxis />
+                        <VictoryAxis style={{tickLabels: {fontFamily: "monospace"}}} />
                         <VictoryBar data={diseasesByTerm} {...VICTORY_LABEL_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
@@ -169,7 +169,12 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
             <Row gutter={16}>
                 <Col span={12}>
                     <VictoryChart>
-                        <VictoryAxis tickValues={AGE_HISTOGRAM_BINS} tickFormat={t => `${t}Y`} />
+                        <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
+                                     label="Age (Years)"
+                                     style={{tickLabels: {fontFamily: "monospace"}}} />
+                        <VictoryAxis dependentAxis={true}
+                                     label="Count"
+                                     style={{tickLabels: {fontFamily: "monospace"}}} />
                         <VictoryHistogram data={ageAtCollectionHistogram}
                                           bins={AGE_HISTOGRAM_BINS} />
                         <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
