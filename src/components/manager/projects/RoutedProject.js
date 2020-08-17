@@ -109,6 +109,8 @@ class RoutedProject extends Component {
                     (this.props.serviceDataTypesByServiceID[s.id] || {}).items)
                 .flatMap(s => this.props.serviceDataTypesByServiceID[s.id].items.map(dt => dt.id));
 
+            console.log("ptr", projectTableRecords);
+            console.log("tbl", tables);
 
             const tableList = projectTableRecords
                 .filter(tableOwnership =>
@@ -117,6 +119,8 @@ class RoutedProject extends Component {
                     ...tableOwnership,
                     ...tables[tableOwnership.service_id].tablesByID[tableOwnership.table_id],
                 }));
+
+            console.log("tll", tableList);
 
             // TODO: Inconsistent schemas
             const strayTables = [

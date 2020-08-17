@@ -1,6 +1,4 @@
 import React, {Component, Suspense, lazy} from "react";
-import {connect} from "react-redux";
-
 import {Redirect, Route, Switch} from "react-router-dom";
 
 import {Menu, Skeleton} from "antd";
@@ -9,8 +7,7 @@ import "antd/es/skeleton/style/css";
 
 import {SITE_NAME} from "../constants";
 import {matchingMenuKeys, renderMenuItem} from "../utils/menu";
-import {urlPath, withBasePath} from "../utils/url";
-import {nodeInfoDataPropTypesShape} from "../propTypes";
+import {withBasePath} from "../utils/url";
 
 import SitePageHeader from "./SitePageHeader";
 
@@ -44,8 +41,7 @@ class DataManagerContent extends Component {
     }
 
     render() {
-        if (!this.props.nodeInfo.CHORD_URL) return null;
-        const selectedKeys = matchingMenuKeys(PAGE_MENU, urlPath(this.props.nodeInfo.CHORD_URL));
+        const selectedKeys = matchingMenuKeys(PAGE_MENU);
         return <>
             <SitePageHeader title="Data Manager"
                             withTabBar={true}
@@ -73,12 +69,4 @@ class DataManagerContent extends Component {
     }
 }
 
-DataManagerContent.propTypes = {
-    nodeInfo: nodeInfoDataPropTypesShape,
-};
-
-const mapStateToProps = state => ({
-    nodeInfo: state.nodeInfo.data,
-});
-
-export default connect(mapStateToProps)(DataManagerContent);
+export default DataManagerContent;

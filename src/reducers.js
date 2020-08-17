@@ -3,6 +3,7 @@ import {combineReducers} from "redux";
 import {auth} from "./modules/auth/reducers";
 import {discovery} from "./modules/discovery/reducers";
 import {explorer} from "./modules/explorer/reducers";
+import {logs} from "./modules/logs/reducers";
 import {
     projects,
     projectTables,
@@ -33,6 +34,9 @@ const rootReducer = combineReducers({
 
     // Explorer module
     explorer,
+
+    // Logs module
+    logs,
 
     // Metadata module
 

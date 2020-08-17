@@ -6,8 +6,6 @@ import {Layout, Typography} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/typography/style/css";
 
-import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
-
 import NotificationList from "./NotificationList";
 import SitePageHeader from "../SitePageHeader";
 
@@ -38,7 +36,4 @@ const mapStateToProps = state => ({
     notifications: state.notifications.items
 });
 
-export default connect(mapStateToProps, {
-    markNotificationAsRead,
-    hideNotificationDrawer,
-})(NotificationsContent);
+export default connect(mapStateToProps)(NotificationsContent);

@@ -13,7 +13,7 @@ class RunDetailContent extends Component {
     render() {
         // TODO: 404
         const run = this.props.runsByID[this.props.match.params.id] || null;
-        const loading = run === null || (run || {details: null}).details === null;
+        const loading = (run || {details: null}).details === null;
         return loading
             ? <div style={{marginTop: "12px", marginLeft: "24px", marginRight: "24px"}}><Skeleton /></div>
             : <Run run={run}
