@@ -29,7 +29,7 @@ const numObjectToVictoryArray = numObj => Object.entries(numObj)
 
 // Bins of 10 years
 // TODO: Deal with start/end - for now, weight based on bin overlap?
-const AGE_HISTOGRAM_BINS = Array(10).keys().map(i => i * 10);
+const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 
 
 const ageAndDOBToApproxYears = (age, dob=null) => {
