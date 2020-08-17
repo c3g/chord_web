@@ -169,8 +169,10 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
             <Row gutter={16}>
                 <Col span={12}>
                     <VictoryChart>
+                        <VictoryAxis tickValues={AGE_HISTOGRAM_BINS} tickFormat={t => `${t}Y`} />
                         <VictoryHistogram data={ageAtCollectionHistogram}
                                           bins={AGE_HISTOGRAM_BINS} />
+                        <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
                 <Col span={12}>
