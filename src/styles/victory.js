@@ -17,3 +17,10 @@ export const VICTORY_PIE_LABEL_PROPS = {
     y: 125,
     style: {fontFamily: "monospace"}
 };
+
+export const VICTORY_BAR_TITLE_PROPS = {
+    textAnchor: "middle",
+    x: 200,
+    y: 0,
+    style: {fontFamily: "monospace"},
+};

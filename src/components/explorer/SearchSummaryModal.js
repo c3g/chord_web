@@ -7,11 +7,11 @@ import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/statistic/style/css";
 
-import {VictoryBar, VictoryChart, VictoryLabel, VictoryPie} from "victory";
+import {VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, VictoryPie} from "victory";
 import VictoryPieWrapSVG from "../VictoryPieWrapSVG";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
-import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS} from "../../styles/victory";
+import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS, VICTORY_BAR_TITLE_PROPS} from "../../styles/victory";
 import {explorerSearchResultsPropTypesShape} from "../../propTypes";
 
 
@@ -45,6 +45,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
         numDiseasesByTerm[d.term.label] = (numDiseasesByTerm[d.term.label] || 0) + 1;
     }));
     const diseasesByTerm = numObjectToVictoryArray(numDiseasesByTerm);
+    const maxDiseaseCount = Math.max(...diseasesByTerm.map(d => d.y));
 
     // Biosamples summary
     // TODO: More ontology aware
@@ -90,8 +91,11 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart domainPadding={32}>
+                        <VictoryAxis label="# of Occurrences"
+                                     dependentAxis={true}
+                                     tickCount={Math.min(maxDiseaseCount, 10)} />
                         <VictoryBar data={diseasesByTerm} {...VICTORY_PIE_PROPS} />
-                        <VictoryLabel text="DISEASE" {...VICTORY_PIE_LABEL_PROPS} />
+                        <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
             </Row>
