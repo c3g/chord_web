@@ -7,7 +7,7 @@ import "antd/es/modal/style/css";
 import "antd/es/row/style/css";
 import "antd/es/statistic/style/css";
 
-import {VictoryLabel, VictoryPie} from "victory";
+import {VictoryBar, VictoryChart, VictoryLabel, VictoryPie} from "victory";
 import VictoryPieWrapSVG from "../VictoryPieWrapSVG";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
@@ -42,7 +42,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
     const numDiseasesByTerm = {};
     searchFormattedResults.forEach(r => r.diseases.forEach(d => {
         // TODO: Better ontology awareness - label vs id, translation, etc.
-        numDiseasesByTerm[d.term.label] = (numDiseasesByTerm[d.term.label]  || 0) + 1;
+        numDiseasesByTerm[d.term.label] = (numDiseasesByTerm[d.term.label] || 0) + 1;
     }));
     const diseasesByTerm = numObjectToVictoryArray(numDiseasesByTerm);
 
@@ -89,10 +89,10 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     </VictoryPieWrapSVG>
                 </Col>
                 <Col span={12}>
-                    <VictoryPieWrapSVG>
-                        <VictoryPie data={diseasesByTerm} {...VICTORY_PIE_PROPS} />
+                    <VictoryChart domainPadding={32}>
+                        <VictoryBar data={diseasesByTerm} {...VICTORY_PIE_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_PIE_LABEL_PROPS} />
-                    </VictoryPieWrapSVG>
+                    </VictoryChart>
                 </Col>
             </Row>
         </> : null}
