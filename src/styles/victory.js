@@ -23,11 +23,12 @@ export const VICTORY_LABEL_PROPS = {
     padding: {left: 120, right: 120, top: 40, bottom: 40},
     height: 250,
     labels: ({datum}) => datum.y.toString(),
+    style: {labels: {fontFamily: "monospace"}},
 };
 
 export const VICTORY_BAR_TITLE_PROPS = {
     textAnchor: "middle",
-    x: 200,
+    x: 225,
     y: 20,
     style: {fontFamily: "monospace"},
 };
