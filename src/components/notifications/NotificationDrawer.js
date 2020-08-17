@@ -10,7 +10,7 @@ import "antd/es/drawer/style/css";
 
 import NotificationList from "./NotificationList";
 
-import {markNotificationAsRead, hideNotificationDrawer} from "../../modules/notifications/actions";
+import {hideNotificationDrawer} from "../../modules/notifications/actions";
 import {withBasePath} from "../../utils/url";
 import {notificationPropTypesShape} from "../../propTypes";
 
@@ -33,7 +33,7 @@ class NotificationDrawer extends Component {
                        onClose={() => this.props.hideNotificationDrawer()}>
             <NotificationList small={true} notifications={this.props.notifications.filter(n => !n.read)} />
               <Divider />
-              <Button type="link" style={{width: "100%"}} onClick={() => this.seeAllNotifications()}>
+              <Button type="link" style={{width: "100%"}} onClick={this.seeAllNotifications}>
                   See Read Notifications</Button>
         </Drawer>;
     }
@@ -43,7 +43,6 @@ NotificationDrawer.propTypes = {
     notificationDrawerVisible: PropTypes.bool,
     notifications: PropTypes.arrayOf(notificationPropTypesShape),
 
-    markNotificationAsRead: PropTypes.func,
     hideNotificationDrawer: PropTypes.func,
 };
 
@@ -52,9 +51,4 @@ const mapStateToProps = state => ({
     notifications: state.notifications.items,
 });
 
-const mapDispatchToProps = dispatch => ({
-    markNotificationAsRead: nID => dispatch(markNotificationAsRead(nID)),
-    hideNotificationDrawer: () => dispatch(hideNotificationDrawer())
-});
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NotificationDrawer));
+export default withRouter(connect(mapStateToProps, {hideNotificationDrawer})(NotificationDrawer));
