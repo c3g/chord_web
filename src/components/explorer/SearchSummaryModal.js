@@ -97,12 +97,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 <Col span={12}>
                     <VictoryChart domainPadding={32}>
                         <VictoryAxis />
-                        <VictoryAxis label="# of Occurrences"
-                                     dependentAxis={true}
-                                     tickCount={Math.min(maxDiseaseCount, 10) + 1}
-                                     tickFormat={t => `${Math.round(t)}`} />
-                        <VictoryBar data={diseasesByTerm}
-                                    {...VICTORY_LABEL_PROPS} />
+                        <VictoryBar data={diseasesByTerm} {...VICTORY_LABEL_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>

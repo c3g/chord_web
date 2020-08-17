@@ -18,9 +18,11 @@ export const VICTORY_PIE_LABEL_PROPS = {
     style: {fontFamily: "monospace"}
 };
 
+// noinspection JSUnusedGlobalSymbols
 export const VICTORY_LABEL_PROPS = {
     padding: {left: 120, right: 120, top: 40, bottom: 40},
     height: 250,
+    labels: ({datum}) => datum.y.toString(),
 };
 
 export const VICTORY_BAR_TITLE_PROPS = {
