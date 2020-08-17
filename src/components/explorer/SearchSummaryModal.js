@@ -11,7 +11,12 @@ import {VictoryAxis, VictoryBar, VictoryChart, VictoryLabel, VictoryPie} from "v
 import VictoryPieWrapSVG from "../VictoryPieWrapSVG";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
-import {VICTORY_PIE_LABEL_PROPS, VICTORY_PIE_PROPS, VICTORY_BAR_TITLE_PROPS} from "../../styles/victory";
+import {
+    VICTORY_PIE_LABEL_PROPS,
+    VICTORY_PIE_PROPS,
+    VICTORY_LABEL_PROPS,
+    VICTORY_BAR_TITLE_PROPS,
+} from "../../styles/victory";
 import {explorerSearchResultsPropTypesShape} from "../../propTypes";
 
 
@@ -91,10 +96,13 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart domainPadding={32}>
+                        <VictoryAxis />
                         <VictoryAxis label="# of Occurrences"
                                      dependentAxis={true}
-                                     tickCount={Math.min(maxDiseaseCount, 10)} />
-                        <VictoryBar data={diseasesByTerm} {...VICTORY_PIE_PROPS} />
+                                     tickCount={Math.min(maxDiseaseCount, 10) + 1}
+                                     tickFormat={t => `${Math.round(t)}`} />
+                        <VictoryBar data={diseasesByTerm}
+                                    {...VICTORY_LABEL_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>

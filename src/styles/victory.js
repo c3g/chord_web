@@ -18,9 +18,14 @@ export const VICTORY_PIE_LABEL_PROPS = {
     style: {fontFamily: "monospace"}
 };
 
+export const VICTORY_LABEL_PROPS = {
+    padding: {left: 120, right: 120, top: 40, bottom: 40},
+    height: 250,
+};
+
 export const VICTORY_BAR_TITLE_PROPS = {
     textAnchor: "middle",
     x: 200,
-    y: 0,
+    y: 20,
     style: {fontFamily: "monospace"},
 };
