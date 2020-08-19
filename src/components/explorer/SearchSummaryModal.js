@@ -176,6 +176,8 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                                      label="Count"
                                      style={{tickLabels: {fontFamily: "monospace"}}} />
                         <VictoryHistogram data={ageAtCollectionHistogram}
+                                          labels={({datum}) => datum.y.toString()}
+                                          style={{labels: {fontFamily: "monospace"}}}
                                           bins={AGE_HISTOGRAM_BINS} />
                         <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
