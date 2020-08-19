@@ -19,14 +19,14 @@ export const VICTORY_PIE_LABEL_PROPS = {
 };
 
 export const VICTORY_BAR_CONTAINER_PROPS = {
-    padding: {left: 120, right: 120, top: 60, bottom: 120},
-    height: 300,
+    padding: {left: 120, right: 40, top: 60, bottom: 120},
+    height: 340,
 };
 
 // noinspection JSUnusedGlobalSymbols
 export const VICTORY_BAR_PROPS = {
     labels: ({datum}) => datum.y.toString(),
-    style: {labels: {fontFamily: "monospace"}},
+    style: {labels: {fontFamily: "monospace", fontSize: "12px"}},
 };
 
 export const VICTORY_BAR_TITLE_PROPS = {

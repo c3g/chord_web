@@ -146,8 +146,9 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     <VictoryChart {...VICTORY_BAR_CONTAINER_PROPS}>
                         <VictoryAxis style={{
                             tickLabels: {
-                                angle: -60,
+                                angle: -45,
                                 fontFamily: "monospace",
+                                fontSize: "11px",
                                 textAnchor: "end",
                             },
                         }} />
