@@ -18,10 +18,13 @@ export const VICTORY_PIE_LABEL_PROPS = {
     style: {fontFamily: "monospace"}
 };
 
-// noinspection JSUnusedGlobalSymbols
-export const VICTORY_BAR_PROPS = {
+export const VICTORY_BAR_CONTAINER_PROPS = {
     padding: {left: 120, right: 120, top: 60, bottom: 120},
     height: 300,
+};
+
+// noinspection JSUnusedGlobalSymbols
+export const VICTORY_BAR_PROPS = {
     labels: ({datum}) => datum.y.toString(),
     style: {labels: {fontFamily: "monospace"}},
 };
@@ -33,7 +36,11 @@ export const VICTORY_BAR_TITLE_PROPS = {
     style: {fontFamily: "monospace"},
 };
 
+export const VICTORY_HIST_CONTAINER_PROPS = {
+    ...VICTORY_BAR_CONTAINER_PROPS,
+    padding: {left: 120, right: 120, top: 60, bottom: 40},
+};
+
 export const VICTORY_HIST_PROPS = {
     ...VICTORY_BAR_PROPS,
-    padding: {left: 120, right: 120, top: 60, bottom: 40},
 };

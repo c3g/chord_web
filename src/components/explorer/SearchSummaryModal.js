@@ -14,11 +14,13 @@ import VictoryPieWrapSVG from "../VictoryPieWrapSVG";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
 import {
-    VICTORY_PIE_LABEL_PROPS,
-    VICTORY_PIE_PROPS,
+    VICTORY_BAR_CONTAINER_PROPS,
     VICTORY_BAR_PROPS,
     VICTORY_BAR_TITLE_PROPS,
+    VICTORY_HIST_CONTAINER_PROPS,
     VICTORY_HIST_PROPS,
+    VICTORY_PIE_LABEL_PROPS,
+    VICTORY_PIE_PROPS,
 } from "../../styles/victory";
 import {explorerSearchResultsPropTypesShape} from "../../propTypes";
 
@@ -141,7 +143,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     </VictoryPieWrapSVG>
                 </Col>
                 <Col span={12}>
-                    <VictoryChart>
+                    <VictoryChart {...VICTORY_BAR_CONTAINER_PROPS}>
                         <VictoryAxis style={{
                             tickLabels: {
                                 angle: -60,
@@ -175,7 +177,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
             </Row>
             <Row gutter={16}>
                 <Col span={12}>
-                    <VictoryChart>
+                    <VictoryChart {...VICTORY_HIST_CONTAINER_PROPS}>
                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                      label="Age (Years)"
                                      height={200}
