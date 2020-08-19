@@ -229,7 +229,7 @@ export const individualPropTypesShape = PropTypes.shape({
 
 // Prop types object shape for a single phenopacket disease object.
 export const diseasePropTypesShape = PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     term: ontologyShape.isRequired,
     onset: PropTypes.object,  // TODO
     disease_stage: PropTypes.arrayOf(ontologyShape),
