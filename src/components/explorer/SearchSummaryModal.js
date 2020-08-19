@@ -144,12 +144,13 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart {...VICTORY_BAR_CONTAINER_PROPS}>
-                        <VictoryAxis style={{
+                        <VictoryAxis tickLabelComponent={<VictoryLabel dy={-5} />} style={{
                             tickLabels: {
-                                angle: -45,
+                                angle: -40,
                                 fontFamily: "monospace",
                                 fontSize: "11px",
                                 textAnchor: "end",
+                                letterSpacing: "-1.5px"
                             },
                         }} />
                         <VictoryBar data={diseasesByTerm} {...VICTORY_BAR_PROPS} />
