@@ -178,6 +178,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     <VictoryChart>
                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                      label="Age (Years)"
+                                     height={200}
                                      style={{
                                          axisLabel: {fontFamily: "monospace"},
                                          tickLabels: {fontFamily: "monospace"}
