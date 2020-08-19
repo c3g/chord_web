@@ -16,7 +16,7 @@ import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../../dataTypes/phenopacket";
 import {
     VICTORY_PIE_LABEL_PROPS,
     VICTORY_PIE_PROPS,
-    VICTORY_LABEL_PROPS,
+    VICTORY_BAR_PROPS,
     VICTORY_BAR_TITLE_PROPS,
 } from "../../styles/victory";
 import {explorerSearchResultsPropTypesShape} from "../../propTypes";
@@ -141,8 +141,10 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart>
-                        <VictoryAxis style={{tickLabels: {angle: 90, fontFamily: "monospace"}}} />
-                        <VictoryBar data={diseasesByTerm} {...VICTORY_LABEL_PROPS} />
+                        <VictoryAxis style={{
+                            tickLabels: {angle: -90, fontFamily: "monospace"}
+                        }} />
+                        <VictoryBar data={diseasesByTerm} {...VICTORY_BAR_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
@@ -171,14 +173,19 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     <VictoryChart>
                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                      label="Age (Years)"
-                                     style={{tickLabels: {fontFamily: "monospace"}}} />
+                                     style={{
+                                         axisLabel: {fontFamily: "monospace"},
+                                         tickLabels: {fontFamily: "monospace"}
+                                     }} />
                         <VictoryAxis dependentAxis={true}
                                      label="Count"
-                                     style={{tickLabels: {fontFamily: "monospace"}}} />
+                                     style={{
+                                         axisLabel: {fontFamily: "monospace"},
+                                         tickLabels: {fontFamily: "monospace"}
+                                     }} />
                         <VictoryHistogram data={ageAtCollectionHistogram}
-                                          labels={({datum}) => datum.y.toString()}
-                                          style={{labels: {fontFamily: "monospace"}}}
-                                          bins={AGE_HISTOGRAM_BINS} />
+                                          bins={AGE_HISTOGRAM_BINS}
+                                          {...VICTORY_BAR_PROPS} />
                         <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
