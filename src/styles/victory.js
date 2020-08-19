@@ -20,8 +20,8 @@ export const VICTORY_PIE_LABEL_PROPS = {
 
 // noinspection JSUnusedGlobalSymbols
 export const VICTORY_BAR_PROPS = {
-    padding: {left: 120, right: 120, top: 40, bottom: 40},
-    height: 250,
+    padding: {left: 120, right: 120, top: 60, bottom: 120},
+    height: 300,
     labels: ({datum}) => datum.y.toString(),
     style: {labels: {fontFamily: "monospace"}},
 };
@@ -31,4 +31,9 @@ export const VICTORY_BAR_TITLE_PROPS = {
     x: 225,
     y: 20,
     style: {fontFamily: "monospace"},
+};
+
+export const VICTORY_HIST_PROPS = {
+    ...VICTORY_BAR_PROPS,
+    padding: {left: 120, right: 120, top: 60, bottom: 40},
 };

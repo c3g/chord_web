@@ -18,6 +18,7 @@ import {
     VICTORY_PIE_PROPS,
     VICTORY_BAR_PROPS,
     VICTORY_BAR_TITLE_PROPS,
+    VICTORY_HIST_PROPS,
 } from "../../styles/victory";
 import {explorerSearchResultsPropTypesShape} from "../../propTypes";
 
@@ -142,7 +143,11 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 <Col span={12}>
                     <VictoryChart>
                         <VictoryAxis style={{
-                            tickLabels: {angle: -90, fontFamily: "monospace"}
+                            tickLabels: {
+                                angle: -60,
+                                fontFamily: "monospace",
+                                textAnchor: "end",
+                            },
                         }} />
                         <VictoryBar data={diseasesByTerm} {...VICTORY_BAR_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
@@ -185,7 +190,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                                      }} />
                         <VictoryHistogram data={ageAtCollectionHistogram}
                                           bins={AGE_HISTOGRAM_BINS}
-                                          {...VICTORY_BAR_PROPS} />
+                                          {...VICTORY_HIST_PROPS} />
                         <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
