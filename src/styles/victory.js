@@ -50,7 +50,7 @@ export const VICTORY_BAR_X_AXIS_PROPS = {
 
 export const VICTORY_HIST_CONTAINER_PROPS = {
     ...VICTORY_BAR_CONTAINER_PROPS,
-    padding: {left: 120, right: 120, top: 60, bottom: 40},
+    padding: {left: 40, right: 40, top: 60, bottom: 40},
 };
 
 export const VICTORY_HIST_PROPS = {
