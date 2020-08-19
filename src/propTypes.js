@@ -238,11 +238,19 @@ export const diseasePropTypesShape = PropTypes.shape({
     updated: PropTypes.string,  // ISO datetime string
 });
 
+// Prop types object shape for a single phenopacket phenotypic feature object.
+export const phenotypicFeaturePropTypesShape = PropTypes.shape({
+    type: ontologyShape.isRequired,
+    created: PropTypes.string,  // ISO datetime string
+    updated: PropTypes.string,  // ISO datetime string
+});
+
 export const phenopacketPropTypesShape = PropTypes.shape({
     id: PropTypes.string.isRequired,
     subject: PropTypes.oneOfType([individualPropTypesShape, PropTypes.string]).isRequired,
     biosamples: biosamplePropTypesShape.isRequired,
     diseases: diseasePropTypesShape.isRequired,
+    phenotypic_features: phenotypicFeaturePropTypesShape,
     meta_data: PropTypes.object.isRequired,  // TODO: Shape
     created: PropTypes.string,  // ISO datetime string
     updated: PropTypes.string,  // ISO datetime string

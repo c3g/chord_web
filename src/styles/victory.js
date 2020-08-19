@@ -36,6 +36,18 @@ export const VICTORY_BAR_TITLE_PROPS = {
     style: {fontFamily: "monospace"},
 };
 
+export const VICTORY_BAR_X_AXIS_PROPS = {
+    style: {
+        tickLabels: {
+            angle: -40,
+            fontFamily: "monospace",
+            fontSize: "11px",
+            textAnchor: "end",
+            letterSpacing: "-1.5px",
+        },
+    },
+};
+
 export const VICTORY_HIST_CONTAINER_PROPS = {
     ...VICTORY_BAR_CONTAINER_PROPS,
     padding: {left: 120, right: 120, top: 60, bottom: 40},

@@ -17,6 +17,7 @@ import {
     VICTORY_BAR_CONTAINER_PROPS,
     VICTORY_BAR_PROPS,
     VICTORY_BAR_TITLE_PROPS,
+    VICTORY_BAR_X_AXIS_PROPS,
     VICTORY_HIST_CONTAINER_PROPS,
     VICTORY_HIST_PROPS,
     VICTORY_PIE_LABEL_PROPS,
@@ -53,6 +54,9 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
     const numIndividualsBySex = Object.fromEntries(SEX_VALUES.map(v => [v, 0]));
     const numIndividualsByKaryotype = Object.fromEntries(KARYOTYPIC_SEX_VALUES.map(v => [v, 0]));
 
+    // - Phenotypic features summary
+    const numPhenoFeatsByType = {};
+
     // - Individuals' diseases summary - from phenopackets
     const numDiseasesByTerm = {};
 
@@ -70,6 +74,11 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
             numIndividualsBySex[r.individual.sex]++;
             numIndividualsByKaryotype[r.individual.karyotypic_sex]++;
         }
+
+        (r.phenotypic_features || []).forEach(pf => {
+            // TODO: Better ontology awareness - label vs id, translation, etc.
+            numPhenoFeatsByType[pf.type.label] = (numPhenoFeatsByType[pf.type.label] || 0) + 1;
+        });
 
         (r.diseases || []).forEach(d => {
             // TODO: Better ontology awareness - label vs id, translation, etc.
@@ -106,6 +115,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
 
     const individualsBySex = numObjectToVictoryArray(numIndividualsBySex);
     const individualsByKaryotype = numObjectToVictoryArray(numIndividualsByKaryotype);
+    const phenoFeatsByType = numObjectToVictoryArray(numPhenoFeatsByType);
     const diseasesByTerm = numObjectToVictoryArray(numDiseasesByTerm);
     const samplesByTissue = numObjectToVictoryArray(numSamplesByTissue);
     const samplesByTaxonomy = numObjectToVictoryArray(numSamplesByTaxonomy);
@@ -144,17 +154,16 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                 </Col>
                 <Col span={12}>
                     <VictoryChart {...VICTORY_BAR_CONTAINER_PROPS}>
-                        <VictoryAxis tickLabelComponent={<VictoryLabel dy={-5} />} style={{
-                            tickLabels: {
-                                angle: -40,
-                                fontFamily: "monospace",
-                                fontSize: "11px",
-                                textAnchor: "end",
-                                letterSpacing: "-1.5px"
-                            },
-                        }} />
+                        <VictoryAxis {...VICTORY_BAR_X_AXIS_PROPS} />
                         <VictoryBar data={diseasesByTerm} {...VICTORY_BAR_PROPS} />
                         <VictoryLabel text="DISEASE" {...VICTORY_BAR_TITLE_PROPS} />
+                    </VictoryChart>
+                </Col>
+                <Col span={12}>
+                    <VictoryChart {...VICTORY_BAR_CONTAINER_PROPS}>
+                        <VictoryAxis {...VICTORY_BAR_X_AXIS_PROPS} />
+                        <VictoryBar data={phenoFeatsByType} {...VICTORY_BAR_PROPS} />
+                        <VictoryLabel text="PHENOTYPIC FEATURE" {...VICTORY_BAR_TITLE_PROPS} />
                     </VictoryChart>
                 </Col>
             </Row>
