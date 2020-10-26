@@ -19,6 +19,7 @@ import {urlPath, withBasePath} from "../../utils/url";
 import SitePageHeader from "../SitePageHeader";
 import IndividualOverview from "./IndividualOverview";
 import IndividualBiosamples from "./IndividualBiosamples";
+import IndividualDiseases from "./IndividualDiseases";
 
 
 const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/${individual}/${page}`);
@@ -71,9 +72,11 @@ class ExplorerIndividualContent extends Component {
 
         const overviewUrl = withURLPrefix(individualID, "overview");
         const biosamplesUrl = withURLPrefix(individualID, "biosamples");
+        const diseasesUrl = withURLPrefix(individualID, "diseases");
         const individualMenu = [
             {url: overviewUrl, style: {marginLeft: "4px"}, text: "Overview",},
             {url: biosamplesUrl, text: "Biosamples & Experiments",},
+            {url: diseasesUrl, text: "Diseases",},
         ];
 
         const selectedKeys = this.props.nodeInfo
@@ -98,6 +101,9 @@ class ExplorerIndividualContent extends Component {
                         </Route>
                         <Route path={biosamplesUrl.replace(":", "\\:")}>
                             <IndividualBiosamples individual={individual} />
+                        </Route>
+                        <Route path={diseasesUrl.replace(":", "\\:")}>
+                            <IndividualDiseases individual={individual} />
                         </Route>
                         <Redirect to={overviewUrl.replace(":", "\\:")} />
                     </Switch> : <Skeleton />}
