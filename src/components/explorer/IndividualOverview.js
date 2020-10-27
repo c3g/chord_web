@@ -18,6 +18,7 @@ const IndividualOverview = ({individual}) => individual ?
                 ? {...individual.taxonomy, label: <em>{individual.taxonomy.label}</em>}
                 : null)}
         </Descriptions.Item>
+        <Descriptions.Item label="Extra Properties">{JSON.stringify(individual.extra_properties || {})}</Descriptions.Item>
     </Descriptions> : <div />;
 
 IndividualOverview.propTypes = {
