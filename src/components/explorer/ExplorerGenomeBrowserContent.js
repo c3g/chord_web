@@ -4,9 +4,9 @@ import {Layout, Typography, Table, Divider} from "antd";
 import "antd/es/layout/style/css";
 
 import igv from "igv/js";
-import variants from '../../utils/features2.json';
+import variants from "../../utils/features2.json";
 
-const ID_VARIANT = '71438220-d640-42f2-998d-e9c81adac710';
+const ID_VARIANT = "71438220-d640-42f2-998d-e9c81adac710";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
@@ -18,7 +18,6 @@ class ExplorerGenomeBrowserContent extends Component {
             locus: null,
             search_id: ID_VARIANT,
             matches: [],
-            calls: []
         };
 
         this.browser = null;
@@ -29,27 +28,27 @@ class ExplorerGenomeBrowserContent extends Component {
         // Column configuration for match table
         this.columns = [
             {
-                title: 'Chromosome',
-                dataIndex: 'chromosome',
+                title: "Chromosome",
+                dataIndex: "chromosome",
             },
             {
-                title: 'Start',
-                dataIndex: 'start',
+                title: "Start",
+                dataIndex: "start",
             },
             {
-                title: 'End',
-                dataIndex: 'end',
+                title: "End",
+                dataIndex: "end",
             },
             {
-                title: 'Reference Bases',
-                dataIndex: 'ref',
+                title: "Reference Bases",
+                dataIndex: "ref",
             },
             {
-                title: 'Alternate Bases',
-                dataIndex: 'alt',
+                title: "Alternate Bases",
+                dataIndex: "alt",
             },
             {
-                title: 'Action',
+                title: "Action",
                 render: (text, variant) => (<a onClick={() => this.changeLocus(variant)}>Show variant</a>)
             },
         ];
@@ -58,13 +57,12 @@ class ExplorerGenomeBrowserContent extends Component {
     componentWillMount() {
         // Configure the locus depending on the variants found
         if (!this.state.results) {
-            this.setState({matches: [], calls: []});
+            this.setState({matches: []});
             return;
         }
 
         this.setState({
             matches: this.state.results.matches,
-            calls: this.state.results.matches[0].calls,  // TODO: All calls
         });
         const first_match = this.state.results.matches[0];
         this.setState({locus: `chr${first_match.chromosome}:${first_match.start}-${first_match.end}`});
@@ -79,10 +77,9 @@ class ExplorerGenomeBrowserContent extends Component {
                 {
                     type: "variant",
                     sourceType: "bento",
-                    format: 'vcf',
+                    format: "vcf",
                     variants: this.state.matches,
                     variantSetId: this.state.search_id,
-                    calls: this.state.calls,
                     name: "Variant Search",
                     height: 100,
                     squishedCallHeight: 1,
