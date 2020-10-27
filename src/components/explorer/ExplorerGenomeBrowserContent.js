@@ -98,9 +98,9 @@ class ExplorerGenomeBrowserContent extends Component {
     render() {
         return <Layout>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
-                <Typography.Title level={4}> Variant Visualizer</Typography.Title>
+                <Typography.Title level={4}>Variant Visualizer</Typography.Title>
                 <div id="igv-container" />
-                <Divider orientation="left"> Match List </Divider>
+                <Divider orientation="left">Match List</Divider>
                 <Table
                     columns={this.columns}
                     dataSource={this.getMatches()}
