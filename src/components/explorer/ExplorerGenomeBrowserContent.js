@@ -78,7 +78,7 @@ class ExplorerGenomeBrowserContent extends Component {
             tracks: [
                 {
                     type: "variant",
-                    sourceType: "ga4gh",
+                    sourceType: "bento",
                     format: 'vcf',
                     variants: this.state.matches,
                     variantSetId: this.state.search_id,
