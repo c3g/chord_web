@@ -17,3 +17,42 @@ export const VICTORY_PIE_LABEL_PROPS = {
     y: 125,
     style: {fontFamily: "monospace"}
 };
+
+export const VICTORY_BAR_CONTAINER_PROPS = {
+    padding: {left: 120, right: 40, top: 60, bottom: 120},
+    height: 340,
+};
+
+// noinspection JSUnusedGlobalSymbols
+export const VICTORY_BAR_PROPS = {
+    labels: ({datum}) => datum.y.toString(),
+    style: {labels: {fontFamily: "monospace", fontSize: "12px"}},
+};
+
+export const VICTORY_BAR_TITLE_PROPS = {
+    textAnchor: "middle",
+    x: 225,
+    y: 20,
+    style: {fontFamily: "monospace"},
+};
+
+export const VICTORY_BAR_X_AXIS_PROPS = {
+    style: {
+        tickLabels: {
+            angle: -40,
+            fontFamily: "monospace",
+            fontSize: "11px",
+            textAnchor: "end",
+            letterSpacing: "-1.5px",
+        },
+    },
+};
+
+export const VICTORY_HIST_CONTAINER_PROPS = {
+    ...VICTORY_BAR_CONTAINER_PROPS,
+    padding: {left: 40, right: 40, top: 60, bottom: 40},
+};
+
+export const VICTORY_HIST_PROPS = {
+    ...VICTORY_BAR_PROPS,
+};

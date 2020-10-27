@@ -24,12 +24,14 @@ const tableSearchResults = (searchResults) => {
                 individual: p.subject,
                 biosamples: {},  // Only includes biosamples from the phenopackets that matched the search query.
                 diseases: {},  // Only includes diseases from "
+                phenotypic_features: {},
                 experiments: [],  // TODO
             };
         }
 
-        p.biosamples.forEach(b => tableResultSet[individualID].biosamples[b.id] = b);
-        p.diseases.forEach(d => tableResultSet[individualID].diseases[d.id] = d);
+        (p.biosamples || []).forEach(b => tableResultSet[individualID].biosamples[b.id] = b);
+        (p.diseases || []).forEach(d => tableResultSet[individualID].diseases[d.id] = d);
+        (p.phenotypic_features || []).forEach(pf => tableResultSet[individualID].phenotypic_features[pf.type.id] = pf);
     });
 
     return Object.values(tableResultSet).map(i => ({
@@ -37,6 +39,8 @@ const tableSearchResults = (searchResults) => {
         biosamples: Object.values(i.biosamples).sort((b1, b2) => b1.id.localeCompare(b2.id)),
         diseases: Object.values(i.diseases).sort(
             (d1, d2) => d1.id.toString().localeCompare(d2.id.toString())),
+        phenotypic_features: Object.values(i.phenotypic_features).sort(
+            (pf1, pf2) => pf1.type.id.localeCompare(pf2.type.id))
     }));
 };
 
