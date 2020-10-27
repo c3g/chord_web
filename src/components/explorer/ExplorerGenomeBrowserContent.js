@@ -1,29 +1,22 @@
 import React, {Component, createRef} from "react";
+import PropTypes from "prop-types";
 
 import {Layout, Typography, Table, Divider} from "antd";
 import "antd/es/layout/style/css";
 
 import igv from "igv/js";
-import variants from "../../utils/features2.json";
-
-const ID_VARIANT = "71438220-d640-42f2-998d-e9c81adac710";
 
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 
 class ExplorerGenomeBrowserContent extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            results: variants.results[ID_VARIANT],
-            locus: null,
-            search_id: ID_VARIANT,
-            matches: [],
-        };
 
         this.browser = null;
         this.igvContainer = createRef();
         this.igvOptions = this.igvOptions.bind(this);
         this.configureBrowser = this.configureBrowser.bind(this);
+        this.getMatches = this.getMatches.bind(this);
 
         // Column configuration for match table
         this.columns = [
@@ -54,32 +47,29 @@ class ExplorerGenomeBrowserContent extends Component {
         ];
     }
 
-    componentWillMount() {
-        // Configure the locus depending on the variants found
-        if (!this.state.results) {
-            this.setState({matches: []});
-            return;
-        }
+    static formatMatchLocation(match) {
+        return `chr${match.chromosome}:${match.start}-${match.end}`;
+    }
 
-        this.setState({
-            matches: this.state.results.matches,
-        });
-        const first_match = this.state.results.matches[0];
-        this.setState({locus: `chr${first_match.chromosome}:${first_match.start}-${first_match.end}`});
+    getMatches() {
+        return ((this.props.results || {})[this.props.variantTable] || {}).matches || [];
     }
 
     igvOptions() {
+        const matches = this.getMatches();
         return {
-            genome: "hg19",  // TODO: Based on dataset
-            locus: this.state.locus,
+            genome: this.props.referenceGenome || "hg19",
+            locus: matches
+                ? ExplorerGenomeBrowserContent.formatMatchLocation(matches[0])
+                : undefined,
             minimumBases: 40,
             tracks: [
                 {
                     type: "variant",
                     sourceType: "bento",
                     format: "vcf",
-                    variants: this.state.matches,
-                    variantSetId: this.state.search_id,
+                    variants: matches,
+                    variantSetId: this.props.variantTable,
                     name: "Variant Search",
                     height: 100,
                     squishedCallHeight: 1,
@@ -100,10 +90,9 @@ class ExplorerGenomeBrowserContent extends Component {
             || document.getElementById("igv-container"));
     }
 
-    changeLocus(variant) {
-        const newLocus = `chr${variant.chromosome}:${variant.start}-${variant.end}`;
-        this.setState({locus: newLocus});
-        if (this.browser) this.browser.search(newLocus);
+    changeLocus(match) {
+        if (!this.browser) return;
+        this.browser.search(ExplorerGenomeBrowserContent.formatMatchLocation(match));
     }
 
     render() {
@@ -114,7 +103,7 @@ class ExplorerGenomeBrowserContent extends Component {
                 <Divider orientation="left"> Match List </Divider>
                 <Table
                     columns={this.columns}
-                    dataSource={this.state.matches}
+                    dataSource={this.getMatches()}
                     pagination={{pageSize: 10}}
                     scroll={{y: 200}}
                 />
@@ -122,5 +111,12 @@ class ExplorerGenomeBrowserContent extends Component {
         </Layout>;
     }
 }
+
+ExplorerGenomeBrowserContent.propTypes = {
+    // TODO: Some system for standardizing/translating these
+    referenceGenome: PropTypes.oneOf(["hg19", "hg37", "hg38"]),
+    results: PropTypes.object,  // TODO: More specific
+    variantTable: PropTypes.string,  // TODO: Is this the best system?
+};
 
 export default ExplorerGenomeBrowserContent;
