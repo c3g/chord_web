@@ -4,8 +4,6 @@ import "antd/es/table/style/css";
 import {Table} from "antd";
 
 
-import {EM_DASH} from "../../constants";
-import {renderOntologyTerm} from "./ontologies";
 import {individualPropTypesShape} from "../../propTypes";
 
 // TODO: Only show diseases from the relevant dataset, if specified;
