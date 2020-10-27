@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux";
+import PropTypes from "prop-types";
 
 import {Empty, Layout, Menu, Skeleton} from "antd";
 import "antd/es/empty/style/css";
@@ -13,6 +14,7 @@ import ServiceLog from "./ServiceLog";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import {withBasePath} from "../../utils/url";
 import {matchingMenuKeys, renderMenuItem} from "../../utils/menu";
+import {serviceLogsPropTypesShape} from "../../propTypes";
 
 class ServiceLogs extends Component {
     render() {
@@ -57,5 +59,10 @@ const mapStateToProps = state => ({
     serviceLogs: state.logs.service,
     loadingAuthDependentData: state.auth.isFetchingDependentData,
 });
+
+ServiceLogs.propTypes = {
+    serviceLogs: serviceLogsPropTypesShape,
+    loadingAuthDependentData: PropTypes.bool,
+};
 
 export default connect(mapStateToProps)(ServiceLogs);

@@ -12,7 +12,7 @@ const fetchSystemLogs = networkAction(() => (dispatch, getState) => ({
 export const fetchSystemLogsIfPossible = () => (dispatch, getState) => {
     if (getState().logs.system.isFetching) return;
     return dispatch(fetchSystemLogs());
-}
+};
 
 const fetchServiceLogs = networkAction(() => (dispatch, getState) => ({
     types: FETCH_SERVICE_LOGS,
@@ -23,4 +23,4 @@ const fetchServiceLogs = networkAction(() => (dispatch, getState) => ({
 export const fetchServiceLogsIfPossible = () => (dispatch, getState) => {
     if (getState().logs.service.isFetching) return;
     return dispatch(fetchServiceLogs());
-}
+};
