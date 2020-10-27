@@ -41,7 +41,7 @@ const ageAndDOBToApproxYears = (age, dob=null) => {
     const parsedAgeSeconds = toSeconds(parsedAge, dob);
     // Convert # of seconds to "normalized" years TODO: Sketchy logic
     return parsedAgeSeconds / (60 * 60 * 24 * 365.2422);
-}
+};
 
 
 const SearchSummaryModal = ({searchResults, ...props}) => {
@@ -110,7 +110,7 @@ const SearchSummaryModal = ({searchResults, ...props}) => {
                     ageAtCollectionHistogram.push({x: (startYears + endYears) / 2});
                 }
             }
-        })
+        });
     });
 
     const individualsBySex = numObjectToVictoryArray(numIndividualsBySex);
