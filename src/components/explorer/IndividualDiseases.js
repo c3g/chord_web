@@ -47,9 +47,8 @@ const IndividualDiseases = ({individual}) =>
            size="middle"
            pagination={{pageSize: 25}}
            columns={DISEASE_COLUMNS}
-           rowKey="id"                    // TODO: map all phenopackets instead of just displaying the first
-           dataSource={(individual || {}).phenopackets.map(p => p.diseases).flat() || []} />;
-           //dataSource={(individual || {}).phenopackets[0].diseases || []} />;
+           rowKey="id"                    
+           dataSource={(individual || {}).phenopackets.flatMap(p => p.diseases)} />;
 
 
 IndividualDiseases.propTypes = {
