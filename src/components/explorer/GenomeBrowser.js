@@ -9,12 +9,12 @@ import igv from "igv/js";
 
 // TODO: This should be a service
 const REFERENCE_GENOME_LOOKUP = {
-    "ncbi36": "hg19",
-    "grch37": "hg37",
+    "ncbi36": "hg18",
+    "grch37": "hg19",
     "grch38": "hg38",
 
+    "hg18": "hg18",
     "hg19": "hg19",
-    "hg37": "hg37",
     "hg38": "hg38",
 };
 
@@ -118,10 +118,11 @@ class GenomeBrowser extends Component {
             <Divider orientation="left">Variant List</Divider>
             <Table
                 bordered={true}
+                size="middle"
                 columns={this.columns}
                 dataSource={this.props.variants || []}
                 pagination={{pageSize: 10}}
-                scroll={{y: 200}}
+                scroll={{y: 400}}
             />
         </>;
     }
