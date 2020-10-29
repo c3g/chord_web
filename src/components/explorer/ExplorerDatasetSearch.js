@@ -89,8 +89,8 @@ class ExplorerDatasetSearch extends Component {
                     <div>
                         Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
                         (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
-                        ? (this.state.currentPage * this.state.pageSize) 
-                        : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
+                            ? (this.state.currentPage * this.state.pageSize) 
+                            : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
                     </div>
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
