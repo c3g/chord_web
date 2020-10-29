@@ -58,8 +58,8 @@ class ExplorerDatasetSearch extends Component {
         this.state = {
             summaryModalVisible: false,
             currentPage: 1,
-            pageSize: 25
-            tracksModalVisible: false,
+            pageSize: 25,
+            tracksModalVisible: false
         };
     }
 
