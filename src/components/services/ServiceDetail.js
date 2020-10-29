@@ -45,9 +45,9 @@ class ServiceDetail extends Component {
                             onBack={() => this.props.history.push(withBasePath("dashboard"))} />
             <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton active /></div>}>
                 <Switch>
-                    <Route exact path={withBasePath(`services/:artifact/overview`)}
+                    <Route exact path={withBasePath("services/:artifact/overview")}
                            component={ServiceOverview} />
-                    <Route path={withBasePath(`services/:artifact/logs`)} component={ServiceLogs} />
+                    <Route path={withBasePath("services/:artifact/logs")} component={ServiceLogs} />
                     <Redirect from={withBasePath(`services/${artifact}`)}
                               to={withBasePath(`services/${artifact}/overview`)} />
                 </Switch>

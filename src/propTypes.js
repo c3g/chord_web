@@ -273,3 +273,10 @@ export const explorerSearchResultsPropTypesShape = PropTypes.shape({
         experiments: PropTypes.arrayOf(PropTypes.object),  // TODO
     })),
 });
+
+
+export const serviceLogsPropTypesShape = PropTypes.shape({
+    itemsByArtifact: PropTypes.objectOf(PropTypes.shape({
+        logs: PropTypes.objectOf(PropTypes.string),
+    })),
+});

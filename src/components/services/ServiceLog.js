@@ -5,6 +5,8 @@ import fetch from "cross-fetch";
 import {Skeleton} from "antd";
 import "antd/es/skeleton/style/css";
 
+import {serviceLogsPropTypesShape} from "../../propTypes";
+
 class ServiceLog extends Component {
     constructor(props) {
         super(props);
@@ -30,7 +32,7 @@ class ServiceLog extends Component {
         this.fetchLog(this.getLogUrl(artifact, logName)).catch(console.error);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps, _prevState, _snapshot) {
         const oldArtifact = prevProps.match.params.artifact;
         const oldLogName = prevProps.match.params.log;
         const artifact = this.props.match.params.artifact;
@@ -78,5 +80,9 @@ const mapStateToProps = state => ({
     serviceLogs: state.logs.service,
     loadingAuthDependentData: state.auth.isFetchingDependentData,
 });
+
+ServiceLog.propTypes = {
+    serviceLogs: serviceLogsPropTypesShape,
+};
 
 export default connect(mapStateToProps)(ServiceLog);

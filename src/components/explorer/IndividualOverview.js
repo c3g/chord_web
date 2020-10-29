@@ -19,9 +19,9 @@ const IndividualOverview = ({individual}) => individual ?
                 : null)}
         </Descriptions.Item>
         <Descriptions.Item label="Extra Properties">{
-            (individual.hasOwnProperty("extra_properties") && JSON.stringify(individual.extra_properties) != JSON.stringify({})) 
-            ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
-            : EM_DASH
+            (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
+                ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
+                : EM_DASH
         }</Descriptions.Item>
     </Descriptions> : <div />;
 

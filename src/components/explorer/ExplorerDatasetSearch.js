@@ -20,6 +20,7 @@ import {
     setSelectedRows,
 } from "../../modules/explorer/actions";
 import {withBasePath} from "../../utils/url";
+import SearchTracksModal from "./SearchTracksModal";
 
 
 const SEARCH_RESULT_COLUMNS = [
@@ -54,6 +55,7 @@ class ExplorerDatasetSearch extends Component {
         super(props);
         this.state = {
             summaryModalVisible: false,
+            tracksModalVisible: false,
         };
     }
 
@@ -77,8 +79,10 @@ class ExplorerDatasetSearch extends Component {
                 <Typography.Title level={4}>
                     Search Results
                     <div style={{float: "right", verticalAlign: "top"}}>
-                        {/* TODO: v0.2 */}
-                        {/*<Button icon="profile" style={{marginRight: "8px"}}>Visualize Tracks</Button>*/}
+                        <Button icon="profile"
+                                style={{marginRight: "8px"}}
+                                onClick={() => this.setState({tracksModalVisible: true})}>
+                            Visualize Tracks</Button>
                         <Button icon="bar-chart"
                                 style={{marginRight: "8px"}}
                                 onClick={() => this.setState({summaryModalVisible: true})}>View Summary</Button>
@@ -88,6 +92,9 @@ class ExplorerDatasetSearch extends Component {
                 <SearchSummaryModal searchResults={this.props.searchResults}
                                     visible={this.state.summaryModalVisible}
                                     onCancel={() => this.setState({summaryModalVisible: false})} />
+                <SearchTracksModal searchResults={this.props.searchResults}
+                                   visible={this.state.tracksModalVisible}
+                                   onCancel={() => this.setState({tracksModalVisible: false})} />
                 <Table bordered
                        size="middle"
                        columns={SEARCH_RESULT_COLUMNS}
