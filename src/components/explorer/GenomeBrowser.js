@@ -56,8 +56,10 @@ class GenomeBrowser extends Component {
         ];
     }
 
-    static formatMatchLocation(match) {
-        return `chr${match.chromosome}:${match.start}-${match.end}`;
+    static formatVariantLocation(variant) {
+        console.log("Attempting to relocate to", variant);
+        if (!variant) return;
+        return `chr${variant.chromosome}:${variant.start}-${variant.end}`;
     }
 
     igvOptions() {
@@ -65,7 +67,7 @@ class GenomeBrowser extends Component {
         return {
             genome: REFERENCE_GENOME_LOOKUP[((variants || [])[0] || {}).assembly_id] || "hg19",
             locus: variants
-                ? GenomeBrowser.formatMatchLocation(variants[0])
+                ? GenomeBrowser.formatVariantLocation(variants[0])
                 : undefined,
             minimumBases: 40,
             tracks: [
@@ -96,8 +98,8 @@ class GenomeBrowser extends Component {
     }
 
     changeLocus(variant) {
-        if (!this.browser) return;
-        this.browser.search(GenomeBrowser.formatMatchLocation(variant));
+        if (!this.browser || !variant) return;
+        this.browser.search(GenomeBrowser.formatVariantLocation(variant));
     }
 
     render() {
