@@ -27,15 +27,14 @@ const DISEASE_COLUMNS = [
         title: "Label",
         key: "t_label",
         render: (_, individual) => individual.term.label,
-    }
-    ,
+    },
     {
         title: "Extra Properties",
         key: "extra_properties",
         render: (_, individual) => 
-            (individual.hasOwnProperty("extra_properties") && JSON.stringify(individual.extra_properties) != JSON.stringify({})) 
-            ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
-            : EM_DASH,
+            (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
+                ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
+                : EM_DASH,
     }
 ];
 

@@ -13,7 +13,7 @@ import {
 } from "./actions";
 
 const tableSearchResults = (searchResults) => {
-    const results = (searchResults || {}).results || [];
+    const results = (searchResults || {}).results || {};
     const tableResultSet = {};
 
     (results.phenopacket || []).forEach(p => {
