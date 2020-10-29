@@ -5,6 +5,7 @@ import {Table} from "antd";
 
 
 import {individualPropTypesShape} from "../../propTypes";
+import { EM_DASH } from "../../constants";
 
 // TODO: Only show diseases from the relevant dataset, if specified;
 //  highlight those found in search results, if specified
@@ -31,13 +32,11 @@ const DISEASE_COLUMNS = [
     {
         title: "Extra Properties",
         key: "extra_properties",
-        render: (_, individual) => JSON.stringify(individual.extra_properties || {}),
+        render: (_, individual) => 
+            (individual.hasOwnProperty("extra_properties") && JSON.stringify(individual.extra_properties) != JSON.stringify({})) 
+            ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
+            : EM_DASH,
     }
-
-    // "extra_properties": {
-    //     "datatype": "comorbidity",
-    //     "comorbidities_group": "cardiovascular system"
-    // },
 ];
 
 const IndividualDiseases = ({individual}) =>
@@ -47,6 +46,7 @@ const IndividualDiseases = ({individual}) =>
            columns={DISEASE_COLUMNS}
            rowKey="id"                    
            dataSource={(individual || {}).phenopackets.flatMap(p => p.diseases)} />;
+
 
 
 IndividualDiseases.propTypes = {
