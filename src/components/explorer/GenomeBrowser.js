@@ -67,7 +67,7 @@ class GenomeBrowser extends Component {
         console.log("variants", variants);
         return {
             genome: REFERENCE_GENOME_LOOKUP[(variants[0] || {}).assembly_id] || "hg19",
-            locus: variants
+            locus: variants.length
                 ? GenomeBrowser.formatVariantLocation(variants[0])
                 : undefined,
             minimumBases: 40,
