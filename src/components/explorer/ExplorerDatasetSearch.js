@@ -65,7 +65,7 @@ class ExplorerDatasetSearch extends Component {
 
     onPageChange(pageObj) {
         //console.log("On page: " + pageObj.current + " with page size: " + pageObj.pageSize);
-        this.setState({currentPage: pageObj.current})
+        this.setState({currentPage: pageObj.current});
     }
 
     render() {
@@ -86,12 +86,12 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm} />
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
-                <div>
-                    Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
-                    (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
-                    ? (this.state.currentPage * this.state.pageSize) 
-                    : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
-                </div>
+                    <div>
+                        Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
+                        (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
+                        ? (this.state.currentPage * this.state.pageSize) 
+                        : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
+                    </div>
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
                                 style={{marginRight: "8px"}}
