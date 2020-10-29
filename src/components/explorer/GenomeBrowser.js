@@ -26,7 +26,6 @@ class GenomeBrowser extends Component {
         this.igvContainer = createRef();
         this.igvOptions = this.igvOptions.bind(this);
         this.configureBrowser = this.configureBrowser.bind(this);
-        this.getMatches = this.getMatches.bind(this);
 
         // Column configuration for match table
         this.columns = [
@@ -107,7 +106,7 @@ class GenomeBrowser extends Component {
             <Divider orientation="left">Variant List</Divider>
             <Table
                 columns={this.columns}
-                dataSource={this.getMatches()}
+                dataSource={this.props.variants}
                 pagination={{pageSize: 10}}
                 scroll={{y: 200}}
             />
