@@ -52,9 +52,18 @@ const SEARCH_RESULT_COLUMNS = [
 class ExplorerDatasetSearch extends Component {
     constructor(props) {
         super(props);
+        this.onPageChange = this.onPageChange.bind(this);
+
         this.state = {
             summaryModalVisible: false,
+            currentPage: 1,
+            pageSize: 25
         };
+    }
+
+    onPageChange(pageObj) {
+        //console.log("On page: " + pageObj.current + " with page size: " + pageObj.pageSize);
+        this.setState({currentPage: pageObj.current})
     }
 
     render() {
@@ -75,7 +84,12 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm} />
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
-                    Search Results
+                <div>
+                    Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
+                    (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
+                    ? (this.state.currentPage * this.state.pageSize) 
+                    : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
+                </div>
                     <div style={{float: "right", verticalAlign: "top"}}>
                         {/* TODO: v0.2 */}
                         {/*<Button icon="profile" style={{marginRight: "8px"}}>Visualize Tracks</Button>*/}
@@ -92,7 +106,8 @@ class ExplorerDatasetSearch extends Component {
                        size="middle"
                        columns={SEARCH_RESULT_COLUMNS}
                        dataSource={this.props.searchResults.searchFormattedResults || []}
-                       pagination={{pageSize: 25}}
+                       pagination={{pageSize: this.state.pageSize}}
+                       onChange={this.onPageChange}
                        rowSelection={{
                            selectedRowKeys: this.props.selectedRows,
                            onChange: this.props.setSelectedRows,
