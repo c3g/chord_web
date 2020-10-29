@@ -63,9 +63,10 @@ class GenomeBrowser extends Component {
     }
 
     igvOptions() {
-        const variants = this.props.variants;
+        const variants = this.props.variants || [];
+        console.log("variants", variants);
         return {
-            genome: REFERENCE_GENOME_LOOKUP[((variants || [])[0] || {}).assembly_id] || "hg19",
+            genome: REFERENCE_GENOME_LOOKUP[(variants[0] || {}).assembly_id] || "hg19",
             locus: variants
                 ? GenomeBrowser.formatVariantLocation(variants[0])
                 : undefined,
@@ -84,7 +85,7 @@ class GenomeBrowser extends Component {
                     displayMode: "expanded",
                     visibilityWindow: 100,
                 },
-            ]  // TODO: Multiple tracks for different tables
+            ]  // TODO: Multiple tracks for different individuals! Based on linked field sets?
         };
     }
 
@@ -95,6 +96,15 @@ class GenomeBrowser extends Component {
     componentDidMount() {
         this.configureBrowser(this.igvContainer.current
             || document.getElementById("igv-container"));
+    }
+
+    componentDidUpdate(prevProps, _prevState, _snapshot) {
+        if (JSON.stringify(prevProps.variants) !== JSON.stringify(this.props.variants)) {
+            // Re-create browser
+            igv.removeBrowser(igv.getBrowser());
+            this.configureBrowser(this.igvContainer.current
+                || document.getElementById("igv-container"));
+        }
     }
 
     changeLocus(variant) {
@@ -108,7 +118,7 @@ class GenomeBrowser extends Component {
             <Divider orientation="left">Variant List</Divider>
             <Table
                 columns={this.columns}
-                dataSource={this.props.variants}
+                dataSource={this.props.variants || []}
                 pagination={{pageSize: 10}}
                 scroll={{y: 200}}
             />
