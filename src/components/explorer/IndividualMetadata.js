@@ -32,7 +32,9 @@ const METADATA_COLUMNS = [
     },{
         title: "Url",
         key: "url",
-        render: (_, individual) => <a target="_blank" href={individual.url}>{individual.url}</a>,
+        render: (_, individual) => <a target="_blank"
+                                      rel="noopener noreferrer"
+                                      href={individual.url}>{individual.url}</a>,
         defaultSortOrder: "ascend",
     },{
         title: "Version",
@@ -43,7 +45,9 @@ const METADATA_COLUMNS = [
     },{
         title: "IRI Prefix",
         key: "iri_prefix",
-        render: (_, individual) => <a target="_blank" href={individual.iri_prefix}>{individual.iri_prefix}</a>,
+        render: (_, individual) => <a target="_blank"
+                                      rel="noopener noreferrer"
+                                      href={individual.iri_prefix}>{individual.iri_prefix}</a>,
         defaultSortOrder: "ascend",
     }
 ];
@@ -54,7 +58,7 @@ const IndividualMetadata = ({individual}) =>
            pagination={{pageSize: 25}}
            columns={METADATA_COLUMNS}
            rowKey="id"
-           dataSource={(individual || {}).phenopackets.flatMap(p => p.meta_data != undefined ? p.meta_data.resources : [])} />;
+           dataSource={(individual || {}).phenopackets.flatMap(p => (p.meta_data || {}).resources || [])} />;
 
 
 
