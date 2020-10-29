@@ -117,6 +117,7 @@ class GenomeBrowser extends Component {
             <div id="igv-container" />
             <Divider orientation="left">Variant List</Divider>
             <Table
+                bordered={true}
                 columns={this.columns}
                 dataSource={this.props.variants || []}
                 pagination={{pageSize: 10}}

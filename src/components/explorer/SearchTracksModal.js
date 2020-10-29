@@ -7,6 +7,8 @@ import {explorerSearchResultsPropTypesShape} from "../../propTypes";
 import GenomeBrowser from "./GenomeBrowser";
 
 const SearchTracksModal = ({searchResults, ...props}) => {
+    console.log("searchResults", searchResults);
+
     const variants = searchResults.results.variant || [];
 
     // TODO: Display some basic statistics about n. of variants/tracks/etc.
