@@ -41,6 +41,7 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin({
             CHORD_URL: null,
+            FEDERATION_MODE: "",
         })
     ]
 };
