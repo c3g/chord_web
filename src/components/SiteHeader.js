@@ -48,8 +48,8 @@ class SiteHeader extends Component {
             {
                 url: withBasePath("peers"),
                 icon: <Icon type="apartment" />,
-                displayed: FEDERATION_MODE,
                 text: <span className="nav-text">Peers</span>,
+                displayed: FEDERATION_MODE,
             },
             ...(this.props.user ? [{
                 key: "user-menu",
