@@ -35,6 +35,8 @@ const DataManagerContent = lazy(() => import("./DataManagerContent"));
 const PeersContent = lazy(() => import("./PeersContent"));
 const NotificationsContent = lazy(() => import("./notifications/NotificationsContent"));
 
+const PING_INTERVAL = 30000;
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -144,7 +146,7 @@ class App extends Component {
 
             // TODO: Refresh other data
             // TODO: Variable rate
-            this.pingInterval = setInterval(this.refreshUserAndDependentData, 30000);
+            this.pingInterval = setInterval(this.refreshUserAndDependentData, PING_INTERVAL);
             window.addEventListener("focus", () => this.refreshUserAndDependentData());
         })();
     }
