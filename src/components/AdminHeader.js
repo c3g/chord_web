@@ -24,24 +24,24 @@ class AdminHeader extends Component {
                 url: withBasePath("admin/services"),
                 icon: <Icon type="dashboard" />,
                 text: <span className="nav-text">Services</span>,
-                //disabled: !this.props.isOwner,
+                disabled: !this.props.isOwner,
             },
             {
                 url: withBasePath("admin/data/manager"),
                 icon: <Icon type="folder-open" />,
                 text: <span className="nav-text">Data Manager</span>,
-                //disabled: !this.props.isOwner,
+                disabled: !this.props.isOwner,
             },
             {
                 url: withBasePath("admin/peers"),
                 icon: <Icon type="apartment" />,
                 text: <span className="nav-text">Peers</span>,
-                //disabled: !this.props.isOwner,
+                disabled: !this.props.isOwner,
             }
         ];
 
         return <Layout.Header>
-            <Link to="admin"><h1 style={{
+            <Link to={withBasePath("admin/services")}><h1 style={{
                 display: "inlineBlock",
                 color: "rgba(255, 255, 255, 0.95)",
                 margin: "0 30px 0 0",

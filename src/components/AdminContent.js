@@ -12,6 +12,8 @@ import "antd/es/spin/style/css";
 import "antd/es/statistic/style/css";
 import "antd/es/typography/style/css";
 
+import OwnerRoute from "./OwnerRoute";
+
 import AdminHeader from "./AdminHeader";
 import SitePageHeader from "./SitePageHeader";
 import DashboardContent from "./DashboardContent";
@@ -38,10 +40,10 @@ class AdminContent extends Component {
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                     {/* <Typography.Title level={3}>Admin</Typography.Title> */}
                     <Switch>
-                        <Route path={withBasePath("admin/services")} component={DashboardContent} />
-                        <Route path={withBasePath("admin/services/:artifact")} component={ServiceDetail} />
-                        <Route path={withBasePath("admin/data/manager")} component={DataManagerContent} />
-                        <Route path={withBasePath("admin/peers")} component={PeersContent} />
+                        <OwnerRoute path={withBasePath("admin/services")} component={DashboardContent} />
+                        <OwnerRoute path={withBasePath("admin/services/:artifact")} component={ServiceDetail} />
+                        <OwnerRoute path={withBasePath("admin/data/manager")} component={DataManagerContent} />
+                        <OwnerRoute path={withBasePath("admin/peers")} component={PeersContent} />
                         <Redirect from={BASE_PATH} to={withBasePath("admin/services")} />
                     </Switch>
                 </Layout.Content>

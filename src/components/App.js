@@ -79,10 +79,10 @@ class App extends Component {
                     <Suspense fallback={<SitePageLoading />}>
                         <Switch>
                             <Route path={withBasePath("overview")} component={OverviewContent} />
-                            <Route path={withBasePath("admin")} component={AdminContent} />
                             <Route path={withBasePath("data/sets")} component={DataDiscoveryContent} />
-                            <Route path={withBasePath("data/explorer")} component={DataExplorerContent} />
-                            <Route path={withBasePath("notifications")} component={NotificationsContent} />
+                            <OwnerRoute path={withBasePath("data/explorer")} component={DataExplorerContent} />
+                            <OwnerRoute path={withBasePath("admin")} component={AdminContent} />
+                            <OwnerRoute path={withBasePath("notifications")} component={NotificationsContent} />
                             <Redirect from={BASE_PATH} to={withBasePath("overview")} />
                         </Switch>
                     </Suspense>

@@ -35,13 +35,13 @@ class SiteHeader extends Component {
                 url: withBasePath("data/explorer"),
                 icon: <Icon type="bar-chart" />,
                 text: <span className="nav-text">Explorer</span>,
-                //disabled: !this.props.isOwner,
+                disabled: !this.props.isOwner,
             },
             {
                 url: withBasePath("admin"),
                 icon: <Icon type="user" />,
                 text: <span className="nav-text">Admin</span>,
-                //disabled: !this.props.isOwner,
+                disabled: !this.props.isOwner,
             },
             ...(this.props.user ? [{
                 key: "user-menu",
