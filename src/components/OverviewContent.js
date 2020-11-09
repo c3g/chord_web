@@ -25,7 +25,7 @@ class OverviewContent extends Component {
 
     render() {
         return <>
-            <SitePageHeader title="Overview" subTitle="Node status and health monitor" />
+            <SitePageHeader title="Overview" subTitle="Some stuff will go here" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                     <Typography.Title level={3}>Overview</Typography.Title>
