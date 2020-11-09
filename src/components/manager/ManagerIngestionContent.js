@@ -106,7 +106,7 @@ class ManagerIngestionContent extends Component {
         const tableID = this.state.selectedTable.split(":")[2];
 
         this.props.submitIngestionWorkflowRun(serviceInfo, tableID, this.state.selectedWorkflow,
-            this.state.inputs, withBasePath("data/manager/runs"), history);
+            this.state.inputs, withBasePath("admin/data/manager/runs"), history);
     }
 
     getStepContents() {

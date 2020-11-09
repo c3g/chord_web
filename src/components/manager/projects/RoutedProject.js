@@ -36,12 +36,12 @@ class RoutedProject extends Component {
     // noinspection JSCheckFunctionSignatures
     componentDidUpdate() {
         if (!this.props.projectsByID[this.props.match.params.project] && !this.props.loadingProjects) {
-            this.props.history.push(withBasePath("data/manager/projects/"));
+            this.props.history.push(withBasePath("admin/data/manager/projects/"));
         }
     }
 
     ingestIntoTable(p, t) {
-        this.props.history.push(withBasePath("data/manager/ingestion"),
+        this.props.history.push(withBasePath("admin/data/manager/ingestion"),
             {selectedTable: `${p.identifier}:${t.data_type}:${t.id}`});
     }
 

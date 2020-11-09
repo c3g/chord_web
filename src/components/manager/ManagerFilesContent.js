@@ -105,7 +105,7 @@ class ManagerFilesContent extends Component {
     }
 
     ingestIntoTable(tableKey) {
-        this.props.history.push(withBasePath("data/manager/ingestion"), {
+        this.props.history.push(withBasePath("admin/data/manager/ingestion"), {
             step: STEP_INPUT,
             selectedTable: tableKey,
             selectedWorkflow: this.state.selectedWorkflow,

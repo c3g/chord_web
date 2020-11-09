@@ -28,7 +28,7 @@ import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../../../propTy
 class ManagerProjectDatasetContent extends Component {
     render() {
         const projectMenuItems = this.props.projects.map(project => ({
-            url: withBasePath(`data/manager/projects/${project.identifier}`),
+            url: withBasePath(`admin/data/manager/projects/${project.identifier}`),
             text: project.title
         }));
 
@@ -76,10 +76,10 @@ class ManagerProjectDatasetContent extends Component {
                         {/* TODO: Fix project datasets */}
                         {projectMenuItems.length > 0 ? (
                             <Switch>
-                                <Route path={withBasePath("data/manager/projects/:project")}
+                                <Route path={withBasePath("admin/data/manager/projects/:project")}
                                        component={RoutedProject} />
-                                <Redirect from={withBasePath("data/manager/projects")}
-                                          to={withBasePath(`data/manager/projects/${
+                                <Redirect from={withBasePath("admin/data/manager/projects")}
+                                          to={withBasePath(`admin/data/manager/projects/${
                                               this.props.projects[0].identifier}`)} />
                             </Switch>
                         ) : (

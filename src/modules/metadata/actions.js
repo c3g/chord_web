@@ -86,7 +86,7 @@ const createProject = networkAction((project, history) => (dispatch, getState) =
     req: jsonRequest(project, "POST"),
     err: "Error creating project",
     onSuccess: data => {
-        if (history) history.push(withBasePath(`data/manager/projects/${data.identifier}`));
+        if (history) history.push(withBasePath(`admin/data/manager/projects/${data.identifier}`));
         message.success(`Project '${data.title}' created!`);
     }
 }));
@@ -133,7 +133,7 @@ export const saveProjectIfPossible = project => (dispatch, getState) => {
 
 export const addProjectDataset = networkAction((project, dataset, onSuccess = nop) => (dispatch, getState) => ({
     types: ADD_PROJECT_DATASET,
-    url: `${getState().services.metadataService.url}/api/datasets`,
+    url: `${getState().services.metadataService.url}/api/data/sets`,
     req: jsonRequest({...dataset, project: project.identifier}, "POST"),
     err: `Error adding dataset to project '${project.title}'`,  // TODO: More user-friendly error
     // TODO: END ACTION?
@@ -145,7 +145,7 @@ export const addProjectDataset = networkAction((project, dataset, onSuccess = no
 
 export const saveProjectDataset = networkAction((dataset, onSuccess = nop) => (dispatch, getState) => ({
     types: SAVE_PROJECT_DATASET,
-    url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+    url: `${getState().services.metadataService.url}/api/data/sets/${dataset.identifier}`,
     // Filter out read-only props
     // TODO: PATCH
     req: jsonRequest(objectWithoutProps(dataset, ["identifier", "created", "updated"]), "PUT"),
@@ -159,7 +159,7 @@ export const saveProjectDataset = networkAction((dataset, onSuccess = nop) => (d
 export const deleteProjectDataset = networkAction((project, dataset) => (dispatch, getState) => ({
     types: DELETE_PROJECT_DATASET,
     params: {project, dataset},
-    url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+    url: `${getState().services.metadataService.url}/api/data/sets/${dataset.identifier}`,
     req: {method: "DELETE"},
     err: `Error deleting dataset '${dataset.title}'`
     // TODO: Do we need to delete project tables as well? What to do here??
@@ -175,7 +175,7 @@ export const deleteProjectDatasetIfPossible = (project, dataset) => (dispatch, g
 
 const addDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, onSuccess) => (dispatch, getState) => ({
     types: ADD_DATASET_LINKED_FIELD_SET,
-    url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+    url: `${getState().services.metadataService.url}/api/data/sets/${dataset.identifier}`,
     req: jsonRequest({linked_field_sets: [...dataset.linked_field_sets, linkedFieldSet]}, "PATCH"),
     err: `Error adding linked field set '${linkedFieldSet.name}' to dataset '${dataset.title}'`,
     onSuccess: async () => {
@@ -196,7 +196,7 @@ export const addDatasetLinkedFieldSetIfPossible = (dataset, linkedFieldSet, onSu
 const saveDatasetLinkedFieldSet = networkAction((dataset, index, linkedFieldSet, onSuccess) =>
     (dispatch, getState) => ({
         types: SAVE_DATASET_LINKED_FIELD_SET,
-        url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+        url: `${getState().services.metadataService.url}/api/data/sets/${dataset.identifier}`,
         req: jsonRequest({
             linked_field_sets: dataset.linked_field_sets.map((l, i) => i === index ? linkedFieldSet : l)
         }, "PATCH"),
@@ -219,7 +219,7 @@ export const saveDatasetLinkedFieldSetIfPossible = (dataset, index, linkedFieldS
 const deleteDatasetLinkedFieldSet = networkAction((dataset, linkedFieldSet, linkedFieldSetIndex) =>
     (dispatch, getState) => ({
         types: DELETE_DATASET_LINKED_FIELD_SET,
-        url: `${getState().services.metadataService.url}/api/datasets/${dataset.identifier}`,
+        url: `${getState().services.metadataService.url}/api/data/sets/${dataset.identifier}`,
         req: jsonRequest({
             linked_field_sets: dataset.linked_field_sets.filter((_, i) => i !== linkedFieldSetIndex)
         }, "PATCH"),

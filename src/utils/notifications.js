@@ -6,5 +6,5 @@ export const NOTIFICATION_WES_RUN_FAILED = "wes_run_failed";
 
 export const navigateToWESRun = async (target, dispatch, history) => {
     await dispatch(hideNotificationDrawer());
-    history.push(withBasePath(`data/manager/runs/${target}/request`));
+    history.push(withBasePath(`admin/data/manager/runs/${target}/request`));
 };
