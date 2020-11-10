@@ -55,7 +55,9 @@ class SiteHeader extends Component {
                 key: "user-menu",
                 style: {float: "right"},
                 icon: <Icon type="user" />,
-                text: this.props.user.preferred_username,
+                text: this.props.user.name
+                    || this.props.user.preferred_username
+                    || (this.props.user.email ? this.props.user.email.split(" ")[0] : ""),
                 children: [{
                     key: "sign-out-link",
                     onClick: () => window.location.href = withBasePath(SIGN_OUT_URL),
