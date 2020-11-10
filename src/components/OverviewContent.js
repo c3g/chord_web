@@ -14,7 +14,7 @@ import SitePageHeader from "./SitePageHeader";
 import ServiceList from "./ServiceList";
 
 import {SITE_NAME} from "../constants";
-import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
+import {nodeInfoDataPropTypesShape, projectPropTypesShape, phenopacketPropTypesShape} from "../propTypes";
 
 import {VictoryAxis, VictoryBar, VictoryChart, VictoryHistogram, VictoryLabel, VictoryPie} from "victory";
 import VictoryPieWrapSVG from "./VictoryPieWrapSVG";
@@ -30,6 +30,8 @@ import {
 } from "../styles/victory";
 
 import {KARYOTYPIC_SEX_VALUES, SEX_VALUES} from "../dataTypes/phenopacket";
+
+import {fetchPhenopackets} from "../modules/metadata/actions";
 
 
 // TODO: Refactor to a component common  between users of this function project-wide
@@ -52,50 +54,7 @@ const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 const DUMMY_SEX_DATA=[{x:"UNKNOWN", y: 2},{x:"MALE", y: 51},{x:"FEMALE", y:67}]
 const DUMMY_BIOSAMPLE_DATA=[{x:"Saliva", y: 13},{x:"Cerebrospinal Fluid", y: 4},{x:"Tissue", y:17},{x:"Bone Marrow", y:35},{x:"Blood", y:30}]
 const DUMMY_DISEASE_DATA=[{x:"One thing", y: 32},{x:"Another thing", y: 4},{x:"and another..", y:17},{x:"..one more", y:35}]
-
 const DUMMY_AGE_DATA=[{x:10},{x:10},{x:10}]
-
-
-
-// CHARTS
-const AGE_HISTOGRAM = <VictoryChart {...VICTORY_HIST_CONTAINER_PROPS}>
-    <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
-                label="Age (Years)"
-                height={200}
-                style={{
-                    axisLabel: {fontFamily: "monospace"},
-                    tickLabels: {fontFamily: "monospace"}
-                }} />
-    <VictoryAxis dependentAxis={true}
-                label="Count"
-                style={{
-                    axisLabel: {fontFamily: "monospace"},
-                    tickLabels: {fontFamily: "monospace"}
-                }} />
-    <VictoryHistogram 
-        data={DUMMY_AGE_DATA} 
-        bins={AGE_HISTOGRAM_BINS}
-        {...VICTORY_HIST_PROPS} />
-    <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
-</VictoryChart>;
-
-const SEX_CHARTS = <>
-    <VictoryPieWrapSVG>
-        <VictoryPie data={DUMMY_SEX_DATA} {...VICTORY_PIE_PROPS} />
-        <VictoryLabel text="SEX" {...VICTORY_PIE_LABEL_PROPS} />
-    </VictoryPieWrapSVG>
-</>;
-
-const DISEASE_CHART =  <VictoryPieWrapSVG>
-<VictoryPie data={DUMMY_DISEASE_DATA} {...VICTORY_PIE_PROPS} colorScale={"qualitative"}/>
-<VictoryLabel text="DISEASES" {...VICTORY_PIE_LABEL_PROPS} />
-</VictoryPieWrapSVG>;
-
-const BIOSAMPLE_CHART = <VictoryPieWrapSVG>
-    <VictoryPie data={DUMMY_BIOSAMPLE_DATA} {...VICTORY_PIE_PROPS}/>
-    <VictoryLabel text="BIOSAMPLES" {...VICTORY_PIE_LABEL_PROPS} />
-</VictoryPieWrapSVG>;
-// --
 
 
 class OverviewContent extends Component {
@@ -105,8 +64,41 @@ class OverviewContent extends Component {
           chartPadding:  "1rem",
         }
       }
+     getFrequencyAsXYJSON(array) {
+        const map = {};
+        array.forEach(item => {
+           if(map[item]){
+              map[item]++;
+           }else{
+              map[item] = 1;
+           }
+        });
+        const jsonObjsXY = [];
+        for (var key in map) {
+            jsonObjsXY.push({x: key, y:map[key]});
+        }
+
+        return jsonObjsXY;
+     };
+
+    stringToDateYearAsXJSON(str) {
+        return {x:new Date().getFullYear() - new Date(str).getFullYear()}
+    }
+
 
     render() {
+        console.log(this.props)
+        const numParticipants = this.props.phenopackets != undefined ? this.props.phenopackets.items.length : 0;
+        const biosamples = this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.biosamples) : [];
+        const biosampleLabels = this.getFrequencyAsXYJSON(biosamples.flatMap(bs => bs.sampled_tissue.label));
+        //const biosampleAgeAtCollection = biosamples.flatMap(bs => bs.sampled_tissue.label)
+        const participantDOB = this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => this.stringToDateYearAsXJSON(p.subject.date_of_birth)) : [];
+
+        const numBiosamples = biosamples.length;
+        
+        const sexLabels = this.getFrequencyAsXYJSON(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.subject.sex) : []);
+        const diseaseLabels = this.getFrequencyAsXYJSON(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.diseases.flatMap(d => d.term.label)) : []);
+
         return <>
             <SitePageHeader title="Overview" subTitle="Some stuff will go here" />
             <Layout>
@@ -118,13 +110,13 @@ class OverviewContent extends Component {
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
                                     <Spin spinning={false}>
                                         <Statistic title="Participants"
-                                                value={110} />
+                                                value={numParticipants} />
                                     </Spin>
                                 </Col>
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
                                     <Spin spinning={false}>
                                         <Statistic title="Biosamples"
-                                                value={365} />
+                                                value={numBiosamples} />
                                     </Spin>
                                 </Col>
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
@@ -135,23 +127,60 @@ class OverviewContent extends Component {
                                 </Col>
                             </Row>
                             <Row style={{paddingTop: 0, 
-                                paddingLeft: this.state.chartPadding, 
-                                paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}}>{SEX_CHARTS}</Row>
+                                    paddingLeft: 0, 
+                                    paddingRight: this.state.chartPadding, 
+                                    paddingBottom:this.state.chartPadding}}>
+                                <VictoryPieWrapSVG>
+                                    <VictoryPie data={sexLabels} {...VICTORY_PIE_PROPS} />
+                                    <VictoryLabel text="SEX" {...VICTORY_PIE_LABEL_PROPS} />
+                                </VictoryPieWrapSVG>
+                            </Row>
                             <Row style={{paddingTop: 0, 
-                                paddingLeft: this.state.chartPadding, 
-                                paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}}>{AGE_HISTOGRAM}</Row>
+                                    paddingLeft: 0, 
+                                    paddingRight: this.state.chartPadding, 
+                                    paddingBottom:this.state.chartPadding}}>
+                                <VictoryChart {...VICTORY_HIST_CONTAINER_PROPS}>
+                                    <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
+                                                label="Age (Years)"
+                                                height={200}
+                                                style={{
+                                                    axisLabel: {fontFamily: "monospace"},
+                                                    tickLabels: {fontFamily: "monospace"}
+                                                }} />
+                                    <VictoryAxis dependentAxis={true}
+                                                label="Count"
+                                                style={{
+                                                    axisLabel: {fontFamily: "monospace"},
+                                                    tickLabels: {fontFamily: "monospace"}
+                                                }} />
+                                    <VictoryHistogram 
+                                        data={participantDOB} 
+                                        bins={AGE_HISTOGRAM_BINS}
+                                        {...VICTORY_HIST_PROPS} />
+                                    <VictoryLabel text="AGE" {...VICTORY_BAR_TITLE_PROPS} />
+                                </VictoryChart>
+                            </Row>
                         </Col>
                         <Col md={12} sm={24}>
                             <Row style={{paddingTop: 0, 
-                                paddingLeft: this.state.chartPadding, 
-                                paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}}>{DISEASE_CHART}</Row>                           
+                                    paddingLeft: 0, 
+                                    paddingRight: this.state.chartPadding, 
+                                    paddingBottom:this.state.chartPadding}}>
+                                <VictoryPieWrapSVG viewBoxStr="-100 -200 600 600">
+                                    <VictoryPie data={diseaseLabels} {...VICTORY_PIE_PROPS} colorScale={"qualitative"}  
+                                        labelPlacement={"parallel"}/>
+                                    <VictoryLabel text="DISEASES" {...VICTORY_PIE_LABEL_PROPS} />
+                                </VictoryPieWrapSVG>
+                            </Row>                           
                             <Row style={{paddingTop: 0, 
-                                paddingLeft: this.state.chartPadding, 
+                                paddingLeft: 0, 
                                 paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}} >{BIOSAMPLE_CHART}</Row>
+                                paddingBottom:this.state.chartPadding}} >
+                                <VictoryPieWrapSVG>
+                                    <VictoryPie data={biosampleLabels} {...VICTORY_PIE_PROPS}/>
+                                    <VictoryLabel text="BIOSAMPLES" {...VICTORY_PIE_LABEL_PROPS} />
+                                </VictoryPieWrapSVG>
+                            </Row>
                         </Col>
                     </Row>               
                     <Divider />
@@ -232,6 +261,9 @@ OverviewContent.propTypes = {
 
     peers: PropTypes.arrayOf(PropTypes.string),
     isFetchingPeers: PropTypes.bool,
+
+    phenopackets: PropTypes.objectOf(phenopacketPropTypesShape),
+    fetchPhenopackets: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -243,7 +275,9 @@ const mapStateToProps = state => ({
 
     peers: state.peers.items,
     isFetchingPeers: state.auth.isFetchingDependentData,
+
+    phenopackets: state.phenopackets,
 });
 
 
-export default connect(mapStateToProps)(OverviewContent);
+export default connect(mapStateToProps, {fetchPhenopackets})(OverviewContent);

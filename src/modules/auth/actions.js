@@ -16,6 +16,8 @@ import {fetchRuns} from "../wes/actions";
 import {nop} from "../../utils/misc";
 import {withBasePath} from "../../utils/url";
 
+import {fetchPhenopackets} from "../metadata/actions";
+
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");
 
@@ -59,7 +61,9 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
         dispatch(fetchSystemLogsIfPossible()),
         dispatch(fetchRuns()),
         dispatch(fetchNotifications()),
+        dispatch(fetchPhenopackets())
     ]);
+
 
     if (!hasAttempted) dispatch(endFlow(FETCHING_USER_DEPENDENT_DATA));
 };

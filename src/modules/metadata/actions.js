@@ -42,6 +42,7 @@ export const PROJECT_TABLE_ADDITION = createFlowActionTypes("PROJECT_TABLE_ADDIT
 export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELETION");
 
 export const FETCH_INDIVIDUAL = createNetworkActionTypes("FETCH_INDIVIDUAL");
+export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
 
 
 const endProjectTableAddition = (project, table) => ({type: PROJECT_TABLE_ADDITION.END, project, table});
@@ -389,3 +390,20 @@ export const fetchIndividualIfNecessary = individualID => (dispatch, getState) =
     if (individualRecord.isFetching || individualRecord.data) return;  // Don't fetch if already fetching or loaded.
     return dispatch(fetchIndividual(individualID));
 };
+
+
+
+export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
+    types: FETCH_PHENOPACKETS,
+    // params: {phenopacketID},
+    url: `${getState().services.metadataService.url}/api/phenopackets`,
+    err: `Error fetching phenopackets`,
+    paginated: true
+}));
+
+// TODO: fetchPhenopacketsIfNecessary
+// export const fetchIndividualIfNecessary = individualID => (dispatch, getState) => {
+//     const individualRecord = getState().individuals.itemsByID[individualID] || {};
+//     if (individualRecord.isFetching || individualRecord.data) return;  // Don't fetch if already fetching or loaded.
+//     return dispatch(fetchIndividual(individualID));
+// };

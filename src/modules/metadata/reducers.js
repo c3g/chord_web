@@ -21,6 +21,7 @@ import {
     PROJECT_TABLE_DELETION,
 
     FETCH_INDIVIDUAL,
+    FETCH_PHENOPACKETS
 } from "./actions";
 
 
@@ -356,6 +357,33 @@ export const individuals = (
                         isFetching: false,
                     },
                 },
+            };
+
+        default:
+            return state;
+    }
+};
+
+
+export const phenopackets = (
+    state = {
+        items: [],
+    },
+    action
+) => {
+    switch (action.type) {
+        case FETCH_PHENOPACKETS.REQUEST:
+            return {...state, items: [], isFetching: true };
+        case FETCH_PHENOPACKETS.RECEIVE:
+            return {
+                ...state,
+                items: action.data,
+            };
+        case FETCH_PHENOPACKETS.FINISH:
+            return {
+                ...state,
+                items: state.items,
+                isFetching: false,
             };
 
         default:
