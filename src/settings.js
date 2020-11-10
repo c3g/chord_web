@@ -8,3 +8,5 @@ const isFalsey = (ev, df) => !SETTINGS_FALSE_VALUES.includes(
 // in the deployment of the front end. False-y values include an empty string,
 // "false", or "0".
 export const FEDERATION_MODE = isFalsey(ENV.BENTO_FEDERATION_MODE, true);
+
+console.log(FEDERATION_MODE, ENV);
