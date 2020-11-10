@@ -9,4 +9,4 @@ const isFalsey = (ev, df) => !SETTINGS_FALSE_VALUES.includes(
 // "false", or "0".
 export const FEDERATION_MODE = isFalsey(ENV.BENTO_FEDERATION_MODE, true);
 
-console.log(FEDERATION_MODE, ENV);
+console.log(FEDERATION_MODE, ENV, process.env.CHORD_URL, process.env.BENTO_FEDERATION_MODE, process.env);
