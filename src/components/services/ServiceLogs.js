@@ -25,7 +25,7 @@ class ServiceLogs extends Component {
         const logList = Object.entries((logs || {}).logs || {}).map(l => l[0]);
 
         const logMenuItems = logList.map(log => ({
-            url: withBasePath(`services/${artifact}/logs/${log}`),
+            url: withBasePath(`admin/services/${artifact}/logs/${log}`),
             text: log,
         }));
 
@@ -44,9 +44,9 @@ class ServiceLogs extends Component {
                 {loading ? <Skeleton active={true} title={false} /> : (
                     Object.keys(logs).length ? (
                         <Switch>
-                            <Route path={withBasePath("services/:artifact/logs/:log")} component={ServiceLog} />
-                            <Redirect from={withBasePath(`services/${artifact}/logs`)}
-                                      to={withBasePath(`services/${artifact}/logs/${logList[0]}`)} />
+                            <Route path={withBasePath("admin/services/:artifact/logs/:log")} component={ServiceLog} />
+                            <Redirect from={withBasePath(`admin/services/${artifact}/logs`)}
+                                      to={withBasePath(`admin/services/${artifact}/logs/${logList[0]}`)} />
                         </Switch>
                     ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}

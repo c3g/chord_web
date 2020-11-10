@@ -15,8 +15,8 @@ import {withBasePath} from "../../utils/url";
 import {Redirect, Route, Switch} from "react-router-dom";
 
 const pageMenu = artifact => [
-    {url: withBasePath(`services/${artifact}/overview`), style: {marginLeft: "4px"}, text: "Overview"},
-    {url: withBasePath(`services/${artifact}/logs`), text: "Logs"},
+    {url: withBasePath(`admin/services/${artifact}/overview`), style: {marginLeft: "4px"}, text: "Overview"},
+    {url: withBasePath(`admin/services/${artifact}/logs`), text: "Logs"},
 ];
 
 // TODO: Deduplicate with data manager
@@ -45,11 +45,11 @@ class ServiceDetail extends Component {
                             onBack={() => this.props.history.push(withBasePath("dashboard"))} />
             <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton active /></div>}>
                 <Switch>
-                    <Route exact path={withBasePath("services/:artifact/overview")}
+                    <Route exact path={withBasePath("admin/services/:artifact/overview")}
                            component={ServiceOverview} />
-                    <Route path={withBasePath("services/:artifact/logs")} component={ServiceLogs} />
-                    <Redirect from={withBasePath(`services/${artifact}`)}
-                              to={withBasePath(`services/${artifact}/overview`)} />
+                    <Route path={withBasePath("admin/services/:artifact/logs")} component={ServiceLogs} />
+                    <Redirect from={withBasePath(`admin/services/${artifact}`)}
+                              to={withBasePath(`admin/services/${artifact}/overview`)} />
                 </Switch>
             </Suspense>
         </>;

@@ -16,9 +16,8 @@ import OwnerRoute from "./OwnerRoute";
 
 import AdminHeader from "./AdminHeader";
 import SitePageHeader from "./SitePageHeader";
-import DashboardContent from "./DashboardContent";
+import ServiceContent from "./ServiceContent";
 import DataManagerContent from "./DataManagerContent";
-import ServiceList from "./ServiceList";
 import PeersContent from "./PeersContent";
 import ServiceDetail from "./services/ServiceDetail";
 
@@ -34,13 +33,13 @@ class AdminContent extends Component {
 
     render() {
         return <>
-            <AdminHeader />
+            {/* <AdminHeader /> */}
             <SitePageHeader title="Admin" subTitle="Administrative tools" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                     {/* <Typography.Title level={3}>Admin</Typography.Title> */}
                     <Switch>
-                        <OwnerRoute path={withBasePath("admin/services")} component={DashboardContent} />
+                        <OwnerRoute path={withBasePath("admin/services")} component={ServiceContent} />
                         <OwnerRoute path={withBasePath("admin/services/:artifact")} component={ServiceDetail} />
                         <OwnerRoute path={withBasePath("admin/data/manager")} component={DataManagerContent} />
                         <OwnerRoute path={withBasePath("admin/peers")} component={PeersContent} />

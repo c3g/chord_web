@@ -58,34 +58,32 @@ const DUMMY_AGE_DATA=[{x:10},{x:10},{x:10}]
 
 
 // CHARTS
-const SEX_AGE_CHARTS = <>
-    {/* <Col xs={24}> */}
+const AGE_HISTOGRAM = <VictoryChart {...VICTORY_HIST_CONTAINER_PROPS}>
+    <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
+                label="Age (Years)"
+                height={200}
+                style={{
+                    axisLabel: {fontFamily: "monospace"},
+                    tickLabels: {fontFamily: "monospace"}
+                }} />
+    <VictoryAxis dependentAxis={true}
+                label="Count"
+                style={{
+                    axisLabel: {fontFamily: "monospace"},
+                    tickLabels: {fontFamily: "monospace"}
+                }} />
+    <VictoryHistogram 
+        data={DUMMY_AGE_DATA} 
+        bins={AGE_HISTOGRAM_BINS}
+        {...VICTORY_HIST_PROPS} />
+    <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
+</VictoryChart>;
+
+const SEX_CHARTS = <>
     <VictoryPieWrapSVG>
         <VictoryPie data={DUMMY_SEX_DATA} {...VICTORY_PIE_PROPS} />
         <VictoryLabel text="SEX" {...VICTORY_PIE_LABEL_PROPS} />
     </VictoryPieWrapSVG>
-    {/* </Col>
-    <Col xs={12}> */}
-    <VictoryChart {...VICTORY_HIST_CONTAINER_PROPS}>
-        <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
-                    label="Age (Years)"
-                    height={200}
-                    style={{
-                        axisLabel: {fontFamily: "monospace"},
-                        tickLabels: {fontFamily: "monospace"}
-                    }} />
-        <VictoryAxis dependentAxis={true}
-                    label="Count"
-                    style={{
-                        axisLabel: {fontFamily: "monospace"},
-                        tickLabels: {fontFamily: "monospace"}
-                    }} />
-        <VictoryHistogram 
-            data={DUMMY_AGE_DATA} 
-            bins={AGE_HISTOGRAM_BINS}
-            {...VICTORY_HIST_PROPS} />
-        <VictoryLabel text="AGE AT COLLECTION" {...VICTORY_BAR_TITLE_PROPS} />
-    </VictoryChart>
 </>;
 
 const DISEASE_CHART =  <VictoryPieWrapSVG>
@@ -107,12 +105,6 @@ class OverviewContent extends Component {
           chartPadding:  "1rem",
         }
       }
-
-    
-    
-    componentDidMount() {
-        document.title = `${SITE_NAME} - Overview`;
-    }
 
     render() {
         return <>
@@ -145,7 +137,11 @@ class OverviewContent extends Component {
                             <Row style={{paddingTop: 0, 
                                 paddingLeft: this.state.chartPadding, 
                                 paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}}>{SEX_AGE_CHARTS}</Row>
+                                paddingBottom:this.state.chartPadding}}>{SEX_CHARTS}</Row>
+                            <Row style={{paddingTop: 0, 
+                                paddingLeft: this.state.chartPadding, 
+                                paddingRight: this.state.chartPadding, 
+                                paddingBottom:this.state.chartPadding}}>{AGE_HISTOGRAM}</Row>
                         </Col>
                         <Col md={12} sm={24}>
                             <Row style={{paddingTop: 0, 
@@ -215,6 +211,8 @@ class OverviewContent extends Component {
     componentDidMount() {
         this.updateDimensions();
         window.addEventListener("resize", this.updateDimensions.bind(this));
+
+        document.title = `${SITE_NAME} - Overview`;
     }
 
     /**

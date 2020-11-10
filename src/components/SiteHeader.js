@@ -4,6 +4,7 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Badge, Icon, Layout, Menu} from "antd";
+const SubMenu = Menu.SubMenu;
 
 import "antd/es/badge/style/css";
 import "antd/es/icon/style/css";
@@ -19,6 +20,19 @@ import {nodeInfoDataPropTypesShape, notificationPropTypesShape, userPropTypesSha
 
 
 class SiteHeader extends Component {
+    constructor(){
+        super()
+        this.state = {
+            current: 'mail',
+        }
+    }
+    handleSubMenuClick(e) {
+        console.log('click ', e);
+        this.setState({
+          current: e.key,
+        });    
+    }
+
     render() {
         const menuItems = [
             {
@@ -37,12 +51,12 @@ class SiteHeader extends Component {
                 text: <span className="nav-text">Explorer</span>,
                 disabled: !this.props.isOwner,
             },
-            {
-                url: withBasePath("admin"),
-                icon: <Icon type="user" />,
-                text: <span className="nav-text">Admin</span>,
-                disabled: !this.props.isOwner,
-            },
+            // {
+            //     url: withBasePath("admin"),
+            //     icon: <Icon type="user" />,
+            //     text:  <span className="nav-text">Admin</span>,
+            //     disabled: !this.props.isOwner,
+            // },
             ...(this.props.user ? [{
                 key: "user-menu",
                 style: {float: "right"},
@@ -89,11 +103,35 @@ class SiteHeader extends Component {
                   mode="horizontal"
                   selectedKeys={matchingMenuKeys(menuItems)}
                   style={{lineHeight: "64px"}}>
+                      
                 {menuItems.map(i => renderMenuItem(i))}
+
+                {/* Temporary Sub Menu for Admin (TODO: Refactor) */}
+                <SubMenu key="SubMenu" 
+                        onClick={this.handleSubMenuClick}
+                        title={<span><Icon type="user" />Admin</span>}
+                        disabled={!this.props.isOwner}>
+                    <Menu.Item key="services">
+                        <Link to={withBasePath("admin/services")}>
+                            <Icon type="dashboard" />Services
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key="datamanager">
+                        <Link to={withBasePath("admin/data/manager")}>
+                            <Icon type="folder-open" />Data Manager
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key="peers">
+                        <Link to={withBasePath("admin/peers")}>
+                            <Icon type="apartment" />Peers
+                        </Link>
+                    </Menu.Item>
+                </SubMenu>
             </Menu>
         </Layout.Header>;
     }
 }
+    
 
 SiteHeader.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,

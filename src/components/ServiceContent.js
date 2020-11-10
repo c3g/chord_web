@@ -18,7 +18,7 @@ import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
 import {EM_DASH} from "../constants";
 
 
-class DashboardContent extends Component {
+class ServiceContent extends Component {
     componentDidMount() {
         document.title = `${SITE_NAME} - Dashboard`;
     }
@@ -72,7 +72,7 @@ class DashboardContent extends Component {
     }
 }
 
-DashboardContent.propTypes = {
+ServiceContent.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
     isFetchingNodeInfo: PropTypes.bool,
 
@@ -94,4 +94,4 @@ const mapStateToProps = state => ({
     isFetchingPeers: state.auth.isFetchingDependentData,
 });
 
-export default connect(mapStateToProps)(DashboardContent);
+export default connect(mapStateToProps)(ServiceContent);
