@@ -14,7 +14,6 @@ import "antd/es/typography/style/css";
 
 import OwnerRoute from "./OwnerRoute";
 
-import AdminHeader from "./AdminHeader";
 import SitePageHeader from "./SitePageHeader";
 import ServiceContent from "./ServiceContent";
 import DataManagerContent from "./DataManagerContent";
@@ -33,7 +32,6 @@ class AdminContent extends Component {
 
     render() {
         return <>
-            {/* <AdminHeader /> */}
             <SitePageHeader title="Admin" subTitle="Administrative tools" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>

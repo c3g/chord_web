@@ -51,12 +51,31 @@ class SiteHeader extends Component {
                 text: <span className="nav-text">Explorer</span>,
                 disabled: !this.props.isOwner,
             },
-            // {
-            //     url: withBasePath("admin"),
-            //     icon: <Icon type="user" />,
-            //     text:  <span className="nav-text">Admin</span>,
-            //     disabled: !this.props.isOwner,
-            // },
+            {
+                url: withBasePath("admin"),
+                icon: <Icon type="user" />,
+                text:  <span className="nav-text">Admin</span>,
+                disabled: !this.props.isOwner,
+                children: [{
+                    key: "admin-services",
+                    url: withBasePath("admin/services"),
+                    icon: <Icon type="dashboard" />,
+                    text: <span className="nav-text">Services</span>,
+                    disabled: !this.props.isOwner,
+                },{
+                    key: "admin-data-manager",
+                    url: withBasePath("admin/data/manager"),
+                    icon: <Icon type="folder-open" />,
+                    text: <span className="nav-text">Data Manager</span>,
+                    disabled: !this.props.isOwner,
+                },{
+                    key: "admin-peers",
+                    url: withBasePath("admin/peers"),
+                    icon: <Icon type="apartment" />,
+                    text: <span className="nav-text">Peers</span>,
+                    disabled: !this.props.isOwner,
+                },]
+            },
             ...(this.props.user ? [{
                 key: "user-menu",
                 style: {float: "right"},
@@ -105,28 +124,7 @@ class SiteHeader extends Component {
                   style={{lineHeight: "64px"}}>
                       
                 {menuItems.map(i => renderMenuItem(i))}
-
-                {/* Temporary Sub Menu for Admin (TODO: Refactor) */}
-                <SubMenu key="SubMenu" 
-                        onClick={this.handleSubMenuClick}
-                        title={<span><Icon type="user" />Admin</span>}
-                        disabled={!this.props.isOwner}>
-                    <Menu.Item key="services">
-                        <Link to={withBasePath("admin/services")}>
-                            <Icon type="dashboard" />Services
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="datamanager">
-                        <Link to={withBasePath("admin/data/manager")}>
-                            <Icon type="folder-open" />Data Manager
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="peers">
-                        <Link to={withBasePath("admin/peers")}>
-                            <Icon type="apartment" />Peers
-                        </Link>
-                    </Menu.Item>
-                </SubMenu>
+                
             </Menu>
         </Layout.Header>;
     }
