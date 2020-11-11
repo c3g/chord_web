@@ -43,6 +43,7 @@ export const PROJECT_TABLE_DELETION = createFlowActionTypes("PROJECT_TABLE_DELET
 
 export const FETCH_INDIVIDUAL = createNetworkActionTypes("FETCH_INDIVIDUAL");
 export const FETCH_PHENOPACKETS = createNetworkActionTypes("FETCH_PHENOPACKETS");
+export const FETCH_EXPERIMENTS = createNetworkActionTypes("FETCH_EXPERIMENTS");
 
 
 const endProjectTableAddition = (project, table) => ({type: PROJECT_TABLE_ADDITION.END, project, table});
@@ -397,7 +398,7 @@ export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PHENOPACKETS,
     // params: {phenopacketID},
     url: `${getState().services.metadataService.url}/api/phenopackets`,
-    err: `Error fetching phenopackets`,
+    err: `Error fetching phenopackets metadata`,
     paginated: true
 }));
 
@@ -407,3 +408,12 @@ export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
 //     if (individualRecord.isFetching || individualRecord.data) return;  // Don't fetch if already fetching or loaded.
 //     return dispatch(fetchIndividual(individualID));
 // };
+
+
+export const fetchExperiments = networkAction(() => (dispatch, getState) => ({
+    types: FETCH_EXPERIMENTS,
+    // params: {},
+    url: `${getState().services.metadataService.url}/api/experiments`,
+    err: `Error fetching experiments metadata`,
+    paginated: true
+}));
