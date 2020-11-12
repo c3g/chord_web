@@ -8,7 +8,7 @@ import {
 
 import {fetchServiceLogsIfPossible, fetchSystemLogsIfPossible} from "../logs/actions";
 import {fetchDropBoxTreeOrFail} from "../manager/actions";
-import {fetchExperiments, fetchProjectsWithDatasetsAndTables} from "../metadata/actions";
+import {fetchExperiments, fetchProjectsWithDatasetsAndTables, fetchVariantTableSummaries} from "../metadata/actions";
 import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
@@ -62,7 +62,8 @@ export const fetchUserAndDependentData = servicesCb => async (dispatch, getState
         dispatch(fetchRuns()),
         dispatch(fetchNotifications()),
         dispatch(fetchPhenopackets()),
-        dispatch(fetchExperiments())
+        dispatch(fetchExperiments()),
+        dispatch(fetchVariantTableSummaries())
     ]);
 
 

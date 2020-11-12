@@ -21,11 +21,13 @@ import {
 import {nop, objectWithoutProps} from "../../utils/misc";
 import {jsonRequest} from "../../utils/requests";
 import {withBasePath} from "../../utils/url";
+import {fetchTableSummaryIfPossible} from "../../modules/tables/actions";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
 export const FETCH_PROJECT_TABLES = createNetworkActionTypes("FETCH_PROJECT_TABLES");
 export const FETCHING_PROJECTS_WITH_TABLES = createFlowActionTypes("FETCHING_PROJECTS_WITH_TABLES");
+export const FETCHING_TABLE_SUMMARIES = createFlowActionTypes("FETCHING_TABLE_SUMMARIES");
 
 export const CREATE_PROJECT = createNetworkActionTypes("CREATE_PROJECT");
 export const DELETE_PROJECT = createNetworkActionTypes("DELETE_PROJECT");
@@ -81,6 +83,33 @@ export const fetchProjectsWithDatasetsAndTables = () => async (dispatch, getStat
     dispatch(endFlow(FETCHING_PROJECTS_WITH_TABLES));
 };
 
+
+export const fetchVariantTableSummaries = () => async (dispatch, getState) => {
+    const state = getState();
+    if (state.projects.isFetching ||
+        state.projects.isCreating ||
+        state.projects.isDeleting ||
+        state.projects.isSaving) return;
+
+    dispatch(beginFlow(FETCHING_TABLE_SUMMARIES));
+    console.log(getState().chordServices)
+
+    var chordservice =  getState().chordServices.itemsByArtifact.variant || null ;
+    
+    if (chordservice != null)
+    {
+        var tables = getState().projectTables.items
+        for (var t=0;t<tables.length; t++){
+            var table = tables[t]
+            // console.log(table);
+            if (table.service_artifact == "variant") {
+                await dispatch(fetchTableSummaryIfPossible(chordservice, {url:`/api/variant`}, table.table_id));
+            }
+        }
+    } 
+
+    dispatch(endFlow(FETCHING_TABLE_SUMMARIES));
+};
 
 const createProject = networkAction((project, history) => (dispatch, getState) => ({
     types: CREATE_PROJECT,

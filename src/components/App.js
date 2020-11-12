@@ -78,7 +78,7 @@ class App extends Component {
                 <Layout.Content style={{margin: "50px"}}>
                     <Suspense fallback={<SitePageLoading />}>
                         <Switch>
-                            <Route path={withBasePath("overview")} component={OverviewContent} />
+                            <OwnerRoute path={withBasePath("overview")} component={OverviewContent} />
                             <Route path={withBasePath("data/sets")} component={DataDiscoveryContent} />
                             <OwnerRoute path={withBasePath("data/explorer")} component={DataExplorerContent} />
                             <OwnerRoute path={withBasePath("admin")} component={AdminContent} />

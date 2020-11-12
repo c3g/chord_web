@@ -130,6 +130,7 @@ export const runPropTypesShape = PropTypes.shape({
 
 // Prop types object shape for a single table summary object.
 export const summaryPropTypesShape = PropTypes.shape({
+    isFetching: PropTypes.bool,
     count: PropTypes.number,
     data_type_specific: PropTypes.object,  // TODO: Shape changes...
 });
