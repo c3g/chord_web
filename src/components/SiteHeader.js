@@ -4,7 +4,6 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {Badge, Icon, Layout, Menu} from "antd";
-const SubMenu = Menu.SubMenu;
 
 import "antd/es/badge/style/css";
 import "antd/es/icon/style/css";

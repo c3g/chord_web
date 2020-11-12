@@ -11,28 +11,18 @@ import "antd/es/statistic/style/css";
 import "antd/es/typography/style/css";
 
 import SitePageHeader from "./SitePageHeader";
-import ServiceList from "./ServiceList";
 
 import {SITE_NAME} from "../constants";
-import {nodeInfoDataPropTypesShape, projectPropTypesShape, phenopacketPropTypesShape, experimentPropTypesShape, summaryPropTypesShape} from "../propTypes";
+import {nodeInfoDataPropTypesShape, projectPropTypesShape, phenopacketPropTypesShape, experimentPropTypesShape} from "../propTypes";
 
-import {VictoryAxis, VictoryBar, VictoryChart, VictoryHistogram, VictoryLabel, VictoryPie, VictoryTheme} from "victory";
-import VictoryPieWrapSVG from "./VictoryPieWrapSVG";
+import {VictoryAxis, VictoryChart, VictoryHistogram, VictoryLabel} from "victory";
 import {
-    VICTORY_BAR_CONTAINER_PROPS,
-    VICTORY_BAR_PROPS,
-    VICTORY_BAR_TITLE_PROPS,
     VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE,
-    VICTORY_BAR_X_AXIS_PROPS,
-    VICTORY_HIST_CONTAINER_PROPS,
-    VICTORY_HIST_PROPS,
-    VICTORY_PIE_LABEL_PROPS,
-    VICTORY_PIE_PROPS,
 } from "../styles/victory";
 
 
 import {
-    PieChart, Pie, Sector, Cell, ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar
+    PieChart, Pie, Sector, Cell
 } from 'recharts';
   
 import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
@@ -138,7 +128,7 @@ class OverviewContent extends Component {
         return jsonObjsXY;
      };
 
-     onPieEnter = (chartNum, data, index, event) => {
+     onPieEnter = (chartNum, data, index) => {
         // console.log(data)
         if (chartNum == 0){    
             this.setState({

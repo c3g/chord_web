@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {withRouter, Redirect, Route, Switch} from "react-router-dom";
-import {BASE_PATH, signInURLWithRedirect, urlPath, withBasePath} from "../utils/url";
+import {Redirect, Switch} from "react-router-dom";
+import {BASE_PATH, withBasePath} from "../utils/url";
 
-import {Col, Layout, Row, Spin, Statistic, Typography} from "antd";
+import {Layout} from "antd";
 import "antd/es/col/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/row/style/css";
@@ -22,7 +22,6 @@ import ServiceDetail from "./services/ServiceDetail";
 
 import {SITE_NAME} from "../constants";
 import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
-import {EM_DASH} from "../constants";
 
 
 class AdminContent extends Component {
