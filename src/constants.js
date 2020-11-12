@@ -1,5 +1,4 @@
 export const SITE_NAME = "Bento";
-export const ADMIN_NAME = "Admin";
 
 export const SIGN_IN_URL = "api/auth/sign-in";
 export const SIGN_OUT_URL = "api/auth/sign-out";
