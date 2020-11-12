@@ -59,7 +59,6 @@ export const services = (
         logService: null,
         metadataService: null,
         notificationService: null,
-        variantService: null,
         wesService: null,
     },
     action
@@ -90,7 +89,6 @@ export const services = (
                 logService: itemsByArtifact["log-service"] || null,
                 notificationService: itemsByArtifact["notification"] || null,
                 metadataService: itemsByArtifact["metadata"] || null,
-                variantService: itemsByArtifact["variant"] || null,
                 wesService: itemsByArtifact["wes"] || null,
 
                 lastUpdated: action.receivedAt

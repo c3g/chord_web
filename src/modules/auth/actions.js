@@ -8,15 +8,13 @@ import {
 
 import {fetchServiceLogsIfPossible, fetchSystemLogsIfPossible} from "../logs/actions";
 import {fetchDropBoxTreeOrFail} from "../manager/actions";
-import {fetchExperiments, fetchProjectsWithDatasetsAndTables, fetchVariantTableSummaries} from "../metadata/actions";
+import {fetchExperiments, fetchProjectsWithDatasetsAndTables, fetchVariantTableSummaries, fetchPhenopackets} from "../metadata/actions";
 import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";
 import {fetchRuns} from "../wes/actions";
 import {nop} from "../../utils/misc";
 import {withBasePath} from "../../utils/url";
-
-import {fetchPhenopackets} from "../metadata/actions";
 
 export const FETCH_USER = createNetworkActionTypes("FETCH_USER");
 export const FETCHING_USER_DEPENDENT_DATA = createFlowActionTypes("FETCHING_USER_DEPENDENT_DATA");

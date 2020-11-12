@@ -15,14 +15,14 @@ import SitePageHeader from "./SitePageHeader";
 import {SITE_NAME} from "../constants";
 import {nodeInfoDataPropTypesShape, projectPropTypesShape, phenopacketPropTypesShape, experimentPropTypesShape} from "../propTypes";
 
-import {VictoryAxis, VictoryChart, VictoryHistogram, VictoryLabel} from "victory";
-import {
-    VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE,
-} from "../styles/victory";
+import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
+// import {
+//     VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE,
+// } from "../styles/victory";
 
 
 import {
-    PieChart, Pie, Sector, Cell
+    PieChart, Pie, Sector, Cell, Legend
 } from "recharts";
   
 import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
@@ -81,22 +81,10 @@ const renderActiveShape = (name, props) => {
 };
 
 
-const NUMBER_OF_COLORS = 10;
-const getRandomColor = () => {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
-const COLORS = (function repeat(number) {
-    var colors = [];
-    for (var i = 0; i < number; i++){
-        colors.push(getRandomColor());
-    }
-    return colors;
-})(NUMBER_OF_COLORS);
+
+// Random 'fixed' colors
+const COLORS = ["#0da650", "#9d176a", "#968722", "#36f8bb", "#6671c2", "#2ada39", "#611a28", "#cf39f2", "#91faee", "#89c791"];
+
   
 class OverviewContent extends Component {
     constructor() {
@@ -108,6 +96,8 @@ class OverviewContent extends Component {
             diseaseChartActiveIndex: 0,
             biosamplesChartActiveIndex: 0,
             chartWidthHeight: 500,
+            chartLabelPaddingTop: 3,
+            chartLabelPaddingLeft: 3
         };
     }
     getFrequencyAsXYJSON(array) {
@@ -233,35 +223,35 @@ class OverviewContent extends Component {
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
                     <Row>
                         <Typography.Title level={4}>Clinical/Phenotypical Data</Typography.Title>
-                        <Col lg={12} md={24}>
-                            <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
-                                <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                        <Statistic title="Participants" value={numParticipants} />
-                                    </Spin>
-                                </Col>
-                                <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                        <Statistic title="Biosamples" value={numBiosamples} />
-                                    </Spin>
-                                </Col>
-                                <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                    <Spin spinning={this.props.experiments == undefined ? true : this.props.experiments.isFetching}>
-                                        <Statistic title="Experiments" value={experiments.length} />
-                                    </Spin>
-                                </Col>
-                            </Row>
-                            <Row >
+                        <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
+                            <Col xl={2} lg={3} md={5} sm={6} xs={10}>
                                 <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                    <Statistic title="Participants" value={numParticipants} />
+                                </Spin>
+                            </Col>
+                            <Col xl={2} lg={3} md={5} sm={6} xs={10}>
+                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <Statistic title="Biosamples" value={numBiosamples} />
+                                </Spin>
+                            </Col>
+                            <Col xl={2} lg={3} md={5} sm={6} xs={10}>
+                                <Spin spinning={this.props.experiments == undefined ? true : this.props.experiments.isFetching}>
+                                    <Statistic title="Experiments" value={experiments.length} />
+                                </Spin>
+                            </Col>
+                        </Row>
+                        <Col lg={12} md={24}>
+                            <Row>
+                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.sexChartActiveIndex}
                                             activeShape={renderActiveShape.bind(this, "Sex")}
                                             data={sexLabels}
                                             cx={this.state.chartWidthHeight/2}
                                             cy={this.state.chartWidthHeight/3}
-                                            innerRadius={this.state.chartWidthHeight/7 + 10}
-                                            outerRadius={this.state.chartWidthHeight/7 + 30}
+                                            innerRadius={this.state.chartWidthHeight/9 + 10}
+                                            outerRadius={this.state.chartWidthHeight/9 + 30}
                                             fill="#8884d8"
                                             dataKey="value"
                                             onMouseEnter={this.onPieEnter.bind(this, 0)} >
@@ -269,14 +259,39 @@ class OverviewContent extends Component {
                                                 diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                             }
                                         </Pie>
+                                    </PieChart> */}
+                                    <h2 style={{ 
+                                        position: "relative", 
+                                        top: this.state.chartLabelPaddingTop + "rem", 
+                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Sex"}</h2>
+                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                        <Pie data={sexLabels} 
+                                             dataKey="value" 
+                                             cx={this.state.chartWidthHeight/2}
+                                             cy={this.state.chartWidthHeight/3}
+                                             innerRadius={this.state.chartWidthHeight/9 + 10}
+                                             outerRadius={this.state.chartWidthHeight/9 + 30}
+                                             fill="#82ca9d" 
+                                            // isAnimationActive={false}
+                                            // label={renderSimpleLabel} 
+                                            >
+                                        {
+                                            sexLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                        }
+                                        </Pie>
+                                        <Legend/>
                                     </PieChart>
                                 </Spin>
                             </Row>
-                            <Row style={{paddingTop: 0, 
+                            <Row style={{paddingTop: this.state.chartPadding, 
                                 paddingLeft: this.state.chartPadding, 
                                 paddingRight: this.state.chartPadding, 
-                                paddingBottom: 0}} >
+                                paddingBottom: 0}}>                                
                                 <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <h2  style={{ 
+                                        position: "relative", 
+                                        top: (this.state.chartLabelPaddingTop/3) + "rem", 
+                                        left: (this.state.chartLabelPaddingLeft/2) + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Age"}</h2>
                                     <VictoryChart>
                                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                                      label="Age (Years)"
@@ -293,8 +308,6 @@ class OverviewContent extends Component {
                                             data={participantDOB} 
                                             bins={AGE_HISTOGRAM_BINS}
                                             style={{ data: { fill: COLORS[0] } }} />
-                                        <VictoryLabel text={this.props.phenopackets.isFetching ? "" : "Age"} 
-                                                      {...VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE} />
                                     </VictoryChart>
                                 </Spin>
                             </Row>
@@ -303,10 +316,14 @@ class OverviewContent extends Component {
                             <Row>
                                 <Col>
                                     <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <h2 style={{ 
+                                        position: "relative", 
+                                        top: (this.state.chartLabelPaddingTop/2) + "rem", 
+                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Diseases"}</h2>
                                         <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                             <Pie
                                                 activeIndex={this.state.diseaseChartActiveIndex}
-                                                activeShape={renderActiveShape.bind(this, "Diseases")}
+                                                activeShape={renderActiveShape.bind(this, "")}
                                                 data={diseaseLabels}
                                                 cx={this.state.chartWidthHeight/2}
                                                 cy={this.state.chartWidthHeight/3}
@@ -324,25 +341,46 @@ class OverviewContent extends Component {
                                     </Spin>
                                 </Col>
                             </Row>                           
-                            <Row >
+                            <Row>
                                 <Spin spinning={this.props.phenopackets == undefined 
                                     ? true : this.props.phenopackets.isFetching}>
-                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.biosamplesChartActiveIndex}
                                             activeShape={renderActiveShape.bind(this, "Biosamples")}
                                             data={biosampleLabels}
                                             cx={this.state.chartWidthHeight/2}
                                             cy={this.state.chartWidthHeight/3}
-                                            innerRadius={this.state.chartWidthHeight/7 + 10}
-                                            outerRadius={this.state.chartWidthHeight/7 + 30}
+                                            innerRadius={this.state.chartWidthHeight/9 + 10}
+                                            outerRadius={this.state.chartWidthHeight/9 + 30}
                                             fill="#8884d8"
                                             dataKey="value"
                                             onMouseEnter={this.onPieEnter.bind(this, 2)} >
                                             {
                                                 diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                             }
-                                            </Pie>
+                                        </Pie>
+                                    </PieChart> */}
+                                    <h2 style={{ 
+                                        position: "relative", 
+                                        top: this.state.chartLabelPaddingTop + "rem", 
+                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</h2>
+                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                        <Pie data={biosampleLabels} 
+                                             dataKey="value" 
+                                             cx={this.state.chartWidthHeight/2}
+                                             cy={this.state.chartWidthHeight/3}
+                                             innerRadius={this.state.chartWidthHeight/9 + 10}
+                                             outerRadius={this.state.chartWidthHeight/9 + 30}
+                                             fill="#82ca9d" 
+                                            // isAnimationActive={false}
+                                            // label={renderSimpleLabel}
+                                            >
+                                        {
+                                            biosampleLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                        }
+                                        </Pie>
+                                        <Legend/>
                                     </PieChart>
                                 </Spin>
                             </Row>
@@ -385,17 +423,42 @@ class OverviewContent extends Component {
      */
     updateDimensions() {
         if(window.innerWidth < 576) { //xs
-            this.setState({ chartPadding: "0rem", chartWidthHeight:  8 * window.innerWidth / 9 });
+            this.setState({ 
+                chartPadding: "0rem", 
+                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartLabelPaddingTop: 3,
+                chartLabelPaddingLeft: 3
+            });
         } else if(window.innerWidth < 768) { // sm
-            this.setState({ chartPadding: "1rem", chartWidthHeight:  8 * window.innerWidth / 9 });
+            this.setState({ 
+                chartPadding: "1rem", 
+                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartLabelPaddingTop: 6,
+                chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 992) { // md
-            this.setState({ chartPadding: "2rem", chartWidthHeight:  8 * window.innerWidth / 9 });
+            this.setState({ 
+                chartPadding: "2rem", 
+                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartLabelPaddingTop: 5,
+                chartLabelPaddingLeft: 5 });
         } else if(window.innerWidth < 1200) { // lg
-            this.setState({ chartPadding: "4rem", chartWidthHeight: 4 * window.innerWidth / 9 });
+            this.setState({ 
+                chartPadding: "4rem", 
+                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartLabelPaddingTop: 6,
+                chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 1600) { // xl
-            this.setState({ chartPadding: "6rem", chartWidthHeight: 4 * window.innerWidth / 9 });
+            this.setState({ 
+                chartPadding: "6rem", 
+                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartLabelPaddingTop: 7,
+                chartLabelPaddingLeft: 7 });
         } else {
-            this.setState({ chartPadding: "8rem", chartWidthHeight: 4 * window.innerWidth / 9 }); // > xl
+            this.setState({ 
+                chartPadding: "10rem", 
+                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartLabelPaddingTop: 7,
+                chartLabelPaddingLeft: 7 }); // > xl
         }
     }
 
