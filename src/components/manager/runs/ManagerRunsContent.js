@@ -18,12 +18,12 @@ class ManagerRunsContent extends Component {
         return <Layout>
             <Layout.Content style={LAYOUT_CONTENT_STYLE}>
                 <Switch>
-                    <Route exact path={withBasePath("data/manager/runs")} component={RunListContent} />
-                    <Route path={withBasePath("data/manager/runs/:id/:tab")} component={RunDetailContent} />
-                    <Redirect from={withBasePath("data/manager/runs/:id")}
-                              to={withBasePath("data/manager/runs/:id/request")} />
-                    <Redirect from={withBasePath("data/manager")}
-                              to={withBasePath("data/manager/projects")} />
+                    <Route exact path={withBasePath("admin/data/manager/runs")} component={RunListContent} />
+                    <Route path={withBasePath("admin/data/manager/runs/:id/:tab")} component={RunDetailContent} />
+                    <Redirect from={withBasePath("admin/data/manager/runs/:id")}
+                              to={withBasePath("admin/data/manager/runs/:id/request")} />
+                    <Redirect from={withBasePath("admin/data/manager")}
+                              to={withBasePath("admin/data/manager/projects")} />
                 </Switch>
             </Layout.Content>
         </Layout>;

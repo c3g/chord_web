@@ -36,6 +36,12 @@ export const VICTORY_BAR_TITLE_PROPS = {
     style: {fontFamily: "monospace"},
 };
 
+export const VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE = {
+    textAnchor: "middle",
+    x: 175,
+    y: 20
+};
+
 export const VICTORY_BAR_X_AXIS_PROPS = {
     style: {
         tickLabels: {

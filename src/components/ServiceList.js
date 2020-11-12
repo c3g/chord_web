@@ -22,7 +22,7 @@ const serviceColumns = isOwner => [
         dataIndex: "type.artifact",
         render: artifact => artifact
             ? (isOwner
-                ? <Link style={ARTIFACT_STYLING} to={withBasePath(`services/${artifact}`)}>{artifact}</Link>
+                ? <Link style={ARTIFACT_STYLING} to={withBasePath(`admin/services/${artifact}`)}>{artifact}</Link>
                 : <span style={ARTIFACT_STYLING}>{artifact}</span>)
             : ""
     },

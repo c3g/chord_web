@@ -20,12 +20,12 @@ const ManagerRunsContent = lazy(() => import("./manager/runs/ManagerRunsContent"
 
 
 const PAGE_MENU = [
-    {url: withBasePath("data/manager/projects"), style: {marginLeft: "4px"}, text: "Projects and Datasets"},
+    {url: withBasePath("admin/data/manager/projects"), style: {marginLeft: "4px"}, text: "Projects and Datasets"},
     // {url: "/data/manager/access", text: "Access Management"},  // TODO: Re-enable for v0.2
-    {url: withBasePath("data/manager/files"), text: "Files"},
-    {url: withBasePath("data/manager/ingestion"), text: "Ingestion"},
-    {url: withBasePath("data/manager/workflows"), text: "Workflows"},
-    {url: withBasePath("data/manager/runs"), text: "Workflow Runs"},
+    {url: withBasePath("admin/data/manager/files"), text: "Files"},
+    {url: withBasePath("admin/data/manager/ingestion"), text: "Ingestion"},
+    {url: withBasePath("admin/data/manager/workflows"), text: "Workflows"},
+    {url: withBasePath("admin/data/manager/runs"), text: "Workflow Runs"},
 ];
 
 const MENU_STYLE = {
@@ -52,17 +52,17 @@ class DataManagerContent extends Component {
                             } />
             <Suspense fallback={<div style={{padding: "24px", backgroundColor: "white"}}><Skeleton active /></div>}>
                 <Switch>
-                    <Route path={withBasePath("data/manager/projects")}
+                    <Route path={withBasePath("admin/data/manager/projects")}
                            component={ManagerProjectDatasetContent} />
-                    <Route exact path={withBasePath("data/manager/access")} component={ManagerAccessContent} />
-                    <Route exact path={withBasePath("data/manager/files")} component={ManagerFilesContent} />
-                    <Route exact path={withBasePath("data/manager/ingestion")}
+                    <Route exact path={withBasePath("admin/data/manager/access")} component={ManagerAccessContent} />
+                    <Route exact path={withBasePath("admin/data/manager/files")} component={ManagerFilesContent} />
+                    <Route exact path={withBasePath("admin/data/manager/ingestion")}
                            component={ManagerIngestionContent} />
-                    <Route exact path={withBasePath("data/manager/workflows")}
+                    <Route exact path={withBasePath("admin/data/manager/workflows")}
                            component={ManagerWorkflowsContent} />
-                    <Route path={withBasePath("data/manager/runs")} component={ManagerRunsContent} />
-                    <Redirect from={withBasePath("data/manager")}
-                              to={withBasePath("data/manager/projects")} />
+                    <Route path={withBasePath("admin/data/manager/runs")} component={ManagerRunsContent} />
+                    <Redirect from={withBasePath("admin/data/manager")}
+                              to={withBasePath("admin/data/manager/projects")} />
                 </Switch>
             </Suspense>
         </>;

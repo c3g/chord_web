@@ -18,17 +18,16 @@ import {nodeInfoDataPropTypesShape, projectPropTypesShape} from "../propTypes";
 import {EM_DASH} from "../constants";
 
 
-class DashboardContent extends Component {
+class ServiceContent extends Component {
     componentDidMount() {
         document.title = `${SITE_NAME} - Dashboard`;
     }
 
     render() {
         return <>
-            <SitePageHeader title="Dashboard" subTitle="Node status and health monitor" />
+            <SitePageHeader title="Services" subTitle="Node status and health monitor" />
             <Layout>
                 <Layout.Content style={{background: "white", padding: "32px 24px 4px"}}>
-                    <Typography.Title level={3}>Overview</Typography.Title>
                     <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                         <Col lg={24} xl={12}>
                             <Spin spinning={this.props.isFetchingNodeInfo}>
@@ -73,7 +72,7 @@ class DashboardContent extends Component {
     }
 }
 
-DashboardContent.propTypes = {
+ServiceContent.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
     isFetchingNodeInfo: PropTypes.bool,
 
@@ -95,4 +94,4 @@ const mapStateToProps = state => ({
     isFetchingPeers: state.auth.isFetchingDependentData,
 });
 
-export default connect(mapStateToProps)(DashboardContent);
+export default connect(mapStateToProps)(ServiceContent);

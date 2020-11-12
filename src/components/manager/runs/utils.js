@@ -34,7 +34,7 @@ export const RUN_TABLE_COLUMNS = [
         title: "Run ID",
         dataIndex: "run_id",
         sorter: (a, b) => a.run_id.localeCompare(b.run_id),
-        render: runID => <Link to={withBasePath(`data/manager/runs/${runID}`)} style={{fontFamily: "monospace"}}>
+        render: runID => <Link to={withBasePath(`admin/data/manager/runs/${runID}`)} style={{fontFamily: "monospace"}}>
             {runID}</Link>
     },
     {

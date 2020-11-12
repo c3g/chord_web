@@ -27,12 +27,10 @@ import {serviceInfoPropTypesShape, userPropTypesShape} from "../propTypes";
 const NotificationDrawer = lazy(() => import("./notifications/NotificationDrawer"));
 
 // Lazy-load route components
-const DashboardContent = lazy(() => import("./DashboardContent"));
-const ServiceDetail = lazy(() => import("./services/ServiceDetail"));
+const OverviewContent = lazy(() => import("./OverviewContent"));
 const DataDiscoveryContent = lazy(() => import("./DataDiscoveryContent"));
 const DataExplorerContent = lazy(() => import("./DataExplorerContent"));
-const DataManagerContent = lazy(() => import("./DataManagerContent"));
-const PeersContent = lazy(() => import("./PeersContent"));
+const AdminContent = lazy(() => import("./AdminContent"));
 const NotificationsContent = lazy(() => import("./notifications/NotificationsContent"));
 
 class App extends Component {
@@ -80,16 +78,12 @@ class App extends Component {
                 <Layout.Content style={{margin: "50px"}}>
                     <Suspense fallback={<SitePageLoading />}>
                         <Switch>
-                            <Route path={withBasePath("dashboard")} component={DashboardContent} />
-                            <Route path={withBasePath("services/:artifact")} component={ServiceDetail} />
-                            <Route path={withBasePath("data/discovery")} component={DataDiscoveryContent} />
-                            <OwnerRoute path={withBasePath("data/explorer")}
-                                        component={DataExplorerContent} />
-                            <OwnerRoute path={withBasePath("data/manager")} component={DataManagerContent} />
-                            <Route path={withBasePath("peers")} component={PeersContent} />
-                            <OwnerRoute path={withBasePath("notifications")}
-                                        component={NotificationsContent} />
-                            <Redirect from={BASE_PATH} to={withBasePath("dashboard")} />
+                            <OwnerRoute path={withBasePath("overview")} component={OverviewContent} />
+                            <Route path={withBasePath("data/sets")} component={DataDiscoveryContent} />
+                            <OwnerRoute path={withBasePath("data/explorer")} component={DataExplorerContent} />
+                            <OwnerRoute path={withBasePath("admin")} component={AdminContent} />
+                            <OwnerRoute path={withBasePath("notifications")} component={NotificationsContent} />
+                            <Redirect from={BASE_PATH} to={withBasePath("overview")} />
                         </Switch>
                     </Suspense>
                 </Layout.Content>

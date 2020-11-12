@@ -9,7 +9,9 @@ import {
     projectTables,
 
     biosamples,
-    individuals
+    individuals,
+    phenopackets,
+    experiments
 } from "./modules/metadata/reducers";
 import {manager, dropBox} from "./modules/manager/reducers";
 import {nodeInfo} from "./modules/node/reducers";
@@ -39,12 +41,13 @@ const rootReducer = combineReducers({
     logs,
 
     // Metadata module
-
     projects,
     projectTables,
 
     biosamples,
     individuals,
+    phenopackets,
+    experiments,
 
     // Manager module
     manager,

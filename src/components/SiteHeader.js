@@ -19,34 +19,61 @@ import {nodeInfoDataPropTypesShape, notificationPropTypesShape, userPropTypesSha
 
 
 class SiteHeader extends Component {
+    constructor(){
+        super();
+        this.state = {
+            current: "mail",
+        };
+    }
+    handleSubMenuClick(e) {
+        console.log("click ", e);
+        this.setState({
+            current: e.key,
+        });    
+    }
+
     render() {
         const menuItems = [
             {
-                url: withBasePath("dashboard"),
-                icon: <Icon type="dashboard" />,
-                text: <span className="nav-text">Dashboard</span>,
-            },
+                url: withBasePath("overview"),
+                icon: <Icon type="user" />,
+                text: <span className="nav-text">Overview</span>,
+            },         
             {
-                url: withBasePath("data/discovery"),
+                url: withBasePath("data/sets"),
                 icon: <Icon type="file-search" />,
-                text: <span className="nav-text">Data Discovery</span>,
+                text: <span className="nav-text">Datasets</span>,
             },
             {
                 url: withBasePath("data/explorer"),
                 icon: <Icon type="bar-chart" />,
-                text: <span className="nav-text">Data Explorer</span>,
+                text: <span className="nav-text">Explorer</span>,
                 disabled: !this.props.isOwner,
             },
             {
-                url: withBasePath("data/manager"),
-                icon: <Icon type="folder-open" />,
-                text: <span className="nav-text">Data Manager</span>,
+                url: withBasePath("admin"),
+                icon: <Icon type="user" />,
+                text:  <span className="nav-text">Admin</span>,
                 disabled: !this.props.isOwner,
-            },
-            {
-                url: withBasePath("peers"),
-                icon: <Icon type="apartment" />,
-                text: <span className="nav-text">Peers</span>,
+                children: [{
+                    key: "admin-services",
+                    url: withBasePath("admin/services"),
+                    icon: <Icon type="dashboard" />,
+                    text: <span className="nav-text">Services</span>,
+                    disabled: !this.props.isOwner,
+                },{
+                    key: "admin-data-manager",
+                    url: withBasePath("admin/data/manager"),
+                    icon: <Icon type="folder-open" />,
+                    text: <span className="nav-text">Data Manager</span>,
+                    disabled: !this.props.isOwner,
+                },{
+                    key: "admin-peers",
+                    url: withBasePath("admin/peers"),
+                    icon: <Icon type="apartment" />,
+                    text: <span className="nav-text">Peers</span>,
+                    disabled: !this.props.isOwner,
+                },]
             },
             ...(this.props.user ? [{
                 key: "user-menu",
@@ -94,11 +121,14 @@ class SiteHeader extends Component {
                   mode="horizontal"
                   selectedKeys={matchingMenuKeys(menuItems)}
                   style={{lineHeight: "64px"}}>
+                      
                 {menuItems.map(i => renderMenuItem(i))}
+                
             </Menu>
         </Layout.Header>;
     }
 }
+    
 
 SiteHeader.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,
