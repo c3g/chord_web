@@ -22,7 +22,7 @@ import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
 
 
 import {
-    PieChart, Pie, Sector, Cell, Legend
+    PieChart, Pie, Sector, Cell, Legend, Tooltip
 } from "recharts";
   
 import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
@@ -211,7 +211,6 @@ class OverviewContent extends Component {
                 numVariants += variantTableSummaries[key].count;
                 numSamples += variantTableSummaries[key].data_type_specific.samples;
                 numVCFs += variantTableSummaries[key].data_type_specific.vcf_files;
-                //console.log(`${key}: ${variantTableSummaries[key].count} ${variantTableSummaries[key].data_type_specific.samples} ${variantTableSummaries[key].data_type_specific.vcf_files}`);
             }
         }
 
@@ -243,27 +242,11 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row>
                                 <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                        <Pie
-                                            activeIndex={this.state.sexChartActiveIndex}
-                                            activeShape={renderActiveShape.bind(this, "Sex")}
-                                            data={sexLabels}
-                                            cx={this.state.chartWidthHeight/2}
-                                            cy={this.state.chartWidthHeight/3}
-                                            innerRadius={this.state.chartWidthHeight/9 + 10}
-                                            outerRadius={this.state.chartWidthHeight/9 + 30}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            onMouseEnter={this.onPieEnter.bind(this, 0)} >
-                                            {
-                                                diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                            }
-                                        </Pie>
-                                    </PieChart> */}
-                                    <h2 style={{ 
+                                    <span style={{ 
                                         position: "relative", 
                                         top: this.state.chartLabelPaddingTop + "rem", 
-                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Sex"}</h2>
+                                        left: this.state.chartLabelPaddingLeft + "rem",
+                                        width: "min-content", }}><b>{this.props.phenopackets.isFetching ? "" : "Sex"}</b></span>
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie data={sexLabels} 
                                              dataKey="value" 
@@ -280,6 +263,7 @@ class OverviewContent extends Component {
                                         }
                                         </Pie>
                                         <Legend/>
+                                        <Tooltip />
                                     </PieChart>
                                 </Spin>
                             </Row>
@@ -288,10 +272,10 @@ class OverviewContent extends Component {
                                 paddingRight: this.state.chartPadding, 
                                 paddingBottom: 0}}>                                
                                 <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                    <h2  style={{ 
+                                    <span  style={{ 
                                         position: "relative", 
                                         top: (this.state.chartLabelPaddingTop/3) + "rem", 
-                                        left: (this.state.chartLabelPaddingLeft/2) + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Age"}</h2>
+                                        left: (this.state.chartLabelPaddingLeft/2) + "rem" }}><b>{this.props.phenopackets.isFetching ? "" : "Age"}</b></span>
                                     <VictoryChart>
                                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                                      label="Age (Years)"
@@ -316,10 +300,10 @@ class OverviewContent extends Component {
                             <Row>
                                 <Col>
                                     <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                    <h2 style={{ 
+                                    <span style={{ 
                                         position: "relative", 
                                         top: (this.state.chartLabelPaddingTop/2) + "rem", 
-                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Diseases"}</h2>
+                                        left: this.state.chartLabelPaddingLeft + "rem" }}><b>{this.props.phenopackets.isFetching ? "" : "Diseases"}</b></span>
                                         <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                             <Pie
                                                 activeIndex={this.state.diseaseChartActiveIndex}
@@ -344,27 +328,10 @@ class OverviewContent extends Component {
                             <Row>
                                 <Spin spinning={this.props.phenopackets == undefined 
                                     ? true : this.props.phenopackets.isFetching}>
-                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                        <Pie
-                                            activeIndex={this.state.biosamplesChartActiveIndex}
-                                            activeShape={renderActiveShape.bind(this, "Biosamples")}
-                                            data={biosampleLabels}
-                                            cx={this.state.chartWidthHeight/2}
-                                            cy={this.state.chartWidthHeight/3}
-                                            innerRadius={this.state.chartWidthHeight/9 + 10}
-                                            outerRadius={this.state.chartWidthHeight/9 + 30}
-                                            fill="#8884d8"
-                                            dataKey="value"
-                                            onMouseEnter={this.onPieEnter.bind(this, 2)} >
-                                            {
-                                                diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                            }
-                                        </Pie>
-                                    </PieChart> */}
-                                    <h2 style={{ 
+                                    <span style={{ 
                                         position: "relative", 
                                         top: this.state.chartLabelPaddingTop + "rem", 
-                                        left: this.state.chartLabelPaddingLeft + "rem" }}>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</h2>
+                                        left: this.state.chartLabelPaddingLeft + "rem" }}><b>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</b></span>
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie data={biosampleLabels} 
                                              dataKey="value" 
@@ -381,15 +348,12 @@ class OverviewContent extends Component {
                                         }
                                         </Pie>
                                         <Legend/>
+                                        <Tooltip />
                                     </PieChart>
                                 </Spin>
                             </Row>
                         </Col>
-                    </Row>               
-                    {/* <Divider />
-                    <Row>
-                        <div>More charts and stuff can go here</div>
-                    </Row> */}
+                    </Row>
                     <Divider />
                     <Typography.Title level={4}>Variants</Typography.Title>
                     <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
