@@ -23,7 +23,7 @@ import {
 
 import {
     PieChart, Pie, Sector, Cell
-} from 'recharts';
+} from "recharts";
   
 import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
 
@@ -33,8 +33,8 @@ const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 const renderActiveShape = (name, props) => {
     const RADIAN = Math.PI / 180;
     const {
-      cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
-      fill, payload, percent, value,
+        cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
+        fill, payload, percent, value,
     } = props;
     const sin = Math.sin(-RADIAN * midAngle);
     const cos = Math.cos(-RADIAN * midAngle);
@@ -44,40 +44,39 @@ const renderActiveShape = (name, props) => {
     const my = cy + (outerRadius + 40) * sin;
     const ex = mx + (cos >= 0 ? 1 : -1) * 22;
     const ey = my;
-    const textAnchor = cos >= 0 ? 'start' : 'end';
+    const textAnchor = cos >= 0 ? "start" : "end";
   
     return (
-      <g>
-        {/* <text x={cx} y={cy/5} dy={8} textAnchor="middle" fill={"#000"}>{payload.name}</text> */}
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-        <text x={cx} y={cy} dominantBaseline="middle" textAnchor="middle">{name}</text>
-        <Sector
-          cx={cx}
-          cy={cy}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          innerRadius={outerRadius + 6}
-          outerRadius={outerRadius + 10}
-          fill={fill}
-        />
-        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${payload.name}`}</text>
-        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
-            {`Rate ${(percent * 100).toFixed(2)}%`}<br />
-        </text>
-        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={36} textAnchor={textAnchor} fill="#999">
-            {`Freq. ${value}`}
-        </text>
-      </g>
+        <g>
+            <Sector
+            cx={cx}
+            cy={cy}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
+            startAngle={startAngle}
+            endAngle={endAngle}
+            fill={fill}
+            />
+            <text x={cx} y={cy} dominantBaseline="middle" textAnchor="middle">{name}</text>
+            <Sector
+            cx={cx}
+            cy={cy}
+            startAngle={startAngle}
+            endAngle={endAngle}
+            innerRadius={outerRadius + 6}
+            outerRadius={outerRadius + 10}
+            fill={fill}
+            />
+            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${payload.name}`}</text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                {`Rate ${(percent * 100).toFixed(2)}%`}<br />
+            </text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={36} textAnchor={textAnchor} fill="#999">
+                {`Freq. ${value}`}
+            </text>
+        </g>
     );
   };
 
@@ -87,14 +86,14 @@ const getRandomColor = () => {
     var letters = '0123456789ABCDEF';
     var color = '#';
     for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+        color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
 }
 const COLORS = (function repeat(number) {
     var colors = [];
     for (var i = 0; i < number; i++){
-        colors.push(getRandomColor())
+        colors.push(getRandomColor());
     }
     return colors;
 })(NUMBER_OF_COLORS);
@@ -103,23 +102,24 @@ class OverviewContent extends Component {
     constructor() {
         super();
         this.state = {
-          chartPadding:  "1rem",
-          activeIndex: 0,
-          sexChartActiveIndex: 0,
-          diseaseChartActiveIndex: 0,
-          biosamplesChartActiveIndex: 0,
-          chartWidthHeight: 500,
+            chartPadding:  "1rem",
+            activeIndex: 0,
+            sexChartActiveIndex: 0,
+            diseaseChartActiveIndex: 0,
+            biosamplesChartActiveIndex: 0,
+            chartWidthHeight: 500,
         }
       }
      getFrequencyAsXYJSON(array) {
         const map = {};
         array.forEach(item => {
-           if(map[item]){
-              map[item]++;
-           }else{
-              map[item] = 1;
-           }
+            if(map[item]){
+                map[item]++;
+            } else{
+                map[item] = 1;
+            }
         });
+
         const jsonObjsXY = [];
         for (var key in map) {
             jsonObjsXY.push({x: key, y:map[key]});
@@ -150,12 +150,13 @@ class OverviewContent extends Component {
      getFrequencyNameValue(array) {
         const map = {};
         array.forEach(item => {
-           if(map[item]){
-              map[item]++;
-           }else{
-              map[item] = 1;
-           }
+            if(map[item]){
+                map[item]++;
+            } else{
+                map[item] = 1;
+            }
         });
+
         const jsonObjsXY = [];
         for (var key in map) {
             jsonObjsXY.push({name: key, value:map[key]});
@@ -256,47 +257,32 @@ class OverviewContent extends Component {
                                     </Spin>
                                 </Col>
                             </Row>
-                            <Row 
-                            // style={{paddingTop: 0, 
-                            //         paddingLeft: 0, 
-                            //         paddingRight: this.state.chartPadding, 
-                            //         paddingBottom:this.state.chartPadding}}
-                                    >
-                                    <Spin spinning={this.props.phenopackets == undefined 
-                                                    ? true : this.props.phenopackets.isFetching}>
-                                        {/* <VictoryPieWrapSVG>
-                                            <VictoryPie data={sexLabels} {...VICTORY_PIE_PROPS} colorScale={"qualitative"} />
-                                            <VictoryLabel text={
-                                                this.props.phenopackets.isFetching
-                                                    ? "" : "SEX"} 
-                                                {...VICTORY_PIE_LABEL_PROPS} />
-                                        </VictoryPieWrapSVG> */}
-                                        <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                            <Pie
-                                                activeIndex={this.state.sexChartActiveIndex}
-                                                activeShape={renderActiveShape.bind(this, "Sex")}
-                                                data={sexLabels}
-                                                cx={this.state.chartWidthHeight/2}
-                                                cy={this.state.chartWidthHeight/3}
-                                                innerRadius={this.state.chartWidthHeight/7 + 10}
-                                                outerRadius={this.state.chartWidthHeight/7 + 30}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                onMouseEnter={this.onPieEnter.bind(this, 0)}
-                                                >
-                                                {
-                                                    diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                                }
-                                            </Pie>
-                                        </PieChart>
-                                    </Spin>
+                            <Row >
+                                <Spin spinning={this.props.phenopackets == undefined 
+                                                ? true : this.props.phenopackets.isFetching}>
+                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                        <Pie
+                                            activeIndex={this.state.sexChartActiveIndex}
+                                            activeShape={renderActiveShape.bind(this, "Sex")}
+                                            data={sexLabels}
+                                            cx={this.state.chartWidthHeight/2}
+                                            cy={this.state.chartWidthHeight/3}
+                                            innerRadius={this.state.chartWidthHeight/7 + 10}
+                                            outerRadius={this.state.chartWidthHeight/7 + 30}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                            onMouseEnter={this.onPieEnter.bind(this, 0)} >
+                                            {
+                                                diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                            }
+                                        </Pie>
+                                    </PieChart>
+                                </Spin>
                             </Row>
-                            <Row 
-                                    style={{paddingTop: 0, 
-                                            paddingLeft: this.state.chartPadding, 
-                                            paddingRight: this.state.chartPadding, 
-                                            paddingBottom: 0}} 
-                            >
+                            <Row style={{paddingTop: 0, 
+                                    paddingLeft: this.state.chartPadding, 
+                                    paddingRight: this.state.chartPadding, 
+                                    paddingBottom: 0}} >
                                 <Spin spinning={this.props.phenopackets == undefined 
                                                 ? true : this.props.phenopackets.isFetching}>
                                     <VictoryChart>
@@ -305,58 +291,28 @@ class OverviewContent extends Component {
                                                     height={this.state.chartWidthHeight}
                                                     style={{
                                                         axisLabel: { padding: 30 },
-                                                        // tickLabels: {fontFamily: "monospace"}
-                                                    }}
-                                                     />
+                                                    }} />
                                         <VictoryAxis dependentAxis={true}
                                                     label="Count"
                                                     style={{
                                                         axisLabel: { padding: 30},
-                                                        // tickLabels: {fontFamily: "monospace"}
-                                                    }} 
-                                                    />
+                                                    }} />
                                         <VictoryHistogram 
                                                     data={participantDOB} 
                                                     bins={AGE_HISTOGRAM_BINS}
-                                                    style={{ data: { fill: COLORS[0] } }}                                                    // {...VICTORY_HIST_PROPS} 
-                                                    />
+                                                    style={{ data: { fill: COLORS[0] } }} />
                                         <VictoryLabel text={this.props.phenopackets.isFetching ? "" : "Age"} 
                                                      {...VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE} />
                                     </VictoryChart>
-                                    {/* <BarChart
-                                        width={500}
-                                        height={300}
-                                        barGap={1}
-                                        data={participantDOB}
-                                        margin={{
-                                        }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="x" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="y" fill="#8884d8" />
-                                    </BarChart> */}
                                 </Spin>
                             </Row>
                         </Col>
                         <Col lg={12} md={24}>
                             <Row>
-                                {/* style={{paddingTop: 0, 
-                                    paddingLeft: 0, 
-                                    paddingRight: this.state.chartPadding, 
-                                    paddingBottom:this.state.chartPadding}} */}
                                 <Col>
                                     <Spin spinning={this.props.phenopackets == undefined 
                                                         ? true : this.props.phenopackets.isFetching}>
-                                        {/* <VictoryPieWrapSVG viewBoxStr="-200 -200 700 700">
-                                            <VictoryPie data={diseaseLabels} {...VICTORY_PIE_PROPS} colorScale={"qualitative"}  
-                                                labelPlacement={"parallel"}/>
-                                            <VictoryLabel text={this.props.phenopackets.isFetching
-                                                        ? "" : "DISEASES"} {...VICTORY_PIE_LABEL_PROPS} />
-                                        </VictoryPieWrapSVG> */}
                                         <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                            {/* <Pie data={diseaseLabels} dataKey="value" cx={200} cy={200} outerRadius={60} fill="#8884d8" /> */}
                                             <Pie
                                                 activeIndex={this.state.diseaseChartActiveIndex}
                                                 activeShape={renderActiveShape.bind(this, "Diseases")}
@@ -373,24 +329,13 @@ class OverviewContent extends Component {
                                                     diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                                 }
                                                 </Pie>
-                                            {/* <Pie data={data02} dataKey="value" cx={200} cy={200} innerRadius={70} outerRadius={90} fill="#82ca9d" label /> */}
                                         </PieChart>
                                     </Spin>
                                 </Col>
                             </Row>                           
                             <Row >
-                            {/* style={{paddingTop: 0, 
-                                paddingLeft: 0, 
-                                paddingRight: this.state.chartPadding, 
-                                paddingBottom:this.state.chartPadding}}  */}
-
                                 <Spin spinning={this.props.phenopackets == undefined 
                                                 ? true : this.props.phenopackets.isFetching}>
-                                    {/* <VictoryPieWrapSVG>
-                                        <VictoryPie data={biosampleLabels} {...VICTORY_PIE_PROPS} colorScale={"qualitative"} />
-                                        <VictoryLabel text={this.props.phenopackets.isFetching
-                                                    ? "" : "BIOSAMPLES"} {...VICTORY_PIE_LABEL_PROPS} />
-                                    </VictoryPieWrapSVG> */}
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.biosamplesChartActiveIndex}
@@ -402,8 +347,7 @@ class OverviewContent extends Component {
                                             outerRadius={this.state.chartWidthHeight/7 + 30}
                                             fill="#8884d8"
                                             dataKey="value"
-                                            onMouseEnter={this.onPieEnter.bind(this, 2)}
-                                            >
+                                            onMouseEnter={this.onPieEnter.bind(this, 2)} >
                                             {
                                                 diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                             }
@@ -413,8 +357,8 @@ class OverviewContent extends Component {
                             </Row>
                         </Col>
                     </Row>               
-                    <Divider />
-                    {/* <Row>
+                    {/* <Divider />
+                    <Row>
                         <div>More charts and stuff can go here</div>
                     </Row> */}
                     <Divider />
@@ -512,8 +456,7 @@ OverviewContent.propTypes = {
 
     tableSummaries : PropTypes.shape({
         isFetching: PropTypes.bool,
-        data_type_specific: PropTypes.object,
-        count: PropTypes.number
+        summariesByServiceArtifactAndTableID: PropTypes.object,
     }),
     fetchVariantTableSummaries: PropTypes.func
 };
