@@ -78,18 +78,18 @@ const renderActiveShape = (name, props) => {
             </text>
         </g>
     );
-  };
+};
 
 
 const NUMBER_OF_COLORS = 10;
 const getRandomColor = () => {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
+    var letters = "0123456789ABCDEF";
+    var color = "#";
     for (var i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-}
+};
 const COLORS = (function repeat(number) {
     var colors = [];
     for (var i = 0; i < number; i++){
@@ -108,9 +108,9 @@ class OverviewContent extends Component {
             diseaseChartActiveIndex: 0,
             biosamplesChartActiveIndex: 0,
             chartWidthHeight: 500,
-        }
-      }
-     getFrequencyAsXYJSON(array) {
+        };
+    }
+    getFrequencyAsXYJSON(array) {
         const map = {};
         array.forEach(item => {
             if(map[item]){
@@ -126,9 +126,9 @@ class OverviewContent extends Component {
         }
 
         return jsonObjsXY;
-     };
+    }
 
-     onPieEnter = (chartNum, data, index) => {
+    onPieEnter = (chartNum, data, index) => {
         // console.log(data)
         if (chartNum == 0){    
             this.setState({
@@ -145,9 +145,9 @@ class OverviewContent extends Component {
                 biosamplesChartActiveIndex: index,
             });
         }
-      };
+    };
 
-     getFrequencyNameValue(array) {
+    getFrequencyNameValue(array) {
         const map = {};
         array.forEach(item => {
             if(map[item]){
@@ -163,7 +163,7 @@ class OverviewContent extends Component {
         }
 
         return jsonObjsXY;
-     };
+    }
 
     stringToDateYearAsXJSON(birthdayStr) {
         // curtosity of : https://stackoverflow.com/questions/10008050/get-age-from-birthdate
@@ -188,7 +188,7 @@ class OverviewContent extends Component {
             age--;
         }
 
-        return {x:age}
+        return { x: age };
     }
 
     render() {
@@ -236,30 +236,23 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                    <Spin spinning={this.props.phenopackets == undefined 
-                                                ? true : this.props.phenopackets.isFetching}>
-                                        <Statistic title="Participants"
-                                                value={numParticipants} />
+                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                        <Statistic title="Participants" value={numParticipants} />
                                     </Spin>
                                 </Col>
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                    <Spin spinning={this.props.phenopackets == undefined 
-                                                ? true : this.props.phenopackets.isFetching}>
-                                        <Statistic title="Biosamples"
-                                                value={numBiosamples} />
+                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                        <Statistic title="Biosamples" value={numBiosamples} />
                                     </Spin>
                                 </Col>
                                 <Col xl={4} lg={6} md={8} sm={10} xs={12}>
-                                <Spin spinning={this.props.experiments == undefined 
-                                                ? true : this.props.experiments.isFetching}>
-                                        <Statistic title="Experiments"
-                                                value={experiments.length} />
+                                    <Spin spinning={this.props.experiments == undefined ? true : this.props.experiments.isFetching}>
+                                        <Statistic title="Experiments" value={experiments.length} />
                                     </Spin>
                                 </Col>
                             </Row>
                             <Row >
-                                <Spin spinning={this.props.phenopackets == undefined 
-                                                ? true : this.props.phenopackets.isFetching}>
+                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.sexChartActiveIndex}
@@ -280,29 +273,28 @@ class OverviewContent extends Component {
                                 </Spin>
                             </Row>
                             <Row style={{paddingTop: 0, 
-                                    paddingLeft: this.state.chartPadding, 
-                                    paddingRight: this.state.chartPadding, 
-                                    paddingBottom: 0}} >
-                                <Spin spinning={this.props.phenopackets == undefined 
-                                                ? true : this.props.phenopackets.isFetching}>
+                                paddingLeft: this.state.chartPadding, 
+                                paddingRight: this.state.chartPadding, 
+                                paddingBottom: 0}} >
+                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
                                     <VictoryChart>
                                         <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
-                                                    label="Age (Years)"
-                                                    height={this.state.chartWidthHeight}
-                                                    style={{
-                                                        axisLabel: { padding: 30 },
-                                                    }} />
+                                                     label="Age (Years)"
+                                                     height={this.state.chartWidthHeight}
+                                                     style={{
+                                                         axisLabel: { padding: 30 },
+                                                     }} />
                                         <VictoryAxis dependentAxis={true}
-                                                    label="Count"
-                                                    style={{
-                                                        axisLabel: { padding: 30},
-                                                    }} />
+                                                     label="Count"
+                                                     style={{
+                                                         axisLabel: { padding: 30},
+                                                     }} />
                                         <VictoryHistogram 
-                                                    data={participantDOB} 
-                                                    bins={AGE_HISTOGRAM_BINS}
-                                                    style={{ data: { fill: COLORS[0] } }} />
+                                            data={participantDOB} 
+                                            bins={AGE_HISTOGRAM_BINS}
+                                            style={{ data: { fill: COLORS[0] } }} />
                                         <VictoryLabel text={this.props.phenopackets.isFetching ? "" : "Age"} 
-                                                     {...VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE} />
+                                                      {...VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE} />
                                     </VictoryChart>
                                 </Spin>
                             </Row>
@@ -310,8 +302,7 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row>
                                 <Col>
-                                    <Spin spinning={this.props.phenopackets == undefined 
-                                                        ? true : this.props.phenopackets.isFetching}>
+                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
                                         <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                             <Pie
                                                 activeIndex={this.state.diseaseChartActiveIndex}
@@ -335,7 +326,7 @@ class OverviewContent extends Component {
                             </Row>                           
                             <Row >
                                 <Spin spinning={this.props.phenopackets == undefined 
-                                                ? true : this.props.phenopackets.isFetching}>
+                                    ? true : this.props.phenopackets.isFetching}>
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.biosamplesChartActiveIndex}
@@ -365,28 +356,22 @@ class OverviewContent extends Component {
                     <Typography.Title level={4}>Variants</Typography.Title>
                     <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                         <Col xl={3} lg={4} md={5} sm={7}>
-                            <Spin spinning={this.props.tableSummaries == undefined 
-                                                ? true : 
-                                                this.props.tableSummaries.isFetching}>
+                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
                                 <Statistic title="Variants"
-                                        value={numVariants} />
+                                           value={numVariants} />
                             </Spin>
                         </Col>
                         <Col xl={2} lg={3} md={4} sm={5} xs={6}>
-                            <Spin spinning={this.props.tableSummaries == undefined 
-                                                ? true : 
-                                                this.props.tableSummaries.isFetching}>
+                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
                                 <Statistic title="Samples"
-                                        value={numSamples} />
+                                           value={numSamples} />
                             </Spin>
                         </Col>
                         <Col xl={2} lg={3} md={4} sm={5} xs={6}>
-                            <Spin spinning={this.props.tableSummaries == undefined 
-                                                ? true : 
-                                                this.props.tableSummaries.isFetching}>
+                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
                                 <Statistic title="VCF Files"
-                                    prefix={<Icon type="file" />}
-                                    value={numVCFs} />
+                                           prefix={<Icon type="file" />}
+                                           value={numVCFs} />
                             </Spin>
                         </Col>
                     </Row>

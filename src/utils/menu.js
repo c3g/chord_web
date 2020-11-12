@@ -8,7 +8,7 @@ import "antd/es/menu/style/css";
 export const renderMenuItem = i => {
     if (i.hasOwnProperty("children")) {
         return <Menu.SubMenu style={i.style || {}}
-            disabled={i.disabled || false} title={
+                             disabled={i.disabled || false} title={
             <span className="submenu-title-wrapper">
                 {i.icon || null}
                 {i.text || null}

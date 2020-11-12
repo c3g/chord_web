@@ -92,18 +92,18 @@ export const fetchVariantTableSummaries = () => async (dispatch, getState) => {
         state.projects.isSaving) return;
 
     dispatch(beginFlow(FETCHING_TABLE_SUMMARIES));
-    console.log(getState().chordServices)
+    console.log(getState().chordServices);
 
     var chordservice =  getState().chordServices.itemsByArtifact.variant || null ;
     
     if (chordservice != null)
     {
-        var tables = getState().projectTables.items
+        var tables = getState().projectTables.items;
         for (var t=0;t<tables.length; t++){
-            var table = tables[t]
+            var table = tables[t];
             // console.log(table);
             if (table.service_artifact == "variant") {
-                await dispatch(fetchTableSummaryIfPossible(chordservice, {url:`/api/variant`}, table.table_id));
+                await dispatch(fetchTableSummaryIfPossible(chordservice, {url:"/api/variant"}, table.table_id));
             }
         }
     } 
@@ -427,7 +427,7 @@ export const fetchPhenopackets = networkAction(() => (dispatch, getState) => ({
     types: FETCH_PHENOPACKETS,
     // params: {phenopacketID},
     url: `${getState().services.metadataService.url}/api/phenopackets`,
-    err: `Error fetching phenopackets metadata`,
+    err: "Error fetching phenopackets metadata",
     paginated: true
 }));
 
@@ -443,6 +443,6 @@ export const fetchExperiments = networkAction(() => (dispatch, getState) => ({
     types: FETCH_EXPERIMENTS,
     // params: {},
     url: `${getState().services.metadataService.url}/api/experiments`,
-    err: `Error fetching experiments metadata`,
+    err: "Error fetching experiments metadata",
     paginated: true
 }));
