@@ -22,13 +22,62 @@ import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
 
 
 import {
-    PieChart, Pie, Sector, Cell, Legend, Tooltip
+    PieChart, Pie, Sector, Cell,
 } from "recharts";
   
 import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
 
 const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 
+const renderNameLabel = (props) => {
+    const RADIAN = Math.PI / 180;
+    const {
+        cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
+        fill, payload, percent, value,
+    } = props;
+    const sin = Math.sin(-RADIAN * midAngle);
+    const cos = Math.cos(-RADIAN * midAngle);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+    const mx = cx + (outerRadius + 40) * cos;
+    const my = cy + (outerRadius + 40) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? "start" : "end";
+  
+    return (
+        <g>
+            <Sector
+            cx={cx}
+            cy={cy}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
+            startAngle={startAngle}
+            endAngle={endAngle}
+            fill={fill}
+            />
+            <text x={cx} y={cy} dominantBaseline="middle" textAnchor="middle">{name}</text>
+            <Sector
+            cx={cx}
+            cy={cy}
+            startAngle={startAngle}
+            endAngle={endAngle}
+            innerRadius={outerRadius + 6}
+            outerRadius={outerRadius + 10}
+            fill={fill}
+            />
+            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${payload.name}`}</text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                {`Rate ${(percent * 100).toFixed(2)}%`}<br />
+            </text>
+            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={36} textAnchor={textAnchor} fill="#999">
+                {`Freq. ${value}`}
+            </text>
+        </g>
+    );
+};
 
 const renderActiveShape = (name, props) => {
     const RADIAN = Math.PI / 180;
@@ -79,7 +128,6 @@ const renderActiveShape = (name, props) => {
         </g>
     );
 };
-
 
 
 // Random 'fixed' colors
@@ -247,7 +295,7 @@ class OverviewContent extends Component {
                                         top: this.state.chartLabelPaddingTop + "rem", 
                                         left: this.state.chartLabelPaddingLeft + "rem",
                                         width: "min-content", }}><b>{this.props.phenopackets.isFetching ? "" : "Sex"}</b></span>
-                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie data={sexLabels} 
                                              dataKey="value" 
                                              cx={this.state.chartWidthHeight/2}
@@ -264,6 +312,22 @@ class OverviewContent extends Component {
                                         </Pie>
                                         <Legend/>
                                         <Tooltip />
+                                    </PieChart> */}
+                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                        <Pie
+                                            data={sexLabels}
+                                            cx={this.state.chartWidthHeight/2}
+                                            cy={this.state.chartWidthHeight/3}
+                                            innerRadius={this.state.chartWidthHeight/9 + 10}
+                                            outerRadius={this.state.chartWidthHeight/9 + 30}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                            isAnimationActive={false}
+                                            label={renderNameLabel}  >
+                                            {
+                                                sexLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                            }
+                                        </Pie>
                                     </PieChart>
                                 </Spin>
                             </Row>
@@ -332,7 +396,7 @@ class OverviewContent extends Component {
                                         position: "relative", 
                                         top: this.state.chartLabelPaddingTop + "rem", 
                                         left: this.state.chartLabelPaddingLeft + "rem" }}><b>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</b></span>
-                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie data={biosampleLabels} 
                                              dataKey="value" 
                                              cx={this.state.chartWidthHeight/2}
@@ -349,6 +413,22 @@ class OverviewContent extends Component {
                                         </Pie>
                                         <Legend/>
                                         <Tooltip />
+                                    </PieChart> */}
+                                    <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
+                                        <Pie
+                                            data={biosampleLabels}
+                                            cx={this.state.chartWidthHeight/2}
+                                            cy={this.state.chartWidthHeight/3}
+                                            innerRadius={this.state.chartWidthHeight/9 + 10}
+                                            outerRadius={this.state.chartWidthHeight/9 + 30}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                            isAnimationActive={false}
+                                            label={renderNameLabel}  >
+                                            {
+                                                biosampleLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                            }
+                                        </Pie>
                                     </PieChart>
                                 </Spin>
                             </Row>
