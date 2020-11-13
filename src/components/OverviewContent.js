@@ -416,6 +416,8 @@ class OverviewContent extends Component {
                                     </PieChart> */}
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
+                                            activeIndex={this.state.biosamplesChartActiveIndex}
+                                            activeShape={renderActiveShape.bind(this, "")}
                                             data={biosampleLabels}
                                             cx={this.state.chartWidthHeight/2}
                                             cy={this.state.chartWidthHeight/3}
@@ -423,8 +425,7 @@ class OverviewContent extends Component {
                                             outerRadius={this.state.chartWidthHeight/9 + 30}
                                             fill="#8884d8"
                                             dataKey="value"
-                                            isAnimationActive={false}
-                                            label={renderNameLabel}  >
+                                            onMouseEnter={this.onPieEnter.bind(this, 2)}>
                                             {
                                                 biosampleLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
                                             }
