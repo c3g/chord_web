@@ -288,7 +288,7 @@ class OverviewContent extends Component {
                             </Col>
                         </Row>
                         <Col lg={12} md={24}>
-                            <Row>
+                            <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
                                     <span style={{ 
                                         position: "relative", 
@@ -361,7 +361,7 @@ class OverviewContent extends Component {
                             </Row>
                         </Col>
                         <Col lg={12} md={24}>
-                            <Row>
+                            <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col>
                                     <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
                                     <span style={{ 
@@ -389,7 +389,7 @@ class OverviewContent extends Component {
                                     </Spin>
                                 </Col>
                             </Row>                           
-                            <Row>
+                            <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Spin spinning={this.props.phenopackets == undefined 
                                     ? true : this.props.phenopackets.isFetching}>
                                     <span style={{ 
@@ -470,38 +470,38 @@ class OverviewContent extends Component {
         if(window.innerWidth < 576) { //xs
             this.setState({ 
                 chartPadding: "0rem", 
-                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 3
             });
         } else if(window.innerWidth < 768) { // sm
             this.setState({ 
                 chartPadding: "1rem", 
-                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 6,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 992) { // md
             this.setState({ 
                 chartPadding: "2rem", 
-                chartWidthHeight:  8 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 5,
                 chartLabelPaddingLeft: 5 });
         } else if(window.innerWidth < 1200) { // lg
             this.setState({ 
                 chartPadding: "4rem", 
-                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 6,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 1600) { // xl
             this.setState({ 
                 chartPadding: "6rem", 
-                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 7,
                 chartLabelPaddingLeft: 7 });
         } else {
             this.setState({ 
                 chartPadding: "10rem", 
-                chartWidthHeight: 4 * window.innerWidth / 9,
+                chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 7,
                 chartLabelPaddingLeft: 7 }); // > xl
         }
