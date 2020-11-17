@@ -186,21 +186,39 @@ class OverviewContent extends Component {
     };
 
     getFrequencyNameValue(array) {
-        const map = {};
+        var sumOfAllValues = 0; // Accumulate all values to compute on them later
+        const map = {}; // Gather elements by their name and group them
         array.forEach(item => {
             if(map[item]){
                 map[item]++;
             } else{
                 map[item] = 1;
             }
+            sumOfAllValues++;
         });
 
+        // Group the items in the array of objects denoted by 
+        // a "name" and "value" parameter
         const jsonObjsXY = [];
         for (var key in map) {
-            jsonObjsXY.push({name: key, value:map[key]});
+            var val = map[key];
+            // Group all elements with a small enough value together under an "Other"
+            if ((val / sumOfAllValues) < 0.05){
+                var otherIndex = jsonObjsXY.findIndex(obj => obj.name=="Other");
+                if (otherIndex > -1) {
+                    jsonObjsXY[otherIndex].value += val // Accumulate
+                } else {
+                    jsonObjsXY.push({name: "Other", value:val}); // Create a new  element in the array
+                }
+            } else { // Treat items
+                jsonObjsXY.push({name: key, value:val});
+            }
         }
 
-        return jsonObjsXY;
+        // Sort by value
+        return jsonObjsXY.sort((a, b) => {
+            return a.value - b.value;
+        });
     }
 
     stringToDateYearAsXJSON(birthdayStr) {
@@ -239,7 +257,12 @@ class OverviewContent extends Component {
         const numBiosamples = biosamples.length;
         
         const sexLabels = this.getFrequencyNameValue(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.subject.sex) : []);
-        const diseaseLabels = this.getFrequencyNameValue(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.diseases.flatMap(d => d.term.label)) : []);
+        const diseaseLabels = this.getFrequencyNameValue(
+            this.props.phenopackets != undefined 
+            ? this.props.phenopackets.items.flatMap(p => 
+                p.diseases.flatMap(d => 
+                    d.term.label)) 
+            : []);
 
         const experiments = this.props.experiments != undefined ? this.props.experiments.items : [];
 
@@ -295,24 +318,6 @@ class OverviewContent extends Component {
                                         top: this.state.chartLabelPaddingTop + "rem", 
                                         left: this.state.chartLabelPaddingLeft + "rem",
                                         width: "min-content", }}><b>{this.props.phenopackets.isFetching ? "" : "Sex"}</b></span>
-                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                        <Pie data={sexLabels} 
-                                             dataKey="value" 
-                                             cx={this.state.chartWidthHeight/2}
-                                             cy={this.state.chartWidthHeight/3}
-                                             innerRadius={this.state.chartWidthHeight/9 + 10}
-                                             outerRadius={this.state.chartWidthHeight/9 + 30}
-                                             fill="#82ca9d" 
-                                            // isAnimationActive={false}
-                                            // label={renderSimpleLabel} 
-                                            >
-                                        {
-                                            sexLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                        }
-                                        </Pie>
-                                        <Legend/>
-                                        <Tooltip />
-                                    </PieChart> */}
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             data={sexLabels}
@@ -396,24 +401,6 @@ class OverviewContent extends Component {
                                         position: "relative", 
                                         top: this.state.chartLabelPaddingTop + "rem", 
                                         left: this.state.chartLabelPaddingLeft + "rem" }}><b>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</b></span>
-                                    {/* <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
-                                        <Pie data={biosampleLabels} 
-                                             dataKey="value" 
-                                             cx={this.state.chartWidthHeight/2}
-                                             cy={this.state.chartWidthHeight/3}
-                                             innerRadius={this.state.chartWidthHeight/9 + 10}
-                                             outerRadius={this.state.chartWidthHeight/9 + 30}
-                                             fill="#82ca9d" 
-                                            // isAnimationActive={false}
-                                            // label={renderSimpleLabel}
-                                            >
-                                        {
-                                            biosampleLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                        }
-                                        </Pie>
-                                        <Legend/>
-                                        <Tooltip />
-                                    </PieChart> */}
                                     <PieChart width={this.state.chartWidthHeight} height={2 * this.state.chartWidthHeight / 3}>
                                         <Pie
                                             activeIndex={this.state.biosamplesChartActiveIndex}
