@@ -206,7 +206,7 @@ class OverviewContent extends Component {
             if ((val / sumOfAllValues) < 0.05){
                 var otherIndex = jsonObjsXY.findIndex(obj => obj.name=="Other");
                 if (otherIndex > -1) {
-                    jsonObjsXY[otherIndex].value += val // Accumulate
+                    jsonObjsXY[otherIndex].value += val; // Accumulate
                 } else {
                     jsonObjsXY.push({name: "Other", value:val}); // Create a new  element in the array
                 }
@@ -259,10 +259,10 @@ class OverviewContent extends Component {
         const sexLabels = this.getFrequencyNameValue(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.subject.sex) : []);
         const diseaseLabels = this.getFrequencyNameValue(
             this.props.phenopackets != undefined 
-            ? this.props.phenopackets.items.flatMap(p => 
-                p.diseases.flatMap(d => 
-                    d.term.label)) 
-            : []);
+                ? this.props.phenopackets.items.flatMap(p => 
+                    p.diseases.flatMap(d => 
+                        d.term.label)) 
+                : []);
 
         const experiments = this.props.experiments != undefined ? this.props.experiments.items : [];
 
