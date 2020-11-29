@@ -18,10 +18,10 @@ import {
     removeDataTypeQueryForm,
     updateDataTypeQueryForm,
     setSelectedRows,
+    performIndividualsDownloadCSVIfPossible,
 } from "../../modules/explorer/actions";
 import {withBasePath} from "../../utils/url";
 import SearchTracksModal from "./SearchTracksModal";
-
 
 const SEARCH_RESULT_COLUMNS = [
     {
@@ -100,7 +100,8 @@ class ExplorerDatasetSearch extends Component {
                         <Button icon="bar-chart"
                                 style={{marginRight: "8px"}}
                                 onClick={() => this.setState({summaryModalVisible: true})}>View Summary</Button>
-                        <Button icon="export">Export as CSV</Button>
+                        <Button icon="export"
+                                onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows)}>Export as CSV</Button>
                     </div>
                 </Typography.Title>
                 <SearchSummaryModal searchResults={this.props.searchResults}
@@ -139,6 +140,8 @@ class ExplorerDatasetSearch extends Component {
 }
 
 ExplorerDatasetSearch.propTypes = {
+    // chordServices: PropTypes.arrayOf(PropTypes.object), // todo: more detail
+
     dataTypeForms: PropTypes.arrayOf(PropTypes.object),
     fetchingSearch: PropTypes.bool,
     searchResults: PropTypes.object,
@@ -149,6 +152,7 @@ ExplorerDatasetSearch.propTypes = {
     removeDataTypeQueryForm: PropTypes.func.isRequired,
     performSearchIfPossible: PropTypes.func.isRequired,
     setSelectedRows: PropTypes.func.isRequired,
+    performIndividualsDownloadCSVIfPossible: PropTypes.func.isRequired,
 
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
@@ -157,6 +161,8 @@ ExplorerDatasetSearch.propTypes = {
 const mapStateToProps = (state, ownProps) => {
     const datasetID = ownProps.match.params.dataset;
     return {
+        // chordServices: state.services,
+
         dataTypeForms: state.explorer.dataTypeFormsByDatasetID[datasetID] || [],
         fetchingSearch: state.explorer.fetchingSearchByDatasetID[datasetID] || false,
         searchResults: state.explorer.searchResultsByDatasetID[datasetID] || null,
@@ -175,6 +181,7 @@ const mapDispatchToProps = (dispatch, ownProps) => Object.fromEntries(Object.ent
     removeDataTypeQueryForm,
     performSearchIfPossible,
     setSelectedRows,
+    performIndividualsDownloadCSVIfPossible
 }).map(([k, v]) => [k, (...args) => dispatch(v(ownProps.match.params.dataset, ...args))]));
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExplorerDatasetSearch));

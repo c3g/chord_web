@@ -56,9 +56,13 @@ const _networkAction = (fn, ...args) => async (dispatch, getState) => {
         fnResult = fnResult(dispatch, getState);
     }
 
-    const {types, params, url, req, err, onSuccess, paginated} = fnResult;
+    const {types, params, url, req, err, onSuccess, paginated, asCsv} = fnResult;
     let {parse} = fnResult;
-    if (!parse) parse = async r => await r.json();
+    if (asCsv){
+        if (!parse) parse = async r => await r.blob();
+    } else {
+        if (!parse) parse = async r => await r.json();
+    }
 
     dispatch({type: types.REQUEST, ...params});
     try {

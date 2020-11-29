@@ -3,6 +3,7 @@ import {jsonRequest} from "../../utils/requests";
 import {extractQueriesFromDataTypeForms} from "../../utils/search";
 
 export const PERFORM_SEARCH = createNetworkActionTypes("EXPLORER.PERFORM_SEARCH");
+export const PERFORM_INDIVIDUAL_CSV_DOWNLOAD = createNetworkActionTypes("EXPLORER.PERFORM_INDIVIDUAL_CSV_DOWNLOAD");
 
 export const ADD_DATA_TYPE_QUERY_FORM = "EXPLORER.ADD_DATA_TYPE_QUERY_FORM";
 export const UPDATE_DATA_TYPE_QUERY_FORM = "EXPLORER.UPDATE_DATA_TYPE_QUERY_FORM";
@@ -21,6 +22,19 @@ const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, g
     err: "Error performing search",
 }));
 
+const performIndividualCSVDownload = networkAction((individualsUrl) => (dispatch, getState) => ({
+    types: PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
+    url: `${individualsUrl}`,
+    asCsv: true,
+    // params: {datasetID},
+    // req: jsonRequest({
+    //     data_type_queries: dataTypeQueries,
+    //     join_query: null  // Will get auto-filled by the federation service
+    // }, "POST"),
+    err: "Error performing individual csv download",
+    //paginated: true
+}));
+
 export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
     if (getState().explorer.fetchingSearchByDatasetID[datasetID]) return;
 
@@ -33,6 +47,22 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
 
     return dispatch(performSearch(datasetID, dataTypeQueries));
 };
+
+export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds) => (dispatch, getState) => {
+    // if (getState().explorer.fetchingSearchByDatasetID[datasetID]) return;
+
+    console.log("Initiating PerformIndividualsDownloadCSVIfPossible")
+
+    // build query string 
+    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv&page_size=" + individualIds.length
+    for(var i = 0; i < individualIds.length; i++){
+        dataUrl += ("&id="+individualIds[i])
+    }
+    
+    return dispatch(performIndividualCSVDownload(dataUrl));
+};
+
+
 
 export const addDataTypeQueryForm = (datasetID, dataType) => ({
     type: ADD_DATA_TYPE_QUERY_FORM,
@@ -54,6 +84,13 @@ export const removeDataTypeQueryForm = (datasetID, dataType) => ({
 });
 
 export const setSelectedRows = (datasetID, selectedRows) => ({
+    type: SET_SELECTED_ROWS,
+    datasetID,
+    selectedRows,
+});
+
+// TODO
+export const downloadCSV = (datasetID, selectedRows) => ({
     type: SET_SELECTED_ROWS,
     datasetID,
     selectedRows,
