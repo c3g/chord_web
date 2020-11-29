@@ -22,7 +22,7 @@ const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, g
     err: "Error performing search",
 }));
 
-const performIndividualCSVDownload = networkAction((individualsUrl) => (dispatch, getState) => ({
+const performIndividualCSVDownload = networkAction((individualsUrl) => () => ({
     types: PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
     url: `${individualsUrl}`,
     asCsv: true,
@@ -51,12 +51,12 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
 export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds) => (dispatch, getState) => {
     // if (getState().explorer.fetchingSearchByDatasetID[datasetID]) return;
 
-    console.log("Initiating PerformIndividualsDownloadCSVIfPossible")
+    console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
 
     // build query string 
-    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv&page_size=" + individualIds.length
+    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv&page_size=" + individualIds.length;
     for(var i = 0; i < individualIds.length; i++){
-        dataUrl += ("&id="+individualIds[i])
+        dataUrl += ("&id="+individualIds[i]);
     }
     
     return dispatch(performIndividualCSVDownload(dataUrl));
