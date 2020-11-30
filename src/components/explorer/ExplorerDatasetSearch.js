@@ -9,7 +9,7 @@ import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
 import "antd/es/spin/style/css";
 
-import "./explorer.css"
+import "./explorer.css";
 
 import DiscoveryQueryBuilder from "../discovery/DiscoveryQueryBuilder";
 import SearchSummaryModal from "./SearchSummaryModal";
