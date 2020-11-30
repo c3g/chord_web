@@ -105,7 +105,7 @@ export const explorer = (
                 // },
             };
         case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.RECEIVE:
-            FileSaver.saveAs(action.data, "test.csv"); //new Blob([data], {type: "application/octet-stream"})
+            FileSaver.saveAs(action.data, "data.csv"); //new Blob([data], {type: "application/octet-stream"})
             
             return {
                 ...state,
