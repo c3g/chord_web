@@ -42,15 +42,19 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
     return dispatch(performSearch(datasetID, dataTypeQueries));
 };
 
-export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds) => (dispatch, getState) => {
-    // if (getState().explorer.fetchingSearchByDatasetID[datasetID]) return;
-
+export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds, allSearchResults) => (dispatch, getState) => {
     console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
 
+    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv";
+    
     // build query string 
-    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv&page_size=" + individualIds.length;
-    for(var i = 0; i < individualIds.length; i++){
-        dataUrl += ("&id="+individualIds[i]);
+    if (individualIds.length > 0) { // Get only selected results
+        dataUrl += ("&page_size=" + individualIds.length);
+        for(var i = 0; i < individualIds.length; i++){
+            dataUrl += ("&id="+individualIds[i]);
+        }
+    } else { // Get all search results
+        dataUrl += ("&page_size=" + allSearchResults.length);        
     }
     
     return dispatch(performIndividualCSVDownload(dataUrl));

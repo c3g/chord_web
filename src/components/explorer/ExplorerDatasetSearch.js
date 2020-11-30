@@ -104,7 +104,7 @@ class ExplorerDatasetSearch extends Component {
                         <Spin spinning={this.props.isFetchingDownload} style={{display: "inline-block !important"}}>
                             <Button icon="export" style={{marginRight: "8px"}}
                                     disabled={this.props.isFetchingDownload}
-                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows)}>Export as CSV</Button>
+                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults)}>Export as CSV</Button>
                         </Spin>
                     </div>
                 </Typography.Title>
