@@ -3,10 +3,13 @@ import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 
-import {Button, Table, Typography} from "antd";
+import {Button, Table, Typography, Spin} from "antd";
 import "antd/es/button/style/css";
 import "antd/es/table/style/css";
 import "antd/es/typography/style/css";
+import "antd/es/spin/style/css";
+
+import "./explorer.css"
 
 import DiscoveryQueryBuilder from "../discovery/DiscoveryQueryBuilder";
 import SearchSummaryModal from "./SearchSummaryModal";
@@ -86,12 +89,10 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm} />
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
-                    <div>
-                        Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
-                        (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
-                            ? (this.state.currentPage * this.state.pageSize) 
-                            : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
-                    </div>
+                    Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
+                    (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
+                        ? (this.state.currentPage * this.state.pageSize) 
+                        : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
                                 style={{marginRight: "8px"}}
@@ -100,8 +101,11 @@ class ExplorerDatasetSearch extends Component {
                         <Button icon="bar-chart"
                                 style={{marginRight: "8px"}}
                                 onClick={() => this.setState({summaryModalVisible: true})}>View Summary</Button>
-                        <Button icon="export"
-                                onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows)}>Export as CSV</Button>
+                        <Spin spinning={this.props.isFetchingDownload} style={{display: "inline-block !important"}}>
+                            <Button icon="export" style={{marginRight: "8px"}}
+                                    disabled={this.props.isFetchingDownload}
+                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows)}>Export as CSV</Button>
+                        </Spin>
                     </div>
                 </Typography.Title>
                 <SearchSummaryModal searchResults={this.props.searchResults}
@@ -152,8 +156,10 @@ ExplorerDatasetSearch.propTypes = {
     removeDataTypeQueryForm: PropTypes.func.isRequired,
     performSearchIfPossible: PropTypes.func.isRequired,
     setSelectedRows: PropTypes.func.isRequired,
-    performIndividualsDownloadCSVIfPossible: PropTypes.func.isRequired,
 
+    performIndividualsDownloadCSVIfPossible: PropTypes.func.isRequired,
+    isFetchingDownload: PropTypes.bool,
+    
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
 };
@@ -167,6 +173,8 @@ const mapStateToProps = (state, ownProps) => {
         fetchingSearch: state.explorer.fetchingSearchByDatasetID[datasetID] || false,
         searchResults: state.explorer.searchResultsByDatasetID[datasetID] || null,
         selectedRows: state.explorer.selectedRowsByDatasetID[datasetID] || [],
+
+        isFetchingDownload: state.explorer.isFetchingDownload || false,
 
         federationServiceInfo: state.services.federationService,
         datasetsByID: Object.fromEntries(state.projects.items

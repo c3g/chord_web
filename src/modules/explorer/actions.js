@@ -26,13 +26,7 @@ const performIndividualCSVDownload = networkAction((individualsUrl) => () => ({
     types: PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
     url: `${individualsUrl}`,
     asCsv: true,
-    // params: {datasetID},
-    // req: jsonRequest({
-    //     data_type_queries: dataTypeQueries,
-    //     join_query: null  // Will get auto-filled by the federation service
-    // }, "POST"),
     err: "Error performing individual csv download",
-    //paginated: true
 }));
 
 export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
@@ -84,13 +78,6 @@ export const removeDataTypeQueryForm = (datasetID, dataType) => ({
 });
 
 export const setSelectedRows = (datasetID, selectedRows) => ({
-    type: SET_SELECTED_ROWS,
-    datasetID,
-    selectedRows,
-});
-
-// TODO
-export const downloadCSV = (datasetID, selectedRows) => ({
     type: SET_SELECTED_ROWS,
     datasetID,
     selectedRows,
