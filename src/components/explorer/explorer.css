@@ -1,0 +1,7 @@
+/* css snippet to help align the antd spinner in the parent row */
+.ant-spin-nested-loading,
+.ant-spin-nested-loading > div:first-child,
+.ant-spin-spinning,
+.ant-spin-container {
+    display: inline !important;
+}

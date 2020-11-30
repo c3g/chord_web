@@ -3,6 +3,7 @@ import {jsonRequest} from "../../utils/requests";
 import {extractQueriesFromDataTypeForms} from "../../utils/search";
 
 export const PERFORM_SEARCH = createNetworkActionTypes("EXPLORER.PERFORM_SEARCH");
+export const PERFORM_INDIVIDUAL_CSV_DOWNLOAD = createNetworkActionTypes("EXPLORER.PERFORM_INDIVIDUAL_CSV_DOWNLOAD");
 
 export const ADD_DATA_TYPE_QUERY_FORM = "EXPLORER.ADD_DATA_TYPE_QUERY_FORM";
 export const UPDATE_DATA_TYPE_QUERY_FORM = "EXPLORER.UPDATE_DATA_TYPE_QUERY_FORM";
@@ -21,6 +22,13 @@ const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, g
     err: "Error performing search",
 }));
 
+const performIndividualCSVDownload = networkAction((individualsUrl) => () => ({
+    types: PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
+    url: `${individualsUrl}`,
+    asCsv: true,
+    err: "Error performing individual csv download",
+}));
+
 export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
     if (getState().explorer.fetchingSearchByDatasetID[datasetID]) return;
 
@@ -33,6 +41,26 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
 
     return dispatch(performSearch(datasetID, dataTypeQueries));
 };
+
+export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds, allSearchResults) => (dispatch, getState) => {
+    console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
+
+    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv";
+    
+    // build query string 
+    if (individualIds.length > 0) { // Get only selected results
+        dataUrl += ("&page_size=" + individualIds.length);
+        for(var i = 0; i < individualIds.length; i++){
+            dataUrl += ("&id="+individualIds[i]);
+        }
+    } else { // Get all search results
+        dataUrl += ("&page_size=" + allSearchResults.length);        
+    }
+    
+    return dispatch(performIndividualCSVDownload(dataUrl));
+};
+
+
 
 export const addDataTypeQueryForm = (datasetID, dataType) => ({
     type: ADD_DATA_TYPE_QUERY_FORM,

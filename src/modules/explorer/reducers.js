@@ -1,3 +1,8 @@
+// Credits:
+// https://stackoverflow.com/questions/40377541/react-redux-download-file#42245216
+
+import "file-saver"; // https://github.com/eligrey/FileSaver.js/
+import FileSaver from "file-saver";
 import {
     addDataTypeFormIfPossible,
     removeDataTypeFormIfPossible,
@@ -6,6 +11,7 @@ import {
 
 import {
     PERFORM_SEARCH,
+    PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
     ADD_DATA_TYPE_QUERY_FORM,
     REMOVE_DATA_TYPE_QUERY_FORM,
     UPDATE_DATA_TYPE_QUERY_FORM,
@@ -51,6 +57,7 @@ export const explorer = (
         fetchingSearchByDatasetID: {},
         searchResultsByDatasetID: {},
         selectedRowsByDatasetID: {},
+        isFetchingDownload: false
     },
     action
 ) => {
@@ -86,6 +93,45 @@ export const explorer = (
                     [action.datasetID]: false,
                 },
             };
+
+        // TODO: CASE PERFORM_INDIVIDUAL_CSV_DOWNLOAD.REQUEST,RECEIVE,FINISH
+        case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.REQUEST:
+            return {
+                ...state,
+                isFetchingDownload: true,
+                // fetchingSearchByDatasetID: {
+                //     ...state.fetchingSearchByDatasetID,
+                //     [action.datasetID]: true,
+                // },
+            };
+        case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.RECEIVE:
+            FileSaver.saveAs(action.data, "test.csv"); //new Blob([data], {type: "application/octet-stream"})
+            
+            return {
+                ...state,
+                isFetchingDownload: false,
+                // searchResultsByDatasetID: {
+                //     ...state.searchResultsByDatasetID,
+                //     [action.datasetID]: {
+                //         results: action.data,
+                //         searchFormattedResults: tableSearchResults(action.data),
+                //     },
+                // },
+                // selectedRowsByDatasetID: {
+                //     ...state.selectedRowsByDatasetID,
+                //     [action.datasetID]: [],
+                // },
+            };
+        case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.FINISH:
+            return {
+                ...state,
+                isFetchingDownload: false,
+                // fetchingSearchByDatasetID: {
+                //     ...state.fetchingSearchByDatasetID,
+                //     [action.datasetID]: false,
+                // },
+            };
+        // ---
 
         case ADD_DATA_TYPE_QUERY_FORM:
             return {
