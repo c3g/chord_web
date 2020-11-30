@@ -55,8 +55,8 @@ export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds
         }
     } else { // Get all search results
         dataUrl += ("&page_size=" + allSearchResults.length);
-        for(var i = 0; i < allSearchResults.length; i++){
-            dataUrl += ("&id="+allSearchResults[i].key);
+        for(var j = 0; j < allSearchResults.length; j++){
+            dataUrl += ("&id="+allSearchResults[j].key);
         }        
     }
     
