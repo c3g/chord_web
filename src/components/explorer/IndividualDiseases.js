@@ -4,7 +4,7 @@ import "antd/es/table/style/css";
 import {Table} from "antd";
 
 
-import {individualPropTypesShape} from "../../propTypes";
+import {diseasePropTypesShape} from "../../propTypes";
 import { EM_DASH } from "../../constants";
 
 // TODO: Only show diseases from the relevant dataset, if specified;
@@ -29,6 +29,24 @@ const DISEASE_COLUMNS = [
         render: (_, individual) => individual.term.label,
     },
     {
+        title: "Onset Age(s)",
+        key: "t_onset_ages",
+        render: (_, individual) => 
+        // Print onset age
+            (individual.hasOwnProperty("onset") && Object.keys(individual.onset).length)
+            // Single onset age
+                ?  (individual.onset.hasOwnProperty("age") && Object.keys(individual.onset.age).length)
+                    ?  <div>{individual.onset.age}</div>
+                    // Onset age start and end
+                    : (individual.onset.hasOwnProperty("start") && Object.keys(individual.onset.start).length)
+                        ?  <div>{individual.onset.start.age} - {individual.onset.end.age}</div>
+                        // Onset age label only
+                        : (individual.onset.hasOwnProperty("label") && Object.keys(individual.onset.label).length)
+                            ?  <div>{individual.onset.label} ({individual.onset.id})</div>
+                            : EM_DASH
+                : EM_DASH,
+    },
+    {
         title: "Extra Properties",
         key: "extra_properties",
         render: (_, individual) => 
@@ -49,7 +67,7 @@ const IndividualDiseases = ({individual}) =>
 
 
 IndividualDiseases.propTypes = {
-    individual: individualPropTypesShape,
+    individual: diseasePropTypesShape,
 };
 
 export default IndividualDiseases;
