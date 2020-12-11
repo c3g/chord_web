@@ -21,6 +21,7 @@ import {OP_EQUALS} from "../../utils/search";
 import {getFieldSchema} from "../../utils/schema";
 import queryString from "query-string";
 
+import { neutralizeAutoQueryPageTransition } from "../../modules/explorer/actions";
 
 class DiscoveryQueryBuilder extends Component {
     constructor(props) {
@@ -45,23 +46,17 @@ class DiscoveryQueryBuilder extends Component {
     componentDidMount() {
         (this.props.requiredDataTypes || []).forEach(dt => this.props.addDataTypeQueryForm(dt));
 
-        // Retrieve query string to perform automated queries (optional)
-        var query = "";
-
-        const parsed = queryString.parse(location.search);
-        if (parsed && parsed.type != undefined){
+        if (this.props.autoQuery != undefined && this.props.autoQuery.isAutoQuery){
+            console.log("You got me..");
 
             // Clean old queries (if any)
             Object.values(this.props.dataTypesByID).forEach(value=> this.handleTabsEdit(value.id, "remove"));
-
             
-
             // Set type of query
-            this.handleAddDataTypeQueryForm({key: `:${parsed.type}`});
-        
+            this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});     
 
             // Set term
-            var dataType =this.props.dataTypesByID[parsed.type];
+            var dataType =this.props.dataTypesByID[this.props.autoQuery.autoQueryType];
             var fields = {
                 keys: {
                     value:[0]
@@ -70,11 +65,11 @@ class DiscoveryQueryBuilder extends Component {
                     name: "conditions[0]",
                     value: {
                         dataType: dataType,
-                        field: parsed.field,
-                        fieldSchema: getFieldSchema(dataType.schema, parsed.field), // from utils/schema
+                        field: this.props.autoQuery.autoQueryField,
+                        fieldSchema: getFieldSchema(dataType.schema, this.props.autoQuery.autoQueryField), // from utils/schema
                         negated: false,
                         operation: OP_EQUALS,
-                        searchValue: parsed.query
+                        searchValue: this.props.autoQuery.autoQueryValue
                     },
                 }]
             };
@@ -85,6 +80,10 @@ class DiscoveryQueryBuilder extends Component {
 
             // Simulate click
             this.handleSubmit();
+
+
+            // Clean up auto-query "paper trail"
+            this.props.neutralizeAutoQueryPageTransition();
         }
     }
 
@@ -249,6 +248,9 @@ DiscoveryQueryBuilder.propTypes = {
     updateDataTypeQueryForm: PropTypes.func,
     removeDataTypeQueryForm: PropTypes.func,
 
+    autoQuery: PropTypes.any, // todo: elaborate
+    neutralizeAutoQueryPageTransition: PropTypes.func,
+
     onSubmit: PropTypes.func,
 };
 
@@ -257,8 +259,10 @@ const mapStateToProps = state => ({
     dataTypes: state.serviceDataTypes.dataTypesByServiceID,
     dataTypesByID: state.serviceDataTypes.itemsByID,
 
+    autoQuery: state.explorer.autoQuery,
+
     dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetchingAll
         || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
 });
 
-export default connect(mapStateToProps)(DiscoveryQueryBuilder);
+export default connect(mapStateToProps, {neutralizeAutoQueryPageTransition})(DiscoveryQueryBuilder);

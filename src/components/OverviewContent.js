@@ -23,7 +23,9 @@ import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
   
 import { polarToCartesian } from "recharts/es6/util/PolarUtils";
 
-import {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries} from "../modules/metadata/actions";
+import { fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries } from "../modules/metadata/actions";
+import { setAutoQueryPageTransition } from "../modules/explorer/actions";
+
 
 import Curve from "recharts/es6/shape/Curve";
 import PieChart from "recharts/es6/chart/PieChart";
@@ -32,8 +34,7 @@ import Cell from "recharts/es6/component/Cell";
 import Sector from "recharts/es6/shape/Sector";
 import { extractQueryConditionsFromFormValues } from "../utils/search";
 
-import { Redirect } from "react-router";
-
+import { withRouter } from "react-router";
 
 const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 
@@ -243,35 +244,13 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.phenopackets.isFetching ? "" : "Sex"}</h2>
+                                    <h2>{this.props.phenopackets.isFetching ? "" : "Sexes"}</h2>
                                     <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                        {/* <PieChart width={this.state.chartWidthHeight} height={this.state.chartWidthHeight / 2}>
-                                            <Pie
-                                                data={sexLabels}
-                                                cx={this.state.chartWidthHeight/2}
-                                                cy={this.state.chartWidthHeight/4}
-                                                innerRadius={this.state.chartWidthHeight/9 }
-                                                outerRadius={this.state.chartWidthHeight/9 + 35}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                // onMouseOver={handleMouseEnter}
-                                                // onMouseLeave={handleMouseEnter}
-                                                label={renderLabel}
-                                                labelLine={false}
-                                                activeIndex={this.state.sexChartActiveIndex}
-                                                activeShape={renderActiveShape}
-                                                onMouseEnter={this.onPieEnter.bind(this, 0)}
-                                                >
-                                                {
-                                                    sexLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                                }
-                                            </Pie>
-                                        </PieChart> */}
-                                        <CustomPieChart
+                                        <CustomPieChartWithRouter
                                           data={sexLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
-                                        //   graphTerm={"sex"}
                                           fieldLabel={"[dataset item].subject.sex"}
+                                          setAutoQueryPageTransition={this.props.setAutoQueryPageTransition}
                                         />
                                     </Spin>
                                 </Col>
@@ -309,31 +288,11 @@ class OverviewContent extends Component {
                                 <Col style={{textAlign: "center"}}>
                                     <h2>{this.props.phenopackets.isFetching ? "" : "Diseases"}</h2>
                                     <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
-                                        {/* <PieChart width={this.state.chartWidthHeight} height={this.state.chartWidthHeight / 2}>
-                                            <Pie
-                                                // activeIndex={this.state.diseaseChartActiveIndex}
-                                                // activeShape={renderActiveShape.bind(this, "")}
-                                                isAnimationActive={false}
-                                                label={renderLabel}  
-                                                data={diseaseLabels}
-                                                cx={this.state.chartWidthHeight/2}
-                                                cy={this.state.chartWidthHeight/4}
-                                                innerRadius={this.state.chartWidthHeight/9 }
-                                                outerRadius={this.state.chartWidthHeight/9 + 35}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                onMouseEnter={this.onPieEnter.bind(this, 1)}
-                                                >
-                                                {
-                                                    diseaseLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                                }
-                                                </Pie>
-                                        </PieChart> */}
-                                        <CustomPieChart
+                                        <CustomPieChartWithRouter
                                           data={diseaseLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
-                                        //   graphTerm={"disease"}
                                           fieldLabel={"[dataset item].diseases.[item].term.label"}
+                                          setAutoQueryPageTransition={this.props.setAutoQueryPageTransition}
                                         />
                                     </Spin>
                                 </Col>
@@ -344,31 +303,12 @@ class OverviewContent extends Component {
                                     <h2>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</h2>
                                     <Spin spinning={this.props.phenopackets == undefined 
                                         ? true : this.props.phenopackets.isFetching}>
-                                        {/* <PieChart width={this.state.chartWidthHeight} height={this.state.chartWidthHeight / 2}>
-                                            <Pie
-                                                // activeIndex={this.state.biosamplesChartActiveIndex}
-                                                // activeShape={renderActiveShape.bind(this, "")}
-                                                isAnimationActive={false}
-                                                label={renderLabel}  
-                                                data={biosampleLabels}
-                                                cx={this.state.chartWidthHeight/2}
-                                                cy={this.state.chartWidthHeight/4}
-                                                innerRadius={this.state.chartWidthHeight/9 }
-                                                outerRadius={this.state.chartWidthHeight/9 + 35}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                onMouseEnter={this.onPieEnter.bind(this, 2)}>
-                                                {
-                                                    biosampleLabels.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                                                }
-                                            </Pie>
-                                        </PieChart> */}
-                                    <CustomPieChart
+                                    <CustomPieChartWithRouter
                                       data={biosampleLabels}
                                       chartWidthHeight={this.state.chartWidthHeight}
-                                      //   graphTerm={"biosamples"}
                                       fieldLabel={"[dataset item].biosamples.[item].sampled_tissue.label"}
-                                    />                                    
+                                      setAutoQueryPageTransition={this.props.setAutoQueryPageTransition}
+                                      />                                    
                                   </Spin>
                                 </Col>
                             </Row>
@@ -466,10 +406,11 @@ class OverviewContent extends Component {
 
 // TEMP
 class CustomPieChart extends React.Component {
+
     state = {
         canUpdate: false,
         activeIndex: undefined,
-        redirect: false,
+        //redirect: false,
         itemSelected: undefined,
         graphTerm: undefined,
         fieldLabel: undefined
@@ -484,16 +425,19 @@ class CustomPieChart extends React.Component {
     }
 
     onClick = (data) => {
+        const { match, location, history } = this.props;
+
       // Todo
         console.log(data.name + " clicked");
-        this.setState({
-            redirect: true, 
-            itemSelected: data.name, 
-            // graphTerm: this.props.graphTerm, 
-            fieldLabel: this.props.fieldLabel
-        });
-        this.render();
         
+        this.props.setAutoQueryPageTransition(
+            window.location.href,
+            "phenopacket",
+            this.props.fieldLabel,
+            data.name
+        )
+
+        history.push('/data/explorer/search')
     }
   
     componentDidMount() {
@@ -520,10 +464,6 @@ class CustomPieChart extends React.Component {
             fieldLabel
         } = this.props;
 
-        if (this.state.redirect){
-            // todo: urlencode fieldLabel
-            return <Redirect push to={`/data/explorer/search?type=phenopacket&field=${encodeURIComponent(this.state.fieldLabel)}&term=${this.state.graphTerm}&query=${this.state.itemSelected}`} />;
-        }
 
   
         return (
@@ -749,7 +689,11 @@ class CustomPieChart extends React.Component {
         );
     }
 }
-  
+
+// Create a new component that is "connected" (to borrow redux
+// terminology) to the router.
+const CustomPieChartWithRouter = withRouter(CustomPieChart)//connect(setAutoQueryPageTransition)(withRouter(CustomPieChart));
+
   /*
    * lastAngle is mutated by renderLabel() and renderActiveShape() to
    * indicate at which angle is the last shown label.
@@ -797,7 +741,9 @@ OverviewContent.propTypes = {
         isFetching: PropTypes.bool,
         summariesByServiceArtifactAndTableID: PropTypes.object,
     }),
-    fetchVariantTableSummaries: PropTypes.func
+    fetchVariantTableSummaries: PropTypes.func,
+
+    setAutoQueryPageTransition: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -816,4 +762,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries})(OverviewContent);
+export default connect(mapStateToProps, {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries, setAutoQueryPageTransition})(OverviewContent);

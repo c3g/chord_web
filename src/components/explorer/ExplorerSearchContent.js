@@ -18,19 +18,12 @@ import {projectPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes"
 
 class ExplorerSearchContent extends Component {
     render() {
-        // Retrieve query string to perform automated queries (optional)
-        var query = "";
-
-        const parsed = queryString.parse(location.search);
-        if (parsed && parsed.type != undefined){
-            query=`?type=${parsed.type}&field=${parsed.field}&term=${parsed.term}&query=${parsed.query}`;
-        }
         const menuItems = this.props.projects.map(project => ({
             // url: withBasePath(`data/explorer/projects/${project.identifier}`),
             key: project.identifier,
             text: project.title,
             children: project.datasets.map(dataset => ({
-                url: withBasePath(`data/explorer/search/${dataset.identifier}${query}`),
+                url: withBasePath(`data/explorer/search/${dataset.identifier}`),
                 text: dataset.title
             }))
         }));
@@ -56,7 +49,7 @@ class ExplorerSearchContent extends Component {
                             <Route path={withBasePath("data/explorer/search/:dataset")}
                                    component={ExplorerDatasetSearch} />
                             <Redirect from={withBasePath("data/explorer/search")}
-                                      to={withBasePath(`data/explorer/search/${datasets[0].identifier}${query}`)} />
+                                      to={withBasePath(`data/explorer/search/${datasets[0].identifier}`)} />
                         </Switch>
                     ) : (this.props.isFetchingDependentData ? <Skeleton /> : "No datasets available")}
                 </Layout.Content>
@@ -75,6 +68,7 @@ const mapStateToProps = state => ({
     federationServiceInfo: state.services.federationService,
     projects: state.projects.items,
     isFetchingDependentData: state.auth.isFetchingDependentData,
+    autoQuery: state.explorer.autoQuery
 });
 
 export default connect(mapStateToProps)(ExplorerSearchContent);

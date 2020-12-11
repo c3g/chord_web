@@ -11,6 +11,10 @@ export const REMOVE_DATA_TYPE_QUERY_FORM = "EXPLORER.REMOVE_DATA_TYPE_QUERY_FORM
 
 export const SET_SELECTED_ROWS = "EXPLORER.SET_SELECTED_ROWS";
 
+export const SET_AUTO_QUERY_PAGE_TRANSITION = "EXPLORER.SET_AUTO_QUERY_PAGE_TRANSITION";
+
+export const NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION = "EXPLORER.NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION";
+
 const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, getState) => ({
     types: PERFORM_SEARCH,
     url: `${getState().services.federationService.url}/private/dataset-search/${datasetID}`,
@@ -88,4 +92,22 @@ export const setSelectedRows = (datasetID, selectedRows) => ({
     type: SET_SELECTED_ROWS,
     datasetID,
     selectedRows,
+});
+
+export const setAutoQueryPageTransition = (priorPageUrl, type, field, value) => ({
+    type: SET_AUTO_QUERY_PAGE_TRANSITION,
+    isAutoQuery: true,
+    pageUrlBeforeAutoQuery: priorPageUrl,
+    autoQueryType: type,
+    autoQueryField: field,
+    autoQueryValue: value,
+});
+
+export const neutralizeAutoQueryPageTransition = () => ({
+    type: NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION,
+    isAutoQuery: false,
+    pageUrlBeforeAutoQuery: undefined,
+    autoQueryType: undefined,
+    autoQueryField: undefined,
+    autoQueryValue: undefined,
 });
