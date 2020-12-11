@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Redirect, Route, Switch} from "react-router-dom";
-import PropTypes from "prop-types";
+import {PropTypes} from "prop-types";
 
 import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
+
+import queryString from "query-string";
 
 import SitePageHeader from "../SitePageHeader";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
@@ -16,12 +18,19 @@ import {projectPropTypesShape, serviceInfoPropTypesShape} from "../../propTypes"
 
 class ExplorerSearchContent extends Component {
     render() {
+        // Retrieve query string to perform automated queries (optional)
+        var query = "";
+
+        const parsed = queryString.parse(location.search);
+        if (parsed && parsed.type != undefined){
+            query=`?type=${parsed.type}&field=${parsed.field}&term=${parsed.term}&query=${parsed.query}`;
+        }
         const menuItems = this.props.projects.map(project => ({
             // url: withBasePath(`data/explorer/projects/${project.identifier}`),
             key: project.identifier,
             text: project.title,
             children: project.datasets.map(dataset => ({
-                url: withBasePath(`data/explorer/search/${dataset.identifier}`),
+                url: withBasePath(`data/explorer/search/${dataset.identifier}${query}`),
                 text: dataset.title
             }))
         }));
@@ -47,7 +56,7 @@ class ExplorerSearchContent extends Component {
                             <Route path={withBasePath("data/explorer/search/:dataset")}
                                    component={ExplorerDatasetSearch} />
                             <Redirect from={withBasePath("data/explorer/search")}
-                                      to={withBasePath(`data/explorer/search/${datasets[0].identifier}`)} />
+                                      to={withBasePath(`data/explorer/search/${datasets[0].identifier}${query}`)} />
                         </Switch>
                     ) : (this.props.isFetchingDependentData ? <Skeleton /> : "No datasets available")}
                 </Layout.Content>

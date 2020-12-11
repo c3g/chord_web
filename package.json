@@ -10,6 +10,7 @@
     "igv": "https://github.com/bento-platform/igv.js/tarball/master",
     "iso8601-duration": "^1.2.0",
     "prop-types": "^15.7.2",
+    "query-string": "^6.13.7",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.2",

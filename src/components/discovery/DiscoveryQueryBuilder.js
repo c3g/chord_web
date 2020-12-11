@@ -17,6 +17,10 @@ import DataTypeExplorationModal from "./DataTypeExplorationModal";
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import {nop} from "../../utils/misc";
 
+import {OP_EQUALS} from "../../utils/search";
+import {getFieldSchema} from "../../utils/schema";
+import queryString from "query-string";
+
 
 class DiscoveryQueryBuilder extends Component {
     constructor(props) {
@@ -35,10 +39,53 @@ class DiscoveryQueryBuilder extends Component {
         this.handleTabsEdit = this.handleTabsEdit.bind(this);
 
         this.forms = {};
+
     }
 
     componentDidMount() {
         (this.props.requiredDataTypes || []).forEach(dt => this.props.addDataTypeQueryForm(dt));
+
+        // Retrieve query string to perform automated queries (optional)
+        var query = "";
+
+        const parsed = queryString.parse(location.search);
+        if (parsed && parsed.type != undefined){
+
+            // Clean old queries (if any)
+            Object.values(this.props.dataTypesByID).forEach(value=> this.handleTabsEdit(value.id, "remove"));
+
+            
+
+            // Set type of query
+            this.handleAddDataTypeQueryForm({key: `:${parsed.type}`});
+        
+
+            // Set term
+            var dataType =this.props.dataTypesByID[parsed.type];
+            var fields = {
+                keys: {
+                    value:[0]
+                },
+                conditions: [{
+                    name: "conditions[0]",
+                    value: {
+                        dataType: dataType,
+                        field: parsed.field,
+                        fieldSchema: getFieldSchema(dataType.schema, parsed.field), // from utils/schema
+                        negated: false,
+                        operation: OP_EQUALS,
+                        searchValue: parsed.query
+                    },
+                }]
+            };
+
+            // "Simulate" form datastructure and trigger
+            this.handleFormChange(dataType, fields);
+
+
+            // Simulate click
+            this.handleSubmit();
+        }
     }
 
     async handleSubmit() {

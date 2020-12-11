@@ -32,6 +32,9 @@ import Cell from "recharts/es6/component/Cell";
 import Sector from "recharts/es6/shape/Sector";
 import { extractQueryConditionsFromFormValues } from "../utils/search";
 
+import { Redirect } from "react-router";
+
+
 const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 
 const RADIAN = Math.PI / 180;
@@ -61,6 +64,7 @@ const COLORS = [
 
   
 class OverviewContent extends Component {
+    
     constructor() {
         super();
         this.state = {
@@ -266,6 +270,8 @@ class OverviewContent extends Component {
                                         <CustomPieChart
                                           data={sexLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
+                                        //   graphTerm={"sex"}
+                                          fieldLabel={"[dataset item].subject.sex"}
                                         />
                                     </Spin>
                                 </Col>
@@ -326,6 +332,8 @@ class OverviewContent extends Component {
                                         <CustomPieChart
                                           data={diseaseLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
+                                        //   graphTerm={"disease"}
+                                          fieldLabel={"[dataset item].diseases.[item].term.label"}
                                         />
                                     </Spin>
                                 </Col>
@@ -358,6 +366,8 @@ class OverviewContent extends Component {
                                     <CustomPieChart
                                       data={biosampleLabels}
                                       chartWidthHeight={this.state.chartWidthHeight}
+                                      //   graphTerm={"biosamples"}
+                                      fieldLabel={"[dataset item].biosamples.[item].sampled_tissue.label"}
                                     />                                    
                                   </Spin>
                                 </Col>
@@ -407,25 +417,25 @@ class OverviewContent extends Component {
             this.setState({ 
                 chartPadding: "1rem", 
                 chartWidthHeight: window.innerWidth,
-                chartLabelPaddingTop: 4,
+                chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 992) { // md
             this.setState({ 
                 chartPadding: "2rem", 
                 chartWidthHeight: window.innerWidth,
-                chartLabelPaddingTop: 4,
+                chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 5 });
         } else if(window.innerWidth < 1200) { // lg
             this.setState({ 
                 chartPadding: "4rem", 
                 chartWidthHeight: window.innerWidth / 2,
-                chartLabelPaddingTop: 4,
+                chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 1600) { // xl
             this.setState({ 
                 chartPadding: "6rem", 
                 chartWidthHeight: window.innerWidth / 2,
-                chartLabelPaddingTop: 5,
+                chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 7 });
         } else {
             this.setState({ 
@@ -459,6 +469,10 @@ class CustomPieChart extends React.Component {
     state = {
         canUpdate: false,
         activeIndex: undefined,
+        redirect: false,
+        itemSelected: undefined,
+        graphTerm: undefined,
+        fieldLabel: undefined
     }
   
     onEnter = (data, index) => {
@@ -472,6 +486,14 @@ class CustomPieChart extends React.Component {
     onClick = (data) => {
       // Todo
         console.log(data.name + " clicked");
+        this.setState({
+            redirect: true, 
+            itemSelected: data.name, 
+            // graphTerm: this.props.graphTerm, 
+            fieldLabel: this.props.fieldLabel
+        });
+        this.render();
+        
     }
   
     componentDidMount() {
@@ -493,7 +515,16 @@ class CustomPieChart extends React.Component {
     }
   
     render() {
-        const { data, chartWidthHeight } = this.props;
+        const { data, chartWidthHeight, 
+            graphTerm,
+            fieldLabel
+        } = this.props;
+
+        if (this.state.redirect){
+            // todo: urlencode fieldLabel
+            return <Redirect push to={`/data/explorer/search?type=phenopacket&field=${encodeURIComponent(this.state.fieldLabel)}&term=${this.state.graphTerm}&query=${this.state.itemSelected}`} />;
+        }
+
   
         return (
         <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
