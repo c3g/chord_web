@@ -19,7 +19,6 @@ import {nop} from "../../utils/misc";
 
 import {OP_EQUALS} from "../../utils/search";
 import {getFieldSchema} from "../../utils/schema";
-import queryString from "query-string";
 
 import { neutralizeAutoQueryPageTransition } from "../../modules/explorer/actions";
 
@@ -55,7 +54,7 @@ class DiscoveryQueryBuilder extends Component {
 
                 // Clean old queries (if any)
                 Object.values(this.props.dataTypesByID).forEach(async value=> {
-                    await this.handleTabsEdit(value.id, "remove")
+                    await this.handleTabsEdit(value.id, "remove");
                 });
 
                 // Set type of query
@@ -85,14 +84,14 @@ class DiscoveryQueryBuilder extends Component {
 
 
                 // Simulate form submission click
-                await this.handleSubmit();
+                this.handleSubmit();
 
 
                 // Clean up auto-query "paper trail" (that is, the state segment that 
                 // was introduced in order to transfer intent from the OverviewContent page)
-                await this.props.neutralizeAutoQueryPageTransition();
+                this.props.neutralizeAutoQueryPageTransition();
                 
-              })();
+            })();
         }
     }
 

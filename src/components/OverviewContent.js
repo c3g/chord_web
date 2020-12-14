@@ -32,27 +32,12 @@ import PieChart from "recharts/es6/chart/PieChart";
 import Pie from "recharts/es6/polar/Pie";
 import Cell from "recharts/es6/component/Cell";
 import Sector from "recharts/es6/shape/Sector";
-import { extractQueryConditionsFromFormValues } from "../utils/search";
 
 import { withRouter } from "react-router";
 
 const AGE_HISTOGRAM_BINS = [...Array(10).keys()].map(i => i * 10);
 
 const RADIAN = Math.PI / 180;
-const MIN_PERCENT    = 0.05;
-const MIN_DIFF_ANGLE = 50;
-
-const PIE_WIDTH  = 540;
-const PIE_HEIGHT = 300;
-
-
-function handleMouseEnter(o, index) {
-//     this.setState({
-//       activeIndex: index,
-//   });
-    console.log(index);
-}
-
 
 
 // Random 'fixed' colors
@@ -416,28 +401,26 @@ class CustomPieChart extends React.Component {
         fieldLabel: undefined
     }
   
-    onEnter = (data, index) => {
+    onEnter = (_data, index) => {
         this.setState({ activeIndex: index });
     }
   
-    onLeave = (data, index) => {
+    onLeave = (_data, _index) => {
         this.setState({ activeIndex: undefined });
     }
 
     onClick = (data) => {
-        const { match, location, history } = this.props;
+        const { history, setAutoQueryPageTransition } = this.props;
 
-      // Todo
-        console.log(data.name + " clicked");
-        
-        this.props.setAutoQueryPageTransition(
+        setAutoQueryPageTransition(
             window.location.href,
             "phenopacket",
             this.props.fieldLabel,
             data.name
-        )
+        );
 
-        history.push('/data/explorer/search')
+        // Navigate to Explorer
+        history.push("/data/explorer/search");
     }
   
     componentDidMount() {
@@ -452,19 +435,14 @@ class CustomPieChart extends React.Component {
         if (this.state !== state && state.canUpdate)
             return true;
   
-        if (this.props.data === props.data && this.props.selection === props.selection)
+        if (this.props.data === props.data)
             return false;
   
         return true;
     }
   
     render() {
-        const { data, chartWidthHeight, 
-            graphTerm,
-            fieldLabel
-        } = this.props;
-
-
+        const { data, chartWidthHeight } = this.props;
   
         return (
         <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
@@ -692,7 +670,7 @@ class CustomPieChart extends React.Component {
 
 // Create a new component that is "connected" (to borrow redux
 // terminology) to the router.
-const CustomPieChartWithRouter = withRouter(CustomPieChart)//connect(setAutoQueryPageTransition)(withRouter(CustomPieChart));
+const CustomPieChartWithRouter = withRouter(CustomPieChart);//connect(setAutoQueryPageTransition)(withRouter(CustomPieChart));
 
   /*
    * lastAngle is mutated by renderLabel() and renderActiveShape() to
@@ -709,7 +687,13 @@ const countTextStyle = {
     fill: "#999",
 };
   
-  
+
+CustomPieChart.propTypes = {
+    data: PropTypes.array,
+    fieldLabel: PropTypes.string,
+    chartWidthHeight: PropTypes.number,
+    setAutoQueryPageTransition: PropTypes.func
+};
   
   
 //
@@ -743,7 +727,7 @@ OverviewContent.propTypes = {
     }),
     fetchVariantTableSummaries: PropTypes.func,
 
-    setAutoQueryPageTransition: PropTypes.func
+    setAutoQueryPageTransition: PropTypes.func // temp
 };
 
 const mapStateToProps = state => ({

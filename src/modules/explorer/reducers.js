@@ -174,7 +174,7 @@ export const explorer = (
                     autoQueryField: action.autoQueryField,
                     autoQueryValue: action.autoQueryValue,
                 }
-            }
+            };
 
         case NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION:
             return {
@@ -186,7 +186,7 @@ export const explorer = (
                     autoQueryField: undefined,
                     autoQueryValue: undefined,
                 }
-            }
+            };
         //.. and end here.. ----
 
         default:

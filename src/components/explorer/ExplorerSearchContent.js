@@ -7,8 +7,6 @@ import {Layout, Menu, Skeleton} from "antd";
 import "antd/es/layout/style/css";
 import "antd/es/menu/style/css";
 
-import queryString from "query-string";
-
 import SitePageHeader from "../SitePageHeader";
 import {LAYOUT_CONTENT_STYLE} from "../../styles/layoutContent";
 import ExplorerDatasetSearch from "./ExplorerDatasetSearch";
