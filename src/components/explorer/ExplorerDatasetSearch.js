@@ -64,6 +64,9 @@ class ExplorerDatasetSearch extends Component {
             pageSize: 25,
             tracksModalVisible: false
         };
+
+        // Ensure user is at the top of the page after transition
+        window.scrollTo(0, 0);
     }
 
     onPageChange(pageObj) {
