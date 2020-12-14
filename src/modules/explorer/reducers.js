@@ -16,6 +16,8 @@ import {
     REMOVE_DATA_TYPE_QUERY_FORM,
     UPDATE_DATA_TYPE_QUERY_FORM,
     SET_SELECTED_ROWS,
+    SET_AUTO_QUERY_PAGE_TRANSITION,
+    NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION
 } from "./actions";
 
 const tableSearchResults = (searchResults) => {
@@ -57,7 +59,11 @@ export const explorer = (
         fetchingSearchByDatasetID: {},
         searchResultsByDatasetID: {},
         selectedRowsByDatasetID: {},
-        isFetchingDownload: false
+        isFetchingDownload: false,
+
+        autoQuery: {
+            isAutoQuery: false
+        }
     },
     action
 ) => {
@@ -94,15 +100,10 @@ export const explorer = (
                 },
             };
 
-        // TODO: CASE PERFORM_INDIVIDUAL_CSV_DOWNLOAD.REQUEST,RECEIVE,FINISH
         case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.REQUEST:
             return {
                 ...state,
                 isFetchingDownload: true,
-                // fetchingSearchByDatasetID: {
-                //     ...state.fetchingSearchByDatasetID,
-                //     [action.datasetID]: true,
-                // },
             };
         case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.RECEIVE:
             FileSaver.saveAs(action.data, "data.csv"); //new Blob([data], {type: "application/octet-stream"})
@@ -110,26 +111,11 @@ export const explorer = (
             return {
                 ...state,
                 isFetchingDownload: false,
-                // searchResultsByDatasetID: {
-                //     ...state.searchResultsByDatasetID,
-                //     [action.datasetID]: {
-                //         results: action.data,
-                //         searchFormattedResults: tableSearchResults(action.data),
-                //     },
-                // },
-                // selectedRowsByDatasetID: {
-                //     ...state.selectedRowsByDatasetID,
-                //     [action.datasetID]: [],
-                // },
             };
         case PERFORM_INDIVIDUAL_CSV_DOWNLOAD.FINISH:
             return {
                 ...state,
                 isFetchingDownload: false,
-                // fetchingSearchByDatasetID: {
-                //     ...state.fetchingSearchByDatasetID,
-                //     [action.datasetID]: false,
-                // },
             };
         // ---
 
@@ -176,6 +162,32 @@ export const explorer = (
                     [action.datasetID]: action.selectedRows,
                 },
             };
+
+        // Auto-Queries start here ----
+        case SET_AUTO_QUERY_PAGE_TRANSITION:
+            return {
+                ...state,
+                autoQuery: {
+                    isAutoQuery: true,
+                    pageUrlBeforeAutoQuery: action.pageUrlBeforeAutoQuery,
+                    autoQueryType: action.autoQueryType,
+                    autoQueryField: action.autoQueryField,
+                    autoQueryValue: action.autoQueryValue,
+                }
+            };
+
+        case NEUTRALIZE_AUTO_QUERY_PAGE_TRANSITION:
+            return {
+                ...state,
+                autoQuery: {
+                    isAutoQuery: false,
+                    pageUrlBeforeAutoQuery: undefined,
+                    autoQueryType: undefined,
+                    autoQueryField: undefined,
+                    autoQueryValue: undefined,
+                }
+            };
+        //.. and end here.. ----
 
         default:
             return state;

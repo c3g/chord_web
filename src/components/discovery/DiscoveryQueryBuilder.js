@@ -17,6 +17,10 @@ import DataTypeExplorationModal from "./DataTypeExplorationModal";
 import DiscoverySearchForm from "./DiscoverySearchForm";
 import {nop} from "../../utils/misc";
 
+import {OP_EQUALS} from "../../utils/search";
+import {getFieldSchema} from "../../utils/schema";
+
+import { neutralizeAutoQueryPageTransition } from "../../modules/explorer/actions";
 
 class DiscoveryQueryBuilder extends Component {
     constructor(props) {
@@ -35,10 +39,60 @@ class DiscoveryQueryBuilder extends Component {
         this.handleTabsEdit = this.handleTabsEdit.bind(this);
 
         this.forms = {};
+
     }
 
     componentDidMount() {
         (this.props.requiredDataTypes || []).forEach(dt => this.props.addDataTypeQueryForm(dt));
+
+        if (this.props.autoQuery != undefined && this.props.autoQuery.isAutoQuery){
+
+            // Trigger a cascade of async functions
+            // that involve waiting for redux actions to reduce (complete)
+            // before triggering others
+            (async () => {
+
+                // Clean old queries (if any)
+                Object.values(this.props.dataTypesByID).forEach(async value=> {
+                    await this.handleTabsEdit(value.id, "remove");
+                });
+
+                // Set type of query
+                await this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});     
+
+                // Set term
+                var dataType =this.props.dataTypesByID[this.props.autoQuery.autoQueryType];
+                var fields = {
+                    keys: {
+                        value:[0]
+                    },
+                    conditions: [{
+                        name: "conditions[0]",
+                        value: {
+                            dataType: dataType,
+                            field: this.props.autoQuery.autoQueryField,
+                            fieldSchema: getFieldSchema(dataType.schema, this.props.autoQuery.autoQueryField), // from utils/schema
+                            negated: false,
+                            operation: OP_EQUALS,
+                            searchValue: this.props.autoQuery.autoQueryValue
+                        },
+                    }]
+                };
+
+                // "Simulate" form datastructure and trigger update
+                await this.handleFormChange(dataType, fields);
+
+
+                // Simulate form submission click
+                this.handleSubmit();
+
+
+                // Clean up auto-query "paper trail" (that is, the state segment that 
+                // was introduced in order to transfer intent from the OverviewContent page)
+                this.props.neutralizeAutoQueryPageTransition();
+                
+            })();
+        }
     }
 
     async handleSubmit() {
@@ -202,6 +256,9 @@ DiscoveryQueryBuilder.propTypes = {
     updateDataTypeQueryForm: PropTypes.func,
     removeDataTypeQueryForm: PropTypes.func,
 
+    autoQuery: PropTypes.any, // todo: elaborate
+    neutralizeAutoQueryPageTransition: PropTypes.func,
+
     onSubmit: PropTypes.func,
 };
 
@@ -210,8 +267,10 @@ const mapStateToProps = state => ({
     dataTypes: state.serviceDataTypes.dataTypesByServiceID,
     dataTypesByID: state.serviceDataTypes.itemsByID,
 
+    autoQuery: state.explorer.autoQuery,
+
     dataTypesLoading: state.services.isFetching || state.serviceDataTypes.isFetchingAll
         || Object.keys(state.serviceDataTypes.dataTypesByServiceID).length === 0,
 });
 
-export default connect(mapStateToProps)(DiscoveryQueryBuilder);
+export default connect(mapStateToProps, {neutralizeAutoQueryPageTransition})(DiscoveryQueryBuilder);
