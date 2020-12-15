@@ -21,7 +21,8 @@ import IndividualOverview from "./IndividualOverview";
 import IndividualBiosamples from "./IndividualBiosamples";
 import IndividualDiseases from "./IndividualDiseases";
 import IndividualMetadata from "./IndividualMetadata";
-
+import IndividualVariants from "./IndividualVariants";
+import IndividualGenes from "./IndividualGenes";
 
 const withURLPrefix = (individual, page) => withBasePath(`data/explorer/individuals/${individual}/${page}`);
 
@@ -73,11 +74,15 @@ class ExplorerIndividualContent extends Component {
 
         const overviewUrl = withURLPrefix(individualID, "overview");
         const biosamplesUrl = withURLPrefix(individualID, "biosamples");
+        const variantsUrl = withURLPrefix(individualID, "variants");
+        const genesUrl = withURLPrefix(individualID, "genes");
         const diseasesUrl = withURLPrefix(individualID, "diseases");
         const metadataUrl = withURLPrefix(individualID, "metadata");
         const individualMenu = [
             {url: overviewUrl, style: {marginLeft: "4px"}, text: "Overview",},
             {url: biosamplesUrl, text: "Biosamples & Experiments",},
+            {url: variantsUrl, text: "Variants",},
+            {url: genesUrl, text: "Genes",},
             {url: diseasesUrl, text: "Diseases",},
             {url: metadataUrl, text: "Metadata",},
         ];
@@ -104,6 +109,12 @@ class ExplorerIndividualContent extends Component {
                         </Route>
                         <Route path={biosamplesUrl.replace(":", "\\:")}>
                             <IndividualBiosamples individual={individual} />
+                        </Route>
+                        <Route path={variantsUrl.replace(":", "\\:")}>
+                            <IndividualVariants individual={individual} />
+                        </Route>
+                        <Route path={genesUrl.replace(":", "\\:")}>
+                            <IndividualGenes individual={individual} />
                         </Route>
                         <Route path={diseasesUrl.replace(":", "\\:")}>
                             <IndividualDiseases individual={individual} />
