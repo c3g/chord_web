@@ -52,14 +52,14 @@ const IndividualVariants = ({individual}) =>
     const variantsFlat = biosamples.map(b=>b.variants).flatMap(v => v.map(_v => _v.hgvsAllele));
     const ids = (biosamples || []).map(b => 
         ({
-            title: b.id,
+            title: `Biosample ${b.id}`,
             // key: "id",
             render: (_, hgvs) => <div><pre>{JSON.stringify(hgvs, null, 2)}</pre></div>,
             //sorter: (a, b) => a.id.localeCompare(b.id),
             //defaultSortOrder: "ascend"
         })
     )
-    
+
     return <Table bordered
            size="middle"
            pagination={{pageSize: 25}}
