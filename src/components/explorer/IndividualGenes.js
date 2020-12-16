@@ -13,15 +13,15 @@ const IndividualGenes = ({individual}) =>
     const biosamples = (individual || {}).phenopackets.flatMap(p => p.biosamples);
     const genes = (individual || {}).phenopackets.flatMap(p => p.genes);
     const genesFlat = genes.flatMap(g => g.symbol);
-    const ids = (biosamples || []).map(_b => 
-        ({
-            //title: `Genes`,
+    const ids = [{
+        //(biosamples || []).map(_b => 
+            title: `Symbol`,
             // key: "id",
             render: (_, gene) => <div><pre>{gene}</pre></div>,
             //sorter: (a, b) => a.id.localeCompare(b.id),
             //defaultSortOrder: "ascend"
-        })
-    );
+        }]
+    //);
 
     return <Table bordered
                   size="middle"
