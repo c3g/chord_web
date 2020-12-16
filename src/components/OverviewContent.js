@@ -20,7 +20,7 @@ import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
 //     VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE,
 // } from "../styles/victory";
 
-import {BASE_PATH, withBasePath} from "../utils/url";
+import { withBasePath } from "../utils/url";
 
 import { polarToCartesian } from "recharts/es6/util/PolarUtils";
 
