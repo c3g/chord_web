@@ -11,7 +11,7 @@ import {individualPropTypesShape} from "../../propTypes";
 const IndividualVariants = ({individual}) =>
 {
     const biosamples = (individual || {}).phenopackets.flatMap(p => p.biosamples);
-    const variantsFlat = biosamples.map(b=>b.variants).flatMap(v => v.map(_v => _v.hgvsAllele));
+    const variantsFlat = biosamples.map(b=> (b || {}).variants).flatMap(v => (v || []).map(_v => (_v || {}).hgvsAllele));
     const ids = (biosamples || []).map(b => 
         ({
             title: `Biosample ${b.id}`,
