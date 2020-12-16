@@ -20,7 +20,8 @@ import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
 //     VICTORY_BAR_TITLE_PROPS_WITHOUT_MONOSPACE,
 // } from "../styles/victory";
 
-  
+import { withBasePath } from "../utils/url";
+
 import { polarToCartesian } from "recharts/es6/util/PolarUtils";
 
 import { fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries } from "../modules/metadata/actions";
@@ -420,7 +421,7 @@ class CustomPieChart extends React.Component {
         );
 
         // Navigate to Explorer
-        history.push("/data/explorer/search");
+        history.push(withBasePath("/data/explorer/search"));
     }
   
     componentDidMount() {
@@ -742,7 +743,8 @@ const mapStateToProps = state => ({
 
     phenopackets: state.phenopackets,
     experiments: state.experiments,
-    tableSummaries: state.tableSummaries,
+    tableSummaries: state.tableSummaries
+    
 });
 
 
