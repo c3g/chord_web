@@ -15,7 +15,7 @@ const IndividualVariants = ({individual}) =>
     
     const variantsMapped = {};
     biosamples.forEach(bs => {
-        variantsMapped[bs.id] = (bs || {}).variants.map(v => (v || {}).hgvsAllele);
+        variantsMapped[bs.id] = ((bs || {}).variants || []).map(v => (v || {}).hgvsAllele);
     });
 
     const ids = (biosamples || []).map(b => 
