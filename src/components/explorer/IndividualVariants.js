@@ -4,6 +4,7 @@ import {Table} from "antd";
 import "antd/es/table/style/css";
 
 import {individualPropTypesShape} from "../../propTypes";
+import "./explorer.css";
 
 // TODO: Only show variants from the relevant dataset, if specified;
 //  highlight those found in search results, if specified
@@ -11,12 +12,17 @@ import {individualPropTypesShape} from "../../propTypes";
 const IndividualVariants = ({individual}) =>
 {
     const biosamples = (individual || {}).phenopackets.flatMap(p => p.biosamples);
-    const variantsFlat = biosamples.map(b=> (b || {}).variants).flatMap(v => (v || []).map(_v => (_v || {}).hgvsAllele));
+    
+    const variantsMapped = {};
+    biosamples.forEach(bs => {
+        variantsMapped[bs.id] = (bs || {}).variants.map(v => (v || {}).hgvsAllele);
+    });
+
     const ids = (biosamples || []).map(b => 
         ({
             title: `Biosample ${b.id}`,
-            // key: "id",
-            render: (_, hgvs) => <div><pre>{JSON.stringify(hgvs, null, 2)}</pre></div>,
+            key: b.id,
+            render: (_, map) => <div style={{verticalAlign: "top"}}><pre>{JSON.stringify(map[b.id], null, 2)}</pre></div>,
             //sorter: (a, b) => a.id.localeCompare(b.id),
             //defaultSortOrder: "ascend"
         })
@@ -27,7 +33,7 @@ const IndividualVariants = ({individual}) =>
                   pagination={{pageSize: 25}}
                   columns={ids}
                   rowKey="id"
-                  dataSource={variantsFlat} 
+                  dataSource={[variantsMapped]} 
         />;
 };
         
