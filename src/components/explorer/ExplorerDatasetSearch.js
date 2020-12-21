@@ -81,6 +81,11 @@ class ExplorerDatasetSearch extends Component {
 
         if (!selectedDataset) return null;  // TODO
 
+        // Calculate page numbers and range
+        var showingResults = 0;
+        if (this.props.searchResults != undefined && this.props.searchResults.searchFormattedResults.length > 0)
+            showingResults = (this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1;
+
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
@@ -92,7 +97,7 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm} />
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
-                    Showing results {(this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1}-{
+                    Showing results {showingResults}-{
                     (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
                         ? (this.state.currentPage * this.state.pageSize) 
                         : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
@@ -107,7 +112,10 @@ class ExplorerDatasetSearch extends Component {
                         <Spin spinning={this.props.isFetchingDownload} style={{display: "inline-block !important"}}>
                             <Button icon="export" style={{marginRight: "8px"}}
                                     disabled={this.props.isFetchingDownload}
-                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults)}>Export as CSV</Button>
+                                    onClick={() => {
+                                        this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults);
+                                        this.setState({currentPage: 1});
+                                    }}>Export as CSV</Button>
                         </Spin>
                     </div>
                 </Typography.Title>
@@ -117,30 +125,34 @@ class ExplorerDatasetSearch extends Component {
                 <SearchTracksModal searchResults={this.props.searchResults}
                                    visible={this.state.tracksModalVisible}
                                    onCancel={() => this.setState({tracksModalVisible: false})} />
-                <Table bordered
-                       size="middle"
-                       columns={SEARCH_RESULT_COLUMNS}
-                       dataSource={this.props.searchResults.searchFormattedResults || []}
-                       pagination={{pageSize: this.state.pageSize}}
-                       onChange={this.onPageChange}
-                       rowSelection={{
-                           selectedRowKeys: this.props.selectedRows,
-                           onChange: this.props.setSelectedRows,
-                           selections: [
-                               {
-                                   key: "select-all-data",
-                                   text: "Select all data",
-                                   onSelect: () => this.props.setSelectedRows(
-                                       (this.props.searchResults.searchFormattedResults || []).map(r => r.key)
-                                   ),
-                               },
-                               {
-                                   key: "unselect-all-data",
-                                   text: "Unselect all data",
-                                   onSelect: () => this.props.setSelectedRows([]),
-                               },
-                           ],
-                       }} />
+                <Spin spinning={this.props.fetchingSearch}>
+                
+                    <Table bordered
+                           disabled={this.props.fetchingSearch}
+                           size="middle"
+                           columns={SEARCH_RESULT_COLUMNS}
+                           dataSource={this.props.searchResults.searchFormattedResults || []}
+                           pagination={{pageSize: this.state.pageSize}}
+                           onChange={this.onPageChange}
+                           rowSelection={{
+                               selectedRowKeys: this.props.selectedRows,
+                               onChange: this.props.setSelectedRows,
+                               selections: [
+                                   {
+                                       key: "select-all-data",
+                                       text: "Select all data",
+                                       onSelect: () => this.props.setSelectedRows(
+                                           (this.props.searchResults.searchFormattedResults || []).map(r => r.key)
+                                       ),
+                                   },
+                                   {
+                                       key: "unselect-all-data",
+                                       text: "Unselect all data",
+                                       onSelect: () => this.props.setSelectedRows([]),
+                                   },
+                               ],
+                           }} />
+                </Spin>
             </> : null}
         </>;
     }
