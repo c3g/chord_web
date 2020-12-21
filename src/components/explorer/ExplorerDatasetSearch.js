@@ -57,6 +57,7 @@ class ExplorerDatasetSearch extends Component {
     constructor(props) {
         super(props);
         this.onPageChange = this.onPageChange.bind(this);
+        this.resetPageNumber = this.resetPageNumber.bind(this);
 
         this.state = {
             summaryModalVisible: false,
@@ -72,6 +73,21 @@ class ExplorerDatasetSearch extends Component {
     onPageChange(pageObj) {
         //console.log("On page: " + pageObj.current + " with page size: " + pageObj.pageSize);
         this.setState({currentPage: pageObj.current});
+    }
+
+    resetPageNumber() {
+        this.props.performSearchIfPossible();
+
+        //this.setState({currentPage: 1});
+        // Not-so-React-y way of setting the current data table to page 1
+        // in the event a new search query results in an equal-or-longer dataset.
+        // Without such a mechanism, the user will find themself on the same page they
+        // were on with their last query
+        try {
+            document.getElementsByClassName("ant-pagination-item ant-pagination-item-1")[0].click();
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render() {
@@ -90,7 +106,7 @@ class ExplorerDatasetSearch extends Component {
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
             <DiscoveryQueryBuilder isInternal={true}
                                    dataTypeForms={this.props.dataTypeForms}
-                                   onSubmit={this.props.performSearchIfPossible}
+                                   onSubmit={this.resetPageNumber}
                                    searchLoading={this.props.fetchingSearch}
                                    addDataTypeQueryForm={this.props.addDataTypeQueryForm}
                                    updateDataTypeQueryForm={this.props.updateDataTypeQueryForm}
@@ -112,10 +128,7 @@ class ExplorerDatasetSearch extends Component {
                         <Spin spinning={this.props.isFetchingDownload} style={{display: "inline-block !important"}}>
                             <Button icon="export" style={{marginRight: "8px"}}
                                     disabled={this.props.isFetchingDownload}
-                                    onClick={() => {
-                                        this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults);
-                                        this.setState({currentPage: 1});
-                                    }}>Export as CSV</Button>
+                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults)}>Export as CSV</Button>
                         </Spin>
                     </div>
                 </Typography.Title>
@@ -132,7 +145,7 @@ class ExplorerDatasetSearch extends Component {
                            size="middle"
                            columns={SEARCH_RESULT_COLUMNS}
                            dataSource={this.props.searchResults.searchFormattedResults || []}
-                           pagination={{pageSize: this.state.pageSize}}
+                           pagination={{pageSize: this.state.pageSize, defaultCurrent: this.state.currentPage, showQuickJumper: true}}
                            onChange={this.onPageChange}
                            rowSelection={{
                                selectedRowKeys: this.props.selectedRows,
