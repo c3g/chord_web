@@ -139,32 +139,33 @@ class ExplorerDatasetSearch extends Component {
                                    visible={this.state.tracksModalVisible}
                                    onCancel={() => this.setState({tracksModalVisible: false})} />
                 <Spin spinning={this.props.fetchingSearch}>
-                
-                    <Table bordered
-                           disabled={this.props.fetchingSearch}
-                           size="middle"
-                           columns={SEARCH_RESULT_COLUMNS}
-                           dataSource={this.props.searchResults.searchFormattedResults || []}
-                           pagination={{pageSize: this.state.pageSize, defaultCurrent: this.state.currentPage, showQuickJumper: true}}
-                           onChange={this.onPageChange}
-                           rowSelection={{
-                               selectedRowKeys: this.props.selectedRows,
-                               onChange: this.props.setSelectedRows,
-                               selections: [
-                                   {
-                                       key: "select-all-data",
-                                       text: "Select all data",
-                                       onSelect: () => this.props.setSelectedRows(
-                                           (this.props.searchResults.searchFormattedResults || []).map(r => r.key)
-                                       ),
-                                   },
-                                   {
-                                       key: "unselect-all-data",
-                                       text: "Unselect all data",
-                                       onSelect: () => this.props.setSelectedRows([]),
-                                   },
-                               ],
-                           }} />
+                    <div style={{opacity: (this.props.fetchingSearch ? 0.5 : 1)}}>
+                        <Table bordered
+                               disabled={this.props.fetchingSearch}
+                               size="middle"
+                               columns={SEARCH_RESULT_COLUMNS}
+                               dataSource={this.props.searchResults.searchFormattedResults || []}
+                               pagination={{pageSize: this.state.pageSize, defaultCurrent: this.state.currentPage, showQuickJumper: true}}
+                               onChange={this.onPageChange}
+                               rowSelection={{
+                                   selectedRowKeys: this.props.selectedRows,
+                                   onChange: this.props.setSelectedRows,
+                                   selections: [
+                                       {
+                                           key: "select-all-data",
+                                           text: "Select all data",
+                                           onSelect: () => this.props.setSelectedRows(
+                                               (this.props.searchResults.searchFormattedResults || []).map(r => r.key)
+                                           ),
+                                       },
+                                       {
+                                           key: "unselect-all-data",
+                                           text: "Unselect all data",
+                                           onSelect: () => this.props.setSelectedRows([]),
+                                       },
+                                   ],
+                               }} />
+                    </div>
                 </Spin>
             </> : null}
         </>;
