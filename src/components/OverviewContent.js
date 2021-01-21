@@ -79,7 +79,7 @@ class OverviewContent extends Component {
                 map[item] = 1;
             }
         });
-        
+
         return Object.items(map).map(([key, value]) => ({x: key, y: value}));
     }
 

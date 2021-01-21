@@ -83,12 +83,13 @@ class DiscoveryQueryBuilder extends Component {
                 await this.handleFormChange(dataType, fields);
 
                 // Simulate form submission click
-                await this.handleSubmit();
+                const submit = this.handleSubmit();
 
                 // Clean up auto-query "paper trail" (that is, the state segment that 
                 // was introduced in order to transfer intent from the OverviewContent page)
                 this.props.neutralizeAutoQueryPageTransition();
-                
+
+                await submit;
             })();
         }
     }
