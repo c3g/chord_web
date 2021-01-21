@@ -116,7 +116,7 @@ class ExplorerDatasetSearch extends Component {
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
                     Showing results {showingResults}-{Math.min(this.state.currentPage * this.state.pageSize,
-                    numResults)} of {this.props.searchResults.searchFormattedResults.length}
+                    numResults)} of {numResults}
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
                                 style={{marginRight: "8px"}}
