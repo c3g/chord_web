@@ -8,7 +8,12 @@ import {
 
 import {fetchServiceLogsIfPossible, fetchSystemLogsIfPossible} from "../logs/actions";
 import {fetchDropBoxTreeOrFail} from "../manager/actions";
-import {fetchExperiments, fetchProjectsWithDatasetsAndTables, fetchVariantTableSummaries, fetchPhenopackets} from "../metadata/actions";
+import {
+    fetchExperiments,
+    fetchProjectsWithDatasetsAndTables,
+    fetchVariantTableSummaries,
+    fetchPhenopackets
+} from "../metadata/actions";
 import {fetchNodeInfo} from "../node/actions";
 import {fetchNotifications} from "../notifications/actions";
 import {fetchServicesWithMetadataAndDataTypesAndTablesIfNeeded} from "../services/actions";

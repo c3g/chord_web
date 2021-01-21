@@ -22,7 +22,8 @@ const IndividualVariants = ({individual}) =>
         ({
             title: `Biosample ${b.id}`,
             key: b.id,
-            render: (_, map) => <div style={{verticalAlign: "top"}}><pre>{JSON.stringify(map[b.id], null, 2)}</pre></div>,
+            render: (_, map) => <div style={{verticalAlign: "top"}}>
+                <pre>{JSON.stringify(map[b.id], null, 2)}</pre></div>,
             //sorter: (a, b) => a.id.localeCompare(b.id),
             //defaultSortOrder: "ascend"
         })

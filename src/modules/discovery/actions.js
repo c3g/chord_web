@@ -1,4 +1,8 @@
-import {conditionsToQuery, extractQueriesFromDataTypeForms, extractQueryConditionsFromFormValues} from "../../utils/search";
+import {
+    conditionsToQuery,
+    extractQueriesFromDataTypeForms,
+    extractQueryConditionsFromFormValues
+} from "../../utils/search";
 import {createNetworkActionTypes, networkAction} from "../../utils/actions";
 import {jsonRequest} from "../../utils/requests";
 

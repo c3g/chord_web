@@ -13,7 +13,12 @@ import "antd/es/typography/style/css";
 import SitePageHeader from "./SitePageHeader";
 
 import {SITE_NAME} from "../constants";
-import {nodeInfoDataPropTypesShape, projectPropTypesShape, phenopacketPropTypesShape, experimentPropTypesShape} from "../propTypes";
+import {
+    nodeInfoDataPropTypesShape,
+    projectPropTypesShape,
+    phenopacketPropTypesShape,
+    experimentPropTypesShape
+} from "../propTypes";
 
 import {VictoryAxis, VictoryChart, VictoryHistogram} from "victory";
 // import {
@@ -74,28 +79,23 @@ class OverviewContent extends Component {
                 map[item] = 1;
             }
         });
-
-        const jsonObjsXY = [];
-        for (var key in map) {
-            jsonObjsXY.push({x: key, y:map[key]});
-        }
-
-        return jsonObjsXY;
+        
+        return Object.items(map).map(([key, value]) => ({x: key, y: value}));
     }
 
     onPieEnter = (chartNum, data, index) => {
         // console.log(data)
-        if (chartNum == 0){    
+        if (chartNum === 0){
             this.setState({
                 sexChartActiveIndex: index,
             });
         }
-        else if (chartNum == 1){    
+        else if (chartNum === 1){
             this.setState({
                 diseaseChartActiveIndex: index,
             });
         }
-        else if (chartNum == 2){    
+        else if (chartNum === 2){
             this.setState({
                 biosamplesChartActiveIndex: index,
             });
@@ -103,7 +103,7 @@ class OverviewContent extends Component {
     };
 
     getFrequencyNameValue(array) {
-        var sumOfAllValues = 0; // Accumulate all values to compute on them later
+        let sumOfAllValues = 0; // Accumulate all values to compute on them later
         const map = {}; // Gather elements by their name and group them
         array.forEach(item => {
             if(map[item]){
@@ -117,11 +117,11 @@ class OverviewContent extends Component {
         // Group the items in the array of objects denoted by 
         // a "name" and "value" parameter
         const jsonObjsXY = [];
-        for (var key in map) {
-            var val = map[key];
+        for (const key in map) {
+            const val = map[key];
             // Group all elements with a small enough value together under an "Other"
             if ((val / sumOfAllValues) < 0.04){
-                var otherIndex = jsonObjsXY.findIndex(obj => obj.name=="Other");
+                const otherIndex = jsonObjsXY.findIndex(obj => obj.name === "Other");
                 if (otherIndex > -1) {
                     jsonObjsXY[otherIndex].value += val; // Accumulate
                 } else {
@@ -140,23 +140,23 @@ class OverviewContent extends Component {
 
     stringToDateYearAsXJSON(birthdayStr) {
         // curtosity of : https://stackoverflow.com/questions/10008050/get-age-from-birthdate
-        var today_date = new Date();
-        var today_year = today_date.getFullYear();
-        var today_month = today_date.getMonth();
-        var today_day = today_date.getDate();
+        const today_date = new Date();
+        const today_year = today_date.getFullYear();
+        const today_month = today_date.getMonth();
+        const today_day = today_date.getDate();
 
-        var birthday = new Date(birthdayStr);
-        var birth_year =  birthday.getFullYear();
-        var birth_month =  birthday.getMonth();
-        var birth_date =  birthday.getDate();
+        const birthday = new Date(birthdayStr);
+        const birth_year =  birthday.getFullYear();
+        const birth_month =  birthday.getMonth();
+        const birth_date =  birthday.getDate();
         
-        var age = today_year - birth_year;
+        let age = today_year - birth_year;
 
         if ( today_month < (birth_month - 1))
         {
             age--;
         }
-        if (((birth_month - 1) == today_month) && (today_day < birth_date))
+        if (((birth_month - 1) === today_month) && (today_day < birth_date))
         {
             age--;
         }
@@ -165,44 +165,39 @@ class OverviewContent extends Component {
     }
 
     render() {
-        const numParticipants = this.props.phenopackets != undefined ? this.props.phenopackets.items.length : 0;
-        const biosamples = this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.biosamples) : [];
+        const phenopackets = (this.props.phenopackets || {items: []}).items;
+
+        // TODO: Note: technically this is not the number of participants,
+        //  since phenopackets may not all have unique individuals
+        const numParticipants = phenopackets.length;
+        const biosamples = phenopackets.flatMap(p => p.biosamples);
         const biosampleLabels = this.getFrequencyNameValue(biosamples.flatMap(bs => bs.sampled_tissue.label));
         //const biosampleAgeAtCollection = biosamples.flatMap(bs => bs.sampled_tissue.label)
-        const participantDOB = this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => this.stringToDateYearAsXJSON(p.subject.date_of_birth)) : [];
+        const participantDOB = phenopackets.flatMap(p => this.stringToDateYearAsXJSON(p.subject.date_of_birth));
 
         const numBiosamples = biosamples.length;
         
-        const sexLabels = this.getFrequencyNameValue(this.props.phenopackets != undefined ? this.props.phenopackets.items.flatMap(p => p.subject.sex) : []);
+        const sexLabels = this.getFrequencyNameValue(phenopackets.flatMap(p => p.subject.sex));
         const diseaseLabels = this.getFrequencyNameValue(
-            this.props.phenopackets != undefined 
-                ? this.props.phenopackets.items.flatMap(p => 
-                    p.diseases.flatMap(d => 
-                        d.term.label)) 
-                : []);
+            phenopackets.flatMap(p => p.diseases.flatMap(d => d.term.label)));
 
-        const experiments = this.props.experiments != undefined ? this.props.experiments.items : [];
+        const experiments = (this.props.experiments || {items: []}).items;
 
-        const variantTableSummaries = this.props.tableSummaries != undefined 
-            ? this.props.tableSummaries.summariesByServiceArtifactAndTableID != undefined 
-                ? this.props.tableSummaries.summariesByServiceArtifactAndTableID.variant != undefined 
-                    ? this.props.tableSummaries.summariesByServiceArtifactAndTableID.variant
-                    : undefined
-                : undefined
-            : undefined;
+        const variantTableSummaries = ((this.props.tableSummaries || {})
+            .summariesByServiceArtifactAndTableID || {}).variant || undefined;
         
-        var numVariants = 0;
-        var numSamples = 0;
-        var numVCFs = 0;
-        if (variantTableSummaries != undefined){
-            for (const key in variantTableSummaries) {
-                numVariants += variantTableSummaries[key].count;
-                numSamples += variantTableSummaries[key].data_type_specific.samples;
-                numVCFs += variantTableSummaries[key].data_type_specific.vcf_files;
-            }
-        }
+        let numVariants = 0;
+        let numSamples = 0;
+        let numVCFs = 0;
+        (variantTableSummaries || []).forEach(key => {
+            numVariants += variantTableSummaries[key].count;
+            numSamples += variantTableSummaries[key].data_type_specific.samples;
+            numVCFs += variantTableSummaries[key].data_type_specific.vcf_files;
+        });
 
-        
+        const fetchingPhenopackets = (this.props.phenopackets || {isFetching: true}).isFetching;
+        const fetchingExperiments = (this.props.experiments || {isFetching: true}).isFetching;
+        const fetchingTableSummaries = (this.props.tableSummaries || {isFetching: true}).isFetching;
 
         return <>
             <SitePageHeader title="Overview" subTitle="" />
@@ -212,17 +207,17 @@ class OverviewContent extends Component {
                         <Typography.Title level={4}>Clinical/Phenotypical Data</Typography.Title>
                         <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                <Spin spinning={fetchingPhenopackets}>
                                     <Statistic title="Participants" value={numParticipants} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                <Spin spinning={fetchingPhenopackets}>
                                     <Statistic title="Biosamples" value={numBiosamples} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.experiments == undefined ? true : this.props.experiments.isFetching}>
+                                <Spin spinning={fetchingExperiments}>
                                     <Statistic title="Experiments" value={experiments.length} />
                                 </Spin>
                             </Col>
@@ -230,8 +225,8 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.phenopackets.isFetching ? "" : "Sexes"}</h2>
-                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <h2>{fetchingPhenopackets ? "" : "Sexes"}</h2>
+                                    <Spin spinning={fetchingPhenopackets}>
                                         <CustomPieChartWithRouter
                                           data={sexLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
@@ -246,8 +241,8 @@ class OverviewContent extends Component {
                                 paddingRight: this.state.chartPadding, 
                                 paddingBottom: 0}}>      
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.phenopackets.isFetching ? "" : "Age"}</h2>
-                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <h2>{fetchingPhenopackets ? "" : "Age"}</h2>
+                                    <Spin spinning={fetchingPhenopackets}>
                                         <VictoryChart>
                                             <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                                          label="Age (Years)"
@@ -272,8 +267,8 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.phenopackets.isFetching ? "" : "Diseases"}</h2>
-                                    <Spin spinning={this.props.phenopackets == undefined ? true : this.props.phenopackets.isFetching}>
+                                    <h2>{fetchingPhenopackets ? "" : "Diseases"}</h2>
+                                    <Spin spinning={fetchingPhenopackets}>
                                         <CustomPieChartWithRouter
                                           data={diseaseLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
@@ -287,8 +282,7 @@ class OverviewContent extends Component {
                                 display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
                                     <h2>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</h2>
-                                    <Spin spinning={this.props.phenopackets == undefined 
-                                        ? true : this.props.phenopackets.isFetching}>
+                                    <Spin spinning={(this.props.phenopackets || {isFetching: true}).isFetching}>
                                     <CustomPieChartWithRouter
                                       data={biosampleLabels}
                                       chartWidthHeight={this.state.chartWidthHeight}
@@ -304,19 +298,19 @@ class OverviewContent extends Component {
                     <Typography.Title level={4}>Variants</Typography.Title>
                     <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                         <Col xl={3} lg={4} md={5} sm={7}>
-                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
+                            <Spin spinning={fetchingTableSummaries}>
                                 <Statistic title="Variants"
                                            value={numVariants} />
                             </Spin>
                         </Col>
                         <Col xl={2} lg={3} md={4} sm={5} xs={6}>
-                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
+                            <Spin spinning={fetchingTableSummaries}>
                                 <Statistic title="Samples"
                                            value={numSamples} />
                             </Spin>
                         </Col>
                         <Col xl={2} lg={3} md={4} sm={5} xs={6}>
-                            <Spin spinning={this.props.tableSummaries == undefined ? true : this.props.tableSummaries.isFetching}>
+                            <Spin spinning={fetchingTableSummaries}>
                                 <Statistic title="VCF Files"
                                            prefix={<Icon type="file" />}
                                            value={numVCFs} />
@@ -436,10 +430,7 @@ class CustomPieChart extends React.Component {
         if (this.state !== state && state.canUpdate)
             return true;
   
-        if (this.props.data === props.data)
-            return false;
-  
-        return true;
+        return this.props.data !== props.data;
     }
   
     render() {
@@ -489,7 +480,7 @@ class CustomPieChart extends React.Component {
 
         // skip rendering this static label if the sector is selected.
         // this will let the 'renderActiveState' draw without overlapping
-        if (index == state.activeIndex){
+        if (index === state.activeIndex) {
             return;
         }
   
@@ -671,7 +662,8 @@ class CustomPieChart extends React.Component {
 
 // Create a new component that is "connected" (to borrow redux
 // terminology) to the router.
-const CustomPieChartWithRouter = withRouter(CustomPieChart);//connect(setAutoQueryPageTransition)(withRouter(CustomPieChart));
+const CustomPieChartWithRouter = withRouter(CustomPieChart);
+//connect(setAutoQueryPageTransition)(withRouter(CustomPieChart));
 
   /*
    * lastAngle is mutated by renderLabel() and renderActiveShape() to
@@ -748,4 +740,9 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries, setAutoQueryPageTransition})(OverviewContent);
+export default connect(mapStateToProps, {
+    fetchPhenopackets,
+    fetchExperiments,
+    fetchVariantTableSummaries,
+    setAutoQueryPageTransition
+})(OverviewContent);
