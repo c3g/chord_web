@@ -48,17 +48,17 @@ const RADIAN = Math.PI / 180;
 
 // Random 'fixed' colors
 const COLORS = [
-    "#4d47a5", "#dbecc4", "#c72540", "#0da650", "#9d176a", 
-    "#968722", "#36f8bb", "#6671c2", "#2ada39", "#611a28", 
+    "#4d47a5", "#dbecc4", "#c72540", "#0da650", "#9d176a",
+    "#968722", "#36f8bb", "#6671c2", "#2ada39", "#611a28",
     "#cf39f2", "#58433c", "#91faee", "#89c791", "#f47ae3",
     "#180b3c", "#a7e046"
 ];
 
-  
+
 class OverviewContent extends Component {
-    
-    constructor() {
-        super();
+
+    constructor(props) {
+        super(props);
         this.state = {
             chartPadding:  "1rem",
             activeIndex: 0,
@@ -114,7 +114,7 @@ class OverviewContent extends Component {
             sumOfAllValues++;
         });
 
-        // Group the items in the array of objects denoted by 
+        // Group the items in the array of objects denoted by
         // a "name" and "value" parameter
         const jsonObjsXY = [];
         for (const key in map) {
@@ -149,7 +149,7 @@ class OverviewContent extends Component {
         const birth_year =  birthday.getFullYear();
         const birth_month =  birthday.getMonth();
         const birth_date =  birthday.getDate();
-        
+
         let age = today_year - birth_year;
 
         if ( today_month < (birth_month - 1))
@@ -176,7 +176,7 @@ class OverviewContent extends Component {
         const participantDOB = phenopackets.flatMap(p => this.stringToDateYearAsXJSON(p.subject.date_of_birth));
 
         const numBiosamples = biosamples.length;
-        
+
         const sexLabels = this.getFrequencyNameValue(phenopackets.flatMap(p => p.subject.sex));
         const diseaseLabels = this.getFrequencyNameValue(
             phenopackets.flatMap(p => p.diseases.flatMap(d => d.term.label)));
@@ -185,7 +185,7 @@ class OverviewContent extends Component {
 
         const variantTableSummaries = ((this.props.tableSummaries || {})
             .summariesByServiceArtifactAndTableID || {}).variant || undefined;
-        
+
         let numVariants = 0;
         let numSamples = 0;
         let numVCFs = 0;
@@ -236,10 +236,10 @@ class OverviewContent extends Component {
                                     </Spin>
                                 </Col>
                             </Row>
-                            <Row style={{paddingTop: this.state.chartLabelPaddingTop+"rem", 
-                                paddingLeft: this.state.chartPadding, 
-                                paddingRight: this.state.chartPadding, 
-                                paddingBottom: 0}}>      
+                            <Row style={{paddingTop: this.state.chartLabelPaddingTop+"rem",
+                                paddingLeft: this.state.chartPadding,
+                                paddingRight: this.state.chartPadding,
+                                paddingBottom: 0}}>
                                 <Col style={{textAlign: "center"}}>
                                     <h2>{fetchingPhenopackets ? "" : "Age"}</h2>
                                     <Spin spinning={fetchingPhenopackets}>
@@ -255,13 +255,13 @@ class OverviewContent extends Component {
                                                          style={{
                                                              axisLabel: { padding: 30},
                                                          }} />
-                                            <VictoryHistogram 
-                                                data={participantDOB} 
+                                            <VictoryHistogram
+                                                data={participantDOB}
                                                 bins={AGE_HISTOGRAM_BINS}
                                                 style={{ data: { fill: COLORS[0] } }} />
                                         </VictoryChart>
                                     </Spin>
-                                </Col>                          
+                                </Col>
                             </Row>
                         </Col>
                         <Col lg={12} md={24}>
@@ -277,8 +277,8 @@ class OverviewContent extends Component {
                                         />
                                     </Spin>
                                 </Col>
-                            </Row>                           
-                            <Row style={{paddingTop: this.state.chartLabelPaddingTop+"rem", 
+                            </Row>
+                            <Row style={{paddingTop: this.state.chartLabelPaddingTop+"rem",
                                 display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
                                     <h2>{this.props.phenopackets.isFetching ? "" : "Biosamples"}</h2>
@@ -288,7 +288,7 @@ class OverviewContent extends Component {
                                       chartWidthHeight={this.state.chartWidthHeight}
                                       fieldLabel={"[dataset item].biosamples.[item].sampled_tissue.label"}
                                       setAutoQueryPageTransition={this.props.setAutoQueryPageTransition}
-                                      />                                    
+                                      />
                                   </Spin>
                                 </Col>
                             </Row>
@@ -327,39 +327,39 @@ class OverviewContent extends Component {
      */
     updateDimensions() {
         if(window.innerWidth < 576) { //xs
-            this.setState({ 
-                chartPadding: "0rem", 
+            this.setState({
+                chartPadding: "0rem",
                 chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 3
             });
         } else if(window.innerWidth < 768) { // sm
-            this.setState({ 
-                chartPadding: "1rem", 
+            this.setState({
+                chartPadding: "1rem",
                 chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 992) { // md
-            this.setState({ 
-                chartPadding: "2rem", 
+            this.setState({
+                chartPadding: "2rem",
                 chartWidthHeight: window.innerWidth,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 5 });
         } else if(window.innerWidth < 1200) { // lg
-            this.setState({ 
-                chartPadding: "4rem", 
+            this.setState({
+                chartPadding: "4rem",
                 chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 6 });
         } else if(window.innerWidth < 1600) { // xl
-            this.setState({ 
-                chartPadding: "6rem", 
+            this.setState({
+                chartPadding: "6rem",
                 chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 3,
                 chartLabelPaddingLeft: 7 });
         } else {
-            this.setState({ 
-                chartPadding: "10rem", 
+            this.setState({
+                chartPadding: "10rem",
                 chartWidthHeight: window.innerWidth / 2,
                 chartLabelPaddingTop: 5,
                 chartLabelPaddingLeft: 7 }); // > xl
@@ -395,11 +395,11 @@ class CustomPieChart extends React.Component {
         graphTerm: undefined,
         fieldLabel: undefined
     }
-  
+
     onEnter = (_data, index) => {
         this.setState({ activeIndex: index });
     }
-  
+
     onLeave = (_data, _index) => {
         this.setState({ activeIndex: undefined });
     }
@@ -417,7 +417,7 @@ class CustomPieChart extends React.Component {
         // Navigate to Explorer
         history.push(withBasePath("/data/explorer/search"));
     }
-  
+
     componentDidMount() {
       /*
        * This ugly hack prevents the Pie labels from not appearing
@@ -425,17 +425,17 @@ class CustomPieChart extends React.Component {
        */
         setTimeout(() => this.setState({ canUpdate: true }), 3000);
     }
-  
+
     shouldComponentUpdate(props, state) {
         if (this.state !== state && state.canUpdate)
             return true;
-  
+
         return this.props.data !== props.data;
     }
-  
+
     render() {
         const { data, chartWidthHeight } = this.props;
-  
+
         return (
         <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
           <Pie data={data}
@@ -476,16 +476,16 @@ class CustomPieChart extends React.Component {
             // value
             index,
         } = params;
-    
+
 
         // skip rendering this static label if the sector is selected.
         // this will let the 'renderActiveState' draw without overlapping
         if (index === state.activeIndex) {
             return;
         }
-  
+
         const name = payload.name === "null" ? "(Empty)" : payload.name;
-    
+
         const sin = Math.sin(-RADIAN * midAngle);
         const cos = Math.cos(-RADIAN * midAngle);
         const sx = cx + (outerRadius + 10) * cos;
@@ -495,13 +495,13 @@ class CustomPieChart extends React.Component {
         const ex = mx + (cos >= 0 ? 1 : -1) * 22;
         const ey = my;
         const textAnchor = cos >= 0 ? "start" : "end";
-    
+
         const currentTextStyle = {
             ...textStyle,
             fontWeight: payload.selected ? "bold" : "normal",
             fontStyle: payload.name === "null" ? "italic" : "normal",
         };
-    
+
         const offsetRadius = 20;
         const startPoint = polarToCartesian(params.cx, params.cy, params.outerRadius, midAngle);
         const endPoint   = polarToCartesian(params.cx, params.cy, params.outerRadius + offsetRadius, midAngle);
@@ -511,16 +511,16 @@ class CustomPieChart extends React.Component {
             stroke: fill,
             points: [startPoint, endPoint],
         };
-    
+
         if (lastAngle > midAngle)
             lastAngle = 0;
-    
-        
+
+
         lastAngle = midAngle;
-    
+
         return (
         <g>
-    
+
           { payload.selected &&
             <Sector
               cx={cx}
@@ -532,13 +532,13 @@ class CustomPieChart extends React.Component {
               fill={fill}
             />
           }
-    
+
           <Curve
             { ...lineProps }
             type='linear'
             className='recharts-pie-label-line'
           />
-    
+
           <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill='none'/>
           <circle cx={ex} cy={ey} r={2} fill={fill} stroke='none'/>
           <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3}
@@ -556,7 +556,7 @@ class CustomPieChart extends React.Component {
           >
             {`(${ payload.value } donor${ payload.value > 1 ? "s" : "" })`}
           </text>
-    
+
         </g>
         );
     }
@@ -574,11 +574,11 @@ class CustomPieChart extends React.Component {
             fill,
             payload
         } = params;
-    
+
         const name = payload.name === "null" ? "(Empty)" : payload.name;
-    
+
         const offsetRadius = 40;
-  
+
         const sin = Math.sin(-RADIAN * midAngle);
         const cos = Math.cos(-RADIAN * midAngle);
         const sx = cx + (outerRadius + 10) * cos;
@@ -588,13 +588,13 @@ class CustomPieChart extends React.Component {
         const ex = mx + (cos >= 0 ? 1 : -1) * 22;
         const ey = my;
         const textAnchor = cos >= 0 ? "start" : "end";
-    
+
         const currentTextStyle = {
             ...textStyle,
             fontWeight: "bold",
             fontStyle: payload.name === "null" ? "italic" : "normal",
         };
-    
+
         const startPoint = polarToCartesian(params.cx, params.cy, params.outerRadius, midAngle);
         const endPoint   = polarToCartesian(params.cx, params.cy, params.outerRadius + offsetRadius, midAngle);
         const lineProps = {
@@ -603,12 +603,12 @@ class CustomPieChart extends React.Component {
             stroke: fill,
             points: [startPoint, endPoint],
         };
-    
+
         lastAngle = midAngle;
-    
+
         return (
         <g>
-    
+
           <Sector
             cx={cx}
             cy={cy}
@@ -618,7 +618,7 @@ class CustomPieChart extends React.Component {
             outerRadius={outerRadius}
             fill={fill}
           />
-    
+
           { payload.selected &&
             <Sector
               cx={cx}
@@ -630,13 +630,13 @@ class CustomPieChart extends React.Component {
               fill={fill}
             />
           }
-    
+
           <Curve
             { ...lineProps }
             type='linear'
             className='recharts-pie-label-line'
           />
-    
+
           <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill='none'/>
           <circle cx={ex} cy={ey} r={2} fill={fill} stroke='none'/>
           <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey + 3}
@@ -654,7 +654,7 @@ class CustomPieChart extends React.Component {
           >
             {`(${ payload.value } donor${ payload.value > 1 ? "s" : "" })`}
           </text>
-    
+
         </g>
         );
     }
@@ -670,7 +670,7 @@ const CustomPieChartWithRouter = withRouter(CustomPieChart);
    * indicate at which angle is the last shown label.
    */
 let lastAngle = 0;
-  
+
 const textStyle = {
     fontSize: "11px",
     fill: "#333",
@@ -679,7 +679,7 @@ const countTextStyle = {
     fontSize: "10px",
     fill: "#999",
 };
-  
+
 
 CustomPieChart.propTypes = {
     data: PropTypes.array,
@@ -687,8 +687,8 @@ CustomPieChart.propTypes = {
     chartWidthHeight: PropTypes.number,
     setAutoQueryPageTransition: PropTypes.func
 };
-  
-  
+
+
 //
 
 
@@ -736,7 +736,7 @@ const mapStateToProps = state => ({
     phenopackets: state.phenopackets,
     experiments: state.experiments,
     tableSummaries: state.tableSummaries
-    
+
 });
 
 

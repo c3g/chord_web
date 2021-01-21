@@ -88,6 +88,9 @@ module.exports = {
             "error",
             {"code": 120}
         ],
+        "no-trailing-spaces": [
+            "error"
+        ]
     },
     "settings": {
         "react": {

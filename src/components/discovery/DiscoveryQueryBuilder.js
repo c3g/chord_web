@@ -57,7 +57,7 @@ class DiscoveryQueryBuilder extends Component {
                     this.handleTabsEdit(value.id, "remove"));
 
                 // Set type of query
-                await this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});     
+                await this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});
 
                 // Set term
                 const dataType =this.props.dataTypesByID[this.props.autoQuery.autoQueryType];
@@ -85,7 +85,7 @@ class DiscoveryQueryBuilder extends Component {
                 // Simulate form submission click
                 const submit = this.handleSubmit();
 
-                // Clean up auto-query "paper trail" (that is, the state segment that 
+                // Clean up auto-query "paper trail" (that is, the state segment that
                 // was introduced in order to transfer intent from the OverviewContent page)
                 this.props.neutralizeAutoQueryPageTransition();
 

@@ -31,7 +31,7 @@ const DISEASE_COLUMNS = [
     {
         title: "Onset Age(s)",
         key: "t_onset_ages",
-        render: (_, individual) => 
+        render: (_, individual) =>
         // Print onset age
             (individual.hasOwnProperty("onset") && Object.keys(individual.onset).length)
             // Single onset age
@@ -49,7 +49,7 @@ const DISEASE_COLUMNS = [
     {
         title: "Extra Properties",
         key: "extra_properties",
-        render: (_, individual) => 
+        render: (_, individual) =>
             (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
                 ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
                 : EM_DASH,
@@ -61,7 +61,7 @@ const IndividualDiseases = ({individual}) =>
            size="middle"
            pagination={{pageSize: 25}}
            columns={DISEASE_COLUMNS}
-           rowKey="id"                    
+           rowKey="id"
            dataSource={(individual || {}).phenopackets.flatMap(p => p.diseases)} />;
 
 

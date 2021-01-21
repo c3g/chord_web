@@ -29,7 +29,7 @@ class SiteHeader extends Component {
         console.log("click ", e);
         this.setState({
             current: e.key,
-        });    
+        });
     }
 
     render() {
@@ -38,7 +38,7 @@ class SiteHeader extends Component {
                 url: withBasePath("overview"),
                 icon: <Icon type="user" />,
                 text: <span className="nav-text">Overview</span>,
-            },         
+            },
             {
                 url: withBasePath("data/sets"),
                 icon: <Icon type="file-search" />,
@@ -121,14 +121,14 @@ class SiteHeader extends Component {
                   mode="horizontal"
                   selectedKeys={matchingMenuKeys(menuItems)}
                   style={{lineHeight: "64px"}}>
-                      
+
                 {menuItems.map(i => renderMenuItem(i))}
-                
+
             </Menu>
         </Layout.Header>;
     }
 }
-    
+
 
 SiteHeader.propTypes = {
     nodeInfo: nodeInfoDataPropTypesShape,

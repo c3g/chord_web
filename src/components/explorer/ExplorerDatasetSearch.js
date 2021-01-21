@@ -194,7 +194,7 @@ ExplorerDatasetSearch.propTypes = {
 
     performIndividualsDownloadCSVIfPossible: PropTypes.func.isRequired,
     isFetchingDownload: PropTypes.bool,
-    
+
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
 };

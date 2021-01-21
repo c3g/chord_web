@@ -376,8 +376,8 @@ export const phenopackets = (
     switch (action.type) {
         case FETCH_PHENOPACKETS.REQUEST:
             return {
-                ...state, items: [], 
-                isFetching: true 
+                ...state, items: [],
+                isFetching: true
             };
         case FETCH_PHENOPACKETS.RECEIVE:
             return {
