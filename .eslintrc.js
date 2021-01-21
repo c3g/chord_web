@@ -74,7 +74,20 @@ module.exports = {
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-var": [
+            "error"
+        ],
+        "prefer-const": [
+            "error"
+        ],
+        "eqeqeq": [
+            "error"
+        ],
+        "max-len": [
+            "error",
+            {"code": 120}
+        ],
     },
     "settings": {
         "react": {
