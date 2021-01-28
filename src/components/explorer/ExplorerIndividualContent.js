@@ -18,6 +18,7 @@ import {urlPath, withBasePath} from "../../utils/url";
 
 import SitePageHeader from "../SitePageHeader";
 import IndividualOverview from "./IndividualOverview";
+import IndividualPhenotypicFeatures from "./IndividualPhenotypicFeatures";
 import IndividualBiosamples from "./IndividualBiosamples";
 import IndividualDiseases from "./IndividualDiseases";
 import IndividualMetadata from "./IndividualMetadata";
@@ -73,6 +74,7 @@ class ExplorerIndividualContent extends Component {
         const individual = individualInfo.data;
 
         const overviewUrl = withURLPrefix(individualID, "overview");
+        const pfeaturesUrl = withURLPrefix(individualID, "phenotypicfeatures");
         const biosamplesUrl = withURLPrefix(individualID, "biosamples");
         const variantsUrl = withURLPrefix(individualID, "variants");
         const genesUrl = withURLPrefix(individualID, "genes");
@@ -80,6 +82,7 @@ class ExplorerIndividualContent extends Component {
         const metadataUrl = withURLPrefix(individualID, "metadata");
         const individualMenu = [
             {url: overviewUrl, style: {marginLeft: "4px"}, text: "Overview",},
+            {url: pfeaturesUrl, text: "Phenotypic Features",},
             {url: biosamplesUrl, text: "Biosamples & Experiments",},
             {url: variantsUrl, text: "Variants",},
             {url: genesUrl, text: "Genes",},
@@ -106,6 +109,9 @@ class ExplorerIndividualContent extends Component {
                     {(individual && !individualInfo.isFetching) ? <Switch>
                         <Route path={overviewUrl.replace(":", "\\:")}>
                             <IndividualOverview individual={individual} />
+                        </Route>
+                        <Route path={pfeaturesUrl.replace(":", "\\:")}>
+                            <IndividualPhenotypicFeatures individual={individual} />
                         </Route>
                         <Route path={biosamplesUrl.replace(":", "\\:")}>
                             <IndividualBiosamples individual={individual} />
