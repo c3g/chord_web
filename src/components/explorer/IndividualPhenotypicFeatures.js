@@ -34,7 +34,7 @@ const IndividualPhenotypicFeatures = ({individual}) =>
            pagination={{pageSize: 25}}
            columns={P_FEATURES_COLUMNS}
            rowKey="id"
-           dataSource={(individual || {}).phenopackets.flatMap(p => p.phenotypic_features)} />;
+           dataSource={(individual || {}).phenopackets.flatMap(p => (p.phenotypic_features || []))} />;
 
 IndividualPhenotypicFeatures.propTypes = {
     individual: individualPropTypesShape,
