@@ -140,8 +140,10 @@ class OverviewContent extends Component {
         // a "x" parameter
         const jsonObjsXY = [];
         for (var key in obj) {
-            if (obj[key] > 0){              
-                jsonObjsXY.push({x: key});
+            if (obj[key] > 0){
+                for (var counter = 0; counter < obj[key]; counter++){
+                    jsonObjsXY.push({x: key});
+                }           
             }
         }
 
