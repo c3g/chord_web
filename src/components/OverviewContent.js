@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Col, Layout, Row, Spin, Statistic, Typography, Icon, Divider} from "antd";
+import {Col, Layout, Row, Spin, Statistic, Typography, Icon, Divider } from "antd"; // TODO: implement  Slider, InputNumber
 import "antd/es/col/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/row/style/css";
@@ -70,9 +70,19 @@ class OverviewContent extends Component {
             biosamplesChartActiveIndex: 0,
             chartWidthHeight: 500,
             chartLabelPaddingTop: 3,
-            chartLabelPaddingLeft: 3
+            chartLabelPaddingLeft: 3,
+            phenotypicFeaturesThresholdSliderValue: 0.01
         };
     }
+
+    onPFSliderChange = value => {
+        if (isNaN(value)) {
+            return;
+        }
+        this.setState({
+            phenotypicFeaturesThresholdSliderValue: value,
+        });
+    };
 
     onPieEnter = (chartNum, data, index) => {
         // console.log(data)
@@ -93,14 +103,27 @@ class OverviewContent extends Component {
         }
     };
 
-    mapNameValueFields(obj) {
+    mapNameValueFields(data, otherThreshold=0.04) {
+
+        var sumOfAllValues = 0; // Accumulate all values to compute on them later
+        for (var _key in data) {
+            sumOfAllValues += data[_key];
+        }
 
         // Group the items in the array of objects denoted by 
         // a "name" and "value" parameter
         const jsonObjsXY = [];
-        for (var key in obj) {
-            if (obj[key] > 0){
-                var val = obj[key];                
+        for (var key in data) {
+            var val = data[key];
+            // Group all elements with a small enough value together under an "Other"
+            if (val > 0 && (val / sumOfAllValues) < otherThreshold){
+                var otherIndex = jsonObjsXY.findIndex(ob => ob.name=="Other");
+                if (otherIndex > -1) {
+                    jsonObjsXY[otherIndex].value += val; // Accumulate
+                } else {
+                    jsonObjsXY.push({name: "Other", value:val}); // Create a new  element in the array
+                }
+            } else { // Treat items
                 jsonObjsXY.push({name: key, value:val});
             }
         }
@@ -193,7 +216,7 @@ class OverviewContent extends Component {
             ((((overviewSummary || {})
                 .data || {})
                 .data_type_specific || {})
-                .individuals|| {}).sex);
+                .individuals|| {}).sex, -1);
 
 
         const participantDOB = this.mapAgeXField(
@@ -212,7 +235,7 @@ class OverviewContent extends Component {
             ((((overviewSummary || {})
                 .data || {})
                 .data_type_specific || {})
-                .phenotypic_features|| {}).type);
+                .phenotypic_features|| {}).type, this.state.phenotypicFeaturesThresholdSliderValue);
                 
         
 
@@ -356,6 +379,16 @@ class OverviewContent extends Component {
                                 />
                             </Spin>
                         </Col>
+                        {/* TODO: Adjust threshold dynamically
+                        <Col>
+                            <InputNumber
+                                min={0}
+                                max={1}
+                                style={{ marginLeft: 16 }}
+                                value={this.state.phenotypicFeaturesThresholdSliderValue}
+                                onChange={this.onPFSliderChange}
+                            />
+                        </Col> */}
                     </Row>
                     <Divider />
                     <Typography.Title level={4}>Variants</Typography.Title>
