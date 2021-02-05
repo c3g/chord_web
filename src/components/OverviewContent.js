@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
-import {Col, Layout, Row, Spin, Statistic, Typography, Icon, Divider } from "antd"; // TODO: implement  Slider, InputNumber
+// TODO: implement  Slider, InputNumber
+import {Col, Layout, Row, Spin, Statistic, Typography, Icon, Divider} from "antd";
 import "antd/es/col/style/css";
 import "antd/es/layout/style/css";
 import "antd/es/row/style/css";
@@ -15,8 +16,8 @@ import SitePageHeader from "./SitePageHeader";
 import {SITE_NAME} from "../constants";
 import {
     nodeInfoDataPropTypesShape,
-    projectPropTypesShape, 
-    
+    projectPropTypesShape,
+
     phenopacketPropTypesShape,
     experimentPropTypesShape,
 
@@ -32,7 +33,12 @@ import { withBasePath } from "../utils/url";
 
 import { polarToCartesian } from "recharts/es6/util/PolarUtils";
 
-import { fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries, fetchOverviewSummary } from "../modules/metadata/actions";
+import {
+    fetchPhenopackets,
+    fetchExperiments,
+    fetchVariantTableSummaries,
+    fetchOverviewSummary
+} from "../modules/metadata/actions";
 import { setAutoQueryPageTransition } from "../modules/explorer/actions";
 
 
@@ -86,17 +92,15 @@ class OverviewContent extends Component {
 
     onPieEnter = (chartNum, data, index) => {
         // console.log(data)
-        if (chartNum === 0){
+        if (chartNum === 0) {
             this.setState({
                 sexChartActiveIndex: index,
             });
-        }
-        else if (chartNum === 1){
+        } else if (chartNum === 1) {
             this.setState({
                 diseaseChartActiveIndex: index,
             });
-        }
-        else if (chartNum === 2){
+        } else if (chartNum === 2) {
             this.setState({
                 biosamplesChartActiveIndex: index,
             });
@@ -104,53 +108,37 @@ class OverviewContent extends Component {
     };
 
     mapNameValueFields(data, otherThreshold=0.04) {
-
-        var sumOfAllValues = 0; // Accumulate all values to compute on them later
-        for (var _key in data) {
-            sumOfAllValues += data[_key];
-        }
+        // Accumulate all values to compute on them later
+        const sumOfAllValues = Object.values(data).reduce((acc, v) => acc + v, 0);
 
         // Group the items in the array of objects denoted by
         // a "name" and "value" parameter
         const jsonObjsXY = [];
-        for (var key in data) {
-            var val = data[key];
+        Object.entries(data).forEach(([key, val]) => {
             // Group all elements with a small enough value together under an "Other"
-            if (val > 0 && (val / sumOfAllValues) < otherThreshold){
-                var otherIndex = jsonObjsXY.findIndex(ob => ob.name=="Other");
+            if (val > 0 && (val / sumOfAllValues) < otherThreshold) {
+                const otherIndex = jsonObjsXY.findIndex(ob => ob.name === "Other");
                 if (otherIndex > -1) {
                     jsonObjsXY[otherIndex].value += val; // Accumulate
                 } else {
-                    jsonObjsXY.push({name: "Other", value:val}); // Create a new  element in the array
+                    jsonObjsXY.push({name: "Other", value: val}); // Create a new  element in the array
                 }
             } else { // Treat items
-                jsonObjsXY.push({name: key, value:val});
+                jsonObjsXY.push({name: key, value: val});
             }
-        }
+        });
 
         // Sort by value
-        return jsonObjsXY.sort((a, b) => {
-            return a.value - b.value;
-        });
+        return jsonObjsXY.sort((a, b) => a.value - b.value);
     }
 
     mapAgeXField(obj) {
-
-        // Group the items in the array of objects denoted by 
-        // a "x" parameter
-        const jsonObjsXY = [];
-        for (var key in obj) {
-            if (obj[key] > 0){
-                for (var counter = 0; counter < obj[key]; counter++){
-                    jsonObjsXY.push({x: key});
-                }           
-            }
-        }
-
-        // Sort by x
-        return jsonObjsXY.sort((a, b) => {
-            return a.x - b.x;
-        });
+        // Group the items in the array of objects denoted by
+        // an "x" parameter
+        return Object.entries(obj)
+            .filter(([_, v]) => v > 0)
+            .flatMap(([x, v]) => Array(v).fill({x}))
+            .sort((a, b) =>  a.x - b.x);  // Sort by x
     }
 
     stringToDateYearAsXJSON(birthdayStr) {
@@ -179,27 +167,14 @@ class OverviewContent extends Component {
         return { x: age };
     }
 
-    render() {        
-        var overviewSummary = this.props.overviewSummary;
-        
-        const numParticipants = ((((
-            overviewSummary || {})
-            .data || {})
-            .data_type_specific || {})
-            .individuals|| {}).count;
+    render() {
+        const overviewSummary = this.props.overviewSummary || {};
 
-        const numDiseases = ((((
-            overviewSummary || {})
-            .data || {})
-            .data_type_specific || {})
-            .diseases|| {}).count;
+        const numParticipants = (((overviewSummary.data || {}).data_type_specific || {}).individuals|| {}).count;
+        const numDiseases = (((overviewSummary.data || {}).data_type_specific || {}).diseases|| {}).count;
+        const numPhenotypicFeatures = (((
+            overviewSummary.data || {}).data_type_specific || {}).phenotypic_features|| {}).count;
 
-        const numPhenotypicFeatures = ((((
-            overviewSummary || {})
-            .data || {})
-            .data_type_specific || {})
-            .phenotypic_features|| {}).count;
-                         
 
         const biosampleLabels = this.mapNameValueFields(
             ((((overviewSummary || {})
@@ -207,60 +182,44 @@ class OverviewContent extends Component {
                 .data_type_specific || {})
                 .biosamples|| {}).sampled_tissue);
 
-        const numBiosamples = ((((
-            overviewSummary || {})
-            .data || {})
-            .data_type_specific || {})
-            .biosamples|| {}).count;
+        const numBiosamples = (((
+            overviewSummary.data || {}).data_type_specific || {}).biosamples|| {}).count;
 
 
         const sexLabels = this.mapNameValueFields(
-            ((((overviewSummary || {})
-                .data || {})
-                .data_type_specific || {})
-                .individuals|| {}).sex, -1);
+            (((overviewSummary.data || {}).data_type_specific || {}).individuals|| {}).sex, -1);
 
 
         const participantDOB = this.mapAgeXField(
-            ((((overviewSummary || {})
-                .data || {})
-                .data_type_specific || {})
-                .individuals|| {}).age);
-        
+            (((overviewSummary.data || {}).data_type_specific || {}).individuals|| {}).age);
+
         const diseaseLabels = this.mapNameValueFields(
-            ((((overviewSummary || {})
-                .data || {})
-                .data_type_specific || {})
-                .diseases|| {}).term);
-        
+            (((overviewSummary.data || {}).data_type_specific || {}).diseases|| {}).term);
+
         const phenotypicFeatureLabels = this.mapNameValueFields(
-            ((((overviewSummary || {})
+            (((overviewSummary
                 .data || {})
                 .data_type_specific || {})
                 .phenotypic_features|| {}).type, this.state.phenotypicFeaturesThresholdSliderValue);
-                
-        
 
-        const experiments = this.props.experiments != undefined ? this.props.experiments.items : [];
 
-        const variantTableSummaries = this.props.tableSummaries != undefined 
-            ? this.props.tableSummaries.summariesByServiceArtifactAndTableID != undefined 
-                ? this.props.tableSummaries.summariesByServiceArtifactAndTableID.variant != undefined 
-                    ? this.props.tableSummaries.summariesByServiceArtifactAndTableID.variant
-                    : undefined
-                : undefined
-            : undefined;
-        
-        var numVariants = 0;
-        var numSamples = 0;
-        var numVCFs = 0;
-        if (variantTableSummaries != undefined){
-            for (const key in variantTableSummaries) {
-                numVariants += variantTableSummaries[key].count;
-                numSamples += variantTableSummaries[key].data_type_specific.samples;
-                numVCFs += variantTableSummaries[key].data_type_specific.vcf_files;
-            }
-        }
+
+        const experiments = (this.props.experiments || {}).items || [];
+
+        const fetchingTableSummaries = (this.props.tableSummaries || {}).isFetching;
+        const variantTableSummaries =
+            ((this.props.tableSummaries || {}).summariesByServiceArtifactAndTableID || {}).variant;
+
+        let numVariants = 0;
+        let numSamples = 0;
+        let numVCFs = 0;
+        Object.values(variantTableSummaries || []).forEach(s => {
+            numVariants += s.count;
+            numSamples += s.data_type_specific.samples;
+            numVCFs += s.data_type_specific.vcf_files;
+        });
+
+        const overviewSummaryFetching = (this.props.overviewSummary || {isFetching: true}).isFetching;
 
         return <>
             <SitePageHeader title="Overview" subTitle="" />
@@ -270,27 +229,27 @@ class OverviewContent extends Component {
                         <Typography.Title level={4}>Clinical/Phenotypical Data</Typography.Title>
                         <Row style={{marginBottom: "24px"}} gutter={[0, 16]}>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                <Spin spinning={overviewSummaryFetching}>
                                     <Statistic title="Participants" value={numParticipants} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                <Spin spinning={overviewSummaryFetching}>
                                     <Statistic title="Biosamples" value={numBiosamples} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                <Spin spinning={overviewSummaryFetching}>
                                     <Statistic title="Diseases" value={numDiseases} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                <Spin spinning={overviewSummaryFetching}>
                                     <Statistic title="Phenotypic Features" value={numPhenotypicFeatures} />
                                 </Spin>
                             </Col>
                             <Col xl={2} lg={3} md={5} sm={6} xs={10}>
-                                <Spin spinning={this.props.experiments == undefined ? true : this.props.experiments.isFetching}>
+                                <Spin spinning={overviewSummaryFetching}>
                                     <Statistic title="Experiments" value={experiments.length} />
                                 </Spin>
                             </Col>
@@ -298,8 +257,8 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.overviewSummary.isFetching ? "" : "Sexes"}</h2>
-                                    <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                    <h2>{overviewSummaryFetching ? "" : "Sexes"}</h2>
+                                    <Spin spinning={overviewSummaryFetching}>
                                         <CustomPieChartWithRouter
                                           data={sexLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
@@ -314,8 +273,8 @@ class OverviewContent extends Component {
                                 paddingRight: this.state.chartPadding,
                                 paddingBottom: 0}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.overviewSummary.isFetching ? "" : "Age"}</h2>
-                                    <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                    <h2>{overviewSummaryFetching ? "" : "Age"}</h2>
+                                    <Spin spinning={overviewSummaryFetching}>
                                         <VictoryChart>
                                             <VictoryAxis tickValues={AGE_HISTOGRAM_BINS}
                                                          label="Age (Years)"
@@ -340,8 +299,8 @@ class OverviewContent extends Component {
                         <Col lg={12} md={24}>
                             <Row style={{display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.overviewSummary.isFetching ? "" : "Diseases"}</h2>
-                                    <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                                    <h2>{overviewSummaryFetching ? "" : "Diseases"}</h2>
+                                    <Spin spinning={overviewSummaryFetching}>
                                         <CustomPieChartWithRouter
                                           data={diseaseLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
@@ -354,9 +313,8 @@ class OverviewContent extends Component {
                             <Row style={{paddingTop: this.state.chartLabelPaddingTop+"rem",
                                 display: "flex", justifyContent: "center"}}>
                                 <Col style={{textAlign: "center"}}>
-                                    <h2>{this.props.overviewSummary.isFetching ? "" : "Biosamples"}</h2>
-                                    <Spin spinning={this.props.overviewSummary == undefined 
-                                        ? true : this.props.overviewSummary.isFetching}>
+                                    <h2>{overviewSummaryFetching ? "" : "Biosamples"}</h2>
+                                    <Spin spinning={overviewSummaryFetching}>
                                     <CustomPieChartWithRouter
                                       data={biosampleLabels}
                                       chartWidthHeight={this.state.chartWidthHeight}
@@ -370,8 +328,8 @@ class OverviewContent extends Component {
                     </Row>
                     <Row style={{display: "flex", justifyContent: "center"}}>
                         <Col style={{textAlign: "center"}}>
-                            <h2>{this.props.overviewSummary.isFetching ? "" : "Phenotypic Features"}</h2>
-                            <Spin spinning={this.props.overviewSummary == undefined ? true : this.props.overviewSummary.isFetching}>
+                            <h2>{overviewSummaryFetching ? "" : "Phenotypic Features"}</h2>
+                            <Spin spinning={overviewSummaryFetching}>
                                 <CustomPieChartWithRouter
                                     data={phenotypicFeatureLabels}
                                     chartWidthHeight={this.state.chartWidthHeight}
@@ -839,7 +797,7 @@ const mapStateToProps = state => ({
     phenopackets: state.phenopackets,
     experiments: state.experiments,
     tableSummaries: state.tableSummaries,
-    
+
     overviewSummary: state.overviewSummary
 });
 
