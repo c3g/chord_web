@@ -22,7 +22,9 @@ import {
 
     FETCH_INDIVIDUAL,
     FETCH_PHENOPACKETS,
-    FETCH_EXPERIMENTS
+    FETCH_EXPERIMENTS,
+
+    FETCH_OVERVIEW_SUMMARY
 } from "./actions";
 
 
@@ -413,6 +415,31 @@ export const experiments = (
             return {
                 ...state,
                 items: state.items,
+                isFetching: false,
+            };
+
+        default:
+            return state;
+    }
+};
+
+
+export const overviewSummary = (
+    state = {
+        data: {},
+        isFetching: true
+    },
+    action
+) => {
+    switch (action.type) {
+        case FETCH_OVERVIEW_SUMMARY.REQUEST:
+            return {...state, data: {}, isFetching: true };
+        case FETCH_OVERVIEW_SUMMARY.RECEIVE:
+            return {...state, data: action.data};
+        case FETCH_OVERVIEW_SUMMARY.FINISH:
+            return {
+                ...state,
+                data: state.data,
                 isFetching: false,
             };
 
