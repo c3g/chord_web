@@ -271,7 +271,7 @@ export const experimentPropTypesShape = PropTypes.shape({
 export const overviewSummaryPropTypesShape = PropTypes.shape({
     data: PropTypes.shape({
         // TODO: more precision
-        phenopackets: PropTypes.number, 
+        phenopackets: PropTypes.number,
         data_type_specific: PropTypes.shape({
             biosamples: PropTypes.object,
             diseases: PropTypes.object,

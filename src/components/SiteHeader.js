@@ -19,17 +19,11 @@ import {nodeInfoDataPropTypesShape, notificationPropTypesShape, userPropTypesSha
 
 
 class SiteHeader extends Component {
-    constructor(){
+    constructor() {
         super();
         this.state = {
             current: "mail",
         };
-    }
-    handleSubMenuClick(e) {
-        console.log("click ", e);
-        this.setState({
-            current: e.key,
-        });
     }
 
     render() {

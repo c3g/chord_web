@@ -50,19 +50,16 @@ export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds
     (dispatch, getState) => {
         console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
 
-        let dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv";
+        let dataUrl = `${getState().services.itemsByArtifact.metadata.url}/api/individuals?format=csv`;
 
         // build query string
+        // TODO: This should use the actual JS API for URL construction
         if (individualIds.length > 0) { // Get only selected results
             dataUrl += ("&page_size=" + individualIds.length);
-            for(let i = 0; i < individualIds.length; i++){
-                dataUrl += ("&id="+individualIds[i]);
-            }
+            individualIds.forEach(id => dataUrl += `&id=${id}`);
         } else { // Get all search results
             dataUrl += ("&page_size=" + allSearchResults.length);
-            for(let j = 0; j < allSearchResults.length; j++){
-                dataUrl += ("&id="+allSearchResults[j].key);
-            }
+            allSearchResults.forEach(sr => dataUrl += `&id=${sr.key}`);
         }
 
         return dispatch(performIndividualCSVDownload(dataUrl));

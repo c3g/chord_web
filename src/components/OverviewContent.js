@@ -802,4 +802,10 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, {fetchPhenopackets, fetchExperiments, fetchVariantTableSummaries, fetchOverviewSummary, setAutoQueryPageTransition})(OverviewContent);
+export default connect(mapStateToProps, {
+    fetchPhenopackets,
+    fetchExperiments,
+    fetchVariantTableSummaries,
+    fetchOverviewSummary,
+    setAutoQueryPageTransition
+})(OverviewContent);

@@ -99,7 +99,8 @@ export const fetchVariantTableSummaries = () => async (dispatch, getState) => {
     if (chordService) {
         for (const table of getState().projectTables.items) {
             if (table.service_artifact === "variant") {
-                await dispatch(fetchTableSummaryIfPossible(chordService, {url: "/api/variant"}, table.table_id));
+                await dispatch(fetchTableSummaryIfPossible(chordService,
+                    {url: "/api/variant"}, table.table_id));
             }
         }
     }
