@@ -49,6 +49,9 @@ module.exports = {
         ],
         "react/jsx-indent-props": ["error", "first"],
 
+        // Prevent some legacy HTML tags
+        "react/forbid-elements": ["error", {"forbid": ["b", "font"]}],
+
         "no-prototype-builtins": "off",
         "react/display-name": "off",
 
@@ -63,7 +66,8 @@ module.exports = {
         "eqeqeq": ["error"],
         "max-len": ["error", {"code": 120}],
         "no-trailing-spaces": ["error"],
-        "space-before-blocks": ["error", "always"]
+        "space-before-blocks": ["error", "always"],
+        "eol-last": ["error", "always"],
     },
     "settings": {
         "react": {
