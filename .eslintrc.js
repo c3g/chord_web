@@ -47,50 +47,23 @@ module.exports = {
                 "ignoreComments": true,
             }
         ],
-        "react/jsx-indent-props": [
-            "error",
-            "first"
-        ],
+        "react/jsx-indent-props": ["error", "first"],
 
         "no-prototype-builtins": "off",
         "react/display-name": "off",
 
-        "no-unused-vars": [
-            "error",
-            {"argsIgnorePattern": "^_"}
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "react/prop-types": [
-            "error",
-            {"ignore": ["form", "match", "history"]}
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "no-var": [
-            "error"
-        ],
-        "prefer-const": [
-            "error"
-        ],
-        "eqeqeq": [
-            "error"
-        ],
-        "max-len": [
-            "error",
-            {"code": 120}
-        ],
-        "no-trailing-spaces": [
-            "error"
-        ]
+        "no-unused-vars": ["error", {"argsIgnorePattern": "^_"}],
+        "linebreak-style": ["error", "unix"],
+        "react/prop-types": ["error", {"ignore": ["form", "match", "history"]}],
+        "quotes": ["error", "double"],
+        "semi": ["error", "always"],
+        "semi-spacing": ["error"],
+        "no-var": ["error"],
+        "prefer-const": ["error"],
+        "eqeqeq": ["error"],
+        "max-len": ["error", {"code": 120}],
+        "no-trailing-spaces": ["error"],
+        "space-before-blocks": ["error", "always"]
     },
     "settings": {
         "react": {
