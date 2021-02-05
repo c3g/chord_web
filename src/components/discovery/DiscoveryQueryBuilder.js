@@ -45,7 +45,7 @@ class DiscoveryQueryBuilder extends Component {
     componentDidMount() {
         (this.props.requiredDataTypes || []).forEach(dt => this.props.addDataTypeQueryForm(dt));
 
-        if (this.props.autoQuery != undefined && this.props.autoQuery.isAutoQuery){
+        if ((this.props.autoQuery || {}).isAutoQuery) {
 
             // Trigger a cascade of async functions
             // that involve waiting for redux actions to reduce (complete)
@@ -53,16 +53,15 @@ class DiscoveryQueryBuilder extends Component {
             (async () => {
 
                 // Clean old queries (if any)
-                Object.values(this.props.dataTypesByID).forEach(async value=> {
-                    await this.handleTabsEdit(value.id, "remove");
-                });
+                Object.values(this.props.dataTypesByID).forEach(value =>
+                    this.handleTabsEdit(value.id, "remove"));
 
                 // Set type of query
-                await this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});     
+                await this.handleAddDataTypeQueryForm({key: `:${this.props.autoQuery.autoQueryType}`});
 
                 // Set term
-                var dataType =this.props.dataTypesByID[this.props.autoQuery.autoQueryType];
-                var fields = {
+                const dataType =this.props.dataTypesByID[this.props.autoQuery.autoQueryType];
+                const fields = {
                     keys: {
                         value:[0]
                     },
@@ -71,7 +70,8 @@ class DiscoveryQueryBuilder extends Component {
                         value: {
                             dataType: dataType,
                             field: this.props.autoQuery.autoQueryField,
-                            fieldSchema: getFieldSchema(dataType.schema, this.props.autoQuery.autoQueryField), // from utils/schema
+                            // from utils/schema:
+                            fieldSchema: getFieldSchema(dataType.schema, this.props.autoQuery.autoQueryField),
                             negated: false,
                             operation: OP_EQUALS,
                             searchValue: this.props.autoQuery.autoQueryValue
@@ -79,18 +79,15 @@ class DiscoveryQueryBuilder extends Component {
                     }]
                 };
 
-                // "Simulate" form datastructure and trigger update
+                // "Simulate" form data structure and trigger update
                 await this.handleFormChange(dataType, fields);
-
 
                 // Simulate form submission click
                 this.handleSubmit();
 
-
-                // Clean up auto-query "paper trail" (that is, the state segment that 
+                // Clean up auto-query "paper trail" (that is, the state segment that
                 // was introduced in order to transfer intent from the OverviewContent page)
                 this.props.neutralizeAutoQueryPageTransition();
-                
             })();
         }
     }

@@ -1,5 +1,4 @@
-import React, {Component} from "react";import "antd/es/tag/style/css";
-import "antd/es/typography/style/css";
+import React, {Component} from "react";
 
 import {Redirect, Route, Switch} from "react-router-dom";
 

@@ -10,7 +10,10 @@ const P_FEATURES_COLUMNS = [
     {
         title: "Type",
         key: "type",
-        render: (_, individual) => <span><b>{((individual || {}).type || {}).label || EM_DASH}</b> {((individual || {}).type || {}).id || EM_DASH}</span>,
+        render: (_, individual) => <span>
+            <strong>{((individual || {}).type || {}).label || EM_DASH} </strong>
+            {((individual || {}).type || {}).id || EM_DASH}
+        </span>,
     },
     {
         title: "Negated",
@@ -20,7 +23,7 @@ const P_FEATURES_COLUMNS = [
     {
         title: "Extra Properties",
         key: "extra_properties",
-        render: (_, individual) => 
+        render: (_, individual) =>
             (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
                 ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
                 : EM_DASH,

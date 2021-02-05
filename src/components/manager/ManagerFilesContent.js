@@ -155,7 +155,7 @@ class ManagerFilesContent extends Component {
         let filesLeft = [...this.state.selectedFiles];
         const inputs = {};
 
-        for (let i of w.inputs.filter(i => i.type.startsWith("file"))) {
+        for (const i of w.inputs.filter(i => i.type.startsWith("file"))) {
             // Find tables that support the data type
             // TODO
 

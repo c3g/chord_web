@@ -12,17 +12,18 @@ import "./explorer.css";
 const IndividualVariants = ({individual}) =>
 {
     const biosamples = (individual || {}).phenopackets.flatMap(p => p.biosamples);
-    
+
     const variantsMapped = {};
     biosamples.forEach(bs => {
         variantsMapped[bs.id] = ((bs || {}).variants || []).map(v => (v || {}).hgvsAllele);
     });
 
-    const ids = (biosamples || []).map(b => 
+    const ids = (biosamples || []).map(b =>
         ({
             title: `Biosample ${b.id}`,
             key: b.id,
-            render: (_, map) => <div style={{verticalAlign: "top"}}><pre>{JSON.stringify(map[b.id], null, 2)}</pre></div>,
+            render: (_, map) => <div style={{verticalAlign: "top"}}>
+                <pre>{JSON.stringify(map[b.id], null, 2)}</pre></div>,
             //sorter: (a, b) => a.id.localeCompare(b.id),
             //defaultSortOrder: "ascend"
         })
@@ -33,10 +34,10 @@ const IndividualVariants = ({individual}) =>
                   pagination={{pageSize: 25}}
                   columns={ids}
                   rowKey="id"
-                  dataSource={[variantsMapped]} 
+                  dataSource={[variantsMapped]}
         />;
 };
-        
+
 
 IndividualVariants.propTypes = {
     individual: individualPropTypesShape

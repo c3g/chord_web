@@ -46,26 +46,24 @@ export const performSearchIfPossible = (datasetID) => (dispatch, getState) => {
     return dispatch(performSearch(datasetID, dataTypeQueries));
 };
 
-export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds, allSearchResults) => (dispatch, getState) => {
-    console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
+export const performIndividualsDownloadCSVIfPossible = (datasetId, individualIds, allSearchResults) =>
+    (dispatch, getState) => {
+        console.log("Initiating PerformIndividualsDownloadCSVIfPossible");
 
-    var dataUrl = getState().services.itemsByArtifact.metadata.url + "/api/individuals?format=csv";
-    
-    // build query string 
-    if (individualIds.length > 0) { // Get only selected results
-        dataUrl += ("&page_size=" + individualIds.length);
-        for(var i = 0; i < individualIds.length; i++){
-            dataUrl += ("&id="+individualIds[i]);
+        let dataUrl = `${getState().services.itemsByArtifact.metadata.url}/api/individuals?format=csv`;
+
+        // build query string
+        // TODO: This should use the actual JS API for URL construction
+        if (individualIds.length > 0) { // Get only selected results
+            dataUrl += ("&page_size=" + individualIds.length);
+            individualIds.forEach(id => dataUrl += `&id=${id}`);
+        } else { // Get all search results
+            dataUrl += ("&page_size=" + allSearchResults.length);
+            allSearchResults.forEach(sr => dataUrl += `&id=${sr.key}`);
         }
-    } else { // Get all search results
-        dataUrl += ("&page_size=" + allSearchResults.length);
-        for(var j = 0; j < allSearchResults.length; j++){
-            dataUrl += ("&id="+allSearchResults[j].key);
-        }        
-    }
-    
-    return dispatch(performIndividualCSVDownload(dataUrl));
-};
+
+        return dispatch(performIndividualCSVDownload(dataUrl));
+    };
 
 
 

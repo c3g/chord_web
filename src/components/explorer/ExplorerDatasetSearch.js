@@ -97,10 +97,12 @@ class ExplorerDatasetSearch extends Component {
 
         if (!selectedDataset) return null;  // TODO
 
+        const numResults = (this.props.searchResults || {searchFormattedResults: []}).searchFormattedResults.length;
+
         // Calculate page numbers and range
-        var showingResults = 0;
-        if (this.props.searchResults != undefined && this.props.searchResults.searchFormattedResults.length > 0)
-            showingResults = (this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1;
+        const showingResults = numResults > 0
+            ? (this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1
+            : 0;
 
         return <>
             <Typography.Title level={4}>Explore Dataset {selectedDataset.title}</Typography.Title>
@@ -113,10 +115,8 @@ class ExplorerDatasetSearch extends Component {
                                    removeDataTypeQueryForm={this.props.removeDataTypeQueryForm} />
             {this.props.searchResults ? <>
                 <Typography.Title level={4}>
-                    Showing results {showingResults}-{
-                    (this.state.currentPage * this.state.pageSize) < this.props.searchResults.searchFormattedResults.length 
-                        ? (this.state.currentPage * this.state.pageSize) 
-                        : this.props.searchResults.searchFormattedResults.length} of {this.props.searchResults.searchFormattedResults.length}
+                    Showing results {showingResults}-{Math.min(this.state.currentPage * this.state.pageSize,
+                    numResults)} of {numResults}
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
                                 style={{marginRight: "8px"}}
@@ -128,7 +128,9 @@ class ExplorerDatasetSearch extends Component {
                         <Spin spinning={this.props.isFetchingDownload} style={{display: "inline-block !important"}}>
                             <Button icon="export" style={{marginRight: "8px"}}
                                     disabled={this.props.isFetchingDownload}
-                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(this.props.selectedRows, this.props.searchResults.searchFormattedResults)}>Export as CSV</Button>
+                                    onClick={() => this.props.performIndividualsDownloadCSVIfPossible(
+                                        this.props.selectedRows, this.props.searchResults.searchFormattedResults)}>
+                                Export as CSV</Button>
                         </Spin>
                     </div>
                 </Typography.Title>
@@ -145,7 +147,11 @@ class ExplorerDatasetSearch extends Component {
                                size="middle"
                                columns={SEARCH_RESULT_COLUMNS}
                                dataSource={this.props.searchResults.searchFormattedResults || []}
-                               pagination={{pageSize: this.state.pageSize, defaultCurrent: this.state.currentPage, showQuickJumper: true}}
+                               pagination={{
+                                   pageSize: this.state.pageSize,
+                                   defaultCurrent: this.state.currentPage,
+                                   showQuickJumper: true
+                               }}
                                onChange={this.onPageChange}
                                rowSelection={{
                                    selectedRowKeys: this.props.selectedRows,
@@ -188,7 +194,7 @@ ExplorerDatasetSearch.propTypes = {
 
     performIndividualsDownloadCSVIfPossible: PropTypes.func.isRequired,
     isFetchingDownload: PropTypes.bool,
-    
+
     federationServiceInfo: serviceInfoPropTypesShape,
     datasetsByID: PropTypes.objectOf(datasetPropTypesShape),
 };

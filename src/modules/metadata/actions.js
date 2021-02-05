@@ -21,7 +21,7 @@ import {
 import {nop, objectWithoutProps} from "../../utils/misc";
 import {jsonRequest} from "../../utils/requests";
 import {withBasePath} from "../../utils/url";
-import {fetchTableSummaryIfPossible} from "../../modules/tables/actions";
+import {fetchTableSummaryIfPossible} from "../tables/actions";
 
 
 export const FETCH_PROJECTS = createNetworkActionTypes("FETCH_PROJECTS");
@@ -94,18 +94,16 @@ export const fetchVariantTableSummaries = () => async (dispatch, getState) => {
 
     dispatch(beginFlow(FETCHING_TABLE_SUMMARIES));
 
-    var chordservice =  getState().chordServices.itemsByArtifact.variant || null ;
-    
-    if (chordservice != null)
-    {
-        var tables = getState().projectTables.items;
-        for (var t=0;t<tables.length; t++){
-            var table = tables[t];
-            if (table.service_artifact == "variant") {
-                await dispatch(fetchTableSummaryIfPossible(chordservice, {url:"/api/variant"}, table.table_id));
+    const chordService =  getState().chordServices.itemsByArtifact.variant || null;
+
+    if (chordService) {
+        for (const table of getState().projectTables.items) {
+            if (table.service_artifact === "variant") {
+                await dispatch(fetchTableSummaryIfPossible(chordService,
+                    {url: "/api/variant"}, table.table_id));
             }
         }
-    } 
+    }
 
     dispatch(endFlow(FETCHING_TABLE_SUMMARIES));
 };
