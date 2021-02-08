@@ -29,7 +29,7 @@ const performSearch = networkAction((datasetID, dataTypeQueries) => (dispatch, g
 const performIndividualCSVDownload = networkAction((individualsUrl) => () => ({
     types: PERFORM_INDIVIDUAL_CSV_DOWNLOAD,
     url: `${individualsUrl}`,
-    asCsv: true,
+    parse: r => r.blob(),  // Parse the CSV as a binary blob rather than e.g. a JSON file
     err: "Error performing individual csv download",
 }));
 
