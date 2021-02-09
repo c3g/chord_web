@@ -138,7 +138,7 @@ class OverviewContent extends Component {
     mapAgeXField(obj) {
         // Group the items in the array of objects denoted by
         // an "x" parameter
-        return Object.entries(obj)
+        return Object.entries(obj || {})
             .filter(([_, v]) => v > 0)
             .flatMap(([x, v]) => Array(v).fill({x}))
             .sort((a, b) =>  a.x - b.x);  // Sort by x
