@@ -108,6 +108,9 @@ class OverviewContent extends Component {
     };
 
     mapNameValueFields(data, otherThreshold=0.04) {
+        // Use an empty object as the default to prevent errors with Object.* functions
+        data = data || {};
+
         // Accumulate all values to compute on them later
         const sumOfAllValues = Object.values(data).reduce((acc, v) => acc + v, 0);
 
@@ -760,7 +763,7 @@ OverviewContent.propTypes = {
     phenopackets: PropTypes.shape({
         isFetching: PropTypes.bool,
         items: PropTypes.arrayOf(phenopacketPropTypesShape)
-    }), //TPropTypes.objectOf(phenopacketPropTypesShape),
+    }),
     fetchPhenopackets: PropTypes.func,
 
     experiments:PropTypes.shape({
@@ -771,7 +774,7 @@ OverviewContent.propTypes = {
 
     overviewSummary:PropTypes.shape({
         isFetching: PropTypes.bool,
-        data: PropTypes.arrayOf(overviewSummaryPropTypesShape)
+        data: overviewSummaryPropTypesShape
     }),
     fetchOverviewSummary: PropTypes.func,
 
