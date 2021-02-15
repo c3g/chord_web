@@ -263,6 +263,7 @@ class OverviewContent extends Component {
                                     <h2>{overviewSummaryFetching ? "" : "Sexes"}</h2>
                                     <Spin spinning={overviewSummaryFetching}>
                                         <CustomPieChartWithRouter
+                                          style={{cursor: "pointer"}}
                                           data={sexLabels}
                                           chartWidthHeight={this.state.chartWidthHeight}
                                           fieldLabel={"[dataset item].subject.sex"}
@@ -458,6 +459,10 @@ class CustomPieChart extends React.Component {
         this.setState({ activeIndex: index });
     }
 
+    onHover = (_data, index) => {
+        event.target.style.cursor = "pointer";
+    }
+
     onLeave = (_data, _index) => {
         this.setState({ activeIndex: undefined });
     }
@@ -495,28 +500,29 @@ class CustomPieChart extends React.Component {
         const { data, chartWidthHeight } = this.props;
 
         return (
-        <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
-          <Pie data={data}
-               dataKey='value'
-               cx='50%'
-               cy='50%'
-               innerRadius={40}
-               outerRadius={80}
-               label={this.renderLabel.bind(this, this.state)}
-               labelLine={true}
-               isAnimationActive={false}
-               onClick={this.onClick}
-               onMouseEnter={this.onEnter}
-               onMouseLeave={this.onLeave}
-               activeIndex={this.state.activeIndex}
-               activeShape={this.renderActiveLabel.bind(this, this.state)}
-          >
-            {
-              data.map((entry, index) =>
-              <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
-            }
-          </Pie>
-        </PieChart>
+          <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
+              <Pie data={data}
+                   dataKey='value'
+                   cx='50%'
+                   cy='50%'
+                   innerRadius={40}
+                   outerRadius={80}
+                   label={this.renderLabel.bind(this, this.state)}
+                   labelLine={true}
+                   isAnimationActive={false}
+                   onClick={this.onClick}
+                   onMouseEnter={this.onEnter}
+                   onMouseLeave={this.onLeave}
+                   onMouseOver={this.onHover}
+                   activeIndex={this.state.activeIndex}
+                   activeShape={this.renderActiveLabel.bind(this, this.state)}
+              >
+                {
+                  data.map((entry, index) =>
+                  <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
+                }
+              </Pie>
+          </PieChart>
         );
     }
 

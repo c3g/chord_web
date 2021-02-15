@@ -117,6 +117,8 @@ class ExplorerDatasetSearch extends Component {
                 <Typography.Title level={4}>
                     Showing results {showingResults}-{Math.min(this.state.currentPage * this.state.pageSize,
                     numResults)} of {numResults}
+                    <Spin style={{marginLeft: "35px"}} spinning={this.props.fetchingSearch}>
+                    </Spin>
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
                                 style={{marginRight: "8px"}}
@@ -140,7 +142,6 @@ class ExplorerDatasetSearch extends Component {
                 <SearchTracksModal searchResults={this.props.searchResults}
                                    visible={this.state.tracksModalVisible}
                                    onCancel={() => this.setState({tracksModalVisible: false})} />
-                <Spin spinning={this.props.fetchingSearch}>
                     <div style={{opacity: (this.props.fetchingSearch ? 0.5 : 1)}}>
                         <Table bordered
                                disabled={this.props.fetchingSearch}
@@ -172,7 +173,6 @@ class ExplorerDatasetSearch extends Component {
                                    ],
                                }} />
                     </div>
-                </Spin>
             </> : null}
         </>;
     }
