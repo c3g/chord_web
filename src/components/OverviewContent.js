@@ -459,7 +459,7 @@ class CustomPieChart extends React.Component {
         this.setState({ activeIndex: index });
     }
 
-    onHover = (_data, index) => {
+    onHover = () => {
         event.target.style.cursor = "pointer";
     }
 
