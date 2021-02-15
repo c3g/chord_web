@@ -502,9 +502,9 @@ class CustomPieChart extends React.Component {
         return (
           <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
               <Pie data={data}
-                   dataKey='value'
-                   cx='50%'
-                   cy='50%'
+                   dataKey="value"
+                   cx="50%"
+                   cy="50%"
                    innerRadius={40}
                    outerRadius={80}
                    label={this.renderLabel.bind(this, this.state)}
