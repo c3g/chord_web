@@ -68,6 +68,7 @@ module.exports = {
         "no-trailing-spaces": ["error"],
         "space-before-blocks": ["error", "always"],
         "eol-last": ["error", "always"],
+        "no-restricted-globals": ["error", "event"],
     },
     "settings": {
         "react": {
