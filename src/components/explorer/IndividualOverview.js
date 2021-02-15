@@ -1,4 +1,5 @@
 import React from "react";
+import ReactJson from 'react-json-view';
 
 import {Descriptions} from "antd";
 import "antd/es/descriptions/style/css";
@@ -20,7 +21,16 @@ const IndividualOverview = ({individual}) => individual ?
         </Descriptions.Item>
         <Descriptions.Item label="Extra Properties">{
             (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
-                ?  <div><pre>{JSON.stringify(individual.extra_properties, null, 2)}</pre></div>
+                ?  <div>
+                    <pre>
+                          <ReactJson src={individual.extra_properties}
+                                     displayDataTypes={false}
+                                     name={"Properties"}
+                                     collapsed={1}
+                                     enableClipboard={false}
+                          />
+                    </pre>
+                   </div>
                 : EM_DASH
         }</Descriptions.Item>
     </Descriptions> : <div />;
