@@ -69,6 +69,7 @@ module.exports = {
         "space-before-blocks": ["error", "always"],
         "eol-last": ["error", "always"],
         "no-restricted-globals": ["error", "event"],
+        "brace-style": ["error", "1tbs"]
     },
     "settings": {
         "react": {

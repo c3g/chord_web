@@ -158,12 +158,10 @@ class OverviewContent extends Component {
 
         let age = today_year - birth_year;
 
-        if ( today_month < (birth_month - 1))
-        {
+        if ( today_month < (birth_month - 1)) {
             age--;
         }
-        if (((birth_month - 1) === today_month) && (today_day < birth_date))
-        {
+        if (((birth_month - 1) === today_month) && (today_day < birth_date)) {
             age--;
         }
 
