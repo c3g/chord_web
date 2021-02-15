@@ -456,10 +456,7 @@ class CustomPieChart extends React.Component {
     }
 
     onEnter = (_data, index) => {
-        this.setState({
-          activeIndex: index,
-         });
-
+        this.setState({ activeIndex: index });
     }
 
     onHover = (_data, index) => {
@@ -467,9 +464,7 @@ class CustomPieChart extends React.Component {
     }
 
     onLeave = (_data, _index) => {
-        this.setState({
-           activeIndex: undefined,
-          });
+        this.setState({ activeIndex: undefined });
     }
 
     onClick = (data) => {

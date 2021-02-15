@@ -117,7 +117,7 @@ class ExplorerDatasetSearch extends Component {
                 <Typography.Title level={4}>
                     Showing results {showingResults}-{Math.min(this.state.currentPage * this.state.pageSize,
                     numResults)} of {numResults}
-                    <Spin style={{marginLeft: "35px"}}spinning={this.props.fetchingSearch}>
+                    <Spin style={{marginLeft: "35px"}} spinning={this.props.fetchingSearch}>
                     </Spin>
                     <div style={{float: "right", verticalAlign: "top"}}>
                         <Button icon="profile"
