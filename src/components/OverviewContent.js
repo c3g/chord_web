@@ -500,29 +500,29 @@ class CustomPieChart extends React.Component {
         const { data, chartWidthHeight } = this.props;
 
         return (
-            <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
-                <Pie data={data}
-                     dataKey='value'
-                     cx='50%'
-                     cy='50%'
-                     innerRadius={40}
-                     outerRadius={80}
-                     label={this.renderLabel.bind(this, this.state)}
-                     labelLine={true}
-                     isAnimationActive={false}
-                     onClick={this.onClick}
-                     onMouseEnter={this.onEnter}
-                     onMouseLeave={this.onLeave}
-                     onMouseOver={this.onHover}
-                     activeIndex={this.state.activeIndex}
-                     activeShape={this.renderActiveLabel.bind(this, this.state)}
-                >
-                  {
-                    data.map((entry, index) =>
-                    <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
-                  }
-                </Pie>
-            </PieChart>
+          <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
+              <Pie data={data}
+                   dataKey='value'
+                   cx='50%'
+                   cy='50%'
+                   innerRadius={40}
+                   outerRadius={80}
+                   label={this.renderLabel.bind(this, this.state)}
+                   labelLine={true}
+                   isAnimationActive={false}
+                   onClick={this.onClick}
+                   onMouseEnter={this.onEnter}
+                   onMouseLeave={this.onLeave}
+                   onMouseOver={this.onHover}
+                   activeIndex={this.state.activeIndex}
+                   activeShape={this.renderActiveLabel.bind(this, this.state)}
+              >
+                {
+                  data.map((entry, index) =>
+                  <Cell key={index} fill={COLORS[index % COLORS.length]}/>)
+                }
+              </Pie>
+          </PieChart>
         );
     }
 
