@@ -1,6 +1,6 @@
 # Bento Web
 
-![Build Status](https://api.travis-ci.org/c3g/chord_web.svg?branch=master)
+![Build Status](https://github.com/bento-platform/bento_web/workflows/CI/badge.svg)
 
 Front end for a single Bento platform node. Written in React using Ant Design 
 components.
