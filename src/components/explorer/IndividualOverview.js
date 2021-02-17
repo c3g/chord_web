@@ -9,15 +9,17 @@ import {renderOntologyTerm} from "./ontologies";
 import {individualPropTypesShape} from "../../propTypes";
 
 const IndividualOverview = ({individual}) => individual ?
-    <Descriptions bordered={true} size="middle">
+    <Descriptions layout="vertical" bordered={true} size="middle">
         <Descriptions.Item label="Date of Birth">{individual.date_of_birth || EM_DASH}</Descriptions.Item>
         <Descriptions.Item label="Sex">{individual.sex || "UNKNOWN_SEX"}</Descriptions.Item>
+        <Descriptions.Item label="Age">{individual.age || "UNKNOWN_AGE"}</Descriptions.Item>
+        <Descriptions.Item label="Ethnicity">{individual.ethnicity || "UNKNOWN_ETHNICITY"}</Descriptions.Item>
         <Descriptions.Item label="Karyotypic Sex">{individual.karyotypic_sex || "UNKNOWN_KARYOTYPE"}</Descriptions.Item>
         {/* TODO: Link to ontology term */}
         <Descriptions.Item label="Taxonomy">
             {renderOntologyTerm(individual.taxonomy
                 ? {...individual.taxonomy, label: <em>{individual.taxonomy.label}</em>}
-                : null)}
+                : null)}Sex
         </Descriptions.Item>
         <Descriptions.Item label="Extra Properties">{
             (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
