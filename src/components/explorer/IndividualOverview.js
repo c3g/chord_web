@@ -19,7 +19,7 @@ const IndividualOverview = ({individual}) => individual ?
         <Descriptions.Item label="Taxonomy">
             {renderOntologyTerm(individual.taxonomy
                 ? {...individual.taxonomy, label: <em>{individual.taxonomy.label}</em>}
-                : null)}Sex
+                : null)}
         </Descriptions.Item>
         <Descriptions.Item label="Extra Properties">{
             (individual.hasOwnProperty("extra_properties") && Object.keys(individual.extra_properties).length)
