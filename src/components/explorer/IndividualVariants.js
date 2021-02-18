@@ -9,8 +9,7 @@ import "./explorer.css";
 // TODO: Only show variants from the relevant dataset, if specified;
 //  highlight those found in search results, if specified
 
-const IndividualVariants = ({individual}) =>
-{
+const IndividualVariants = ({individual}) => {
     const biosamples = (individual || {}).phenopackets.flatMap(p => p.biosamples);
 
     const variantsMapped = {};

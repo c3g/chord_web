@@ -158,12 +158,10 @@ class OverviewContent extends Component {
 
         let age = today_year - birth_year;
 
-        if ( today_month < (birth_month - 1))
-        {
+        if ( today_month < (birth_month - 1)) {
             age--;
         }
-        if (((birth_month - 1) === today_month) && (today_day < birth_date))
-        {
+        if (((birth_month - 1) === today_month) && (today_day < birth_date)) {
             age--;
         }
 
@@ -459,11 +457,11 @@ class CustomPieChart extends React.Component {
         this.setState({ activeIndex: index });
     }
 
-    onHover = (_data, index) => {
-        event.target.style.cursor = "pointer";
+    onHover = (_data, _index, e) => {
+        e.target.style.cursor = "pointer";
     }
 
-    onLeave = (_data, _index) => {
+    onLeave = () => {
         this.setState({ activeIndex: undefined });
     }
 
@@ -502,9 +500,9 @@ class CustomPieChart extends React.Component {
         return (
           <PieChart width={chartWidthHeight} height={chartWidthHeight/2}>
               <Pie data={data}
-                   dataKey='value'
-                   cx='50%'
-                   cy='50%'
+                   dataKey="value"
+                   cx="50%"
+                   cy="50%"
                    innerRadius={40}
                    outerRadius={80}
                    label={this.renderLabel.bind(this, this.state)}
