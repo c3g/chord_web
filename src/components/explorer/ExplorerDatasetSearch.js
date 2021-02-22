@@ -142,7 +142,7 @@ class ExplorerDatasetSearch extends Component {
                 <SearchTracksModal searchResults={this.props.searchResults}
                                    visible={this.state.tracksModalVisible}
                                    onCancel={() => this.setState({tracksModalVisible: false})} />
-                    <div style={{opacity: (this.props.fetchingSearch ? 0.5 : 1)}}>
+                    <div style={{opacity: (this.props.fetchingSearch ? 0.5 : 1), pointerEvents: (this.props.fetchingSearch ? "none" : "auto") }}>
                         <Table bordered
                                disabled={this.props.fetchingSearch}
                                size="middle"
