@@ -100,8 +100,8 @@ class ExplorerDatasetSearch extends Component {
         const numResults = (this.props.searchResults || {searchFormattedResults: []}).searchFormattedResults.length;
 
         const tableStyle = {
-           opacity: (this.props.fetchingSearch ? 0.5 : 1),
-           pointerEvents: (this.props.fetchingSearch ? "none" : "auto")
+            opacity: (this.props.fetchingSearch ? 0.5 : 1),
+            pointerEvents: (this.props.fetchingSearch ? "none" : "auto")
         };
 
         // Calculate page numbers and range
