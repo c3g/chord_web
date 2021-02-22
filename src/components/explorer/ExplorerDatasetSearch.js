@@ -99,6 +99,11 @@ class ExplorerDatasetSearch extends Component {
 
         const numResults = (this.props.searchResults || {searchFormattedResults: []}).searchFormattedResults.length;
 
+        const tableStyle = {
+            opacity: (this.props.fetchingSearch ? 0.5 : 1),
+            pointerEvents: (this.props.fetchingSearch ? "none" : "auto")
+        };
+
         // Calculate page numbers and range
         const showingResults = numResults > 0
             ? (this.state.currentPage * this.state.pageSize) - this.state.pageSize + 1
@@ -142,7 +147,7 @@ class ExplorerDatasetSearch extends Component {
                 <SearchTracksModal searchResults={this.props.searchResults}
                                    visible={this.state.tracksModalVisible}
                                    onCancel={() => this.setState({tracksModalVisible: false})} />
-                    <div style={{opacity: (this.props.fetchingSearch ? 0.5 : 1)}}>
+                    <div style={tableStyle}>
                         <Table bordered
                                disabled={this.props.fetchingSearch}
                                size="middle"
