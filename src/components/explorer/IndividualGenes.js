@@ -8,8 +8,7 @@ import {individualPropTypesShape} from "../../propTypes";
 // TODO: Only show genes from the relevant dataset, if specified;
 //  highlight those found in search results, if specified
 
-const IndividualGenes = ({individual}) =>
-{
+const IndividualGenes = ({individual}) => {
     const genes = (individual || {}).phenopackets.flatMap(p => p.genes);
     const genesFlat = genes.flatMap(g => g.symbol);
     const ids = [{

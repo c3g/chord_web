@@ -1,0 +1,23 @@
+name: CI
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install modules
+        run: npm install
+      - name: Build
+        run: npm run build
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install modules
+        run: npm install
+      - name: Run linter
+        run: npm run lint
