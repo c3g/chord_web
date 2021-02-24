@@ -113,7 +113,6 @@ export const submitIngestionWorkflowRun = networkAction(
                 tags: {
                     workflow_id: workflow.id,
                     workflow_metadata: workflow,
-                    // Remove CHORD_URL from the start of the service URL to make a relative path
                     ingestion_url: `${serviceInfo.url}/private/ingest`,
                     table_id: tableID  // TODO
                 }
